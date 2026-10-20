@@ -1,0 +1,878 @@
+% === PREAMBLE + SLIDES 01-02 ===
+% Standalone Hetis: 10/21/2026 Research Meeting
+% Source style: user's light Madrid Beamer template (same palette and components).
+% Compile with pdfLaTeX. No additional font packages or shell-escape needed.
+% Keep the Hetis/ figure folder next to this file.
+% If an image is absent, a labeled placeholder is shown; the PDF still compiles.
+% ThunderServe reviewed against the supplied arXiv:2502.09334v2 (6 Nov 2025).
+% Hetis reviewed against the supplied arXiv:2509.08309v1 (10 Sep 2025).
+% Independent deck. Footer numbers are 1--39 for this file only.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\graphicspath{{./}{figures/}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{hyperref}
+
+% Light Madrid-inspired palette from the provided template.
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{Ink}{HTML}{243748}
+\definecolor{Muted}{HTML}{667B8B}
+\definecolor{Accent}{HTML}{347E74}
+\definecolor{AccentBlue}{HTML}{507DAD}
+\definecolor{SoftMint}{HTML}{E6F4EE}
+\definecolor{SoftBlue}{HTML}{E9F2F9}
+\definecolor{SoftLilac}{HTML}{F1EEF8}
+\definecolor{Paper}{HTML}{FBFCFE}
+\definecolor{Divider}{HTML}{D8E4EB}
+
+\setbeamercolor{background canvas}{bg=Paper}
+\setbeamercolor{normal text}{fg=Ink}
+\setbeamercolor{structure}{fg=Accent}
+\setbeamercolor{frametitle}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{title}{fg=Ink}
+\setbeamercolor{subtitle}{fg=Muted}
+\setbeamercolor{block title}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block body}{fg=Ink,bg=white}
+\setbeamercolor{item}{fg=Accent}
+\setbeamercolor{caption name}{fg=Muted}
+\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{footline}{size=\tiny}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm plus 1fil]{footline}%
+      \hfill\insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}}}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=.77cm,dp=.18cm,leftskip=.64cm]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}}
+
+% Reusable design components: compact and easy to edit after copying.
+\newcommand{\smalllabel}[1]{{\scriptsize\bfseries\color{Accent}\MakeUppercase{#1}}}
+\newcommand{\hint}[1]{{\scriptsize\color{Muted}#1}}
+\newcommand{\takeaway}[1]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.14cm,wd=\linewidth]{block title}%
+    {\small\bfseries #1}
+  \end{beamercolorbox}}
+\newcommand{\minibadge}[2]{%
+  \tikz[baseline=(node.base)]\node[fill=#1,rounded corners=3pt,
+    inner xsep=6pt,inner ysep=3pt,align=center] (node) {\scriptsize\bfseries #2};}
+\newcommand{\stepcard}[3]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.12cm,wd=\linewidth]{block body}%
+    {\scriptsize\bfseries\color{Accent}#1}\par\vspace{.6mm}
+    {\footnotesize\bfseries #2}\par\vspace{.6mm}
+    {\scriptsize\color{Muted}#3}%
+  \end{beamercolorbox}}
+
+% Automatically use image when found, otherwise show a filename placeholder.
+% This supports both main.tex's folder and figures/ (case-sensitive).
+\newcommand{\figureplaceholder}[3]{%
+  \begingroup\centering
+  \IfFileExists{#1}{%
+    \includegraphics[width=.96\linewidth,height=#2,keepaspectratio]{#1}%
+  }{%
+    \IfFileExists{figures/#1}{%
+      \includegraphics[width=.96\linewidth,height=#2,keepaspectratio]{figures/#1}%
+    }{%
+      \begin{tikzpicture}
+        \node[draw=AccentBlue!55,dashed,line width=.7pt,rounded corners=4pt,
+              fill=SoftBlue!60,minimum height=#2,minimum width=.95\linewidth,
+              text width=.85\linewidth,align=center,inner sep=2mm] {
+           {\color{AccentBlue}\bfseries FIGURE PLACEHOLDER}\\[2.2mm]
+           {\color{Ink}\small #3}\\[1.5mm]
+           {\color{Muted}\scriptsize\ttfamily\detokenize{#1}}};
+      \end{tikzpicture}%
+    }%
+  }\par\endgroup}
+
+% Select layout from the original image ratio: >= 1.8 is wide.
+\newsavebox{\figuremeasure}
+\newcommand{\figurelayout}[3]{%
+  \IfFileExists{#1}{%
+    \sbox{\figuremeasure}{\includegraphics{#1}}%
+    \ifdim\wd\figuremeasure<1.8\ht\figuremeasure
+      #3%
+    \else
+      #2%
+    \fi
+  }{#2}}
+
+% Wide figures: image above text. Narrow figures: text left, image right.
+\newcommand{\paperfigure}[5]{%
+  \figurelayout{#1}{%
+    \vspace{.08cm}
+    \figureplaceholder{#1}{3.20cm}{#2}
+    {\centering\hint{#2}\par}
+    \vspace{.06cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{.49\textwidth}
+        {\footnotesize\begin{itemize}
+          \setlength{\itemsep}{.04cm}#3
+        \end{itemize}}
+      \end{column}
+      \begin{column}{.49\textwidth}
+        {\footnotesize\begin{itemize}
+          \setlength{\itemsep}{.04cm}#4
+        \end{itemize}}
+      \end{column}
+    \end{columns}
+    \vspace{.10cm}\takeaway{#5}%
+  }{%
+    \vspace{.18cm}
+    \begin{columns}[c,onlytextwidth]
+      \begin{column}{.44\textwidth}
+        {\footnotesize\raggedright\begin{itemize}
+          \setlength{\itemsep}{.12cm}#3 #4
+        \end{itemize}}
+        \vspace{.15cm}\takeaway{#5}
+      \end{column}
+      \begin{column}{.54\textwidth}
+        \figureplaceholder{#1}{5.35cm}{#2}
+        \vspace{.06cm}{\centering\hint{#2}\par}
+      \end{column}
+    \end{columns}%
+  }}
+
+% Short discussion prompts use the same aspect-ratio-aware layout.
+\newcommand{\figurefocus}[5]{%
+  \paperfigure{#1}{#2}{\item #3}{\item #4}{#5}}
+
+% Two source figures share a slide without cropping either figure.
+\newcommand{\twofigurefocus}[7]{%
+  \vspace{.10cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \figureplaceholder{#1}{3.78cm}{#2}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \figureplaceholder{#3}{3.78cm}{#4}
+    \end{column}
+  \end{columns}
+  \vspace{.18cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.488\textwidth}{\small\textbf{\color{Accent}01}\quad #5\par}\end{column}
+    \begin{column}{.488\textwidth}{\small\textbf{\color{Accent}02}\quad #6\par}\end{column}
+  \end{columns}
+  \vspace{.23cm}\takeaway{#7}}
+
+\title[Hetis]{Hetis: Fine-grained and Dynamic Parallelism}
+\subtitle{LLM Serving in Heterogeneous GPU Clusters}
+\author{Yu-Jui Liang}
+\institute{National Taiwan University \quad | \quad LLM Serving Systems Research}
+\date{October 21, 2026}
+\begin{document}
+
+
+
+% ----- SLIDE 01: Title -----
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \vspace*{1.00cm}
+  \smalllabel{Research meeting}\par
+  \vspace{.61cm}
+  {\raggedright\color{Ink}
+    \resizebox{\textwidth}{!}{\bfseries Hetis: Fine-grained and Dynamic Parallelism}\par}
+  \vspace{.39cm}
+  {\color{Muted}\large LLM Serving in Heterogeneous GPU Clusters\par}
+  \vspace{1.08cm}
+  {\bfseries Yu-Jui Liang}\par\vspace{.05cm}
+  {\small\color{Muted}Advisor: Hsiang-Yun Cheng}\par\vspace{.05cm}
+  {\small\color{Muted}National Taiwan University \quad | \quad 21 Oct 2026\par}
+  \vfill
+  {\color{Accent}\rule{\textwidth}{.7pt}}\par\vspace{.09cm}
+\end{frame}}
+
+
+% ----- SLIDE 02: Presentation Roadmap -----
+\begin{frame}{Presentation Roadmap}
+  \smalllabel{Hetis / Overview}\par
+  \vspace{.22cm}
+  \begin{enumerate}
+    \setlength{\itemsep}{.24cm}
+    \item \textbf{Background / Motivation}\par
+      {\small\color{Muted}KV cache imbalance and module-specific performance gaps.}
+    \item \textbf{Methodology}\par
+      {\small\color{Muted}Primary parallelism, head allocation and KV cache management.}
+    \item \textbf{Experimental Results}\par
+      {\small\color{Muted}Latency, usable cache capacity, sensitivity and overhead.}
+    \item \textbf{Discussion / Conclusion}\par
+      {\small\color{Muted}Main findings, comparison with ThunderServe and research directions.}
+  \end{enumerate}
+  \vspace{.20cm}\hint{Source: arXiv:2509.08309 (Hetis); ThunderServe in the closing comparison.}
+\end{frame}
+
+% === HETIS SLIDES 03-05 ===
+\section{Hetis}\subsection{Background / Motivation}
+
+% ----- SLIDE 03: Coarse Splitting Wastes KV Cache Capacity -----
+\begin{frame}{Coarse Splitting Wastes KV Cache Capacity}
+  \smalllabel{Hetis / Background \& Motivation}\par
+  \paperfigure{Hetis/Hetis_Fig01_plot.pdf}{Fig.~1; Section 2.3: Two sources of memory inefficiency}{
+    \item Phase splitting stores separate model copies and confines decode KV cache to decode workers.
+    \item In the FP16 7B example, a 24 GB 3090 has only about 10 GB left for KV cache.
+
+  }{
+    \item Parameter splitting balances compute, but fixes where each request stores its KV cache.
+    \item One GPU can run out of cache while another still has free memory.
+
+  }{Balancing computation alone does not guarantee usable KV cache capacity.}
+\end{frame}
+
+% ----- SLIDE: Table 1 GPU gaps and the 2.7B partition example -----
+\begin{frame}{Measured GPU Gaps and a Partition Example}
+  \smalllabel{Hetis / Background \& Motivation}\par
+
+  \vspace{.08cm}
+  {\footnotesize\textbf{Table 1.} OPT-2.7B, one iteration through all layers. Prefill batch 3; decode batch 25.}\par
+  \vspace{.06cm}
+  {\centering\small\begin{tabular}{lccc}\toprule
+    Device & Memory & Time (Prefill) & Time (Decode)\\\midrule
+    A100 & 80 GB & 0.06 s & 0.0097 s\\
+    3090 & 24 GB & 0.147 s & 0.0143 s\\
+    P100 & 12 GB & 1.47 s & 0.077 s\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.10cm}
+  {\footnotesize A100 vs.\ 3090 / P100: prefill \(2.45\times\) / \(24.5\times\); decode \(1.47\times\) / \(7.93\times\); capacity \(3.33\times\) / \(6.67\times\).}\par
+  \vspace{.08cm}
+  {\footnotesize\textbf{Section 2.3 example.} Split FP16 OPT-2.7B by decode compute: about 40\% of parameters and KV cache on the 3090, 60\% on the A100. The 3090 then has at most 18.6 GB for KV cache, while the A100 still has 44.1 GB unused.}\par
+  \vspace{.10cm}\takeaway{The 10 GB figure on the previous slide is the FP16 7B case, not this 2.7B partition.}
+  \vspace{.06cm}\hint{Source: Section 2.2, Table 1, and Section 2.3. Ratios are the paper's comparisons of these cells.}
+\end{frame}
+
+% ----- SLIDE 04: MLP and Attention Scale Differently -----
+\begin{frame}{MLP and Attention Scale Differently}
+  \smalllabel{Hetis / Background \& Motivation}\par
+  \paperfigure{Hetis/Hetis_Fig02_plot.pdf}{Fig.~2: One Llama-70B decode layer; context length 1000}{
+    \item The P100/A100 execution-time gap is much larger for MLP than for attention.
+    \item Adding slow GPUs to dense operations can cost more communication than it saves in compute.
+
+  }{
+    \item Decode attention has a smaller performance gap and can use otherwise idle GPU memory.
+    \item The preferred GPU partition can differ across modules within the same layer.
+
+  }{Use selected GPUs for dense work and a wider pool for decode attention.}
+\end{frame}
+
+% ----- SLIDE 05: Primary Workers and Attention Workers -----
+\begin{frame}{Primary Workers and Attention Workers}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.22cm}
+  {\small\begin{tabularx}{\textwidth}{@{}p{3.7cm}XX@{}}\toprule
+  Operation & Primary workers & Attention workers\\\midrule
+  QKV / output projections, MLP & Execute in both phases & No model-weight computation\\
+  Prefill attention & Execute & Not the offload target\\
+  Decode attention and KV cache & Retain part of the load & Dynamically share the load\\\bottomrule
+  \end{tabularx}}\par
+  \vspace{.25cm}
+  \[\text{Attention core}(Q,K,V)=\operatorname{softmax}(QK^\top/\sqrt{d_h})V\]
+  {\small Here, the attention core is parameter-free \emph{after} Q, K and V are produced; the projections still require model weights.}\par
+  \vspace{.20cm}\takeaway{Primary workers remain active in decode; attention offload changes the module placement.}
+  \vspace{.10cm}\hint{Source: Sections 2.4, 3.2 and 4. Attention core terminology clarified for this presentation.}
+\end{frame}
+
+% === HETIS SLIDES 06-11 ===
+\subsection{Parallelization Design}
+
+% ----- SLIDE 06: Hetis System Architecture -----
+\begin{frame}{Hetis System Architecture}
+  \smalllabel{Hetis / Methodology}\par
+  \paperfigure{Hetis/Hetis_Fig03_plot.pdf}{Fig.~3: Parallelizer, Profiler, Dispatcher and Hauler}{
+    \item Parallelizer chooses Primary GPUs and their DP / PP / TP configuration.
+    \item Profiler estimates GPU computation and communication cost.
+
+  }{
+    \item Dispatcher assigns heads to Primary and Attention workers, and selectively re-dispatches existing requests.
+    \item Hauler manages head-level KV blocks and migrates the required cache shards.
+
+  }{Offline placement and profiling support online head allocation.}
+\end{frame}
+
+% ----- SLIDE 07: Hierarchical Search for Primary Parallelism -----
+\begin{frame}{Hierarchical Search for Primary Parallelism}
+  \smalllabel{Hetis / Methodology}\par
+  \paperfigure{Hetis/Hetis_Fig04_plot.pdf}{Fig.~4; Section 4.1: Primary worker configuration search}{
+    \item Form serving instances by dividing each GPU type evenly across instances; filter insufficient cache capacity.
+    \item Initially treat each GPU type as a unified PP stage and balance the maximum stage compute cost.
+
+  }{
+    \item Remove low-end GPUs that contribute little to dense computation.
+    \item Explore TP / PP within each stage, then evaluate both computation and communication cost.
+
+  }{Excluded GPUs become a shared Attention-worker pool, rather than being left unused.}
+\end{frame}
+
+% ----- SLIDE 08: Primary Selection Objective and Pruning Rule -----
+\begin{frame}{Primary Selection Objective and Pruning Rule}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.13cm}
+  \[\sigma^*=\arg\min_{\sigma}C(\sigma,M,\mathcal R),\qquad C=C_{\mathrm{comp}}+C_{\mathrm{comm}}\]
+  {\small $\sigma$: parameter placement and DP / PP / TP configuration; $M$: model; $\mathcal R$: workload distribution.}\par
+  \vspace{.16cm}
+  {\small\textbf{Remove candidate GPU $\kappa$ from the Primary set if}}
+  \[\frac{C_p(\sigma-\kappa,M,\mathcal R)}{C_p(\sigma,M,\mathcal R)}\leq1+\Delta,\qquad\Delta=0.05.\]
+  \begin{itemize}\small
+    \item $C_p$ estimates the maximum stage computation cost under ideal scaling; it omits communication at this pruning step.
+    \item Try removals from lower- to higher-end GPU types, then score retained candidates with the fuller cost model.
+  \end{itemize}
+  \vspace{.15cm}\takeaway{A small compute-cost increase can free GPU memory for attention-only service.}
+  \vspace{.08cm}\hint{Source: Section 4.1, Eq.~(1). This hierarchical heuristic does not guarantee global optimality.}
+\end{frame}
+
+% ----- SLIDE 09: Why Split Attention by Head? -----
+\begin{frame}{Why Split Attention by Head?}
+  \smalllabel{Hetis / Methodology}\par
+  \paperfigure{Hetis/Hetis_Fig05_plot.pdf}{Fig.~5: Llama-70B, 100 Gbps; communication overhead}{
+    \item Batch-wise splitting moves whole requests, which is coarse when context lengths differ.
+    \item Sequence-wise splitting replicates query vectors across workers holding different token ranges.
+
+  }{
+    \item Head-wise splitting transfers only the assigned head vectors and their results.
+    \item Reported communication speedups over sequence splitting: $2.68\times$ at 20\% offload; up to $3.55\times$ with four workers.
+
+  }{Independent heads reduce communication and allow finer cache placement.}
+\end{frame}
+
+% ----- SLIDE: Eq. (2) head-wise attention -----
+\begin{frame}{Head-wise Attention as Printed}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.18cm}
+  \[
+    \mathrm{Attention}_j=\mathrm{Concat}(\mathrm{result}_{1,j},\ldots,\mathrm{result}_{n,j})
+  \]
+  \[
+    \mathrm{result}_{i,j}
+    =\operatorname{softmax}\!\left(
+      q_{h_i^j(t)}\,K_{h_i^j(t)}^{\top}/\sqrt{d}
+    \right)V_{h_i^j(t)}
+  \]
+  \vspace{.08cm}
+  {\small \(h_i^j(t)\): query heads of request \(j\) placed on GPU \(i\) at time \(t\). Each GPU finishes its own heads; outputs are concatenated in head order.}\par
+  \vspace{.16cm}
+  \begin{itemize}\small
+    \item This is Eq.~(2). The earlier attention-core line is the same softmax, without the per-GPU split.
+    \item No cross-GPU softmax reduction is required inside one head.
+  \end{itemize}
+  \vspace{.12cm}\takeaway{Head-wise splitting changes where each head runs, not the attention definition.}
+  \vspace{.06cm}\hint{Source: Section 4.2, Eq.~(2).}
+\end{frame}
+
+% ----- SLIDE 10: Dynamic Attention Placement Across Requests -----
+\begin{frame}{Dynamic Attention Placement Across Requests}
+  \smalllabel{Hetis / Methodology}\par
+  \paperfigure{Hetis/Hetis_Fig06_plot.pdf}{Fig.~6: Three requests, six heads each; context lengths 6, 9 and 3}{
+    \item Each request can use a different head distribution across the same GPU pool.
+    \item KV cache follows the assigned heads; longer contexts require more cache per head.
+
+  }{
+    \item Primary and Attention workers compute their assigned heads, then gather the head outputs.
+    \item Re-dispatching changes selected assignments and migrates only the cache that must move.
+
+  }{Dynamic parallelism changes placement, not the number of model heads or the attention definition.}
+\end{frame}
+
+% ----- SLIDE 11: Head Integrity and Grouped-Query Attention -----
+\begin{frame}{Head Integrity and Grouped-Query Attention}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.16cm}
+  \[r=\frac{H_Q}{H_{KV}},\qquad \sum_{i=1}^{N_k}x_i^j=H_Q,\qquad x_i^j/r\in\mathbb Z_{\geq0}.\]
+  {\small $x_i^j$: query heads of request $j$ assigned to GPU $i$ in pipeline stage $k$.}\par
+  \vspace{.18cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.12cm}
+    \item MHA: $r=1$; each query head has its own key/value head.
+    \item GQA: each KV head is shared by a group of $r$ query heads; Hetis preserves whole groups.
+    \item Illustrative example: $H_Q=8$, $H_{KV}=2$, so $r=4$; valid per-GPU allocations are 0, 4 or 8 query heads.
+    \item Each assigned head uses its full context. Head-wise computation needs no cross-worker softmax reduction over sequence shards.
+  \end{itemize}
+  \vspace{.15cm}\takeaway{GQA reduces KV volume, but also makes the placement unit coarser than one query head.}
+  \vspace{.08cm}\hint{Source: Sections 4.2, 5.2.1 and 6. Example is explanatory, not a measured model configuration.}
+\end{frame}
+
+% === HETIS SLIDES 12-18 ===
+\subsection{Online Optimization and Runtime}
+
+% ----- SLIDE 12: Profiling Decode Attention Time -----
+\begin{frame}{Profiling Decode Attention Time}
+  \smalllabel{Hetis / Methodology}\par
+  \paperfigure{Hetis/Hetis_Fig07_plot.pdf}{Fig.~7: OPT-30B attention micro-benchmarks}{
+    \item With total head count and cache size fixed, changing the number of requests has little effect in this test.
+    \item Attention time grows approximately linearly with cache size.
+
+  }{
+    \item At a fixed cache size, more query heads also increase execution time.
+    \item These observations motivate a per-GPU affine model using head count and cache amount.
+
+  }{The model uses the work assigned to a GPU, not request count alone.}
+\end{frame}
+
+% ----- SLIDE 13: Computation and Communication Cost Models -----
+\begin{frame}{Computation and Communication Cost Models}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.13cm}
+  \[\tau_i=a_i h_i+b_i g_i+c_i,\qquad \rho_i=\gamma_i d_i+\beta_i,\qquad d_i=(2+2/r)h_i.\]
+  \begin{itemize}\small
+    \setlength{\itemsep}{.13cm}
+    \item $h_i$: total query heads across requests; $g_i$: associated KV cache amount.
+    \item $a_i,b_i,c_i$: fitted compute coefficients; $\gamma_i,\beta_i$: fitted transfer coefficients.
+    \item Per decode step, remote heads need Q, new K/V and returned attention outputs: $2h_i$ query/output vectors plus $2h_i/r$ KV vectors.
+    \item The expression for $d_i$ counts vectors; head width and bytes per element must be accounted for when using physical byte units.
+  \end{itemize}
+  \vspace{.15cm}\takeaway{Attention-worker cost includes network transfer; retaining work on a Primary GPU avoids that extra transfer.}
+  \vspace{.08cm}\hint{Source: Section 5.1, Eqs.~(3)--(4). Vector-count interpretation makes the units explicit.}
+\end{frame}
+
+% ----- SLIDE 14: Online Dispatch for Newly Arriving Requests -----
+\begin{frame}{Online Dispatch for Newly Arriving Requests}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.10cm}
+  {\small Keep existing placements fixed; assign only the new requests $\mathcal J(t)$. Define updated load:}
+  \[\widehat h_i=h_i+\sum_{j\in\mathcal J}x_i^j,\qquad
+    \widehat g_i=g_i+\frac{2}{r}\sum_{j\in\mathcal J}\ell_j x_i^j.\]
+  \[\begin{aligned}
+    \min_{x,z}\quad &z\\
+    \text{s.t.}\quad &f_i(\widehat h_i,\widehat g_i)\leq z,\quad \widehat g_i\leq M_i &&\forall i,\\
+    &\sum_{i=1}^{N_k}x_i^j=H_Q,\quad x_i^j/r\in\mathbb Z_{\geq0} &&\forall j\in\mathcal J.
+  \end{aligned}\]
+  {\footnotesize $\ell_j$: current context length; $M_i$: KV capacity. Here $g_i,M_i$ use KV-vector units, with both K and V counted. $f_i$ adds $\rho_i$ for Attention workers.}\par
+  \vspace{.12cm}\takeaway{Minimize the slowest participant while respecting head completeness and cache capacity.}
+  \vspace{.08cm}\hint{Consistent restatement of Sections 5.2.1--5.2.2 using Eqs.~(6) and (8), not a verbatim Eq.~(7).}
+\end{frame}
+
+% ----- SLIDE: Printed Eqs. (5)--(7) -----
+\begin{frame}{Printed Dispatch Constraints}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.04cm}
+  {\footnotesize\textbf{Eq.~(5), all in-service requests \(\mathbb S(t)\).}\quad
+  \(\displaystyle\sum_{i=1}^{N_k}x_i^j(t)\in\{0,\mathrm H\}\).}\par
+  \vspace{.04cm}
+  {\footnotesize\textbf{Eq.~(6), capacity.}\quad
+  \(\displaystyle\sum_{j\in\mathbb S(t)}x_i^j(t)\,l_j(t)\le r\cdot\mathrm M_i(t)/2\).}\par
+  \vspace{.06cm}
+  {\footnotesize\textbf{Eq.~(7), new requests \(\mathrm J(t)\) only.}}
+  \[
+    \min_x\max_i f_i(\vec x_i(t))
+  \]
+  \vspace{-.18cm}
+  {\footnotesize
+  \[
+    g_i(t)+\sum_{j=1}^{|\mathrm J(t)|}x_i^j(t)\,l_j(t)\le\frac{r\cdot\mathrm M_i(t)}{2},
+    \qquad
+    \sum_{i=1}^{N_k}x_i^j(t)=\mathrm H.
+  \]}
+  \vspace{-.12cm}
+  {\footnotesize Eq.~(5) allows a sum of \(0\) or \(\mathrm H\). Eq.~(7c) requires new requests to sum to \(\mathrm H\). The previous slide's \(\widehat g_i\le M_i\) form is the reconciled KV-vector version, not this printed (7b).}\par
+  \vspace{.06cm}\takeaway{Read the printed program and the reconciled LP as two different writings of the same intent.}
+  \vspace{.04cm}\hint{Source: Section 5.2, Eqs.~(5)--(7). \(\mathrm H\) is the model's query-head count, written \(H_Q\) earlier.}
+\end{frame}
+
+% ----- SLIDE: Closed forms of f_i -----
+\begin{frame}{Closed Forms of Attention Time}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.10cm}
+  {\footnotesize\textbf{Primary worker} (computation only)}
+  \[
+    f_i=a_i\Big(h_i+\textstyle\sum_j x_i^j\Big)
+    +b_i\Big(g_i+\frac{2}{r}\textstyle\sum_j l_j x_i^j\Big)+c_i
+  \]
+  \vspace{-.10cm}
+  {\footnotesize\textbf{Attention worker} (computation plus transfer)}
+  \[
+    f_i=\Big(a_i+\big(2+\tfrac{2}{r}\big)\gamma_i\Big)
+    \Big(h_i+\textstyle\sum_j x_i^j\Big)
+    +b_i\Big(g_i+\frac{2}{r}\textstyle\sum_j l_j x_i^j\Big)+c_i+\beta_i
+  \]
+  \vspace{-.08cm}
+  {\footnotesize Sums run over new requests in \(\mathrm J(t)\). The \(\gamma_i\) term uses the worker's updated head count, so every decode step transfers Q, K, V and outputs for heads already on that worker.}\par
+  \vspace{.08cm}\takeaway{These two lines are unnumbered in the paper; they sit in the paragraph after Eq.~(7).}
+  \vspace{.04cm}\hint{Source: Section 5.2.2. Time index \((t)\) is omitted here; the paper writes \(h_i(t)\), \(g_i(t)\) and \(x_i^j(t)\).}
+\end{frame}
+
+% ----- SLIDE 15: Dispatch Formulation: What the Paper Specifies -----
+\begin{frame}{Dispatch Formulation: What the Paper Specifies}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.20cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.19cm}
+    \item With continuous $x_i^j$, the affine cost model and auxiliary variable $z$ give an LP. Hetis reports using CVXPY with MOSEK.
+    \item The required group-integrality constraint $x_i^j/r\in\mathbb Z_{\geq0}$ makes the exact formulation discrete; rounding or an integrality treatment is not described.
+    \item Printed Eq.~(7b) mixes existing $g_i$ with query-head-token counts. Eq.~(8) and the $f_i$ lines update $g_i$ with a $2/r$ factor.
+    \item The reconciled KV-vector LP is the slide before the printed constraints. Byte-level capacity must also include head width, datatype and the layers stored on a GPU.
+  \end{itemize}
+  \vspace{.18cm}\takeaway{The optimization intent is clear; integer allocation and memory units require care in reproduction.}
+  \vspace{.10cm}\hint{Source: Sections 5.2 and 6. Formulation caveats are presenter analysis of the supplied PDF.}
+\end{frame}
+
+% ----- SLIDE 16: Re-dispatching to Balance Computation -----
+\begin{frame}{Re-dispatching to Balance Computation}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.04cm}
+  {\footnotesize\textbf{Ideal attention time over existing requests $\mathbb S(t)$:}}
+  \[
+    f^*=\min\max_i f_i(\vec x_i(t))
+    \quad\text{s.t.}\quad
+    \sum_{i=1}^{N_k}\sum_{j\in\mathbb S(t)}x_i^j(t)\,l_j(t)
+    \le\sum_{i=1}^{N_k}\frac{r\cdot\mathrm M_i}{2}.
+  \]
+  \vspace{-.18cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.05cm}
+    \item If the deviation from the current attention time exceeds $\Theta$ (default 50\%), pick the slowest GPU and its heaviest request.
+    \item Re-dispatch that request with Eq.~(7). Keep reusable KV shards; transfer only changed assignments.
+    \item The displayed constraint is one cluster-wide sum. The paper does not define how ``deviation'' is normalized.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{Growing contexts can create stragglers even if initial head placement was balanced.}
+  \vspace{.04cm}\hint{Source: Section 5.3.1. Head-integrity constraints are not restated in this $f^*$ display.}
+\end{frame}
+
+% ----- SLIDE 17: Re-dispatching to Relieve KV Cache Exhaustion -----
+\begin{frame}{Re-dispatching to Relieve KV Cache Exhaustion}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.22cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.20cm}
+    \item A globally selected LIFO / LRU victim may hold no cache on the exhausted GPU.
+    \item Restrict victim selection to requests occupying the overloaded device; the paper adapts LIFO to that device.
+    \item Try redistribution when \(\sum_i g_i(t)<\sum_i r\cdot\mathrm M_i/2\); otherwise the cluster has no aggregate free cache under the paper's units.
+    \item Repeat subject to remaining cache capacity and the computation-imbalance threshold; reuse heads whose placement is unchanged.
+  \end{itemize}
+  \vspace{.22cm}\takeaway{Target the actual memory bottleneck and migrate only the necessary KV shards.}
+  \vspace{.10cm}\hint{Source: Section 5.3.2. Aggregate free capacity alone does not guarantee a feasible discrete allocation.}
+\end{frame}
+
+% ----- SLIDE 18: Head-Level KV Management and Migration -----
+\begin{frame}{Head-Level KV Management and Migration}
+  \smalllabel{Hetis / Methodology}\par
+
+  \vspace{.20cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{CACHE LAYOUT}{Split blocks along the head dimension}{Extend vLLM's fixed-sized blocks; index by sequence ID, token position and head ID.}
+      \vspace{.17cm}
+      \stepcard{ATTENTION KERNEL}{Reuse PagedAttention}{Compute local heads independently; accelerate block indexing with CPU cores.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{COMMUNICATION}{NCCL point-to-point groups}{Transfer head-specific inputs and results between Primary and Attention workers.}
+      \vspace{.17cm}
+      \stepcard{LIVE MIGRATION}{Low-priority CUDA streams}{Reduce interference with ongoing inference communication; bandwidth cost still exists.}
+    \end{column}
+  \end{columns}
+  \vspace{.22cm}\takeaway{Fine-grained placement requires matching cache indexing, kernels and transfer support.}
+  \vspace{.10cm}\hint{Source: Section 6. Low-priority migration is not a guarantee of zero overhead.}
+\end{frame}
+
+% === HETIS SLIDES 19-30 ===
+\subsection{Experimental Results}
+
+% ----- SLIDE 19: Hetis Experimental Setup -----
+\begin{frame}{Hetis Experimental Setup}
+  \smalllabel{Hetis / Experimental Results}\par
+
+  \vspace{.20cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{CLUSTER}{12 GPUs across four hosts}{One host with 4 A100-80GB; two hosts with 2 RTX 3090 each; one host with 4 P100.}
+      \vspace{.17cm}
+      \stepcard{NETWORK}{100 Gbps LAN; intra-host PCIe}{A local heterogeneous cluster, rather than a cloud-rental cost comparison.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{MODELS}{MHA and GQA}{Llama-13B and OPT-30B use MHA; Llama-70B uses GQA in the evaluation.}
+      \vspace{.17cm}
+      \stepcard{WORKLOADS}{SG / HE / LB}{ShareGPT: chatbot; HumanEval: code completion; LongBench: long-article summarization.}
+    \end{column}
+  \end{columns}
+  \vspace{.20cm}\takeaway{Compare Hetis with Splitwise and HexGen under the paper's specified deployments.}
+  \vspace{.10cm}\hint{Source: Section 7.1. Table 1 lists 3090 with 24 GB and P100 with 12 GB.}
+\end{frame}
+
+% ----- SLIDE 20: Baselines and Evaluation Metrics -----
+\begin{frame}{Baselines and Evaluation Metrics}
+  \smalllabel{Hetis / Experimental Results}\par
+
+  \vspace{.18cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.14cm}
+    \item \textbf{Llama-70B deployment:} Hetis selects A100 / 3090 as Primary workers and P100 as Attention workers.
+    \item \textbf{HexGen:} asymmetric parameter splitting with PP across GPU types and TP within stages.
+    \item \textbf{Splitwise:} authors configure A100 TP=4 for prefill; decode uses two PP stages with TP=2 on 3090 and P100.
+    \item \textbf{Figures 8--10:} normalized E2E latency in s/token vs. offered request rate. A later sharp rise indicates greater load tolerance.
+    \item \textbf{Figures 12--13:} P95 latency normalized to Hetis, which is 1.0. These are ratios, unlike the s/token axes above.
+  \end{itemize}
+  \vspace{.16cm}\takeaway{Keep deployment assumptions and normalization conventions explicit when interpreting speedups.}
+  \vspace{.09cm}\hint{Source: Section 7.2. No fixed SLO goodput threshold or exact E2E normalization formula is specified.}
+\end{frame}
+
+% ----- SLIDE 21: Llama-13B: Latency Under Increasing Load -----
+\begin{frame}{Llama-13B: Latency Under Increasing Load}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig08_plot.pdf}{Fig.~8: SG / HE / LB; normalized E2E latency in s/token}{
+    \item Compare methods within each dataset at the same offered request rate.
+    \item Hetis delays the sharp latency increase across all three workload curves.
+
+  }{
+    \item The saturation points differ by dataset; each panel has its own axis scale.
+    \item The advantage is most visible as load increases and compute or cache capacity becomes limiting.
+
+  }{The figure supports higher sustainable load, not a universal per-request latency ratio.}
+\end{frame}
+
+% ----- SLIDE 22: OPT-30B: Latency Under Increasing Load -----
+\begin{frame}{OPT-30B: Latency Under Increasing Load}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig09_plot.pdf}{Fig.~9: OPT-30B (MHA), three workload families}{
+    \item Hetis also delays the rapid latency increase for the larger MHA model.
+    \item With larger model weights, placement determines how much capacity remains for KV cache.
+
+  }{
+    \item Head allocation can use memory that static compute-based partitioning leaves underutilized.
+    \item Compare curves at matched load; do not compare raw heights across different dataset panels.
+
+  }{The benefit persists for OPT-30B in the evaluated heterogeneous cluster.}
+\end{frame}
+
+% ----- SLIDE 23: Llama-70B: GQA End-to-End Results -----
+\begin{frame}{Llama-70B: GQA End-to-End Results}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig10_plot.pdf}{Fig.~10: Llama-70B; Section 7.2 summarizes Figures 8--10}{
+    \item Hetis retains the advantage with a GQA model, whose KV cache per query head is smaller.
+    \item A100 / 3090 handle dense work; P100 contributes decode attention and cache capacity.
+
+  }{
+    \item Across the end-to-end experiments, reported throughput gains are up to $2.25\times$ vs. Splitwise and $1.33\times$ vs. HexGen.
+    \item These maxima summarize the experiments; they are not guaranteed for every panel or workload.
+
+  }{Module placement and dynamic attention sharing remain useful with GQA.}
+\end{frame}
+
+% ----- SLIDE 24: Maximum Usable KV Cache Space -----
+\begin{frame}{Maximum Usable KV Cache Space}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig11_plot.pdf}{Fig.~11: Maximum available KV cache during inference}{
+    \item Hetis reports up to $1.87\times$ more usable KV cache capacity than the baselines.
+    \item It avoids storing full model copies on attention-only workers.
+
+  }{
+    \item Dynamic allocation reduces the idle cache caused by fixed compute-based partitions.
+    \item The gain is usable cache capacity, not additional physical GPU memory or a guaranteed equal throughput gain.
+
+  }{More usable cache allows the system to host more concurrent request state.}
+\end{frame}
+
+% ----- SLIDE 25: P95 TTFT and TPOT on Llama-70B -----
+\begin{frame}{P95 TTFT and TPOT on Llama-70B}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig12_plot.pdf}{Fig.~12: SG 1.5 req/s; HE 6 req/s; LB 0.8 req/s}{
+    \item All baselines are below saturation at these selected request rates.
+    \item P95 TTFT ratio: up to $1.22\times$ vs. HexGen and $1.47\times$ vs. Splitwise.
+
+  }{
+    \item P95 TPOT ratio: up to $1.39\times$ over the baselines.
+    \item Primary selection helps prefill; avoiding slow dense execution and sharing attention help decode.
+
+  }{The tail-latency comparison tests unsaturated operation, beyond maximum load capacity.}
+\end{frame}
+
+% ----- SLIDE 26: MLP and Attention Contributions to Decode Latency -----
+\begin{frame}{MLP and Attention Contributions to Decode Latency}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig13_plot.pdf}{Fig.~13: Llama-70B; the same request rates as Fig.~12}{
+    \item MLP P95 latency improves by up to $1.29\times$; attention by up to $1.49\times$.
+    \item Dense and attention modules use different placement decisions.
+
+  }{
+    \item For this experiment, module latency is the maximum stage time multiplied by the number of PP stages.
+    \item The $1.49\times$ is a module-level result here; it should not be relabeled as a universal E2E speedup.
+
+  }{Selective dense parallelism and dynamic attention sharing contribute separately.}
+\end{frame}
+
+% ----- SLIDE 27: Dynamic Head and Cache Allocation -----
+\begin{frame}{Dynamic Head and Cache Allocation}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig14_plot.pdf}{Fig.~14: Llama-13B; one A100 Primary + two 3090 Attention GPUs}{
+    \item ShareGPT arrival rate changes over time: $5\rightarrow0\rightarrow2.5\rightarrow0$ req/s.
+    \item A100 processes more heads, while both GPU types can reach high cache utilization.
+
+  }{
+    \item 3090 participation starts later under light load because remote execution adds communication cost.
+    \item The head counts and cache usage change with both arrivals and completion of ongoing requests.
+
+  }{Hetis activates remote attention when its compute and memory benefits justify communication.}
+\end{frame}
+
+% ----- SLIDE 28: Re-dispatching Benefits and Cache Operation Costs -----
+\begin{frame}{Re-dispatching Benefits and Cache Operation Costs}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig15_plot.pdf}{Fig.~15: Re-dispatching vs. LIFO; head management vs. vLLM}{
+    \item ShareGPT at 5 req/s: re-dispatching improves output latency relative to LIFO.
+    \item P95 ratio is about $1.14\times$; mean ratio is inconsistent: text $1.06\times$, plotted bars $1.16\times$.
+
+  }{
+    \item Head-wise cache storage-operation overhead rises by 13\%; fetching time falls by 26\%.
+    \item The 13\% is not 13\% more KV bytes: the paper states equal KV memory consumption.
+
+  }{Re-dispatching has benefits and implementation costs; preserve the metric and comparison.}
+\end{frame}
+
+% ----- SLIDE 29: Sensitivity to Threshold and Profiling Error -----
+\begin{frame}{Sensitivity to Threshold and Profiling Error}
+  \smalllabel{Hetis / Experimental Results}\par
+  \paperfigure{Hetis/Hetis_Fig16_plot.pdf}{Fig.~16: Re-dispatch threshold and fitted-model perturbations}{
+    \item Default $\Theta=0.5$ balances migration frequency against computation imbalance.
+    \item Smaller thresholds can migrate too often; larger thresholds can leave stragglers uncorrected.
+
+  }{
+    \item Perturbing fitted coefficients by up to $\pm20\%$ raises per-token latency by at most 6.9\% in the reported tests.
+    \item This evaluates model-coefficient error, not all network failures or workload shifts.
+
+  }{The tested sensitivity is moderate; it is not a general robustness guarantee.}
+\end{frame}
+
+% ----- SLIDE 30: Planning and Profiling Overhead -----
+\begin{frame}{Planning and Profiling Overhead}
+  \smalllabel{Hetis / Experimental Results}\par
+
+  \vspace{.22cm}
+  {\small\begin{tabularx}{\textwidth}{@{}p{4.0cm}Xp{3.0cm}@{}}\toprule
+  Component & Setting & Reported result\\\midrule
+  Primary placement search & Local heterogeneous cluster & 4 seconds\\
+  Larger placement search & Simulation: 5 types $\times$ 32 GPUs & 15 seconds\\
+  Profiling samples & 8 head counts $\times$ 8 cache amounts & Typically $\leq100$ ms per configuration\\
+  Transfer model accuracy & Profiled settings & 92.4--96.1\%\\\bottomrule
+  \end{tabularx}}\par
+  \vspace{.23cm}
+  \begin{itemize}\small
+    \item Placement search runs before initial deployment; the 160-GPU result is a simulation.
+    \item Computation-model accuracy is reported as up to 93.8\%, without a precise accuracy formula.
+    \item These timings do not establish the latency distribution of the online dispatch solver.
+  \end{itemize}
+  \vspace{.16cm}\takeaway{Separate one-time planning cost, per-sample profiling cost and online scheduling overhead.}
+  \vspace{.09cm}\hint{Source: Section 7.4.}
+\end{frame}
+
+% === HETIS SLIDES 31-32 ===
+\subsection{Discussion and Conclusion}
+
+% ----- SLIDE 31: Hetis: Scope and Open Questions -----
+\begin{frame}{Hetis: Scope and Open Questions}
+  \smalllabel{Hetis / Discussion}\par
+
+  \vspace{.20cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.18cm}
+    \item \textbf{Granularity:} GQA groups restrict how finely heads and memory can be divided; integer handling is underspecified.
+    \item \textbf{Network:} repeated per-layer input/result transfers and occasional KV migration may behave differently on slower or congested links.
+    \item \textbf{Evidence:} end-to-end tests use a local 12-GPU cluster; the larger-scale result measures simulated placement search.
+    \item \textbf{Reproduction:} memory-unit conventions, E2E normalization and online solver latency need more detail.
+  \end{itemize}
+  \vspace{.20cm}\takeaway{Research question: how should head placement change when memory capacity grows faster than memory bandwidth?}
+  \vspace{.10cm}\hint{Presenter analysis based on Sections 4--7; the research question is not evaluated in Hetis.}
+\end{frame}
+
+% ----- SLIDE 32: Hetis: Main Contributions and Findings -----
+\begin{frame}{Hetis: Main Contributions and Findings}
+  \smalllabel{Hetis / Conclusion}\par
+
+  \vspace{.20cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.20cm}
+    \item \textbf{Primary parallelism:} select GPUs and DP / PP / TP configurations for dense work, including execution through both inference phases.
+    \item \textbf{Dynamic attention:} assign whole head groups per request across Primary and Attention workers using compute, network and cache models.
+    \item \textbf{Runtime support:} selectively re-dispatch growing requests and migrate only necessary head-level KV shards.
+    \item \textbf{Reported results:} throughput up to $2.25\times$ vs. Splitwise and $1.33\times$ vs. HexGen; usable KV capacity up to $1.87\times$.
+  \end{itemize}
+  \vspace{.22cm}\takeaway{Different modules need different GPU partitions, and attention placement should adapt online.}
+  \vspace{.10cm}\hint{Source: Sections 3--7 and 9. Ratios are maxima in the evaluated settings.}
+\end{frame}
+
+% === CROSS-PAPER DISCUSSION SLIDES 33-35 ===
+\section{Cross-Paper Discussion}
+
+% ----- SLIDE 33: ThunderServe vs. Hetis: Design Choices -----
+\begin{frame}{ThunderServe vs. Hetis: Design Choices}
+  \vspace{.06cm}\smalllabel{Cross-paper Comparison}\par
+
+  \vspace{.26cm}
+  {\footnotesize
+  \renewcommand{\arraystretch}{1.45}
+  \begin{tabularx}{\textwidth}{@{}p{2.25cm}XX@{}}
+    \toprule
+    \textbf{Dimension} & \textbf{ThunderServe} & \textbf{Hetis} \\
+    \midrule
+    Granularity & Prefill / decode phases & Dense modules / attention heads \\
+    Workers & Phase-specific model replicas & Primary and Attention workers \\
+    Search & Tabu search + lower-level selection & Primary search + head dispatch \\
+    Runtime changes & Phase roles and routing & Head allocation / redispatch \\
+    Data movement & Inter-replica KV transfer & Per-layer Q/K/V/results; KV migration \\
+    Metrics & SLO attainment, throughput & E2E s/token, P95, usable KV, request rate \\
+    \bottomrule
+  \end{tabularx}}
+  \vspace{.32cm}
+  \takeaway{ThunderServe and Hetis are not compared head-to-head in these papers.}
+
+\vspace{.08cm}\hint{Sources: ThunderServe Sections 3--5; Hetis Sections 4--7.}
+\end{frame}
+
+% ----- SLIDE 34: Implications for GPU + HBM / HBF Co-design -----
+\begin{frame}{Implications for GPU + HBM / HBF Co-design}
+  \vspace{.06cm}\smalllabel{Cross-paper / Research Directions}\par
+
+  \vspace{.25cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.32\textwidth}
+      \stepcard{QUESTION 1}{Memory-aware placement}{How do HBM bandwidth and capacity alter phase or head assignment?}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{QUESTION 2}{Tiered KV caches}{Could a slower, larger tier improve capacity without hurting TPOT?}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{QUESTION 3}{Serving simulation}{What hardware-model extensions are needed in LLMServingSim?}
+    \end{column}
+  \end{columns}
+  \vspace{.39cm}
+  \takeaway{These are follow-up research hypotheses, not evaluated HBF results in either paper.}
+  \vspace{.16cm}\hint{Discussion focus: scheduling policy, cost-model fidelity, and memory hierarchy.}
+
+\end{frame}
+
+% ----- SLIDE 35: Q&A -----
+\begin{frame}[plain]
+  \vfill
+  \begin{center}
+    {\fontsize{34}{42}\selectfont\bfseries\color{Ink}Questions \& Discussion}\par
+    \vspace{.36cm}
+    {\Large\color{Accent}GPU heterogeneity \quad / \quad KV cache \quad / \quad HBM--HBF}\par
+    \vspace{.50cm}
+    {\small\color{Muted}ThunderServe (phase level) \quad vs. \quad Hetis (head level)}
+  \end{center}
+  \vfill
+\end{frame}
+
+\end{document}

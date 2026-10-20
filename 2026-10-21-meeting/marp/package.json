@@ -1,0 +1,12 @@
+{
+  "name": "thunderserve-meeting-slides",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs",
+    "pdf": "node build.mjs --pdf-only",
+    "build:all": "node build.mjs --pdf"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "4.5.1"
+  }
+}

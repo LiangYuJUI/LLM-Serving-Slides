@@ -1,0 +1,1018 @@
+% === PREAMBLE + SLIDES 01-02 ===
+% Standalone ThunderServe: 10/21/2026 Research Meeting
+% Source style: user's light Madrid Beamer template (same palette and components).
+% Compile with pdfLaTeX. No additional font packages or shell-escape needed.
+% Keep the ThunderServe/ figure folder next to this file.
+% If an image is absent, a labeled placeholder is shown; the PDF still compiles.
+% ThunderServe reviewed against the supplied arXiv:2502.09334v2 (6 Nov 2025).
+% Hetis reviewed against the supplied arXiv:2509.08309v1 (10 Sep 2025).
+% Independent deck. Footer numbers are 1--43 for this file only.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\graphicspath{{./}{figures/}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{hyperref}
+
+% Light Madrid-inspired palette from the provided template.
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{Ink}{HTML}{243748}
+\definecolor{Muted}{HTML}{667B8B}
+\definecolor{Accent}{HTML}{347E74}
+\definecolor{AccentBlue}{HTML}{507DAD}
+\definecolor{SoftMint}{HTML}{E6F4EE}
+\definecolor{SoftBlue}{HTML}{E9F2F9}
+\definecolor{SoftLilac}{HTML}{F1EEF8}
+\definecolor{Paper}{HTML}{FBFCFE}
+\definecolor{Divider}{HTML}{D8E4EB}
+
+\setbeamercolor{background canvas}{bg=Paper}
+\setbeamercolor{normal text}{fg=Ink}
+\setbeamercolor{structure}{fg=Accent}
+\setbeamercolor{frametitle}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{title}{fg=Ink}
+\setbeamercolor{subtitle}{fg=Muted}
+\setbeamercolor{block title}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block body}{fg=Ink,bg=white}
+\setbeamercolor{item}{fg=Accent}
+\setbeamercolor{caption name}{fg=Muted}
+\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{footline}{size=\tiny}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm plus 1fil]{footline}%
+      \hfill\insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}}}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=.77cm,dp=.18cm,leftskip=.64cm]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}}
+
+% Reusable design components: compact and easy to edit after copying.
+\newcommand{\smalllabel}[1]{{\scriptsize\bfseries\color{Accent}\MakeUppercase{#1}}}
+\newcommand{\hint}[1]{{\scriptsize\color{Muted}#1}}
+\newcommand{\takeaway}[1]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.14cm,wd=\linewidth]{block title}%
+    {\small\bfseries #1}
+  \end{beamercolorbox}}
+\newcommand{\minibadge}[2]{%
+  \tikz[baseline=(node.base)]\node[fill=#1,rounded corners=3pt,
+    inner xsep=6pt,inner ysep=3pt,align=center] (node) {\scriptsize\bfseries #2};}
+\newcommand{\stepcard}[3]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.12cm,wd=\linewidth]{block body}%
+    {\scriptsize\bfseries\color{Accent}#1}\par\vspace{.6mm}
+    {\footnotesize\bfseries #2}\par\vspace{.6mm}
+    {\scriptsize\color{Muted}#3}%
+  \end{beamercolorbox}}
+
+% Automatically use image when found, otherwise show a filename placeholder.
+% This supports both main.tex's folder and figures/ (case-sensitive).
+\newcommand{\figureplaceholder}[3]{%
+  \begingroup\centering
+  \IfFileExists{#1}{%
+    \includegraphics[width=.96\linewidth,height=#2,keepaspectratio]{#1}%
+  }{%
+    \IfFileExists{figures/#1}{%
+      \includegraphics[width=.96\linewidth,height=#2,keepaspectratio]{figures/#1}%
+    }{%
+      \begin{tikzpicture}
+        \node[draw=AccentBlue!55,dashed,line width=.7pt,rounded corners=4pt,
+              fill=SoftBlue!60,minimum height=#2,minimum width=.95\linewidth,
+              text width=.85\linewidth,align=center,inner sep=2mm] {
+           {\color{AccentBlue}\bfseries FIGURE PLACEHOLDER}\\[2.2mm]
+           {\color{Ink}\small #3}\\[1.5mm]
+           {\color{Muted}\scriptsize\ttfamily\detokenize{#1}}};
+      \end{tikzpicture}%
+    }%
+  }\par\endgroup}
+
+% Select layout from the original image ratio: >= 1.8 is wide.
+\newsavebox{\figuremeasure}
+\newcommand{\figurelayout}[3]{%
+  \IfFileExists{#1}{%
+    \sbox{\figuremeasure}{\includegraphics{#1}}%
+    \ifdim\wd\figuremeasure<1.8\ht\figuremeasure
+      #3%
+    \else
+      #2%
+    \fi
+  }{#2}}
+
+% Wide figures: image above text. Narrow figures: text left, image right.
+\newcommand{\paperfigure}[5]{%
+  \figurelayout{#1}{%
+    \vspace{.08cm}
+    \figureplaceholder{#1}{3.20cm}{#2}
+    {\centering\hint{#2}\par}
+    \vspace{.06cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{.49\textwidth}
+        {\footnotesize\begin{itemize}
+          \setlength{\itemsep}{.04cm}#3
+        \end{itemize}}
+      \end{column}
+      \begin{column}{.49\textwidth}
+        {\footnotesize\begin{itemize}
+          \setlength{\itemsep}{.04cm}#4
+        \end{itemize}}
+      \end{column}
+    \end{columns}
+    \vspace{.10cm}\takeaway{#5}%
+  }{%
+    \vspace{.18cm}
+    \begin{columns}[c,onlytextwidth]
+      \begin{column}{.44\textwidth}
+        {\footnotesize\raggedright\begin{itemize}
+          \setlength{\itemsep}{.12cm}#3 #4
+        \end{itemize}}
+        \vspace{.15cm}\takeaway{#5}
+      \end{column}
+      \begin{column}{.54\textwidth}
+        \figureplaceholder{#1}{5.35cm}{#2}
+        \vspace{.06cm}{\centering\hint{#2}\par}
+      \end{column}
+    \end{columns}%
+  }}
+
+% Short discussion prompts use the same aspect-ratio-aware layout.
+\newcommand{\figurefocus}[5]{%
+  \paperfigure{#1}{#2}{\item #3}{\item #4}{#5}}
+
+% Two source figures share a slide without cropping either figure.
+\newcommand{\twofigurefocus}[7]{%
+  \vspace{.10cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \figureplaceholder{#1}{3.78cm}{#2}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \figureplaceholder{#3}{3.78cm}{#4}
+    \end{column}
+  \end{columns}
+  \vspace{.18cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.488\textwidth}{\small\textbf{\color{Accent}01}\quad #5\par}\end{column}
+    \begin{column}{.488\textwidth}{\small\textbf{\color{Accent}02}\quad #6\par}\end{column}
+  \end{columns}
+  \vspace{.23cm}\takeaway{#7}}
+
+\title[ThunderServe]{ThunderServe: Heterogeneous GPU-Aware LLM Serving}
+\subtitle{Phase-Level Deployment in Heterogeneous Clouds}
+\author{Yu-Jui Liang}
+\institute{National Taiwan University \quad | \quad LLM Serving Systems Research}
+\date{October 21, 2026}
+\begin{document}
+
+
+
+% ----- SLIDE 01: Title -----
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \vspace*{1.00cm}
+  \smalllabel{Research meeting}\par
+  \vspace{.61cm}
+  {\raggedright\color{Ink}
+    \resizebox{\textwidth}{!}{\bfseries ThunderServe: Heterogeneous GPU-Aware LLM Serving}\par}
+  \vspace{.39cm}
+  {\color{Muted}\large Phase-Level Deployment in Heterogeneous Clouds\par}
+  \vspace{1.08cm}
+  {\bfseries Yu-Jui Liang}\par\vspace{.05cm}
+  {\small\color{Muted}Advisor: Hsiang-Yun Cheng}\par\vspace{.05cm}
+  {\small\color{Muted}National Taiwan University \quad | \quad 21 Oct 2026\par}
+  \vfill
+  {\color{Accent}\rule{\textwidth}{.7pt}}\par\vspace{.09cm}
+\end{frame}}
+
+
+% ----- SLIDE 02: Presentation Roadmap -----
+\begin{frame}{Presentation Roadmap}
+  \smalllabel{ThunderServe / Overview}\par
+  \vspace{.22cm}
+  \begin{enumerate}
+    \setlength{\itemsep}{.24cm}
+    \item \textbf{Background / Motivation}\par
+      {\small\color{Muted}GPU capabilities, inference phases and network heterogeneity.}
+    \item \textbf{Methodology}\par
+      {\small\color{Muted}Deployment search, replica orchestration and runtime adaptation.}
+    \item \textbf{Experimental Results}\par
+      {\small\color{Muted}SLO attainment, throughput, ablations and model validation.}
+    \item \textbf{Discussion / Conclusion}\par
+      {\small\color{Muted}Scope, open questions and main findings.}
+  \end{enumerate}
+  \vspace{.20cm}\hint{Source: arXiv:2502.09334 (ThunderServe).}
+\end{frame}
+
+% === THUNDERSERVE SLIDES 03-07 ===
+\section{ThunderServe}\subsection{Background / Motivation}
+% ----- SLIDE 03: Prefill and Decode Have Different Bottlenecks -----
+\begin{frame}{Prefill and Decode Have Different Bottlenecks}
+  \smalllabel{ThunderServe / Background \& Motivation}\par
+
+  \paperfigure{ThunderServe/ThunderServe_Fig02.png}{Fig.~2: LLaMA-7B; 1024 input tokens per request}{
+    \item \textbf{Prefill:} process the prompt, build KV cache and generate the first token.
+    \item In this test, token throughput soon saturates as batch size grows.
+  }{
+    \item \textbf{Decode:} reuse KV cache and generate one new token per step.
+    \item Batching amortizes weight reads and improves decode throughput.
+  }{Prefill is usually compute-bound; decode is often memory-bandwidth-bound.}
+\end{frame}
+
+
+% ----- SLIDE 04: Different GPUs Favor Different Inference Phases -----
+\begin{frame}{Different GPUs Favor Different Inference Phases}
+  \smalllabel{ThunderServe / Background \& Motivation}\par
+
+  \paperfigure{ThunderServe/ThunderServe_Fig01.png}{Fig.~1: Per-request cost; input 512 / output 16 tokens}{
+    \item A40 has lower prefill cost in this experiment.
+    \item Its compute capability favors prompt processing.
+  }{
+    \item 3090 Ti has lower decode cost in this experiment.
+    \item Its higher memory bandwidth favors token generation.
+  }{Choose GPUs by phase, workload and rental cost, rather than a single GPU ranking.}
+\end{frame}
+
+
+% ----- SLIDE 05: GPU Specifications in Table 1 -----
+\begin{frame}{GPU Specifications in Table 1}
+  \smalllabel{ThunderServe / Background \& Motivation}\par
+
+  \vspace{.10cm}
+  {\centering\footnotesize\begin{tabular}{lcccc}\toprule
+    GPU & Memory bandwidth & Peak FP16 & Memory & Price / GPU\\\midrule
+    A100 & 2 TB/s & 312 TFLOPS & 80 GB & \$1.753/hr\\
+    A6000 & 768 GB/s & 38.7 TFLOPS & 48 GB & \$0.483/hr\\
+    A5000 & 626.8 GB/s & 27.8 TFLOPS & 24 GB & \$0.223/hr\\
+    A40 & 696 GB/s & 149.7 TFLOPS & 48 GB & \$0.403/hr\\
+    3090Ti & 1008 GB/s & 71 TFLOPS & 24 GB & \$0.307/hr\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.16cm}
+  {\footnotesize A40's 149.7 TFLOPS is the compute side of the previous cost figure; 3090Ti's 1008 GB/s is the memory-bandwidth side. Eight A100s at \$1.753/hr match the later \$14.024/hr in-house budget.}\par
+  \vspace{.12cm}\takeaway{Use these per-GPU numbers for capability; Section 5.1's \$13.542/hr is the rented 32-GPU bundle, not the sum of this column.}
+  \vspace{.06cm}\hint{Source: Table 1 and Section 5.1.}
+\end{frame}
+
+% ----- SLIDE 06: Cloud Networking Is Highly Heterogeneous -----
+\begin{frame}{Cloud Networking Is Highly Heterogeneous}
+  \smalllabel{ThunderServe / Background \& Motivation}\par
+
+  \paperfigure{ThunderServe/ThunderServe_Fig13.png}{Fig.~13: Pairwise bandwidth measured with NCCL}{
+    \item Left: 32 cloud GPUs have uneven connectivity across GPU pairs.
+    \item Right: 8 in-house A100 GPUs have much faster links; color scales differ.
+  }{
+    \item Phase splitting adds a transfer of prompt KV cache between replicas.
+    \item Low-bandwidth paths can erase the benefit of specializing GPUs by phase.
+  }{Deployment must account for both GPU capability and the communication topology.}
+\end{frame}
+
+
+% ----- SLIDE 07: Three Challenges for Phase Splitting in Clouds -----
+\begin{frame}{Three Challenges for Phase Splitting in Clouds}
+  \smalllabel{ThunderServe / Background \& Motivation}\par
+
+  \vspace{.25cm}
+  \begin{enumerate}
+    \setlength{\itemsep}{.28cm}
+    \item \textbf{Limited, heterogeneous GPU inventory}\\
+      {\small Group available GPUs into replicas and assign each replica a phase.}
+    \item \textbf{Slow, heterogeneous network links}\\
+      {\small Account for TP / PP communication and the extra KV cache transfer.}
+    \item \textbf{Changing workloads and GPU availability}\\
+      {\small Adjust resource allocation without repeatedly reloading model weights.}
+  \end{enumerate}
+  \vspace{.25cm}
+  \takeaway{ThunderServe jointly plans deployment and routing, then adapts the running service.}
+  \vspace{.12cm}\hint{Source: Introduction, challenges 1--3.}
+\end{frame}
+
+% === THUNDERSERVE SLIDES 08-21 ===
+\subsection{Methodology}
+% ----- SLIDE 08: ThunderServe: System Overview -----
+\begin{frame}{ThunderServe: System Overview}
+  \smalllabel{ThunderServe / Methodology}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig15.png}{Fig.~15: Scheduler, workload profiler, task coordinator}{
+    \item The scheduler inputs model configuration, workload patterns, GPU types and bandwidth matrix.
+    \item The workload profiler monitors average prompt and output lengths.
+  }{
+    \item The task coordinator dispatches requests across prefill and decode replicas.
+    \item Workload shifts or GPU heartbeat timeouts trigger lightweight re-scheduling.
+  }{The deployment plan links scheduling decisions to online request dispatching.}
+\end{frame}
+
+
+% ----- SLIDE 09: A Deployment Plan Has Four Components -----
+\begin{frame}{A Deployment Plan Has Four Components}
+  \vspace{.06cm}\smalllabel{ThunderServe / Methodology}\par
+  \vspace{.26cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{1 / GROUP CONSTRUCTION}{Model serving groups}{Partition available GPUs into groups; each group serves one model replica.}
+      \vspace{.20cm}
+      \stepcard{2 / PHASE DESIGNATION}{Prefill or decode}{Specify which inference phase each model serving group serves.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{3 / PARALLEL CONFIGURATION}{Parallelism strategies}{Determine tensor and pipeline model parallelism for each replica.}
+      \vspace{.20cm}
+      \stepcard{4 / ORCHESTRATION}{Request routing}{Determine how requests are routed through prefill and decode replicas.}
+    \end{column}
+  \end{columns}
+  \vspace{.31cm}
+  \takeaway{Upper-level: group construction + phase designation; lower-level: parallel configuration + orchestration.}
+  \vspace{.11cm}\hint{Source: ThunderServe, Section 3.1 and Figure 3.}
+\end{frame}
+
+
+% ----- SLIDE 10: Scheduling as Two-Level Hierarchical Optimization -----
+\begin{frame}{Scheduling as Two-Level Hierarchical Optimization}
+  \smalllabel{ThunderServe / Methodology}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig03.png}{Fig.~3: Workflow of the scheduling algorithm}{
+    \item Upper-level optimizes group construction and phase designation.
+    \item Lower-level optimizes parallel configuration and replica orchestration.
+  }{
+    \item Given a candidate upper-level solution, the lower-level returns its SLO attainment.
+    \item The upper-level search uses that performance feedback to improve the deployment plan.
+  }{Objective: maximize the fraction of requests meeting the end-to-end latency deadline.}
+\end{frame}
+
+
+% ----- SLIDE 11: Initialization and Feasibility in Tabu Search -----
+\begin{frame}{Initialization and Feasibility in Tabu Search}
+  \vspace{.04cm}\smalllabel{ThunderServe / Methodology}\par
+  \vspace{.22cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{INITIAL SOLUTION}{Hierarchical Clustering}{Cluster GPUs based on their inter-connection bandwidth matrix; treat each cluster as a model serving group.}
+      \vspace{.19cm}
+      \stepcard{PHASE DESIGNATION}{Random initialization}{Randomly assign the initial prefill / decode phase of each group.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{EARLY CHECK}{GPU memory limit}{Eliminate a neighbor if any serving group cannot store one copy of the model parameters.}
+      \vspace{.19cm}
+      \stepcard{SEARCH COMPLEXITY}{Combinatorial search}{The paper motivates tabu search via a JSSP analogy (Appendix A); the search is heuristic.}
+    \end{column}
+  \end{columns}
+  \vspace{.27cm}
+  \takeaway{Bandwidth-aware initialization and memory pruning reduce wasted search.}
+  \vspace{.09cm}\hint{Source: Section 3.2, Algorithm 1, Appendix A.}
+\end{frame}
+
+
+% ----- SLIDE 12: Four Neighbor Operations in Tabu Search -----
+\begin{frame}{Four Neighbor Operations in Tabu Search}
+  \smalllabel{ThunderServe / Methodology}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig04.png}{Fig.~4: Neighbor construction in tabu search}{
+    \item \textbf{Flip:} change a serving group's prefill or decode phase.
+    \item \textbf{Split:} divide one GPU group into two.
+  }{
+    \item \textbf{Merge:} combine two GPU groups.
+    \item \textbf{Move:} transfer GPUs of a given type between groups.
+  }{Tabu search explores changes in both GPU grouping and phase designation.}
+\end{frame}
+
+
+% ----- SLIDE 13: Neighbor Updates in Notation -----
+\begin{frame}{Neighbor Updates in Notation}
+  \smalllabel{ThunderServe / Methodology}\par
+
+  \vspace{.08cm}
+  {\footnotesize \(g_{i,t}\): number of type-\(t\) GPUs in group \(i\), with types \(t\in\{1,\ldots,T\}\). Flip only changes a group's phase and has no \(g\) update.}\par
+  \vspace{.08cm}
+  {\footnotesize\textbf{Split} group \(s\) by a random ratio \(r\):}
+  \[
+    g_{s'_1,t}\leftarrow\lfloor g_{s,t}\times r\rfloor,\qquad
+    g_{s'_2,t}\leftarrow g_{s,t}-g_{s'_1,t}.
+  \]
+  \vspace{-.20cm}
+  {\footnotesize\textbf{Merge} groups \(i\) and \(j\):
+  \(g'_{\mathrm{merged},t}\leftarrow g_{i,t}+g_{j,t}\).}\par
+  \vspace{.08cm}
+  {\footnotesize\textbf{Move} \(m_t\) GPUs of type \(t\) from \(i\) to \(j\):}
+  \[
+    g'_{i,t}\leftarrow g_{i,t}-m_t,\qquad g'_{j,t}\leftarrow g_{j,t}+m_t.
+  \]
+  \vspace{-.12cm}
+  {\footnotesize New groups from split or merge receive a random phase. A neighbor is dropped if some group cannot store one model copy.}\par
+  \vspace{.08cm}\takeaway{These three updates are the grouping half of the four neighbor operations.}
+  \vspace{.04cm}\hint{Source: Section 3.2. The formulas are unnumbered in the paper.}
+\end{frame}
+
+% ----- SLIDE 14: Tabu Search: Evaluation and Update -----
+\begin{frame}{Tabu Search: Evaluation and Update}
+  \smalllabel{ThunderServe / Methodology}\par
+  \vspace{.08cm}
+  {\small\textbf{Algorithm 1: Upper-level tabu search}}\par
+  \vspace{.05cm}
+  {\footnotesize
+  \renewcommand{\arraystretch}{1.06}
+  \setlength{\tabcolsep}{0pt}
+  \begin{tabularx}{\textwidth}{@{}>{\color{Muted}}r@{\hspace{.18cm}}X@{}}
+    1: & \textbf{function} \textsc{TabuSearch}($N_{\mathrm{step}}=100$, $N_{\mathrm{nghb}}=10$, $N_{\mathrm{mem}}=5$):\\
+    2: & \hspace*{.35cm}Initialize the current solution $x$\\
+    3: & \hspace*{.35cm}Initialize tabu list $T\leftarrow[\,]$, best solution $x_{\mathrm{best}}\leftarrow x$\\
+    4: & \hspace*{.35cm}{\color{Muted}\textit{/* Iterative Neighborhood Search */}}\\
+    5: & \hspace*{.35cm}\textbf{for} $N_{\mathrm{step}}$ search steps \textbf{do}\\
+    6: & \hspace*{.70cm}Construct $N_{\mathrm{nghb}}$ neighbors of $x$ and exclude those in $T$ to form the neighborhood set $\mathcal N$ for navigation\\
+    7: & \hspace*{.70cm}$x'\leftarrow\arg\max_{x''\in\mathcal N}f(x'')$\\
+    8: & \hspace*{.70cm}\textbf{if} $f(x')>f(x_{\mathrm{best}})$ \textbf{then} $x_{\mathrm{best}}\leftarrow x'$\\
+    9: & \hspace*{.70cm}$T.\operatorname{append}(x')$\\
+   10: & \hspace*{.70cm}\textbf{if} $\operatorname{len}(T)>N_{\mathrm{mem}}$ \textbf{then} $T\leftarrow T[-N_{\mathrm{mem}}:]$\\
+   11: & \hspace*{.70cm}$x\leftarrow x'$\\
+   12: & \hspace*{.35cm}\textbf{end for}\\
+   13: & \hspace*{.35cm}\textbf{return} $x_{\mathrm{best}}$\\
+   14: & \textbf{end function}\\
+  \end{tabularx}}\par
+  \vspace{.09cm}
+  {\footnotesize $x$: GPU grouping + phase roles; $f(x)$: SLO attainment from the lower-level problem; $T$: tabu list.}\par
+  \vspace{.10cm}\hint{Source: Algorithm 1, Section 3.2, PDF p.~5. Transcribed with original line numbers; notation typeset for slides.}
+\end{frame}
+
+
+% ----- SLIDE 15: Deducing Parallel Configurations for Each Group -----
+\begin{frame}{Deducing Parallel Configurations for Each Group}
+  \vspace{.05cm}\smalllabel{ThunderServe / Methodology}\par
+  \vspace{.21cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{TENSOR MODEL PARALLELISM}{TP: split work within layers}{Disallow cross-node TP; Appendix B additionally limits TP to GPUs of a single type.}
+      \vspace{.18cm}
+      \stepcard{PIPELINE MODEL PARALLELISM}{PP: split layers into stages}{Account for different GPU memory capacities and computing abilities.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{PIPELINE ROUTING}{Dynamic programming}{Identify pipeline communication paths that minimize cross-stage communication cost.}
+      \vspace{.18cm}
+      \stepcard{PARALLEL CONFIGURATION}{Phase-specific objective}{Select the lowest predicted latency for prefill; highest predicted throughput for decode among candidates.}
+    \end{column}
+  \end{columns}
+  \vspace{.27cm}
+  \takeaway{Deduce each group's parallel configuration before prefill / decode orchestration.}
+  \vspace{.10cm}\hint{Source: Section 3.3 and Appendix B; cost model from HexGen.}
+\end{frame}
+
+
+% ----- SLIDE 16: Algorithm 2: Parallel Configuration Search (1/2) -----
+\begin{frame}{Algorithm 2: Parallel Configuration Search (1/2)}
+  \smalllabel{ThunderServe / Methodology}\par
+  \vspace{.03cm}
+  {\scriptsize
+  \renewcommand{\arraystretch}{1.00}
+  \setlength{\tabcolsep}{0pt}
+  \begin{tabularx}{\textwidth}{@{}>{\color{Muted}}r@{\hspace{.16cm}}X@{}}
+    1: & \textbf{Initialize:} group formation $G=\{G_1,G_2,\ldots,G_g\}$, minimum number of single-type GPUs in the group $T=\{T_1,T_2,\ldots,T_g\}$, cluster information $I$, model configuration $M$\\
+    2: & $\mathrm{model\_parallel\_configurations}\leftarrow[\,]$\\
+    3: & \textbf{for} $i$ in $\operatorname{len}(G)$ \textbf{do}\\
+    4: & \hspace*{0.32cm}$\mathrm{plan\_list}\leftarrow[\,]$\\
+    5: & \hspace*{0.32cm}\textit{/* Limit TP within Single-type GPUs */}\\
+    6: & \hspace*{0.32cm}\textbf{for} $TP\in\{1,2,\ldots,T_i\}$ \textbf{do}\\
+    7: & \hspace*{0.64cm}\textbf{for} $PP\in\{1,2,\ldots,G_i.\mathrm{num\_gpus}/T_i\}$ \textbf{do}\\
+    8: & \hspace*{0.96cm}\textit{/* Route Pipeline Communication */}\\
+    9: & \hspace*{0.96cm}$\mathrm{plan}\leftarrow\mathrm{Dynamic\_Programming}(I,TP,PP)$\\
+    10: & \hspace*{0.96cm}\textit{/* Generate Pipeline Partition */}\\
+    11: & \hspace*{0.96cm}$\mathrm{plan}\leftarrow\mathrm{Pipeline\_Partition}(M,\mathrm{plan})$\\
+    12: & \hspace*{0.96cm}\textbf{if} $G_i.\mathrm{type}$ is prefill \textbf{then}\\
+    13: & \hspace*{1.28cm}$C\leftarrow\mathrm{latency}(\mathrm{plan})$\\
+    14: & \hspace*{0.96cm}\textbf{else}\\
+    15: & \hspace*{1.28cm}$C\leftarrow\mathrm{throughput}(\mathrm{plan})$\\
+    16: & \hspace*{0.96cm}\textbf{end if}\\
+    17: & \hspace*{0.96cm}$\mathrm{plan\_list}.\mathrm{append}((C,\mathrm{plan}))$\\
+  \end{tabularx}}\par
+  \vspace{.05cm}\hint{Source: Appendix B, Algorithm 2, PDF p.~13; original lines 1--17. All 29 lines retained across two slides; indentation clarified.}
+\end{frame}
+
+% ----- SLIDE 17: Algorithm 2: Parallel Configuration Search (2/2) -----
+\begin{frame}{Algorithm 2: Parallel Configuration Search (2/2)}
+  \smalllabel{ThunderServe / Methodology}\par
+  \vspace{.03cm}
+  {\scriptsize
+  \renewcommand{\arraystretch}{1.00}
+  \setlength{\tabcolsep}{0pt}
+  \begin{tabularx}{\textwidth}{@{}>{\color{Muted}}r@{\hspace{.16cm}}X@{}}
+    18: & \hspace*{0.64cm}\textbf{end for}\\
+    19: & \hspace*{0.32cm}\textbf{end for}\\
+    20: & \hspace*{0.32cm}\textbf{if} $G_i.\mathrm{type}$ is prefill \textbf{then}\\
+    21: & \hspace*{0.64cm}\textit{/* Select Latency Optimal Plan */}\\
+    22: & \hspace*{0.64cm}$\mathrm{plan}\leftarrow\min(C)$ in $\mathrm{plan\_list}$\\
+    23: & \hspace*{0.32cm}\textbf{else}\\
+    24: & \hspace*{0.64cm}\textit{/* Select Throughput Optimal Plan */}\\
+    25: & \hspace*{0.64cm}$\mathrm{plan}\leftarrow\max(C)$ in $\mathrm{plan\_list}$\\
+    26: & \hspace*{0.32cm}\textbf{end if}\\
+    27: & \hspace*{0.32cm}$\mathrm{model\_parallel\_configurations}.\mathrm{append}(\mathrm{plan})$\\
+    28: & \textbf{end for}\\
+    29: & \textbf{return} $\mathrm{model\_parallel\_configurations}$\\
+  \end{tabularx}}\par
+  \vspace{.16cm}
+  \takeaway{Lines 18--19 finish PP / TP enumeration; lines 20--27 choose and store one plan for this group.}
+  \vspace{.10cm}
+  {\footnotesize Lines 22 / 25 select the plan associated with the smallest / largest $C$. Line 28 ends the group loop; line 29 returns all selected configurations.}\par
+  \vspace{.05cm}\hint{Source: Appendix B, Algorithm 2, PDF p.~13; original lines 18--29. All 29 lines retained across two slides; indentation clarified.}
+\end{frame}
+
+% ----- SLIDE 18: Orchestrating Prefill and Decode Replicas -----
+\begin{frame}{Orchestrating Prefill and Decode Replicas}
+  \smalllabel{ThunderServe / Methodology}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig05.png}{Fig.~5: Example prefill-to-decode orchestration}{
+    \item A request executes on a prefill replica and then a decode replica.
+    \item KV cache must be transmitted between the two replicas.
+  }{
+    \item DistServe's inference task simulator estimates pairwise SLO attainment.
+    \item The resulting matrix $D_{ij}$ scores each prefill--decode pair, including KV transfer cost.
+  }{Request routing must account for heterogeneous inter-replica communication.}
+\end{frame}
+
+
+% ----- SLIDE 19: Modeling KV Cache Communication Cost -----
+\begin{frame}{Modeling KV Cache Communication Cost}
+  \smalllabel{ThunderServe / Methodology}\par
+
+  \vspace{.12cm}
+  {\small\textbf{Paper Eq.~(1): alpha-beta communication model}}
+  \[
+    T_{ij}^{(\mathrm{kv\ comm})}=\alpha_{ij}+\frac{2bshN_{\mathrm{bytes}}}{\beta_{ij}}
+  \]
+  {\footnotesize $b$: batch size; $s$: sequence length; $h$: block hidden size; $N_{\mathrm{bytes}}$: bytes per KV element.\\
+  $\alpha_{ij}$: startup latency; $\beta_{ij}$: bandwidth in bytes/s; factor 2: keys and values.}\par
+  \vspace{.18cm}
+  \begin{itemize}\small
+    \item Transfer time grows with payload size and falls with link bandwidth.
+    \item \textbf{Scope note:} the printed equation has no layer-count term.
+    \item For full-model KV cache, tensor accounting gives
+      $V_{\mathrm{KV}}=2Lbs h_{\mathrm{KV}}q$ bytes before metadata ($L$: layers; $h_{\mathrm{KV}}$: total KV-head width; $q$: bytes/element).
+  \end{itemize}
+  \vspace{.14cm}\takeaway{Account for transferred layers, KV heads and sharding when applying the model.}
+  \vspace{.08cm}\hint{Source: Section 3.3, Eq.~(1). Full-model tensor accounting is an explanatory clarification.}
+\end{frame}
+
+
+% ----- SLIDE 20: Replica Routing Objective and Formulation Caveats -----
+\begin{frame}{Replica Routing Objective and Formulation Caveats}
+  \smalllabel{ThunderServe / Methodology}\par
+
+  \vspace{.14cm}
+  {\small $D_{ij}$: simulated SLO attainment for prefill replica $i$ and decode replica $j$.}
+  \[
+    \max_{X,Y}\ \sum_{i=1}^{m}\sum_{j=1}^{n} X_iY_{ij}D_{ij}
+  \]
+  \vspace{-.22cm}
+  {\footnotesize\textbf{Printed constraints:}\quad
+  $\displaystyle\sum_{i=1}^{m}X_i=1$,\quad
+  $\displaystyle\sum_{j=1}^{n}Y_{ij}$ for all $i$,\quad
+  $X_i\ge 0$,\ $Y_{ij}\ge 0$.}\par
+  \vspace{.08cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.06cm}
+    \item $X_i$: fraction of incoming requests assigned to prefill $i$. $Y_{ij}$: fraction routed to decode $j$, conditional on prefill $i$.
+    \item The paper calls this a two-stage transportation problem solved by LP.
+    \item \textbf{The print is incomplete:} $X_iY_{ij}$ is bilinear, the $Y$ sum has no equality, and capacity constraints are absent.
+  \end{itemize}
+  \vspace{.08cm}\takeaway{The routing idea is clear; the printed equation alone is insufficient to reproduce the LP.}
+  \vspace{.08cm}\hint{Source: Section 3.3. Caveats are observations on the supplied PDF, p.~6.}
+\end{frame}
+
+
+% ----- SLIDE 21: Network-Aware Deployment Plans -----
+\begin{frame}{Network-Aware Deployment Plans}
+  \smalllabel{ThunderServe / Methodology}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig17.png}{Fig.~17; Appendix H: LLaMA-30B, 4 A40 + 4 3090 Ti}{
+    \item At 40 Gbps, use 4-A40 for prefill and 4-3090Ti for decode.
+    \item Throughput: 3292 vs. 1610 tokens/s for the non-disaggregating baseline.
+  }{
+    \item At 5 Gbps, both phases use 2-A40 and 2-3090Ti across instances.
+    \item 2196 tokens/s ($1.4\times$ baseline): KV stays within instances; PP crosses instances.
+  }{The scheduler changes deployment as inter-instance bandwidth changes.}
+\end{frame}
+
+% === THUNDERSERVE SLIDES 22-28 ===
+\subsection{Runtime Adaptation and Communication}
+% ----- SLIDE 22: Request-Time Breakdown in Table 5 -----
+\begin{frame}{Request-Time Breakdown in Table 5}
+  \smalllabel{ThunderServe / Methodology}\par
+
+  \vspace{.12cm}
+  {\footnotesize LLaMA-30B, 4$\times$A40 + 4$\times$3090Ti. High / low are the 40 Gbps and 5 Gbps deployments on the previous slide.}\par
+  \vspace{.10cm}
+  {\centering\small\begin{tabular}{lrrrr}\toprule
+    Configuration & Prefill & KV comm & Decode & Throughput\\\midrule
+    Baseline & 884 ms & 0 ms & 1689 ms & 1610 tok/s\\
+    ThunderServe, 40 Gbps & 698 ms & 133 ms & 1126 ms & 3292 tok/s\\
+    ThunderServe, 5 Gbps & 964 ms & 41 ms & 1846 ms & 2196 tok/s\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.16cm}
+  {\footnotesize The 5 Gbps row has less KV time because the deployment stops sending KV across instances, not because the slow link is faster.}\par
+  \vspace{.12cm}\takeaway{Do not invert one request's prefill $+$ decode time and call that system throughput.}
+  \vspace{.06cm}\hint{Source: Appendix H, Table 5.}
+\end{frame}
+
+% ----- SLIDE 23: Throughput Depends on Prefill-to-Decode Ratio -----
+\begin{frame}{Throughput Depends on Prefill-to-Decode Ratio}
+  \smalllabel{ThunderServe / Methodology}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig06.png}{Fig.~6: Throughput vs. phase ratio}{
+    \item LLaMA-13B with 8, 12 and 16 A5000 GPUs; two GPUs per replica.
+    \item Ratio means number of prefill replicas to decode replicas.
+  }{
+    \item Coding requests have longer prompts and shorter outputs, favoring more prefill replicas.
+    \item Conversation requests have shorter prompts and longer outputs, favoring more decode replicas.
+  }{The optimal phase ratio changes with workload and cluster size.}
+\end{frame}
+
+
+% ----- SLIDE 24: SLO Attainment Also Depends on Phase Ratio -----
+\begin{frame}{SLO Attainment Also Depends on Phase Ratio}
+  \smalllabel{ThunderServe / Methodology}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig14.png}{Fig.~14: Phase designation and orchestration (Appendix D)}{
+    \item LLaMA-13B on 16 A5000 GPUs; two GPUs per replica.
+    \item Coding workload: 5:3 is the reported optimal prefill-to-decode ratio.
+  }{
+    \item Conversation workload: 3:5 is the reported best ratio.
+    \item More decode replicas help with longer-running decoding.
+  }{Lightweight re-scheduling adjusts phase designation for workload shifts.}
+\end{frame}
+
+
+% ----- SLIDE 25: Lightweight Re-scheduling in Real Time -----
+\begin{frame}{Lightweight Re-scheduling in Real Time}
+  \vspace{.05cm}\smalllabel{ThunderServe / Methodology}\par
+  \vspace{.26cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{WHY RE-SCHEDULE?}{Workload variability}{Workload characteristics and GPU availability change in online cloud services.}
+      \vspace{.20cm}
+      \stepcard{TABU SEARCH}{Only flipping phase designation}{Do not use splitting, merging or moving groups during lightweight re-scheduling.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{PARALLELISM}{Skip new deduction}{Keep surviving group construction and existing TP / PP configurations.}
+      \vspace{.20cm}
+      \stepcard{ORCHESTRATION}{Solve routing again}{Optimize orchestration with updated phase designation; no model-parameter reloading.}
+    \end{column}
+  \end{columns}
+  \vspace{.28cm}
+  \takeaway{Keeping weights in place saves reload time, but restricts the plans that can be explored.}
+  \vspace{.10cm}\hint{Source: Section 3.4. Quantitative overhead appears in Table 4.}
+\end{frame}
+
+
+% ----- SLIDE 26: Runtime Support for Phase Splitting -----
+\begin{frame}{Runtime Support for Phase Splitting}
+  \smalllabel{ThunderServe / Methodology}\par
+
+  \vspace{.18cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{COMMUNICATION SETUP}{Pre-created NCCL group pool}{Establish potentially needed communication groups in advance to reduce group-creation overhead.}
+      \vspace{.18cm}
+      \stepcard{TRANSFER}{Asynchronous KV communication}{Use asynchronous communication to overlap KV transfers with computation.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{QUEUE LOCATION}{KV buffers on prefill replicas}{Completed prompt KV caches wait in prefill GPU memory.}
+      \vspace{.18cm}
+      \stepcard{DECODE SIDE}{Retrieve KV after a decoding round}{Decode replicas pull queued KV caches; the deployment plan guides request assignment.}
+    \end{column}
+  \end{columns}
+  \vspace{.20cm}\takeaway{The runtime implements the plan while managing KV queues and communication overhead.}
+  \vspace{.10cm}\hint{Source: Section 4 and Appendix E; FlashAttention and PagedAttention are also integrated.}
+\end{frame}
+
+
+% ----- SLIDE 27: Quantize KV Cache for Communication Only -----
+\begin{frame}{Quantize KV Cache for Communication Only}
+  \smalllabel{ThunderServe / Methodology}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig18.png}{Fig.~18: Impact of KV cache communication compression}{
+    \item Quantize and pack 16-bit KV values into 4-bit elements for transfer.
+    \item Decode replica unpacks and dequantizes received KV cache.
+  }{
+    \item Both prefill and decode computations use 16-bit KV cache.
+    \item LLaMA-7B, two A5000s, 40 Gbps: communication share falls from 16--30\% to 4--9\%.
+  }{Dequantization restores the 16-bit representation, not the information lost in quantization.}
+\end{frame}
+
+
+% ----- SLIDE 28: KV Compression: Speed and Model Quality -----
+\begin{frame}{KV Compression: Speed and Model Quality}
+  \smalllabel{ThunderServe / Experimental Evidence}\par
+
+  \vspace{.18cm}
+  {\small\textbf{LLaMA-30B, Appendix H setup (Table 8)}}\par\vspace{.10cm}
+  \centering
+  {\small\begin{tabular}{lrrrr}\toprule
+    Precision & Prefill & KV transfer & Decode & Throughput\\\midrule
+    16-bit & 684 ms & 584 ms & 1108 ms & 2450 tok/s\\
+    4-bit & 698 ms & 133 ms & 1126 ms & 3292 tok/s ($1.34\times$)\\\bottomrule
+  \end{tabular}}\par
+  \vspace{.20cm}
+  \raggedright
+  \begin{itemize}\small
+    \setlength{\itemsep}{.10cm}
+    \item Table 2: largest observed task-score drop is GSM8K / LLaMA-13B, $22.34\rightarrow21.29$ (1.05 percentage points; about 4.7\% relative).
+    \item Tables 6--7: PPL changes by less than 1\%; ROUGE against 16-bit outputs ranges from 0.911 to 0.975 in these tests.
+  \end{itemize}
+  \vspace{.13cm}\takeaway{The tested quality changes are small in absolute terms, but compression is lossy.}
+  \vspace{.08cm}\hint{Source: Table 2 and Appendix I, Tables 6--8. Relative changes calculated from table values.}
+\end{frame}
+
+% === THUNDERSERVE SLIDES 29-41 ===
+\subsection{Experimental Results}
+% ----- SLIDE 29: Task Scores under 4-bit KV Transfer -----
+\begin{frame}{Task Scores under 4-bit KV Transfer}
+  \smalllabel{ThunderServe / Experimental Evidence}\par
+
+  \vspace{.08cm}
+  {\footnotesize\textbf{Table 2.} CoQA, TruthfulQA and GSM8K. Scores are task accuracy, not latency.}\par
+  \vspace{.06cm}
+  {\centering\small\begin{tabular}{llcc}\toprule
+    Task & Precision & LLaMA-7B & LLaMA-13B\\\midrule
+    CoQA & 16-bit / 4-bit & 63.95 / 64.58 & 66.35 / 66.54\\
+    TruthfulQA & 16-bit / 4-bit & 30.64 / 30.13 & 29.68 / 29.34\\
+    GSM8K & 16-bit / 4-bit & 13.23 / 12.54 & 22.34 / 21.29\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.14cm}
+  {\footnotesize CoQA rises slightly. The largest absolute drop is GSM8K / 13B, \(22.34\to 21.29\) (1.05 points, about 4.7\% relative). GSM8K / 7B drops about 5.2\% relative.}\par
+  \vspace{.10cm}\takeaway{``Below 2\%'' in the text matches these absolute point drops, not every relative drop.}
+  \vspace{.04cm}\hint{Source: Table 2. Relative changes are calculated from the cells.}
+\end{frame}
+
+% ----- SLIDE 30: PPL and ROUGE under 4-bit KV Transfer -----
+\begin{frame}{PPL and ROUGE under 4-bit KV Transfer}
+  \smalllabel{ThunderServe / Experimental Evidence}\par
+
+  \vspace{.04cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.46\textwidth}
+      {\scriptsize\textbf{Table 6.} PPL, 16-bit / 4-bit. Lower is better.}\par
+      \vspace{.04cm}
+      {\centering\scriptsize\begin{tabular}{lcc}\toprule
+        Dataset & LLaMA-7B & LLaMA-30B\\\midrule
+        WikiText2 & 3.53 / 3.55 & 2.73 / 2.75\\
+        PTB & 7.46 / 7.42 & 6.49 / 6.55\\
+        CBT & 7.66 / 7.70 & 6.31 / 6.30\\\bottomrule
+      \end{tabular}\par}
+    \end{column}
+    \begin{column}{.52\textwidth}
+      {\scriptsize\textbf{Table 7.} ROUGE of 4-bit outputs vs.\ 16-bit outputs.}\par
+      \vspace{.04cm}
+      {\centering\scriptsize\begin{tabular}{llcc}\toprule
+        Dataset & Metric & 7B & 30B\\\midrule
+        WikiText2 & R-1 / R-2 / R-L & .962/.941/.955 & .942/.928/.941\\
+        PTB & R-1 / R-2 / R-L & .975/.950/.971 & .928/.911/.928\\
+        CBT & R-1 / R-2 / R-L & .925/.912/.925 & .946/.931/.937\\\bottomrule
+      \end{tabular}\par}
+    \end{column}
+  \end{columns}
+  \vspace{.12cm}
+  {\footnotesize PPL changes stay within about 1\%. ROUGE spans 0.911 (PTB, 30B, ROUGE-2) to 0.975 (PTB, 7B, ROUGE-1).}\par
+  \vspace{.08cm}\takeaway{ROUGE here measures agreement with 16-bit outputs, not factual correctness.}
+  \vspace{.04cm}\hint{Source: Appendix I, Tables 6--7.}
+\end{frame}
+
+% ----- SLIDE 31: Experimental Setup and Baselines -----
+\begin{frame}{Experimental Setup and Baselines}
+  \vspace{.04cm}\smalllabel{ThunderServe / Experimental Results}\par\vspace{.20cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{HETEROGENEOUS CLOUD}{32 GPUs / \$13.542 per hour}{Two 4-A6000, two 4-A5000, one 8-A40 and two 4-3090Ti instances (Vast.ai).}
+      \vspace{.20cm}
+      \stepcard{HOMOGENEOUS IN-HOUSE}{8 A100-80GB / \$14.024 per hour}{A comparable cloud-rental price budget for vLLM and DistServe baselines.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{MODEL / WORKLOAD}{LLaMA-30B / Azure Conversation}{Coding and conversation workloads; Poisson arrivals with exponential inter-arrival times.}
+      \vspace{.20cm}
+      \stepcard{BASELINES / METRICS}{HexGen, vLLM, DistServe}{TTFT, TPOT and E2E SLO attainment; system throughput.}
+    \end{column}
+  \end{columns}
+  \vspace{.23cm}
+  \takeaway{HexGen uses the same cloud hardware; vLLM / DistServe use a similar-price A100 server.}
+  \vspace{.10cm}\hint{Source: Section 5.1 and Table 1. Prices are the paper's reported rental prices, not current quotes.}
+\end{frame}
+
+
+% ----- SLIDE 32: Reading SLO Attainment and Latency Deadlines -----
+\begin{frame}{Reading SLO Attainment and Latency Deadlines}
+  \smalllabel{ThunderServe / Experimental Results}\par
+
+  \vspace{.16cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.13cm}
+    \item \textbf{TTFT:} request arrival to first token; includes waiting and prompt processing.
+    \item \textbf{TPOT:} average time per subsequent output token during decoding.
+    \item \textbf{E2E latency:} request arrival to completion, including waiting and inter-phase transfer.
+    \item \textbf{SLO attainment:} fraction of requests meeting the specified deadline; the paper evaluates TTFT, TPOT and E2E separately.
+    \item \textbf{SLO scale:} deadline divided by the A100 execution-latency reference used in the evaluation.
+  \end{itemize}
+  \vspace{.14cm}
+  \takeaway{At the same request rate and target attainment, a curve farther left needs a shorter deadline.}
+  \vspace{.10cm}{\footnotesize Example: a $2\times$ deadline improvement means $d_{\rm baseline}/d_{\rm ThunderServe}=2$ at the same attainment. It is not a claim about mean latency.}\par
+  \vspace{.08cm}\hint{Source: Sections 2 and 5.1.}
+\end{frame}
+
+
+% ----- SLIDE 33: Cloud SLO Attainment: ThunderServe vs. HexGen -----
+\begin{frame}{Cloud SLO Attainment: ThunderServe vs. HexGen}
+  \smalllabel{ThunderServe / Experimental Results}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig07.png}{Fig.~7: Coding (top) and conversation (bottom) SLO}{
+    \item ThunderServe improves TTFT, TPOT and E2E SLO attainment over HexGen.
+    \item Compare minimum deadlines at the same arrival rate and target attainment.
+  }{
+    \item Coding: E2E deadline ratio (HexGen / ThunderServe) up to $1.8\times$; average $1.4\times$.
+    \item Conversation: E2E deadline ratio up to $1.4\times$; average $1.3\times$.
+  }{Phase splitting reduces interference between prefill and decode.}
+\end{frame}
+
+
+% ----- SLIDE 34: Cost Efficiency: Cloud vs. In-House -----
+\begin{frame}{Cost Efficiency: Cloud vs. In-House}
+  \smalllabel{ThunderServe / Experimental Results}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig08.png}{Fig.~8: SLO attainment under similar price budgets}{
+    \item ThunderServe on cloud is compared with DistServe and vLLM on in-house A100 GPUs.
+    \item The total cloud price budget is close to the 8-A100 baseline budget.
+  }{
+    \item E2E deadline ratio (baseline / ThunderServe): up to $2.5\times$; average $1.8\times$ (Section 5.2).
+    \item 12 cloud phase replicas versus 4 DistServe phase replicas; this is a system-plus-hardware comparison.
+  }{More replicas and heterogeneity-aware scheduling improve cost efficiency.}
+\end{frame}
+
+
+% ----- SLIDE 35: End-to-End System Throughput -----
+\begin{frame}{End-to-End System Throughput}
+  \smalllabel{ThunderServe / Experimental Results}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig09.png}{Fig.~9: Throughput scaled by ThunderServe}{
+    \item Against HexGen: $1.5\times$ (coding) and $1.3\times$ (conversation) throughput.
+    \item Against DistServe: $1.5\times$ (coding) and $2.1\times$ (conversation).
+  }{
+    \item Fig.~9 also reports $1.7\times$ / $2.3\times$ versus vLLM (coding / conversation).
+    \item Fig.~9 normalizes ThunderServe to 1.0; its vLLM $2.3\times$ exceeds the abstract's stated $2.1\times$ maximum.
+  }{Use baseline-specific ratios; the abstract and Fig.~9 do not state a consistent overall maximum.}
+\end{frame}
+
+
+% ----- SLIDE 36: Deployment Plans Found on the 32-GPU Cluster -----
+\begin{frame}{Deployment Plans Found on the 32-GPU Cluster}
+  \smalllabel{ThunderServe / Experimental Results}\par
+
+  \vspace{.22cm}
+  \centering
+  {\small\begin{tabular}{lcc}\toprule
+    & Coding & Conversation\\\midrule
+    Prefill replicas & 8 & 4\\
+    Decode replicas & 4 & 8\\
+    Total phase replicas & 12 & 12\\\bottomrule
+  \end{tabular}}\par
+  \vspace{.24cm}\raggedright
+  \begin{itemize}\small
+    \setlength{\itemsep}{.13cm}
+    \item Coding: 8 A40 GPUs form four prefill replicas, each with TP=2, PP=1.
+    \item Conversation: 6 A40 GPUs form three prefill replicas; 2 A40 GPUs form one decode replica with TP=1, PP=2.
+    \item A mixed replica uses 2 A5000 + 2 3090 Ti with TP=2, PP=2: TP stays within a GPU type, while PP connects stages.
+  \end{itemize}
+  \vspace{.18cm}\takeaway{Replica count, phase and parallel configuration all respond to the workload.}
+  \vspace{.09cm}\hint{Source: Table 3 and Appendix F. These are full deployment plans, not a phase-flip-only transition.}
+\end{frame}
+
+
+% ----- SLIDE 37: Full Deployment Plans from Table 3 -----
+\begin{frame}{Full Deployment Plans from Table 3}
+  \smalllabel{ThunderServe / Experimental Results}\par
+
+  \vspace{.04cm}
+  {\centering\scriptsize
+  \renewcommand{\arraystretch}{1.05}
+  \begin{tabular}{@{}lllc@{}}\toprule
+    Workload & GPUs & Strategy & Replicas\\\midrule
+    Coding & $8\times$A40 & TP=2, PP=1 & 4 prefill\\
+    & $4\times$A5000 & TP=4, PP=1 & 1 prefill\\
+    & $4\times$A6000 & TP=2, PP=1 & 2 prefill\\
+    & $2\times$A5000+$2\times$3090Ti & TP=2, PP=2 & 1 prefill\\
+    & $4\times$3090Ti & TP=2, PP=2 & 1 decode\\
+    & $4\times$A6000 & TP=1, PP=2 & 2 decode\\
+    & $2\times$A5000+$2\times$3090Ti & TP=2, PP=2 & 1 decode\\
+    \midrule
+    Conversation & $6\times$A40 & TP=2, PP=1 & 3 prefill\\
+    & $2\times$A5000+$2\times$3090Ti & TP=2, PP=2 & 1 prefill\\
+    & $4\times$3090Ti & TP=2, PP=2 & 1 decode\\
+    & $2\times$A40 & TP=1, PP=2 & 1 decode\\
+    & $4\times$A5000 & TP=2, PP=2 & 1 decode\\
+    & $8\times$A6000 & TP=1, PP=2 & 4 decode\\
+    & $2\times$A5000+$2\times$3090Ti & TP=2, PP=2 & 1 decode\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.06cm}\takeaway{Coding is 8 prefill + 4 decode; conversation is 4 prefill + 8 decode. Both use 12 replicas.}
+  \vspace{.02cm}\hint{Source: Table 3 and Appendix F. The previous slide highlighted only the A40 and one mixed row.}
+\end{frame}
+
+% ----- SLIDE 38: Tabu Search: Scheduling Convergence -----
+\begin{frame}{Tabu Search: Scheduling Convergence}
+  \smalllabel{ThunderServe / Experimental Results}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig10.png}{Fig.~10: Convergence under different GPU cluster sizes}{
+    \item Scheduling from scratch is evaluated using 16, 24 and 32 GPUs.
+    \item Approximate convergence times: 21, 36 and 54 seconds.
+  }{
+    \item The search runs once before initial model deployment.
+    \item Scheduling time is small relative to the hourly scale of online services.
+  }{Upper-level scheduling scales to the heterogeneous 32-GPU testbed.}
+\end{frame}
+
+
+% ----- SLIDE 39: Lightweight Re-scheduling after GPU Failures -----
+\begin{frame}{Lightweight Re-scheduling after GPU Failures}
+  \smalllabel{ThunderServe / Experimental Results}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig11.png}{Fig.~11: SLO with 4 of 32 GPUs offline}{
+    \item Test: one 4-A6000 instance goes offline, removing two decode replicas.
+    \item Lightweight re-scheduling yields SLO attainment comparable to full re-scheduling.
+  }{
+    \item Table~4: full search $54(\pm5)$~s plus reload $103(\pm10)$~s, totaling $157(\pm13)$~s.
+    \item Lightweight search $13(\pm2)$~s and reload $0$~s, so the whole step is $13(\pm2)$~s.
+  }{Measured re-scheduling overhead is about $12\times$ lower; only weight reloading takes zero time.}
+\end{frame}
+
+
+% ----- SLIDE 40: Ablation: KV Cache Compression and Orchestration -----
+\begin{frame}{Ablation: KV Cache Compression and Orchestration}
+  \smalllabel{ThunderServe / Experimental Results}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig12.png}{Fig.~12: Component ablations and SLO attainment}{
+    \item Without KV cache compression, paper reports roughly $1.3\times$ per-request overhead.
+    \item Reduced communication efficiency weakens phase splitting benefits.
+  }{
+    \item Replacing the orchestration method with random dispatching causes further performance degradation.
+    \item This removal is cumulative: random dispatch is tested with compression already disabled.
+  }{The ablation supports both components; it does not isolate orchestration with compression enabled.}
+\end{frame}
+
+
+% ----- SLIDE 41: Simulator and Alpha-Beta Model Accuracy -----
+\begin{frame}{Simulator and Alpha-Beta Model Accuracy}
+  \smalllabel{ThunderServe / Experimental Results}\par
+  \paperfigure{ThunderServe/ThunderServe_Fig19.png}{Fig.~19: Benchmarked vs. estimated performance}{
+    \item Appendix J uses LLaMA-30B micro-benchmarks.
+    \item Vary SLO scales and batched token sizes.
+  }{
+    \item Left: simulated attainment differs from measurements by at most 2 percentage points in the plotted cases.
+    \item Right: alpha-beta latency differs by at most 2 ms across the four plotted token sizes.
+  }{These micro-benchmarks support the estimates in the tested settings; they are not a general error bound.}
+\end{frame}
+
+% === THUNDERSERVE SLIDES 42-44 ===
+\subsection{Discussion and Conclusion}
+% ----- SLIDE 42: Discussion: Scope and Open Questions -----
+\begin{frame}{Discussion: Scope and Open Questions}
+  \smalllabel{ThunderServe / Discussion}\par
+
+  \vspace{.20cm}
+  \begin{itemize}\small
+    \setlength{\itemsep}{.20cm}
+    \item \textbf{Search quality:} tabu search and constrained TP / PP enumeration do not guarantee a globally optimal deployment.
+    \item \textbf{Fast adaptation:} keeping groups and parallelism fixed reduces disruption, but cannot explore every plan after a workload shift.
+    \item \textbf{Evidence scope:} main results use LLaMA-30B, two workload families and one 32-GPU cloud setup; broader models and network conditions need validation.
+    \item \textbf{Reproducibility:} routing constraints and load dependence of pairwise scores need more detail than the printed formulation provides.
+  \end{itemize}
+  \vspace{.22cm}\takeaway{Research question: when should a service pay for full re-planning instead of only changing phase roles?}
+  \vspace{.10cm}\hint{Presenter analysis based on Sections 3 and 5; the final question is not an evaluated paper result.}
+\end{frame}
+
+
+% ----- SLIDE 43: ThunderServe: Contributions and Evaluation Findings -----
+\begin{frame}{ThunderServe: Contributions and Evaluation Findings}
+  \vspace{.05cm}\smalllabel{ThunderServe / Conclusion}\par\vspace{.04cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{SCHEDULING}{Two-level hierarchical optimization}{Plan GPU groups, phase roles, TP / PP and request routing.}
+      \vspace{.04cm}
+      \stepcard{RUNTIME}{Lightweight re-scheduling}{Adjust phases and orchestration without reloading model parameters.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{COMMUNICATION}{KV cache compression}{Quantize for inter-phase transfer; dequantize before decode computations.}
+      \vspace{.04cm}
+      \stepcard{SYSTEM}{Heterogeneous cloud serving}{Combine TP / PP with phase splitting across heterogeneous cloud GPUs.}
+    \end{column}
+  \end{columns}
+  \vspace{.04cm}
+  {\small\textbf{Selected results:} vs. DistServe: $1.5\times$ / $2.1\times$ throughput (coding / conversation); cloud-vs-in-house E2E deadline ratio up to $2.5\times$.}\par
+  \vspace{.04cm}
+  \takeaway{ThunderServe integrates phase splitting with heterogeneous cloud GPUs and network-aware scheduling.}
+  \hint{Source: Sections 5.2 and 6; Fig.~9. Deadline ratios compare matched SLO attainment.}
+\end{frame}
+
+
+% ----- SLIDE 44: Q&A -----
+\begin{frame}[plain]
+  \vfill
+  \begin{center}
+    {\fontsize{34}{42}\selectfont\bfseries\color{Ink}Questions \& Discussion}\par
+    \vspace{.36cm}
+    {\Large\color{Accent}Phase splitting \quad / \quad Scheduling \quad / \quad KV transfer}\par
+    \vspace{.50cm}
+    {\small\color{Muted}ThunderServe: heterogeneous cloud serving}
+  \end{center}
+  \vfill
+\end{frame}
+
+\end{document}

@@ -1,0 +1,89 @@
+section { background: #FBFCFE; color: #243748; font-family: Arial, "Noto Sans TC", sans-serif; font-size: 25px; padding: 104px 46px 40px; justify-content: flex-start; line-height: 1.32; }
+section h1 { position: absolute; left: 0; top: 0; width: 100%; box-sizing: border-box; background: #E9F2F9; padding: 18px 46px; margin: 0; font-size: 34px; line-height: 1.25; color: #243748; border: 0; }
+section h2 { font-size: 25px; margin: 10px 0 12px; color: #243748; }
+section p { margin: 0 0 14px; }
+section ul, section ol { margin: 4px 0 14px; padding-left: 28px; }
+section li { margin: 10px 0; }
+section li::marker { color: #347E74; }
+section .label { font-size: 17px; color: #347E74; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 18px; }
+section .label p, section .source p { margin: 0; }
+section .source { font-size: 15px; color: #667B8B; margin-top: 10px; line-height: 1.35; }
+section blockquote { margin: 14px 0 0; background: #E9F2F9; border: 0; border-radius: 9px; padding: 15px 20px; font-size: 22px; font-weight: bold; color: #243748; }
+section blockquote p { margin: 0; }
+section::after { color: #667B8B; font-size: 14px; right: 36px; bottom: 15px; }
+section .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+section .card { background: white; padding: 16px 20px; border-left: 3px solid #D8E4EB; margin-bottom: 14px; }
+section .card .tag { color: #347E74; font-size: 16px; font-weight: bold; }
+section .card h2 { font-size: 23px; margin: 7px 0 9px; }
+section .card p { font-size: 21px; margin: 0; }
+section figure { margin: 0; text-align: center; }
+section figure img { object-fit: contain; max-width: 100%; }
+section.figure-wide .figure p { margin: 0; text-align: center; }
+section.figure-wide .figure img { height: 290px; max-width: 1130px; object-fit: contain; }
+section.figure-wide .caption { text-align: center; font-size: 15px; color: #667B8B; margin: 3px 0 9px; }
+section.figure-wide .columns { font-size: 21px; }
+section.figure-wide li { margin: 5px 0; }
+section.figure-wide blockquote { font-size: 21px; margin-top: 5px; }
+section.figure-side .columns { grid-template-columns: .44fr .56fr; align-items: center; gap: 30px; }
+section.figure-side .figure img { width: 100%; height: 460px; object-fit: contain; }
+section.figure-side .figure p { margin: 0; }
+section.figure-side .caption { text-align: center; font-size: 15px; color: #667B8B; }
+section.figure-side li { font-size: 22px; margin: 11px 0; }
+section.figure-side blockquote { font-size: 21px; }
+section table { width: 100%; display: table; font-size: 23px; margin: 12px 0 22px; border-collapse: collapse; }
+section table th, section table td { background: transparent; border: 0; border-bottom: 1px solid #D8E4EB; padding: 12px 16px; }
+section table th { background: #E9F2F9; }
+section table tr { background: transparent; }
+section .small { font-size: 20px; }
+section.math-slide { font-size: 24px; }
+section.math-slide mjx-container[display="true"] { margin: 15px 0 !important; }
+section.math-slide li { margin: 11px 0; }
+section.algorithm { font-size: 21px; }
+section.algorithm pre { background: #F0F5F8; padding: 16px 20px; font-size: 20px; line-height: 1.43; border: 0; margin: 4px 0 12px; }
+section.algorithm h2 { margin: 0 0 10px; }
+section.cover { justify-content: center; padding: 60px; }
+section.cover h1 { position: static; background: transparent; padding: 0; font-size: 51px; margin: 14px 0 24px; line-height: 1.16; }
+section.cover h2 { font-size: 28px; font-weight: normal; color: #667B8B; margin: 0 0 55px; }
+section.cover .author { border-bottom: 2px solid #347E74; padding-bottom: 24px; }
+section.cover .author p { font-size: 22px; line-height: 1.6; }
+section.closing { justify-content: center; text-align: center; padding: 60px; }
+section.closing h1 { position: static; background: transparent; padding: 0; font-size: 54px; margin-bottom: 30px; }
+section.closing h2 { color: #347E74; font-size: 28px; font-weight: normal; }
+section.summary .card { padding-top: 10px; padding-bottom: 10px; }
+section.summary .card p { font-size: 20px; }
+section.summary blockquote { font-size: 21px; }
+
+section.text-slide { font-size: 23px; }
+section .columns.three { grid-template-columns: repeat(3, 1fr); }
+section.dense { font-size: 21px; }
+section.dense li { margin: 7px 0; }
+section.dense table { font-size: 20px; }
+section.dense th, section.dense td { padding: 8px 10px; }
+section.dense blockquote { font-size: 20px; padding: 12px 16px; }
+section.algorithm table { font-size: 18px; margin: 4px 0 12px; }
+section.algorithm table th, section.algorithm table td { padding: 3px 8px; line-height: 1.3; }
+section.algorithm table td:first-child { width: 28px; color: #667B8B; }
+section.algorithm table td:nth-child(2) { text-align: left; }
+section.algorithm table thead { display: none; }
+section.algorithm { font-size: 19px; }
+section.algorithm .label { margin-bottom: 9px; }
+section.algorithm blockquote { font-size: 20px; padding: 10px 16px; }
+section.long-table table { font-size: 20px; margin-bottom: 12px; }
+section.long-table table th, section.long-table table td { padding: 5px 12px; }
+section.long-table .label { margin-bottom: 10px; }
+section.math-slide { font-size: 22px; }
+section.math-slide mjx-container[display="true"] { margin: 12px 0 !important; }
+section.math-slide blockquote { font-size: 20px; }
+section .columns table { font-size: 19px; }
+section .columns table th, section .columns table td { padding: 8px 6px; }
+section .columns .source { font-size: 14px; }
+section.cover .label { margin-bottom: 10px; }
+section::after { content: attr(data-marpit-pagination) " / " attr(data-marpit-pagination-total); }
+
+section.long-table table { font-size: 18px; line-height: 1.15; }
+section.long-table table th, section.long-table table td { padding: 3px 10px; }
+section.long-table blockquote { font-size: 20px; padding: 10px 16px; }
+
+section.full-algorithm table { font-size: 17px; line-height: 1.2; }
+section.full-algorithm table th, section.full-algorithm table td { padding: 2px 8px; }
+section.full-algorithm .source { font-size: 14px; }
