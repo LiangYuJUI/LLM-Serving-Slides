@@ -6,7 +6,7 @@
 
 ## 第 01 頁｜Title
 
-今天介紹 Hetis。它處理的是 heterogeneous GPU cluster 上的 LLM serving：同一層裡的 dense computation 和 decode attention，不一定適合放在同一組 GPU 上。
+今天介紹 Hetis。論文作者是 Zizhao Mo、Jianxiong Liao、Huanle Xu、Zhi Zhou 和 Chengzhong Xu，發表在 SC 2025。它處理的是 heterogeneous GPU cluster 上的 LLM serving：同一層裡的 dense computation 和 decode attention，不一定適合放在同一組 GPU 上。
 
 接下來會先看記憶體和計算為什麼會失衡，再看 Primary worker、head allocation 和 KV cache 管理，然後看實驗。最後用很短的篇幅對照 ThunderServe，並留下可以繼續做的問題。
 

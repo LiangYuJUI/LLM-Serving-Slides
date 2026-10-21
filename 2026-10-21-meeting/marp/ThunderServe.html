@@ -196,6 +196,10 @@ section.full-algorithm .source { font-size: 14px; }
 <p>Advisor: Hsiang-Yun Cheng</p>
 <p>National Taiwan University | Academia Sinica | 21 Oct 2026</p>
 </div>
+<div class="source">
+<p>Youhe Jiang, Fangcheng Fu, Xiaozhe Yao, Taiyi Wang, Bin Cui, Ana Klimovic, Eiko Yoneki</p>
+<p>MLSys 2025</p>
+</div>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="2" data-paginate="true" data-class="text-slide" data-theme="default" data-style="section { background: #FBFCFE; color: #243748; font-family: Arial, &quot;Noto Sans TC&quot;, sans-serif; font-size: 25px; padding: 104px 46px 40px; justify-content: flex-start; line-height: 1.32; }
 section h1 { position: absolute; left: 0; top: 0; width: 100%; box-sizing: border-box; background: #E9F2F9; padding: 18px 46px; margin: 0; font-size: 34px; line-height: 1.25; color: #243748; border: 0; }
@@ -9465,7 +9469,7 @@ section.full-algorithm .source { font-size: 14px; }
 <p>ThunderServe: heterogeneous cloud serving</p>
 </section>
 <script>!function(){"use strict";const t={h1:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"1"},style:"display: block; font-size: 2em; margin-block-start: 0.67em; margin-block-end: 0.67em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h2:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"2"},style:"display: block; font-size: 1.5em; margin-block-start: 0.83em; margin-block-end: 0.83em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h3:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"3"},style:"display: block; font-size: 1.17em; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h4:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"4"},style:"display: block; margin-block-start: 1.33em; margin-block-end: 1.33em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h5:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"5"},style:"display: block; font-size: 0.83em; margin-block-start: 1.67em; margin-block-end: 1.67em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h6:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"6"},style:"display: block; font-size: 0.67em; margin-block-start: 2.33em; margin-block-end: 2.33em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},span:{proto:()=>HTMLSpanElement},pre:{proto:()=>HTMLElement,style:"display: block; font-family: monospace; white-space: pre; margin: 1em 0; --marp-auto-scaling-white-space: pre;"}},e="data-marp-auto-scaling-wrapper",i="data-marp-auto-scaling-svg",n="data-marp-auto-scaling-container";class s extends HTMLElement{container;containerSize;containerObserver;svg;svgComputedStyle;svgPreserveAspectRatio="xMinYMid meet";wrapper;wrapperSize;wrapperObserver;constructor(){super();const t=t=>([e])=>{const{width:i,height:n}=e.contentRect;this[t]={width:i,height:n},this.updateSVGRect()};this.attachShadow({mode:"open"}),this.containerObserver=new ResizeObserver(t("containerSize")),this.wrapperObserver=new ResizeObserver((...e)=>{t("wrapperSize")(...e),this.flushSvgDisplay()})}static get observedAttributes(){return["data-downscale-only"]}connectedCallback(){this.shadowRoot.innerHTML=`\n<style>\n  svg[${i}] { display: block; width: 100%; height: auto; vertical-align: top; }\n  span[${n}] { display: table; white-space: var(--marp-auto-scaling-white-space, nowrap); width: max-content; }\n</style>\n<div ${e}>\n  <svg part="svg" ${i}>\n    <foreignObject><span ${n}><slot></slot></span></foreignObject>\n  </svg>\n</div>\n    `.split(/\n\s*/).join(""),this.wrapper=this.shadowRoot.querySelector(`div[${e}]`)??void 0;const t=this.svg;this.svg=this.wrapper?.querySelector(`svg[${i}]`)??void 0,this.svg!==t&&(this.svgComputedStyle=this.svg?window.getComputedStyle(this.svg):void 0),this.container=this.svg?.querySelector(`span[${n}]`)??void 0,this.observe()}disconnectedCallback(){this.svg=void 0,this.svgComputedStyle=void 0,this.wrapper=void 0,this.container=void 0,this.observe()}attributeChangedCallback(){this.observe()}flushSvgDisplay(){const{svg:t}=this;t&&(t.style.display="inline",requestAnimationFrame(()=>{t.style.display=""}))}observe(){this.containerObserver.disconnect(),this.wrapperObserver.disconnect(),this.wrapper&&this.wrapperObserver.observe(this.wrapper),this.container&&this.containerObserver.observe(this.container),this.svgComputedStyle&&this.observeSVGStyle(this.svgComputedStyle)}observeSVGStyle(t){const e=()=>{const i=(()=>{const e=t.getPropertyValue("--preserve-aspect-ratio");if(e)return e.trim();return`x${(({textAlign:t,direction:e})=>{if(t.endsWith("left"))return"Min";if(t.endsWith("right"))return"Max";if("start"===t||"end"===t){let i="rtl"===e;return"end"===t&&(i=!i),i?"Max":"Min"}return"Mid"})(t)}YMid meet`})();i!==this.svgPreserveAspectRatio&&(this.svgPreserveAspectRatio=i,this.updateSVGRect()),t===this.svgComputedStyle&&requestAnimationFrame(e)};e()}updateSVGRect(){let t=Math.ceil(this.containerSize?.width??0);const e=Math.ceil(this.containerSize?.height??0);void 0!==this.dataset.downscaleOnly&&(t=Math.max(t,this.wrapperSize?.width??0));const i=this.svg?.querySelector(":scope > foreignObject");if(i?.setAttribute("width",`${t}`),i?.setAttribute("height",`${e}`),this.svg&&(this.svg.setAttribute("viewBox",`0 0 ${t} ${e}`),this.svg.setAttribute("preserveAspectRatio",this.svgPreserveAspectRatio),this.svg.style.height=t<=0||e<=0?"0":""),this.container){const t=this.svgPreserveAspectRatio.toLowerCase();this.container.style.marginLeft=t.startsWith("xmid")||t.startsWith("xmax")?"auto":"0",this.container.style.marginRight=t.startsWith("xmi")?"auto":"0"}}}const r=(t,{attrs:e={},style:i})=>class extends t{constructor(...t){super(...t);for(const[t,i]of Object.entries(e))this.hasAttribute(t)||this.setAttribute(t,i);this._shadow()}static get observedAttributes(){return["data-auto-scaling"]}connectedCallback(){this._update()}attributeChangedCallback(){this._update()}_shadow(){if(!this.shadowRoot)try{this.attachShadow({mode:"open"})}catch(t){if(!(t instanceof Error&&"NotSupportedError"===t.name))throw t}return this.shadowRoot}_update(){const t=this._shadow();if(t){const e=i?`<style>:host { ${i} }</style>`:"";let n="<slot></slot>";const{autoScaling:s}=this.dataset;if(void 0!==s){n=`<marp-auto-scaling exportparts="svg:auto-scaling" ${"downscale-only"===s?"data-downscale-only":""}>${n}</marp-auto-scaling>`}t.innerHTML=e+n}}};let o;const a=()=>o??(o=!!document.createElement("div",{is:"marp-auto-scaling"}).outerHTML.startsWith("<div is"),o),l=Symbol();let c;const d="marpitSVGPolyfill:setZoomFactor,",h=Symbol(),g=Symbol();const p=()=>{const t="Apple Computer, Inc."===navigator.vendor,e=t?[v]:[],i={then:e=>(t?(async()=>{if(void 0===c){const t=document.createElement("canvas");t.width=10,t.height=10;const e=t.getContext("2d"),i=new Image(10,10),n=new Promise(t=>{i.addEventListener("load",()=>t())});i.crossOrigin="anonymous",i.src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2210%22%20height%3D%2210%22%20viewBox%3D%220%200%201%201%22%3E%3CforeignObject%20width%3D%221%22%20height%3D%221%22%20requiredExtensions%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxhtml%22%3E%3Cdiv%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxhtml%22%20style%3D%22width%3A%201px%3B%20height%3A%201px%3B%20background%3A%20red%3B%20position%3A%20relative%22%3E%3C%2Fdiv%3E%3C%2FforeignObject%3E%3C%2Fsvg%3E",await n,e.drawImage(i,0,0),c=e.getImageData(5,5,1,1).data[3]<128}return c})().then(t=>{null==e||e(t?[v]:[])}):null==e||e([]),i)};return Object.assign(e,i)};let m,u;function v(t){const e="object"==typeof t&&t.target||document,i="object"==typeof t?t.zoom:t;window[g]||(Object.defineProperty(window,g,{configurable:!0,value:!0}),document.body.style.zoom=1.0001,document.body.offsetHeight,document.body.style.zoom=1,window.addEventListener("message",({data:t,origin:e})=>{if(e===window.origin)try{if(t&&"string"==typeof t&&t.startsWith(d)){const[,e]=t.split(","),i=Number.parseFloat(e);Number.isNaN(i)||(u=i)}}catch(t){console.error(t)}}));let n=!1;Array.from(e.querySelectorAll("svg[data-marpit-svg]"),t=>{var e,s,r,o;t.style.transform||(t.style.transform="translateZ(0)");const a=i||u||t.currentScale||1;m!==a&&(m=a,n=a);const l=t.getBoundingClientRect(),{length:c}=t.children;for(let i=0;i<c;i+=1){const n=t.children[i];if(n.getScreenCTM){const t=n.getScreenCTM();if(t){const i=null!==(s=null===(e=n.x)||void 0===e?void 0:e.baseVal.value)&&void 0!==s?s:0,c=null!==(o=null===(r=n.y)||void 0===r?void 0:r.baseVal.value)&&void 0!==o?o:0,d=n.children.length;for(let e=0;e<d;e+=1){const s=n.children[e];if("SECTION"===s.tagName){const{style:e}=s;e.transformOrigin||(e.transformOrigin=`${-i}px ${-c}px`),e.transform=`scale(${a}) matrix(${t.a}, ${t.b}, ${t.c}, ${t.d}, ${t.e-l.left}, ${t.f-l.top}) translateZ(0.0001px)`;break}}}}}}),!1!==n&&Array.from(e.querySelectorAll("iframe"),({contentWindow:t})=>{null==t||t.postMessage(`${d}${n}`,"null"===window.origin?"*":window.origin)})}function w({once:t=!1,target:e=document}={}){const i=function(t=document){if(t[h])return t[h];let e=!0;const i=()=>{e=!1,delete t[h]};Object.defineProperty(t,h,{configurable:!0,value:i});let n=[],s=!1;(async()=>{try{n=await p()}finally{s=!0}})();const r=()=>{for(const e of n)e({target:t});s&&0===n.length||e&&window.requestAnimationFrame(r)};return r(),i}(e);return t?(i(),()=>{}):i}m=1,u=void 0;const b=Symbol(),y=(e=document)=>{if("undefined"==typeof window)throw new Error("Marp Core's browser script is valid only in browser context.");if(((e=document)=>{const i=window[l];i||customElements.define("marp-auto-scaling",s);for(const n of Object.keys(t)){const s=`marp-${n}`,o=t[n].proto();a()&&o!==HTMLElement?i||customElements.define(s,r(o,{style:t[n].style}),{extends:n}):(i||customElements.define(s,r(HTMLElement,t[n])),e.querySelectorAll(`${n}[is="${s}"]`).forEach(t=>{t.outerHTML=t.outerHTML.replace(new RegExp(`^<${n}`,"i"),`<${s}`).replace(new RegExp(`</${n}>$`,"i"),`</${s}>`)}))}window[l]=!0})(e),e[b])return e[b];const i=w({target:e}),n=()=>{i(),delete e[b]},o=Object.assign(n,{cleanup:n,update:()=>y(e)});return Object.defineProperty(e,b,{configurable:!0,value:o}),o},f=document.currentScript;y(f?f.getRootNode():document)}();
-</script></foreignObject></svg></div><div class="bespoke-marp-note" data-index="0" tabindex="0"><p>SLIDE 01</p><p>今天先介紹 ThunderServe。它研究的是：如果我們拿到的 GPU 不是整齊的一排 A100，而是不同型號、不同記憶體容量，連網路速度也不一樣，LLM serving 要怎麼部署，才能在有限預算下提供比較好的服務？
+</script></foreignObject></svg></div><div class="bespoke-marp-note" data-index="0" tabindex="0"><p>SLIDE 01</p><p>今天先介紹 ThunderServe。論文作者是 Youhe Jiang、Fangcheng Fu、Xiaozhe Yao、Taiyi Wang、Bin Cui、Ana Klimovic 和 Eiko Yoneki，發表在 MLSys 2025。前三位是同等貢獻。它研究的是：如果我們拿到的 GPU 不是整齊的一排 A100，而是不同型號、不同記憶體容量，連網路速度也不一樣，LLM serving 要怎麼部署，才能在有限預算下提供比較好的服務？
 
 它的核心想法，是把 prefill 和 decode 的差異，跟不同 GPU 的硬體特性一起考慮。接下來我會先說明為什麼這樣做有機會，再介紹它怎麼找部署方案，以及實驗到底支持哪些結論。</p></div><div class="bespoke-marp-note" data-index="1" tabindex="0"><p>SLIDE 02</p><p>今天這份簡報分成四段。先看 prefill、decode 和 heterogeneous GPUs 的背景，再看它怎麼把部署問題拆成上下兩層來解。
 
@@ -9669,19 +9673,33 @@ D 的分數會受到計算能力、workload、執行 latency，以及 KV cache c
 
 最後記住四個符號：D 是每條路徑的預測 SLO 表現；X 是第一階段選 Prefill 的比例；Y 是在某個 Prefill 之後選 Decode 的條件比例；我們引入的 Z_ij = X_i Y_ij，則是全體 requests 中走某條完整路徑的比例。這裡是逐條路徑相乘，不是一般的矩陣乘法 Z = XY。
 
-來源：Section 3.3，論文第 6 頁。Z、數值例子與數學形式的限制為報告者的輔助解釋及分析。</p></div><div class="bespoke-marp-note" data-index="20" tabindex="0"><p>SLIDE 21</p><p>這個例子可以把剛剛的方法串起來。作者用 4 張 A40 和 4 張 3090 Ti 來跑 LLaMA-30B，改變兩個 instances 之間的 bandwidth。
+來源：Section 3.3，論文第 6 頁。Z、數值例子與數學形式的限制為報告者的輔助解釋及分析。</p></div><div class="bespoke-marp-note" data-index="20" tabindex="0"><p>SLIDE 21</p><p>這個例子把前面的方法串起來：同樣是 4 張 A40 加上 4 張 3090 Ti，網路條件不同，最佳 deployment plan 也可能不同。作者在兩個 GPU instances 上執行 LLaMA-30B，一台有 4×A40，另一台有 4×3090 Ti，持續送入長度為 1024 的 input sequences，測試 inter-instance bandwidth 為 40 Gbps 和 5 Gbps 時的表現。這裡研究的是跨 GPU instance 的網路條件差異，不是明確比較「40 Gbps 是同機器、5 Gbps 是跨資料中心」。
 
-在 40 Gbps 時，A40 全部用來做 prefill，3090 Ti 全部用來做 decode。這很符合前面的直覺：計算能力比較適合 prefill 的一組做 prefill，memory bandwidth 比較有利的一組做 decode。整體 throughput 是 3292 tokens per second，約是 non-disaggregating baseline 的兩倍。
+先釐清 replica。它是一份可以獨立承接 request、執行所負責推論工作的模型服務實例，不是單張 GPU。一個 replica 可以由多張 GPU 組成，內部透過 TP、PP 共同執行模型。例如 4×A40 可以組成一個 model replica，4×3090 Ti 也可以組成另一個。在一般 non-disaggregated serving 中，每個 replica 同時負責 Prefill 和 Decode；在 ThunderServe 中，則可以指定為只負責 Prefill 的 replica，或只負責 Decode 的 replica，由兩者接力完成 request。
 
-但是把 inter-instance bandwidth 降到 5 Gbps 後，繼續把所有 KV cache 從 A40 那台送到 3090 Ti 那台，就會很吃虧。所以部署變成每個 phase 各用 2 張 A40 加 2 張 3090 Ti，透過 PP 把不同 instances 上的 stages 接起來。
+這裡的 non-disaggregating baseline，是作者在 Appendix H 建立的對照配置，不是 vLLM、DistServe 或 HexGen 等另一個系統名稱。Baseline 用 4×A40 組成一個完整 model replica，再用 4×3090 Ti 組成另一個；兩個 replica 各自都做 Prefill 加 Decode，不進行 phase disaggregation。可以把它想成兩組各自完整跑模型的服務實例。
 
-這樣的關鍵，是讓對應 layer 的 KV cache 可以留在同一個 instance 內傳，跨 instance 的部分改成 pipeline activation communication。它不是消除了所有跨機器通訊，而是改變跨慢連線傳輸的資料種類和配置。
+相對地，在 40 Gbps 下，ThunderServe 讓 4×A40 組成 1 個 Prefill replica，4×3090 Ti 組成 1 個 Decode replica。原因是這個例子中，A40 較高的 peak FLOPS 有利於 compute-heavy 的 Prefill，而 3090 Ti 較高的 memory access bandwidth 有利於 memory-bound 的 Decode。在這個 workload 和配置下，40 Gbps 的跨 instance 網路讓 KV cache 傳輸成本仍可接受，因此可以利用兩種 GPU 各自的優勢。
 
-在這個部署下，throughput 是 2196 tokens per second，約是 baseline 的 1.4 倍。這也說明「每種 GPU 固定負責某一個 phase」並不是最好的通用規則，網路會改變答案。
+這裡的資料流是：request 先到 Prefill replica，產生 KV cache，再把 KV cache 傳給 Decode replica，讓 Decode 接著生成 tokens。如果兩個 replica 位於不同 instances，KV cache 就可能經過 inter-instance network。圖表中的 KV Comm 不是泛指所有 communication，主要指這個 Prefill 到 Decode 搬移 KV cache 所需的 communication time。
 
-來源：Appendix H、Figures 16–17、Table 5，論文第 16–17 頁。
+在 40 Gbps 的配置下，ThunderServe 系統 throughput 是 3292 tokens/s，而不做 Prefill／Decode 分離的 baseline 是 1610 tokens/s。3292 除以 1610 約等於 2.04，也就是整體 throughput 約為 baseline 的兩倍。這個數字是整個 serving system、所有 requests 加總後每秒處理的 token 數，不是單一 request 每秒生成 3292 個 tokens。
 
-備註：Table 5 的單次 KV communication 在 40 Gbps 配置是 133 ms，在 5 Gbps 配置是 41 ms。不能因此說慢網路傳得更快；兩者的部署與 KV 路徑已經改變。也不能用單次 prefill、decode 時間相加的倒數，直接推導整個多 replica 系統的 throughput。</p></div><div class="bespoke-marp-note" data-index="21" tabindex="0"><p>SLIDE 22</p><p>上一頁給了 throughput，這一頁把 Table 5 的單次時間補上。Baseline 的 prefill、KV、decode 是 884、0、1689 ms，throughput 1610 tokens/s。40 Gbps 的 ThunderServe 是 698、133、1126 ms，3292 tokens/s。5 Gbps 是 964、41、1846 ms，2196 tokens/s。
+接著把 inter-instance bandwidth 降到 5 Gbps。如果仍然讓 A40 做全部 Prefill、3090 Ti 做全部 Decode，每個 request 的 KV cache 都要經過這條慢連線，大量 KV cache transfer 就會成為瓶頸。因此 ThunderServe 改成 Prefill replica 使用 2×A40 加 2×3090 Ti，Decode replica 也使用 2×A40 加 2×3090 Ti，並透過 PP 把不同 instances 上的 stages 接起來。
+
+這個改動的重點，是重新安排什麼資料需要經過慢網路。透過對應 layers 的 placement，昂貴的 KV cache transfer 可以盡量留在同一個 instance 內，利用 intra-instance 的高頻寬連線；跨 instance 的低頻寬連線則用來傳 pipeline stages 之間的 activations。它沒有消除跨機器通訊，仍然存在 pipeline communication，而是改變了跨慢 link 傳輸的資料種類與資料量。
+
+在這個 5 Gbps 部署下，系統 throughput 是 2196 tokens/s，約為 baseline 的 1.4 倍。這些數字要和 optimization 的結果分開看：deployment／scheduling optimization 根據 GPU profile、parallel configuration、network bandwidth、KV communication cost 與 workload 等資訊選擇 deployment plan；3292、2196 與 1610 tokens/s，則是論文對相應配置進行 serving execution／benchmark evaluation 後報告的系統表現，不是 solver 直接算出的 throughput。
+
+Table 5 還有一個容易誤讀的地方：40 Gbps 配置的單次 KV Comm 約為 133 ms，5 Gbps 配置卻只有約 41 ms。這不代表 5 Gbps 傳 KV cache 比 40 Gbps 快，因為兩種情況的 deployment plan、KV 傳輸路徑，以及實際跨各條 link 的資料量都不同。低頻寬配置透過改變 placement，讓更多 KV communication 留在 intra-instance 的高頻寬連線上，因此 KV Comm 反而較低。
+
+另外，也不能用 1 / (Prefill time + KV Comm + Decode time) 直接推導 system throughput。這些單次 request 的時間，和整個系統透過多個 replicas、pipeline、batching 與 concurrent requests 達成的總吞吐量，是不同層次的量測；系統 throughput 不是單一 request latency 的簡單倒數。
+
+所以這個例子要傳達的是：不能只看 GPU compute 或 memory bandwidth，就固定指定某種 GPU 永遠做哪個 phase。同樣是 4×A40 加 4×3090 Ti，網路快時可以讓 A40 專門 Prefill、3090 Ti 專門 Decode；網路慢時，就要重新安排 replicas 與 PP placement，避免大量 KV cache 經過慢 link。Deployment plan 必須一起考慮 GPU capability、parallel configuration、KV communication cost、network bandwidth 與 workload。
+
+ThunderServe 最重要的不是固定 GPU-to-phase mapping，而是 network-aware heterogeneous deployment。
+
+來源：Appendix H、Figures 16–17、Table 5，論文第 16–17 頁。Replica 定義與 throughput 解讀為輔助說明。</p></div><div class="bespoke-marp-note" data-index="21" tabindex="0"><p>SLIDE 22</p><p>上一頁給了 throughput，這一頁把 Table 5 的單次時間補上。Baseline 的 prefill、KV、decode 是 884、0、1689 ms，throughput 1610 tokens/s。40 Gbps 的 ThunderServe 是 698、133、1126 ms，3292 tokens/s。5 Gbps 是 964、41、1846 ms，2196 tokens/s。
 
 5 Gbps 那一列的 KV 時間只有 41 ms，比 40 Gbps 的 133 ms 更短。原因是部署改了：KV 留在 instance 裡面傳，不是慢的連線突然變快。
 
@@ -9699,13 +9717,19 @@ D 的分數會受到計算能力、workload、執行 latency，以及 KV cache c
 
 來源：Section 3.4、Figure 6，論文第 7 頁。</p></div><div class="bespoke-marp-note" data-index="23" tabindex="0"><p>SLIDE 24</p><p>上一頁看 throughput，這一頁改看 SLO attainment。設定是 16 張 A5000，兩張一個 replica，所以總共 8 個 replicas。
 
-作者在這組實驗裡指出，coding 適合 5 個 prefill 搭配 3 個 decode；conversation 則適合 3 個 prefill 搭配 5 個 decode。可以看到，不同的 phase ratio 會讓 SLO 曲線往左或往右移。
+這裡先釐清 coding 和 conversation。它們是 LLM 的兩類應用任務，在這個實驗中，更精確地說，是兩種 request workload，也就是工作負載。Coding 指程式相關的使用情境，例如程式碼補全；conversation 則是對話、問答等情境。作者採用 Azure 資料集中的這兩類 workload，這裡關心的是 requests 的輸入、輸出長度與服務需求，不是在比較模型寫程式或聊天的回答品質。
 
-橫軸 SLO scale 越大，代表 deadline 越寬鬆；縱軸越高，代表越多 request 在 deadline 內完成。所以在同一個 deadline 下，較高的曲線比較好；如果固定想達成的比例，就看哪個配置需要的 deadline 比較短。
+在論文採用的 workload 中，coding 的輸入較長、輸出較短。Prefill 要處理整段輸入，所以較長的 prompt 會增加 Prefill 的工作量；輸出較短，則需要較少的 Decode 生成步數。因此作者在這組實驗裡發現，5 個 Prefill 搭配 3 個 Decode 的配置較合適。
 
-要注意，這裡的 5:3 和 3:5 是這個模型、硬體及 workload 下作者報告的配置。當 deadline 放得很鬆，很多配置都能達到接近 100%，也就不會一直有明顯差距。
+Conversation 則是輸入相對較短、輸出較長。因為 Decode 要逐步生成後續 tokens，較長的回覆會增加 Decode 的工作量，因此這組實驗較適合 3 個 Prefill 搭配 5 個 Decode。這裡的 5:3 和 3:5 都是 Prefill replica 數量比上 Decode replica 數量；同樣的 8 個 replicas，會因為 workload 不同而採用不同的 phase ratio。
 
-來源：Appendix D、Figure 14，論文第 14 頁。</p></div><div class="bespoke-marp-note" data-index="24" tabindex="0"><p>SLIDE 25</p><p>真正上線之後，如果 workload 變了，要不要把剛剛整個搜尋全部重跑？作者的答案是，先做一個範圍比較受限的調整。
+可以看到，不同的 phase ratio 會讓 SLO 曲線往左或往右移。橫軸 SLO scale 越大，代表 deadline 越寬鬆；縱軸越高，代表越多 requests 能符合這個 deadline。所以在同一個 deadline 下，較高的曲線比較好；如果固定想達成的比例，就看哪個配置需要的 deadline 比較短。
+
+要注意，「coding 輸入較長、輸出較短」是這篇採用的 workload 特徵，不是所有程式任務都一定如此；conversation 也不一定永遠需要更多 Decode。這裡的 5:3 和 3:5 是這個模型、硬體及 workload 下作者報告的配置，不能直接當成其他部署的固定比例。當 deadline 放得很鬆，很多配置都能達到接近 100%，也就不會一直有明顯差距。
+
+因此這一頁的重點是：要根據實際 workload 的輸入與輸出需求分配 Prefill／Decode 資源，才能提高在指定 deadline 下的 SLO attainment，不能只看任務名稱就固定 phase ratio。
+
+來源：Appendix D、Figure 14，論文第 14 頁；workload 來源見 Section 5.1 的 Model and workloads。任務情境例子為輔助解釋。</p></div><div class="bespoke-marp-note" data-index="24" tabindex="0"><p>SLIDE 25</p><p>真正上線之後，如果 workload 變了，要不要把剛剛整個搜尋全部重跑？作者的答案是，先做一個範圍比較受限的調整。
 
 Lightweight re-scheduling 保留仍然可用的 GPU groups，也保留原來的 parallel configurations。Tabu search 的四種操作，只留下 flip，也就是改 prefill 或 decode 的角色；split、merge 和 move 都先不做。Lower level 也跳過 parallel configuration deduction，只重新解 routing。
 
@@ -9799,13 +9823,21 @@ SLO attainment 是符合指定 deadline 的 request 比例。論文分別評估 
 
 備註：摘要寫 latency deadline 平均改善 1.5 倍，Section 5.2 的 cloud-vs-in-house 比較寫平均 1.8 倍。它們是不同摘要範圍的敘述，不能把平均值混用；本頁引用的是 Section 5.2 的這組比較。</p></div><div class="bespoke-marp-note" data-index="34" tabindex="0"><p>SLIDE 35</p><p>這張圖看 throughput。ThunderServe 被 normalize 成 1，所以其他系統的柱子越低，代表相對於 ThunderServe 的 throughput 越低。柱子上標的倍數，則是 ThunderServe 除以那個 baseline 的 throughput。
 
+這裡先提醒，四個系統不是全部使用相同硬體。ThunderServe 和 HexGen 使用同一組異質 cloud 環境，共 32 張 GPU：8 張 A6000、8 張 A5000、8 張 A40 和 8 張 3090 Ti。DistServe 和 vLLM 則使用一台配備 8 張 A100-80GB 的 in-house server。
+
+作者對齊的是接近的 GPU 租用價格預算，不是相同 GPU 數量或相同總算力。Cloud 配置在論文中的租金合計為每小時 13.542 美元；in-house 的 8 張 A100，則以「租用同樣 GPU 要多少錢」估算為每小時 14.024 美元，作為預算對照。這不是先把硬體換算成 FLOPS，再根據算力推估報價。
+
+也要區分價格與效能數據：租用價格用來建立預算比較基準；圖上的 throughput 則是實際執行實驗得到的系統表現，不是根據報價或理論算力推算出來的。因此，和 HexGen 的比較是在相同硬體環境下看不同系統的整體效果；和 DistServe、vLLM 的比較，則是在接近租用預算下看「系統加上硬體部署」的整體效益。後者的 GPU 型號、數量與網路條件都不同，不能把差距全部歸因於 ThunderServe 的演算法。
+
 跟相同 cloud 環境的 HexGen 比，coding 是 1.5 倍，conversation 是 1.3 倍。跟 in-house 的 DistServe 比，則分別是 1.5 倍和 2.1 倍。
 
 Figure 9 另外標了跟 vLLM 比的結果，coding 是 1.7 倍，conversation 是 2.3 倍。這裡有一個論文內部的不一致：摘要說最高 throughput 改善 2.1 倍，但圖上 vLLM 的 conversation 比較寫 2.3 倍。
 
 所以我這裡不把它們壓成一個「全篇最高幾倍」的說法，而是保留每個 baseline 的具體結果。能確定的趨勢是，在這兩個 workload 與設定下，ThunderServe 的整體 throughput 都比圖中 baselines 高。
 
-來源：Section 5.2、Figure 9，論文第 9 頁；與摘要的差異見論文第 1 頁。
+來源：硬體配置與價格基準見 Section 5.1；throughput 結果見 Section 5.2、Figure 9，論文第 9 頁；與摘要的差異見論文第 1 頁。
+
+備註：上述 in-house 價格是等效 GPU 租用價格的估算，不是完整的自建機房總成本分析，不能直接當成已計入採購、電力與維運的成本。
 
 備註：Figure 9 是 normalized system throughput，不能把縱軸的 1.0 解釋成每秒 1 個 request。正文沒有在這張圖清楚交代一個固定 attainment 門檻，因此不另行把它命名為「99% SLO goodput」。</p></div><div class="bespoke-marp-note" data-index="35" tabindex="0"><p>SLIDE 36</p><p>前面一直說部署會因為 workload 改變，這一頁用作者實際找到的方案來看。
 

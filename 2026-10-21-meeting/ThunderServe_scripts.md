@@ -6,7 +6,7 @@
 
 ## 第 01 頁｜Title
 
-今天先介紹 ThunderServe。它研究的是：如果我們拿到的 GPU 不是整齊的一排 A100，而是不同型號、不同記憶體容量，連網路速度也不一樣，LLM serving 要怎麼部署，才能在有限預算下提供比較好的服務？
+今天先介紹 ThunderServe。論文作者是 Youhe Jiang、Fangcheng Fu、Xiaozhe Yao、Taiyi Wang、Bin Cui、Ana Klimovic 和 Eiko Yoneki，發表在 MLSys 2025。前三位是同等貢獻。它研究的是：如果我們拿到的 GPU 不是整齊的一排 A100，而是不同型號、不同記憶體容量，連網路速度也不一樣，LLM serving 要怎麼部署，才能在有限預算下提供比較好的服務？
 
 它的核心想法，是把 prefill 和 decode 的差異，跟不同 GPU 的硬體特性一起考慮。接下來我會先說明為什麼這樣做有機會，再介紹它怎麼找部署方案，以及實驗到底支持哪些結論。
 

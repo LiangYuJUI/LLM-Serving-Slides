@@ -6,7 +6,7 @@
 
 ## 第 01 頁｜Title
 
-今天介紹 Helix。它要解決的是：GPU 型號不同、而且機器可能跨地區時，LLM 要怎麼放、request 要怎麼走，才能提高 serving throughput。
+今天介紹 Helix。論文作者是 Yixuan Mei、Yonghao Zhuang、Xupeng Miao、Juncheng Yang、Zhihao Jia 和 Rashmi Vinayak，發表在 ASPLOS 2025。它要解決的是：GPU 型號不同、而且機器可能跨地區時，LLM 要怎麼放、request 要怎麼走，才能提高 serving throughput。
 
 作者把這個問題寫成一張有向圖上的 max-flow。Max-flow 就是網路流裡的最大流：在每條邊的容量限制下，從起點能送到終點的最大流量。這裡的流量單位是每秒可處理的 token 數。圖上的節點是 GPU，邊的容量同時反映算力與網路。Placement 用 mixed-integer linear programming，也就是混合整數線性規劃，簡稱 MILP，離線算一次。真正來 request 時，再用這張圖為每個 request 選一條 pipeline。
 

@@ -6,7 +6,7 @@
 
 ## 第 01 頁｜Title
 
-今天介紹 Tessera。它主張：要利用異質 GPU，不該只把 prefill 和 decode，或 attention 和 FFN，整塊搬到不同 GPU，而應該以 GPU kernel 為單位來拆。
+今天介紹 Tessera。論文作者是 Tiancheng Hu、Jin Qin、Zheng Wang、Junhao Hu、Yuzheng Wang、Lei Chen、Yizhou Shan、Mingxing Zhang、Ting Cao、Chunwei Xia、Huimin Cui、Tao Xie 和 Chenxi Wang。這份本地 PDF 是 arXiv:2604.10180v2，2026 年 7 月 9 日，沒有標示已發表的會議。它主張：要利用異質 GPU，不該只把 prefill 和 decode，或 attention 和 FFN，整塊搬到不同 GPU，而應該以 GPU kernel 為單位來拆。
 
 Kernel 就是框架一次啟動的那段 GPU 程式，比一層或一個 phase 更細，又比 thread block 更粗。Tessera 先離線從 PTX 抽出 kernel 之間的資料依賴，PTX 是 NVIDIA 的平行執行中間碼。再依目標是 throughput 還是 latency，解一個 MILP。執行時用多個 request 把通訊藏起來，並用一個輕量的 monitor 在兩種策略之間切換。
 

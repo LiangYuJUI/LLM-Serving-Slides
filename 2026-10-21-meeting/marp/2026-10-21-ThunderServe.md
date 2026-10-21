@@ -121,6 +121,14 @@ National Taiwan University | Academia Sinica | 21 Oct 2026
 
 </div>
 
+<div class="source">
+
+Youhe Jiang, Fangcheng Fu, Xiaozhe Yao, Taiyi Wang, Bin Cui, Ana Klimovic, Eiko Yoneki
+
+MLSys 2025
+
+</div>
+
 ---
 
 <!-- _class: text-slide -->
