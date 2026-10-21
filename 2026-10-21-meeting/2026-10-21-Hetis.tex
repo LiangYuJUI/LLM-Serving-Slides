@@ -274,17 +274,20 @@
 \begin{frame}{Primary Workers and Attention Workers}
   \smalllabel{Hetis / Methodology}\par
 
-  \vspace{.22cm}
-  {\small\begin{tabularx}{\textwidth}{@{}p{3.7cm}XX@{}}\toprule
-  Operation & Primary workers & Attention workers\\\midrule
-  QKV / output projections, MLP & Execute in both phases & No model-weight computation\\
-  Prefill attention & Execute & Not the offload target\\
-  Decode attention and KV cache & Retain part of the load & Dynamically share the load\\\bottomrule
+  {\small\setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\textwidth}{@{}p{1.15cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{3.1cm}@{}}\toprule
+  Phase & Operation & Primary workers & Attention workers\\\midrule
+  Prefill & QKV / Output Projections, MLP & Execute & ---\\
+  Prefill & Attention Core \& KV Cache Creation & Execute & ---\\\midrule
+  Decode & QKV / Output Projections, MLP & Execute & ---\\
+  Decode & Attention Core & Process assigned heads & Process offloaded heads\\
+  Decode & KV Cache Storage & Store assigned heads & Store offloaded heads\\\bottomrule
   \end{tabularx}}\par
-  \vspace{.25cm}
-  \[\text{Attention core}(Q,K,V)=\operatorname{softmax}(QK^\top/\sqrt{d_h})V\]
+  \vspace{.08cm}
+  {\centering \(\displaystyle\text{Attention core}(Q,K,V)=\operatorname{softmax}(QK^\top/\sqrt{d_h})V\)\par}
+  \vspace{.08cm}
   {\small Here, the attention core is parameter-free \emph{after} Q, K and V are produced; the projections still require model weights.}\par
-  \vspace{.20cm}\takeaway{Primary workers remain active in decode; attention offload changes the module placement.}
+  \vspace{.12cm}\takeaway{Primary workers execute both prefill and decode, while attention workers only assist with decode attention and KV cache storage.}
   \vspace{.10cm}\hint{Source: Sections 2.4, 3.2 and 4. Attention core terminology clarified for this presentation.}
 \end{frame}
 
@@ -309,12 +312,12 @@
 \begin{frame}{Hierarchical Search for Primary Parallelism}
   \smalllabel{Hetis / Methodology}\par
   \paperfigure{Hetis/Hetis_Fig04_plot.pdf}{Fig.~4; Section 4.1: Primary worker configuration search}{
-    \item Form serving instances by dividing each GPU type evenly across instances; filter insufficient cache capacity.
-    \item Initially treat each GPU type as a unified PP stage and balance the maximum stage compute cost.
+    \item \textbf{1. DP grouping:} divide each GPU type evenly across serving instances; filter insufficient KV capacity.
+    \item \textbf{2. Coarse PP search:} treat each GPU type as one stage; assign layers to minimize the bottleneck compute cost.
 
   }{
-    \item Remove low-end GPUs that contribute little to dense computation.
-    \item Explore TP / PP within each stage, then evaluate both computation and communication cost.
+    \item \textbf{3. GPU pruning:} try low-end GPUs first. Re-evaluate layer assignments on the remaining GPUs before the 5\% test.
+    \item \textbf{4. Fine-grained TP/PP search:} explore within each stage; score computation plus communication.
 
   }{Excluded GPUs become a shared Attention-worker pool, rather than being left unused.}
 \end{frame}
@@ -323,18 +326,20 @@
 \begin{frame}{Primary Selection Objective and Pruning Rule}
   \smalllabel{Hetis / Methodology}\par
 
-  \vspace{.13cm}
-  \[\sigma^*=\arg\min_{\sigma}C(\sigma,M,\mathcal R),\qquad C=C_{\mathrm{comp}}+C_{\mathrm{comm}}\]
-  {\small $\sigma$: parameter placement and DP / PP / TP configuration; $M$: model; $\mathcal R$: workload distribution.}\par
-  \vspace{.16cm}
-  {\small\textbf{Remove candidate GPU $\kappa$ from the Primary set if}}
-  \[\frac{C_p(\sigma-\kappa,M,\mathcal R)}{C_p(\sigma,M,\mathcal R)}\leq1+\Delta,\qquad\Delta=0.05.\]
-  \begin{itemize}\small
-    \item $C_p$ estimates the maximum stage computation cost under ideal scaling; it omits communication at this pruning step.
-    \item Try removals from lower- to higher-end GPU types, then score retained candidates with the fuller cost model.
-  \end{itemize}
-  \vspace{.15cm}\takeaway{A small compute-cost increase can free GPU memory for attention-only service.}
-  \vspace{.08cm}\hint{Source: Section 4.1, Eq.~(1). This hierarchical heuristic does not guarantee global optimality.}
+
+  \vspace{.03cm}
+  {\small\textbf{Objective (paper Eq.~1):} choose placement and DP / PP / TP configuration $\sigma$.}
+  \par\vspace{.03cm}{\centering \(\displaystyle \sigma^*=\arg\min_{\sigma}C(\sigma,M,\mathcal R),\qquad C=C_{\mathrm{comp}}+C_{\mathrm{comm}}\)\par}\vspace{.03cm}
+  {\footnotesize $M$: model; $\mathcal R$: workload distribution.\quad\textbf{Pipeline bottleneck (explanatory):}}
+  \par\vspace{.03cm}{\centering \(\displaystyle C_p=\max_s C_{\mathrm{comp},s}\)\par}\vspace{.03cm}
+  {\footnotesize $s$: coarse PP stage. Ideal scaling; computation only, no communication. This restates the text, not a separately numbered paper equation.}\par
+  \vspace{.10cm}
+  {\small\textbf{GPU pruning (paper rule):} re-evaluate layer assignments after removing $\kappa$.}
+  \par\vspace{.03cm}{\centering \(\displaystyle \frac{C_p(\sigma-\kappa,M,\mathcal R)}{C_p(\sigma,M,\mathcal R)}\leq1+\Delta,\qquad\Delta=0.05.\)\par}\vspace{.03cm}
+  {\footnotesize\textbf{Illustrative Example (assumed stage costs, arbitrary units):}
+  Before: $C_p=\max(100,90,20)=100$. After removing P100 and reassigning layers: $C_p=\max(103,98)=103$. Ratio $1.03\leq1.05$: accept. Not measured results.}\par
+  \vspace{.12cm}\takeaway{Reassigning layers changes the bottleneck cost and the pruning decision.}
+  \vspace{.06cm}\hint{Source: Section 4.1, Eq.~(1), Figure 4 and unnumbered pruning rule. Heuristic search; no global-optimality guarantee.}
 \end{frame}
 
 % ----- SLIDE 09: Why Split Attention by Head? -----
@@ -445,87 +450,98 @@
 
 % ----- SLIDE 14: Online Dispatch for Newly Arriving Requests -----
 \begin{frame}{Online Dispatch for Newly Arriving Requests}
-  \smalllabel{Hetis / Methodology}\par
 
-  \vspace{.10cm}
-  {\small Keep existing placements fixed; assign only the new requests $\mathcal J(t)$. Define updated load:}
-  \[\widehat h_i=h_i+\sum_{j\in\mathcal J}x_i^j,\qquad
-    \widehat g_i=g_i+\frac{2}{r}\sum_{j\in\mathcal J}\ell_j x_i^j.\]
-  \[\begin{aligned}
-    \min_{x,z}\quad &z\\
-    \text{s.t.}\quad &f_i(\widehat h_i,\widehat g_i)\leq z,\quad \widehat g_i\leq M_i &&\forall i,\\
-    &\sum_{i=1}^{N_k}x_i^j=H_Q,\quad x_i^j/r\in\mathbb Z_{\geq0} &&\forall j\in\mathcal J.
-  \end{aligned}\]
-  {\footnotesize $\ell_j$: current context length; $M_i$: KV capacity. Here $g_i,M_i$ use KV-vector units, with both K and V counted. $f_i$ adds $\rho_i$ for Attention workers.}\par
-  \vspace{.12cm}\takeaway{Minimize the slowest participant while respecting head completeness and cache capacity.}
-  \vspace{.08cm}\hint{Consistent restatement of Sections 5.2.1--5.2.2 using Eqs.~(6) and (8), not a verbatim Eq.~(7).}
+\smalllabel{Hetis / Methodology}\par
+\vspace{.10cm}
+{\small Section 5.2.2 keeps dispatched placements fixed and assigns only new requests $\mathrm J(t)$.}\par
+\vspace{.12cm}
+{\small\textbf{Eq. (8): load update after solving the dispatch problem}}
+\[
+\begin{aligned}
+h_i(t+1)&=h_i(t)+\sum_{j=1}^{\mathrm J(t)}x_i^j(t),\\
+g_i(t+1)&=g_i(t)+\frac{2}{r}\sum_{j=1}^{\mathrm J(t)}x_i^j(t)\,l_j(t).
+\end{aligned}
+\]
+\begin{itemize}\small
+\item $x_i^j(t)$: query heads of request $j$ assigned to GPU $i$ in stage $k$; $N_k$: workers in that stage.
+\item $h_i(t)$: existing query-head count; $g_i(t)$: existing cache amount; $l_j(t)$: request context length.
+\item $r$: query/KV-head ratio; $2/r$ accounts for K and V shared by each group.
+\end{itemize}
+\vspace{.08cm}\takeaway{Eq. (8) updates dispatch load; it does not specify all cache-growth or departure updates.}
+\vspace{.06cm}\hint{Source: Section 5.2.2, Eq. (8). Printed upper limit J(t) is retained; the prose defines J(t) as a set.}
 \end{frame}
 
 % ----- SLIDE: Printed Eqs. (5)--(7) -----
 \begin{frame}{Printed Dispatch Constraints}
-  \smalllabel{Hetis / Methodology}\par
 
-  \vspace{.04cm}
-  {\footnotesize\textbf{Eq.~(5), all in-service requests \(\mathbb S(t)\).}\quad
-  \(\displaystyle\sum_{i=1}^{N_k}x_i^j(t)\in\{0,\mathrm H\}\).}\par
-  \vspace{.04cm}
-  {\footnotesize\textbf{Eq.~(6), capacity.}\quad
-  \(\displaystyle\sum_{j\in\mathbb S(t)}x_i^j(t)\,l_j(t)\le r\cdot\mathrm M_i(t)/2\).}\par
-  \vspace{.06cm}
-  {\footnotesize\textbf{Eq.~(7), new requests \(\mathrm J(t)\) only.}}
-  \[
-    \min_x\max_i f_i(\vec x_i(t))
-  \]
-  \vspace{-.18cm}
-  {\footnotesize
-  \[
-    g_i(t)+\sum_{j=1}^{|\mathrm J(t)|}x_i^j(t)\,l_j(t)\le\frac{r\cdot\mathrm M_i(t)}{2},
-    \qquad
-    \sum_{i=1}^{N_k}x_i^j(t)=\mathrm H.
-  \]}
-  \vspace{-.12cm}
-  {\footnotesize Eq.~(5) allows a sum of \(0\) or \(\mathrm H\). Eq.~(7c) requires new requests to sum to \(\mathrm H\). The previous slide's \(\widehat g_i\le M_i\) form is the reconciled KV-vector version, not this printed (7b).}\par
-  \vspace{.06cm}\takeaway{Read the printed program and the reconciled LP as two different writings of the same intent.}
-  \vspace{.04cm}\hint{Source: Section 5.2, Eqs.~(5)--(7). \(\mathrm H\) is the model's query-head count, written \(H_Q\) earlier.}
+\smalllabel{Hetis / Methodology}\par
+\vspace{.06cm}
+{\small\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}\setlength{\abovedisplayshortskip}{3pt}\setlength{\belowdisplayshortskip}{3pt}
+\[
+\begin{aligned}
+&\sum\nolimits_{i=1}^{N_k}x_i^j(t)\in\{0,\mathrm H\},\quad\forall j\in\mathbb S(t),\ \forall t.&&\text{(5)}\\
+&\sum\nolimits_{j\in\mathbb S(t)}x_i^j(t)l_j(t)\leq\frac{r\mathrm M_i(t)}{2},\quad\forall 1\leq i\leq N_k,\ \forall t.&&\text{(6)}
+\end{aligned}
+\]}
+{\footnotesize\textbf{Eq. (7): only newly arriving requests}}
+{\small\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}\setlength{\abovedisplayshortskip}{3pt}\setlength{\belowdisplayshortskip}{3pt}
+\[
+\begin{aligned}
+&\min\max_i f_i(\vec x_i(t)), &&\text{(7a)}\\
+&g_i(t)+\sum\nolimits_{j=1}^{\mathrm J(t)}x_i^j(t)l_j(t)\leq\frac{r\mathrm M_i(t)}{2},\quad\forall i,t, &&\text{(7b)}\\
+&\sum\nolimits_{i=1}^{N_k}x_i^j(t)=\mathrm H,\quad\forall j\in\mathrm J(t). &&\text{(7c)}
+\end{aligned}
+\]}
+{\footnotesize $\mathbb S(t)$: in-service requests; $\mathrm J(t)$: new requests; $\mathrm H$: query heads; $\mathrm M_i(t)$: available KV capacity.}\par
+\vspace{.06cm}\takeaway{Keep printed (7b) unchanged: its cache scaling differs from Eq. (8).}
+\vspace{.04cm}\hint{Source: Section 5.2, Eqs. (5)--(7). Group integrality appears in the prose, not in printed (7).}
 \end{frame}
 
 % ----- SLIDE: Closed forms of f_i -----
 \begin{frame}{Closed Forms of Attention Time}
-  \smalllabel{Hetis / Methodology}\par
 
-  \vspace{.10cm}
-  {\footnotesize\textbf{Primary worker} (computation only)}
-  \[
-    f_i=a_i\Big(h_i+\textstyle\sum_j x_i^j\Big)
-    +b_i\Big(g_i+\frac{2}{r}\textstyle\sum_j l_j x_i^j\Big)+c_i
-  \]
-  \vspace{-.10cm}
-  {\footnotesize\textbf{Attention worker} (computation plus transfer)}
-  \[
-    f_i=\Big(a_i+\big(2+\tfrac{2}{r}\big)\gamma_i\Big)
-    \Big(h_i+\textstyle\sum_j x_i^j\Big)
-    +b_i\Big(g_i+\frac{2}{r}\textstyle\sum_j l_j x_i^j\Big)+c_i+\beta_i
-  \]
-  \vspace{-.08cm}
-  {\footnotesize Sums run over new requests in \(\mathrm J(t)\). The \(\gamma_i\) term uses the worker's updated head count, so every decode step transfers Q, K, V and outputs for heads already on that worker.}\par
-  \vspace{.08cm}\takeaway{These two lines are unnumbered in the paper; they sit in the paragraph after Eq.~(7).}
-  \vspace{.04cm}\hint{Source: Section 5.2.2. Time index \((t)\) is omitted here; the paper writes \(h_i(t)\), \(g_i(t)\) and \(x_i^j(t)\).}
+\smalllabel{Hetis / Methodology}\par
+\vspace{.10cm}
+{\footnotesize\textbf{Primary worker: computation only (unnumbered, after Eq. (7))}}
+{\small\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}\setlength{\abovedisplayshortskip}{3pt}\setlength{\belowdisplayshortskip}{3pt}
+\[
+\begin{aligned}
+f_i(\vec x_i(t))={}&a_i\Big(h_i(t)+\sum\nolimits_{j=1}^{\mathrm J(t)}x_i^j(t)\Big)\\
+&+b_i\Big(g_i(t)+\frac{2}{r}\sum\nolimits_{j=1}^{\mathrm J(t)}l_j(t)x_i^j(t)\Big)+c_i.
+\end{aligned}
+\]}
+{\footnotesize\textbf{Attention worker: computation plus transfer (same paragraph)}}
+{\small\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}\setlength{\abovedisplayshortskip}{3pt}\setlength{\belowdisplayshortskip}{3pt}
+\[
+\begin{aligned}
+f_i(\vec x_i(t))={}&\Big(a_i+\Big(2+\frac{2}{r}\Big)\gamma_i\Big)
+\Big(h_i(t)+\sum\nolimits_{j=1}^{\mathrm J(t)}x_i^j(t)\Big)\\
+&+b_i\Big(g_i(t)+\frac{2}{r}\sum\nolimits_{j=1}^{\mathrm J(t)}l_j(t)x_i^j(t)\Big)+c_i+\beta_i.
+\end{aligned}
+\]}
+{\footnotesize $a_i,b_i,c_i$: compute coefficients; $\gamma_i,\beta_i$: transfer coefficients. The transfer term uses existing plus newly assigned heads; it sends Q, new K/V and outputs, not the entire historical cache each step.}\par
+\vspace{.08cm}\takeaway{Both expressions use the same $2/r$ cache increment as Eq. (8).}
+\vspace{.04cm}\hint{Source: Section 5.2.2, unnumbered formulas after Eq. (7). Time indices and printed sum limits restored.}
 \end{frame}
 
 % ----- SLIDE 15: Dispatch Formulation: What the Paper Specifies -----
 \begin{frame}{Dispatch Formulation: What the Paper Specifies}
-  \smalllabel{Hetis / Methodology}\par
 
-  \vspace{.20cm}
-  \begin{itemize}\small
-    \setlength{\itemsep}{.19cm}
-    \item With continuous $x_i^j$, the affine cost model and auxiliary variable $z$ give an LP. Hetis reports using CVXPY with MOSEK.
-    \item The required group-integrality constraint $x_i^j/r\in\mathbb Z_{\geq0}$ makes the exact formulation discrete; rounding or an integrality treatment is not described.
-    \item Printed Eq.~(7b) mixes existing $g_i$ with query-head-token counts. Eq.~(8) and the $f_i$ lines update $g_i$ with a $2/r$ factor.
-    \item The reconciled KV-vector LP is the slide before the printed constraints. Byte-level capacity must also include head width, datatype and the layers stored on a GPU.
-  \end{itemize}
-  \vspace{.18cm}\takeaway{The optimization intent is clear; integer allocation and memory units require care in reproduction.}
-  \vspace{.10cm}\hint{Source: Sections 5.2 and 6. Formulation caveats are presenter analysis of the supplied PDF.}
+\smalllabel{Hetis / Methodology}\par
+\vspace{.10cm}
+{\small\textbf{Derived: epigraph form of the minimax objective only}}
+\[
+\min_{x,z}z\quad\text{s.t.}\quad f_i(\vec x_i(t))\leq z\quad\forall i.
+\]
+\begin{itemize}\small
+\setlength{\itemsep}{.09cm}
+\item Retain the allocation and capacity constraints separately. This objective rewrite does not repair printed (7b).
+\item Section 5.2.1 requires $x_i^j(t)/r\in\mathbb N$. The paper does not define whether $0\in\mathbb N$; Eq. (5) permits zero total allocation.
+\item Continuous variables give an LP relaxation; retaining group integrality gives a discrete problem. Section 5.2.2 claims LP reformulation but does not explain the integrality treatment.
+\item (7b) adds $g_i$ to query-head-token counts; Eq. (8) and $f_i$ multiply new counts by $2/r$. Cache units and normalization are not fully specified.
+\end{itemize}
+\vspace{.08cm}\takeaway{No claimed equivalence to a repaired capacity rule; no assumed rounding or solver algorithm.}
+\vspace{.06cm}\hint{Source: Section 5.2. Presenter analysis: J(t) is used as both a set and a sum limit; physical byte conversion is unspecified.}
 \end{frame}
 
 % ----- SLIDE 16: Re-dispatching to Balance Computation -----

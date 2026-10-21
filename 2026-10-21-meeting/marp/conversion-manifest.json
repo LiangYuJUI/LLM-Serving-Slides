@@ -52,7 +52,7 @@
   },
   "Hetis": {
     "source": "2026-10-21-Hetis.tex",
-    "sha256": "1af545f9deb4be7e581339575413cf990b04e7812cdc3401f70ccd8f089b77b3",
+    "sha256": "fcd2859ca222a2b06ca2df988edbeb3f369a00a216441440650d26a43558fc5f",
     "frames": 39,
     "titles": [
       "Hetis: Fine-grained and Dynamic Parallelism",
