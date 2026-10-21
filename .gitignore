@@ -2,3 +2,15 @@
 node_modules/
 __pycache__/
 *.pyc
+
+# LaTeX build products. Delivered PDFs and Overleaf zips stay tracked.
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+.render/

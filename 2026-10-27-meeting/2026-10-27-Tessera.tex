@@ -1,0 +1,858 @@
+% Standalone Tessera: 27 Oct 2026 Research Meeting
+% Visual style follows the 21 Oct 2026 light Madrid decks.
+% Facts are taken from the local arXiv:2604.10180v2 PDF only.
+% Compile with pdfLaTeX from this directory. Keep Tessera/ beside this file.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\graphicspath{{./}{figures/}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{hyperref}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{Ink}{HTML}{243748}
+\definecolor{Muted}{HTML}{667B8B}
+\definecolor{Accent}{HTML}{347E74}
+\definecolor{AccentBlue}{HTML}{507DAD}
+\definecolor{SoftMint}{HTML}{E6F4EE}
+\definecolor{SoftBlue}{HTML}{E9F2F9}
+\definecolor{SoftLilac}{HTML}{F1EEF8}
+\definecolor{Paper}{HTML}{FBFCFE}
+\definecolor{Divider}{HTML}{D8E4EB}
+
+\setbeamercolor{background canvas}{bg=Paper}
+\setbeamercolor{normal text}{fg=Ink}
+\setbeamercolor{structure}{fg=Accent}
+\setbeamercolor{frametitle}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{title}{fg=Ink}
+\setbeamercolor{subtitle}{fg=Muted}
+\setbeamercolor{block title}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block body}{fg=Ink,bg=white}
+\setbeamercolor{item}{fg=Accent}
+\setbeamercolor{caption name}{fg=Muted}
+\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamerfont{footline}{size=\tiny}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm plus 1fil]{footline}%
+      \hfill\insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}}}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=.72cm,dp=.16cm,leftskip=.55cm,rightskip=.40cm]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}}
+
+\newcommand{\smalllabel}[1]{{\scriptsize\bfseries\color{Accent}\MakeUppercase{#1}}}
+\newcommand{\hint}[1]{{\scriptsize\color{Muted}#1}}
+\newcommand{\takeaway}[1]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.12cm,wd=\linewidth]{block title}%
+    {\small\bfseries #1}
+  \end{beamercolorbox}}
+\newcommand{\stepcard}[3]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.10cm,wd=\linewidth]{block body}%
+    {\scriptsize\bfseries\color{Accent}#1}\par\vspace{.4mm}
+    {\footnotesize\bfseries #2}\par\vspace{.4mm}
+    {\scriptsize\color{Muted}#3}%
+  \end{beamercolorbox}}
+
+\newcommand{\figureplaceholder}[3]{%
+  \begingroup\centering
+  \IfFileExists{#1}{%
+    \includegraphics[width=.98\linewidth,height=#2,keepaspectratio]{#1}%
+  }{%
+    \IfFileExists{figures/#1}{%
+      \includegraphics[width=.98\linewidth,height=#2,keepaspectratio]{figures/#1}%
+    }{%
+      \begin{tikzpicture}
+        \node[draw=AccentBlue!55,dashed,line width=.7pt,rounded corners=4pt,
+              fill=SoftBlue!60,minimum height=#2,minimum width=.95\linewidth,
+              text width=.85\linewidth,align=center,inner sep=2mm] {
+           {\color{AccentBlue}\bfseries FIGURE PLACEHOLDER}\\[2.2mm]
+           {\color{Ink}\small #3}\\[1.5mm]
+           {\color{Muted}\scriptsize\ttfamily\detokenize{#1}}};
+      \end{tikzpicture}%
+    }%
+  }\par\endgroup}
+
+\newcommand{\src}[1]{\vspace{0.05cm}\hint{Source: #1}}
+
+
+\title[Tessera]{Tessera: Unlocking Heterogeneous GPUs through Kernel Disaggregation}
+\subtitle{Offline Dependencies, Pipelined Execution, Online Adaptation}
+\author{Yu-Jui Liang}
+\institute{National Taiwan University \quad | \quad Academia Sinica}
+\date{27 Oct 2026}
+\begin{document}
+% ----- SLIDE 01 -----
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \vspace*{0.72cm}
+  \smalllabel{Research meeting}\par
+  \vspace{.36cm}
+  {\raggedright\color{Ink}\LARGE\bfseries
+    Tessera: Unlocking Heterogeneous GPUs\\[0.16cm]
+    through Kernel-Granularity Disaggregation\par}
+  \vspace{.28cm}
+  {\color{Muted}\large Offline Dependencies, Pipelined Execution, Online Adaptation\par}
+  \vspace{.72cm}
+  {\bfseries Yu-Jui Liang}\par\vspace{.06cm}
+  {\small\color{Muted}Advisor: Hsiang-Yun Cheng}\par\vspace{.04cm}
+  {\small\color{Muted}National Taiwan University \quad | \quad Academia Sinica \quad | \quad 27 Oct 2026\par}
+  \vfill
+  {\color{Accent}\rule{\textwidth}{.7pt}}\par\vspace{.08cm}
+  {\scriptsize\color{Muted}Paper: Hu et al., arXiv:2604.10180v2 (9 Jul 2026). Local PDF is the sole factual source.}
+\end{frame}}
+
+% ----- SLIDE 02 -----
+\begin{frame}[t]{Presentation Roadmap}
+  \smalllabel{Tessera / Overview}\par
+  \vspace{.16cm}
+  \begin{enumerate}
+    \setlength{\itemsep}{.14cm}
+    \item \textbf{Background / Motivation}\par
+      {\small\color{Muted}Why phase and block splits still misplace kernels.}
+    \item \textbf{Methodology}\par
+      {\small\color{Muted}PTX dependencies, a throughput MILP, and a latency policy with a monitor.}
+    \item \textbf{Experimental Results}\par
+      {\small\color{Muted}Five GPU types, four model families, and clusters up to 16 GPUs.}
+    \item \textbf{Discussion / Conclusion}\par
+      {\small\color{Muted}Cost, generality, and a comparison with ThunderServe, Hetis, and Helix.}
+  \end{enumerate}
+  \src{Local Tessera PDF. The comparison page is our synthesis, not a table from the paper.}
+\end{frame}
+
+% ----- SLIDE 03 -----
+\begin{frame}[t]{Hardware Heterogeneity Is Kernel-Dependent}
+  \smalllabel{Tessera / Background}\par
+  \vspace{.04cm}
+  {\footnotesize\textbf{Table I.} Datasheet rates and relative rental price. Price is normalized to the L40s. Tildes are printed in the paper.}\par
+  \vspace{.03cm}
+  {\centering\scriptsize
+  \begin{tabular}{lrrrrrr}\toprule
+    GPU & CUDA FP32 & Tensor BF16 & L2 (MB) & Mem.\ (GB) & BW (GB/s) & Price\\\midrule
+    A100 & 19.5 & 312 & 40 & 80 & 1935 & 1.5\\
+    H100 & 67 & 989 & 50 & 80 & 3350 & 2.9\\
+    B200 & 80 & $\sim$2500 & 126 & 192 & $\sim$8000 & 5.0\\
+    L40s & 91.6 & 366.5 & 96 & 48 & 864 & 1\\
+    RTX Pro 6000 & 120 & $\sim$500 & 126 & 96 & 1597 & 1.2\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.05cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.04cm}
+    \item Vs.\ A100, the L40s has \(4.7\times\) the CUDA-core rate and \(1.2\times\) the tensor-core rate, but 45\% of the memory bandwidth.
+    \item The paper says L40s and RTX Pro 6000 reach up to \(7.4\times\) higher compute throughput per dollar. It does not spell out the denominator GPU.
+  \end{itemize}
+  \vspace{.03cm}\takeaway{No GPU in Table I wins compute, bandwidth, capacity, and price at once. These are not serving measurements.}
+  \src{Sec.~II-A, Table I. Prices are ``derived mainly'' from Google Cloud standard rates.}
+\end{frame}
+
+% ----- SLIDE 04 -----
+\begin{frame}[t]{Why Phase- or Block-Level Disaggregation Is Too Coarse}
+  \smalllabel{Tessera / Motivation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.46\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.06cm}
+        \item Normal execution runs K1--K6 on one GPU. Control flow is the black order.
+        \item Disaggregation may put K1, K3, K4 on GPU A and K2, K5, K6 on GPU B.
+        \item Red arrows are data dependencies that used to be local memory reads.
+        \item This drawing is a schematic. It is not a profiled trace.
+      \end{itemize}}
+      \vspace{.06cm}\takeaway{Splitting kernels is useful only if those red edges stay correct.}
+    \end{column}
+    \begin{column}{.52\textwidth}
+      \figureplaceholder{Tessera/Tessera_Figure_01_Kernel_Disaggregation.png}{5.05cm}{Figure 1}
+    \end{column}
+  \end{columns}
+  \src{Sec.~I, Fig.~1. PDF p.~2.}
+\end{frame}
+
+% ----- SLIDE 05 -----
+\begin{frame}[t]{Kernel as the Scheduling Granularity}
+  \smalllabel{Tessera / Motivation}\par
+  \vspace{.12cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.32\textwidth}
+      \stepcard{TOO FINE}{Thread blocks}{Inside one kernel, blocks are largely homogeneous. Further splitting does not track a different hardware preference.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{TOO COARSE}{Phase or block}{Prefill vs.\ decode, or attention vs.\ FFN, still mixes kernels that prefer different GPUs.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{THE UNIT}{One GPU kernel}{The kernel is the user-level launch Tessera schedules. It is not a new model-layer abstraction.}
+    \end{column}
+  \end{columns}
+  \vspace{.18cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item Phase and block methods are also tied to a model family. Mamba has no attention block; diffusion has no prefill/decode split.
+    \item Tessera's claim is that the kernel exists in all four families they evaluate.
+  \end{itemize}
+  \vspace{.08cm}\takeaway{The granularity argument is architectural and empirical. The counts are on the next two slides.}
+  \src{Sec.~I and Sec.~II-C.}
+\end{frame}
+
+% ----- SLIDE 06 -----
+\begin{frame}[t]{Different Kernels Prefer Different GPUs}
+  \smalllabel{Tessera / Motivation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.06cm}
+        \item Profiled pair: A100 and L40s. Models: Llama3 8B, GPT-oss 20B, Mamba 7B, Qwen2.5-VL 7B, SD3.5.
+        \item (a) By kernel count, 67\% of kernels are faster on the L40s, averaged across models and tasks.
+        \item (b) Weighted by time on the A100, those kernels are 36\% of end-to-end time, and up to 53\% for diffusion.
+        \item Count and time answer different questions. A numerous short kernel is not 53\% of the job.
+      \end{itemize}}
+      \vspace{.04cm}\takeaway{There is a real L40s-favoring slice. It is not ``most of the runtime'' on every model.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Tessera/Tessera_Figure_02_Kernel_Heterogeneity.png}{4.85cm}{Figure 2}
+    \end{column}
+  \end{columns}
+  \src{Sec.~II-B, Fig.~2. The motivation text says Mamba 7B; the eval model is Mamba-Codestral 7B.}
+\end{frame}
+
+% ----- SLIDE 07 -----
+\begin{frame}[t]{Phase Labels Hide Kernel-Level Variation}
+  \smalllabel{Tessera / Motivation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.47\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+        \item GPT-oss 20B. Points above the line are faster on the A100; points below are faster on the L40s.
+        \item Inside one phase: 45\% of prefill kernels and 57\% of decode kernels are faster on the L40s.
+        \item cublasGemv is about 1 FLOP/byte. A100's HBM is \(\sim 2\times\) L40s, and the kernel is \(1.9\times\) faster on A100.
+        \item FlashAttention is compute-heavy. L40s is up to \(2.1\times\) faster. Inside blocks: 71\% of attention kernels and 33\% of FFN kernels prefer the L40s.
+      \end{itemize}}
+    \end{column}
+    \begin{column}{.51\textwidth}
+      \figureplaceholder{Tessera/Tessera_Figure_03_Kernel_Duration_Ratios.png}{4.95cm}{Figure 3}
+    \end{column}
+  \end{columns}
+  \vspace{.02cm}\takeaway{A phase label is not a hardware preference. Both phases contain both kinds of kernel.}
+  \src{Sec.~II-C, Fig.~3. PDF p.~3. Ratios are L40s duration over A100 duration.}
+\end{frame}
+
+% ----- SLIDE 08 -----
+\begin{frame}[t]{Three Challenges for Kernel Disaggregation}
+  \smalllabel{Tessera / Problem}\par
+  \vspace{.12cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.32\textwidth}
+      \stepcard{1 / CORRECTNESS}{RAW across GPUs}{A kernel on one GPU may read a buffer written on another. Opaque and JIT kernels do not expose that buffer.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{2 / BUBBLES}{Wait on the dependency}{The downstream GPU idles unless another request's ready kernels cover the transfer.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{3 / POLICY}{Two objectives}{Offline jobs want throughput. Online serving wants per-request latency, and the load changes.}
+    \end{column}
+  \end{columns}
+  \vspace{.18cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item A bad placement can spend more on communication and imbalance than it saves in kernel time.
+    \item Tessera's answer is one analyzer, two MILP objectives, a pipeline, and a windowed monitor.
+  \end{itemize}
+  \vspace{.08cm}\takeaway{The rest of the talk is those three answers, in that order.}
+  \src{Sec.~I. The three challenges are the paper's own framing.}
+\end{frame}
+
+% ----- SLIDE 09 -----
+\begin{frame}[t]{Tessera System Overview}
+  \smalllabel{Tessera / System}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.06cm}
+        \item Analyzer: memory ranges, RAW edges, and per-GPU kernel latency.
+        \item Planner: a kernel-to-GPU policy for each dependency graph.
+        \item One worker per GPU runs only its kernels and the cut-edge transfers.
+        \item The monitor feeds runtime latency back to policy selection.
+      \end{itemize}}
+      \vspace{.04cm}\takeaway{NVLink and RDMA in the figure are the design picture. Measured links are stated later.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Tessera/Tessera_Figure_04_System_Overview.png}{4.95cm}{Figure 4}
+    \end{column}
+  \end{columns}
+  \src{Sec.~III, Fig.~4. PDF p.~4.}
+\end{frame}
+
+% ----- SLIDE 10 -----
+\begin{frame}[t]{Offline Planning and Online Adaptation}
+  \smalllabel{Tessera / System}\par
+  \vspace{.12cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{OFFLINE}{Analyzer and planner}{Run once, usually during warm-up. Build one dependency graph per CUDA graph and solve its MILP. No per-token replanning.}
+      \vspace{.14cm}
+      \stepcard{ONLINE}{Workers}{Select the precomputed policy when a CUDA graph is launched. Overlap send/recv with compute on separate streams.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{ONLINE}{Monitor}{Every window \(W\), compare queueing pressure with a threshold and switch between the two policies.}
+      \vspace{.14cm}
+      \stepcard{NOT IN THE MILP}{GPU memory}{The formulation does not constrain capacity. Weights are replicated, as in prefill/decode disaggregation.}
+    \end{column}
+  \end{columns}
+  \vspace{.16cm}\takeaway{The expensive graph and MILP stay off the request path. The monitor only chooses which stored policy to run.}
+  \src{Sec.~III and Sec.~IV. Memory replication is stated in Sec.~IV.}
+\end{frame}
+
+% ----- SLIDE 11 -----
+\begin{frame}[t]{Analyzer: Standard vs.\ Opaque Kernels}
+  \smalllabel{Tessera / Analyzer}\par
+  \vspace{.10cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{STANDARD}{Library kernels}{cublasSgemm reads A and B and writes C. Sizes come from the API arguments. No instrumentation is required to know the buffers.}
+      \vspace{.12cm}
+      \stepcard{OPAQUE}{User or JIT kernels}{Semantics are not available when the framework launches them. Tessera instruments PTX instead of guessing API arguments.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{WHY NOT API GUESSING}{Caching allocator}{PhoenixOS can see base addresses, but PyTorch's allocator does not call CUDA alloc on every tensor. The guessed size is often too large.}
+      \vspace{.12cm}
+      \stepcard{COST OF A LARGE GUESS}{Extra traffic}{An overestimated buffer is still transferred. Tessera keeps only the addresses the kernel actually touches.}
+    \end{column}
+  \end{columns}
+  \vspace{.14cm}\takeaway{Standard kernels are read from their API. Opaque kernels are read from instrumented PTX.}
+  \src{Sec.~III-A. PhoenixOS is cited as prior buffer discovery, not as a Tessera component.}
+\end{frame}
+
+% ----- SLIDE 12 -----
+\begin{frame}[t]{PTX Instrumentation and Address Ranges}
+  \smalllabel{Tessera / Analyzer}\par
+  \vspace{.08cm}
+  \begin{enumerate}\footnotesize
+    \setlength{\itemsep}{.07cm}
+    \item Add an instrumentation buffer to the kernel parameters and load it with \texttt{ld.param}.
+    \item Around each \texttt{ld.global} / \texttt{st.global}, emit \texttt{atom.global.min} and \texttt{atom.global.max} so threads agree on one range.
+    \item After the launch, align each instruction's \([\min,\max]\) interval with buffer base addresses. The opcode says read or write.
+    \item Recompile the patched PTX with \texttt{ptxas}. The probe engine is built on NEUTRINO.
+  \end{enumerate}
+  \vspace{.06cm}
+  {\footnotesize If a kernel touches a global that is not a launch argument, the base address is unknown. Tessera then refuses to disaggregate that kernel. The paper cites a study that this pattern is absent in PyTorch and vLLM, and present in one Rodinia kernel.}\par
+  \vspace{.05cm}\takeaway{The analyzer records touched address ranges. It does not reconstruct a kernel's arithmetic.}
+  \src{Sec.~III-A and Sec.~IV. Listing 1 is the paper's instrumentation sketch.}
+\end{frame}
+
+% ----- SLIDE 13 -----
+\begin{frame}[t]{Extracting RAW Dependencies}
+  \smalllabel{Tessera / Analyzer}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item Execution order is preserved, so only Read-After-Write edges can change the result. WAR and WAW are not the edges Tessera schedules.
+    \item A registry stores the last writer of each buffer. A later reader adds an edge from that writer, annotated with the measured byte size.
+    \item Asynchronous copies are nodes too. Their source, destination, and size come from the API.
+    \item One CUDA graph gets one dependency graph. Dynamic shapes become several graphs, not one graph with a runtime branch.
+    \item Frameworks without CUDA Graph can record a trace and replay it under stream capture. That tool is preprocessing, not the online scheduler.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{The graph is a static RAW graph per captured execution, plus the byte size of each edge.}
+  \src{Sec.~III-A. ``DDG'' is the paper's term for this graph.}
+\end{frame}
+
+% ----- SLIDE 14 -----
+\begin{frame}[t]{Cross-Iteration Dependencies and KV State}
+  \smalllabel{Tessera / Analyzer}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item The default graph is intra-iteration. KV cache is written in one iteration and read in a later one.
+    \item The analyzer flags those buffers by profiling more than one iteration.
+    \item At runtime each GPU keeps a replica. Only the delta is copied, asynchronously.
+    \item Two NCCL communicators separate this background copy from the latency-critical cut-edge transfers. Dependency traffic gets the higher class.
+    \item The paper says delta replication is under 0.1\% of latency, citing prior prefill/decode work rather than a new Tessera measurement.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{KV state is replicated and updated in the background. It is not a cut edge on the per-iteration critical path.}
+  \src{Sec.~III-A and Sec.~IV. The 0.1\% figure is attributed to prior work [9], [10].}
+\end{frame}
+
+% ----- SLIDE 15 -----
+\begin{frame}[t]{Planner Inputs, Decisions, and Objectives}
+  \smalllabel{Tessera / Planner}\par
+  \vspace{.06cm}
+  {\centering\footnotesize
+  \begin{tabular}{ll}\toprule
+    Input & Meaning\\\midrule
+    \(G\), \(K\), \(E\) & GPUs, kernels, and RAW edges\\
+    \(t_{k,g}\) & Profiled latency of kernel \(k\) on GPU \(g\)\\
+    \(d_{ij}\) & Bytes on the edge from kernel \(i\) to \(j\)\\
+    \(bw_{u,g}\), \(\ell_{u,g}\) & Bandwidth and base latency between GPUs \(u\) and \(g\)\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.08cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.05cm}
+    \item Decision: binary \(x_{k,g}\). Each kernel is placed on exactly one GPU.
+    \item Throughput objective, for offline batches: minimize the slowest GPU's stage time, assuming communication can overlap computation.
+    \item Latency objective, for a lightly loaded online request: minimize kernel time plus transfer time along the cut, with no overlap credit.
+  \end{itemize}
+  \vspace{.04cm}\takeaway{Same graph, two objectives. The monitor chooses which solved policy to run.}
+  \src{Sec.~III-B, Table II. Symbols are the paper's; the overlap remark is the surrounding prose.}
+\end{frame}
+
+% ----- SLIDE 16 -----
+\begin{frame}[t]{Offline Throughput-Oriented MILP}
+  \smalllabel{Tessera / Planner}\par
+  \vspace{.08cm}
+  \[
+    \sum_{g\in G} x_{k,g}=1,
+    \qquad
+    T_g=\sum_{k\in K} t_{k,g}\,x_{k,g},
+    \qquad
+    W_g=\max(T_g,M_g),
+    \qquad
+    \min \max_{g\in G} W_g.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item \(T_g\) is compute time on GPU \(g\). \(M_g\), on the next slide, is communication time into \(g\).
+    \item \(W_g\) is the slower of the two. Steady-state throughput is then one request per \(\max_g W_g\).
+    \item This is the offline objective. It is the wrong objective when too few requests are in flight to hide transfers.
+    \item Gurobi solves it offline. A reported case, GPT-oss 20B on A100+L40s, has about 500 kernels and finishes one graph in about 20 ms.
+  \end{itemize}
+  \vspace{.04cm}\takeaway{The MILP balances GPUs by minimizing the slowest stage. It does not maximize a sum of kernel speeds.}
+  \src{Sec.~III-B. The 20 ms figure is for \(|G|=2\), \(|K|\approx 500\); all patterns take about 5 s.}
+\end{frame}
+
+% ----- SLIDE 17 -----
+\begin{frame}[t]{Communication and Load-Balancing Constraints}
+  \smalllabel{Tessera / Planner}\par
+  \vspace{.06cm}
+  \[
+    c^{u,g}_{ij}=\ell_{u,g}+\frac{d_{ij}}{bw_{u,g}},
+    \qquad
+    M_g=\sum_{(i,j)\in E}\sum_{u\in G\setminus\{g\}} c^{u,g}_{ij}\,y^{u,g}_{ij}.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item \(y^{u,g}_{ij}=x_{i,u}x_{j,g}\) is 1 when the producer is on \(u\) and the consumer is on \(g\). The product is linearized with the standard Boolean replacement.
+    \item Load balance is not a separate variance constraint. Minimizing \(\max_g W_g\) already penalizes the busiest GPU.
+    \item Per-GPU memory capacity is absent. At initialization every GPU receives a full copy of the weights.
+    \item Offline, once the policy is fixed, unused weight buffers can be reclaimed. The paper does not report that reclamation in the evaluation tables.
+  \end{itemize}
+  \vspace{.04cm}\takeaway{Communication is bytes over profiled bandwidth, plus a base latency. Memory is a runtime caveat, not a constraint.}
+  \src{Sec.~III-B and Sec.~IV. Linearization cites Nemhauser and Wolsey.}
+\end{frame}
+
+% ----- SLIDE 18 -----
+\begin{frame}[t]{Online Latency-Oriented Scheduling}
+  \smalllabel{Tessera / Planner}\par
+  \vspace{.08cm}
+  {\footnotesize Under low load the pipeline cannot hide transfers. The objective adds kernel time and cut-edge transfer time:}\par
+  \[
+    \min \sum_{k,g} t_{k,g}x_{k,g}
+    +\sum_{(i,j)}\sum_{u}\sum_{g\neq u} c^{u,g}_{ij}\,y^{u,g}_{ij}.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.05cm}
+    \item There is no \(\max(T,M)\) here. Overlap is not assumed.
+    \item The same Gurobi solve is offline. Workers only look up the stored policy.
+    \item If communication is expensive, this objective keeps dependent kernels on the same GPU. Fig.~11 shows that behavior at 25 Gb/s.
+  \end{itemize}
+  \vspace{.04cm}\takeaway{Latency mode shortens one request's critical path. It is not the throughput MILP with a different label.}
+  \src{Sec.~III-B. The sum is the paper's low-load decomposition, compacted for the slide.}
+\end{frame}
+
+% ----- SLIDE 19 -----
+\begin{frame}[t]{Pipelining Across Requests}
+  \smalllabel{Tessera / Execution}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item Without a pipeline, a GPU that waits on a remote buffer sits idle. The paper's later drill-down finds about half the optimal throughput in that mode.
+    \item Each in-flight request gets its own CUDA stream. A blocked stream does not stop another request's ready kernels.
+    \item Equal-priority streams tend to reach their transfers together, so the GPU still goes idle.
+    \item Later requests get a lower CUDA stream priority. The hardware scheduler then prefers earlier requests and staggers the transfers.
+    \item ``Optimal'' in that drill-down means zero communication overhead, not a better kernel algorithm.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{The pipeline hides transfers only when several requests are in flight and they are not synchronized.}
+  \src{Sec.~III-C. The half-throughput and priority results are measured in Sec.~V-D, Fig.~9.}
+\end{frame}
+
+% ----- SLIDE 20 -----
+\begin{frame}[t]{GPU Worker Execution}
+  \smalllabel{Tessera / Execution}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+        \item Fig.~5 is GPU B from the six-kernel example. Compute and communication use different streams.
+        \item \(R_{ij}\) receives kernel \(i\)'s output for kernel \(j\). \(S_{ij}\) sends it. CUDA events order the two streams.
+        \item Receives are posted before the consumer kernel. Sends are posted after the producer if the edge is cut.
+        \item Sends and receives are GPU-side kernels via NCCL's GPUDirect Async (IBGDA), so the CPU is not on the critical path.
+      \end{itemize}}
+      \vspace{.04cm}\takeaway{A worker runs its own kernels and the cut-edge messages. It does not run the whole model.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Tessera/Tessera_Figure_05_GPU_Worker_Execution.png}{4.15cm}{Figure 5}
+    \end{column}
+  \end{columns}
+  \src{Sec.~III-C, Fig.~5. PDF p.~6.}
+\end{frame}
+
+% ----- SLIDE 21 -----
+\begin{frame}[t]{Overlapping Communication and Computation}
+  \smalllabel{Tessera / Execution}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item Tessera intercepts CUDA Graph creation, partitions nodes onto GPUs, and embeds send/recv kernels in each subgraph.
+    \item Events that order the compute and communication streams become ordinary edges inside that subgraph.
+    \item Each worker keeps a table from the original graph handle to the policy and the subgraphs. Launch picks the row; it does not rebuild the graph.
+    \item Collectives of an existing tensor-parallel group stay on the original homogeneous GPUs. Tessera only reschedules compute kernels inside a heterogeneous pair.
+    \item That composition is how the 8 B200 + 8 H100 experiment is run. It is not a claim that every collective was rewritten.
+  \end{itemize}
+  \vspace{.05cm}\takeaway{Graph replay is the fast path. The MILP has already finished before the first replay.}
+  \src{Sec.~III-C and Sec.~IV. TP composition is also used in Sec.~V-C.}
+\end{frame}
+
+% ----- SLIDE 22 -----
+\begin{frame}[t]{Online Monitor Signals}
+  \smalllabel{Tessera / Runtime}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item The monitor records per-request latency, communication time, and per-kernel-group latency.
+    \item A kernel group is the run of kernels between two consecutive communication operations. Individual kernels are not timed online.
+    \item \(\bar L_{\mathrm{req}}\) is average end-to-end request latency. \(\bar L_{\mathrm{exec}}\) sums compute and communication and excludes queueing.
+    \item The pressure signal is the ratio \(\bar L_{\mathrm{req}}/\bar L_{\mathrm{exec}}\).
+    \item A low ratio means little queueing, so the latency policy is preferred. A high ratio means queueing dominates, so the throughput policy is preferred.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{The switch looks at queueing pressure, not at a hand-named GPU counter.}
+  \src{Sec.~III-D. Kernel group is the paper's definition.}
+\end{frame}
+
+% ----- SLIDE 23 -----
+\begin{frame}[t]{Policy Switching and Sensitivity Parameters}
+  \smalllabel{Tessera / Runtime}\par
+  \vspace{.10cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{WINDOW \(W\)}{How often to decide}{The ratio is computed at window boundaries. The chosen defaults are \(W=300\) ms and \(\beta=1.5\).}
+      \vspace{.12cm}
+      \stepcard{THRESHOLD \(\beta\)}{When queueing wins}{Crossing \(\beta\) selects the throughput policy. Staying below it selects the latency policy.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{SWITCH COST}{About 30 ms}{Workers synchronize on an iteration boundary. The 30 ms is the paper's reported stall, not a bound.}
+      \vspace{.12cm}
+      \stepcard{WHERE IT WAS TUNED}{One trace}{GPT-oss 20B, 360 s of the Azure Conversation trace. Fig.~10 is the sensitivity plot.}
+    \end{column}
+  \end{columns}
+  \vspace{.14cm}\takeaway{\(W\) and \(\beta\) are the only two knobs the paper names. Aggressive and lazy settings both increase latency.}
+  \src{Sec.~III-D and Sec.~V-D. Numeric penalties are on the sensitivity slide.}
+\end{frame}
+
+% ----- SLIDE 24 -----
+\begin{frame}[t]{Implementation Stack}
+  \smalllabel{Tessera / Implementation}\par
+  \vspace{.12cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{GPU WORKER}{About 3k lines}{C++ and CUDA. Integrated with vLLM and PyTorch. Evaluation uses vLLM v0.18.0.}
+      \vspace{.14cm}
+      \stepcard{ANALYZER}{About 2k lines}{Python. PTX injection, RAW construction, and the preprocessing capture tool.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{SOLVER}{Gurobi, offline}{One graph at \(|G|=2\), \(|K|\approx 500\): about 20 ms. Enumerating patterns: about 5 s. Not on the request path.}
+      \vspace{.14cm}
+      \stepcard{FALLBACK}{No disaggregation}{Indirect global accesses that are not launch arguments stay on one GPU. The paper treats this as rare for PyTorch and vLLM.}
+    \end{column}
+  \end{columns}
+  \vspace{.14cm}\takeaway{The line counts are the paper's. They are not a complexity comparison with Helix.}
+  \src{Sec.~IV and the solver paragraph in Sec.~III-B.}
+\end{frame}
+
+% ----- SLIDE 25 -----
+\begin{frame}[t]{Communication Backends and Interconnects}
+  \smalllabel{Tessera / Implementation}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.07cm}
+    \item The communication backend in the evaluation is NCCL. Cut-edge sends use GPU-initiated IBGDA.
+    \item Local pairs: A100+L40s, H100+RTX Pro 6000, and B200+H100. Each GPU has a 200 Gb/s RDMA NIC. The paper does not say these pairs use NVLink.
+    \item Cluster, inside a homogeneous high-end group: NVLink. Across nodes: 200 Gb/s for 2 A100 + 1 L40s, and 400 Gb/s for 8 B200 + 8 H100.
+    \item Fig.~4 draws NVLink between high-end GPUs and RDMA toward general-purpose GPUs. That is the design diagram, not a per-experiment wiring list.
+    \item The paper explicitly does not evaluate AMD GPUs, NPUs, PCIe-only hosts, or Ethernet.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{Say NVLink only for the homogeneous group inside the cluster experiments.}
+  \src{Sec.~IV and Sec.~V-A. ``Respectively'' in the bandwidth sentence maps onto the two cluster setups.}
+\end{frame}
+
+% ----- SLIDE 26 -----
+\begin{frame}[t]{Evaluation Methodology}
+  \smalllabel{Tessera / Evaluation}\par
+  \vspace{.04cm}
+  {\centering\scriptsize
+  \begin{tabular}{lll}\toprule
+    Family & Model & Offline data\\\midrule
+    LLM & Llama-3 8B, GPT-oss 20B & Splitwise conversation; median 1020 in / 129 out\\
+    SSM & Mamba-Codestral 7B & Same conversation trace\\
+    MLLM & Qwen2.5-VL 7B & COCO captions, images resized to \(512\times 512\)\\
+    Diffusion & Stable Diffusion 3.5 & PartiPrompts, \(1024\times 1024\), 28 denoising steps\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.05cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.04cm}
+    \item Baselines: homogeneous left and right GPUs; PD follows DistServe; AF follows MegaScale-Infer. PD does not apply to diffusion. AF does not apply to SSM or diffusion.
+    \item Engine: vLLM v0.18.0, continuous batching on, DVFS off. Each run is repeated ``multiple times''; variance is below 1\%.
+    \item Throughput is output tokens/s for LLM, SSM, and MLLM. Diffusion is images/min on Fig.~6, which the text also calls requests per minute.
+    \item Online experiments are GPT-oss 20B only: Poisson arrivals, plus one Azure trace for the monitor.
+  \end{itemize}
+  \vspace{.03cm}\takeaway{A red X on Fig.~6 means the baseline does not apply. It is not a zero-throughput measurement.}
+  \src{Sec.~V-A. Normalized online latency is end-to-end time divided by output tokens.}
+\end{frame}
+
+% ----- SLIDE 27 -----
+\begin{frame}[t]{Offline Throughput}
+  \smalllabel{Tessera / Results}\par
+  \vspace{.02cm}
+  \figureplaceholder{Tessera/Tessera_Figure_06_Offline_Throughput.png}{3.15cm}{Figure 6}
+  {\centering\hint{Fig.~6. Three pairs. Left axis: tokens/s. Right axis, SD only: images/min. Red X: method does not apply.}\par}
+  \vspace{.04cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.04cm}
+    \item Against PD disaggregation: \(1.5\times\) on average, up to \(2.3\times\). Against AF disaggregation: \(1.35\times\) on average, up to \(1.7\times\).
+    \item The paper does not assign those maxima to one named bar. Do not read a single panel as ``the'' \(2.3\times\).
+    \item Gains are attributed to scheduling kernels that a phase or a block would have kept together.
+  \end{itemize}
+  \vspace{.03cm}\takeaway{The \(2.3\times\) is the largest reported ratio against PD here, not a typical per-request speedup.}
+  \src{Sec.~V-B, Fig.~6. PDF p.~8. Five workloads times three pairs; some baseline bars are absent.}
+\end{frame}
+
+% ----- SLIDE 28 -----
+\begin{frame}[t]{Online Latency under a Token SLO}
+  \smalllabel{Tessera / Results}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+        \item GPT-oss 20B, Poisson arrivals, three pairs. Y-axis: end-to-end latency per output token.
+        \item The red line is the SLO, 50 ms/token. This is not DistServe's goodput definition.
+        \item At low rate, Tessera's normalized latency is \(1.3\times\) and \(1.2\times\) lower than PD and AF.
+        \item Under the SLO, Tessera holds up to \(1.3\times\) the request rate of the best baseline.
+        \item The abstract's ``\(1.3\times\) more requests under the same SLO'' is this comparison.
+      \end{itemize}}
+      \vspace{.04cm}\takeaway{Low-rate latency and high-rate SLO capacity are both reported. They are different operating points.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Tessera/Tessera_Figure_07_Online_Latency.png}{4.55cm}{Figure 7}
+    \end{column}
+  \end{columns}
+  \src{Sec.~V-B, Fig.~7. PDF p.~8. Online scope is this one LLM.}
+\end{frame}
+
+% ----- SLIDE 29 -----
+\begin{frame}[t]{Scaling with Cluster Size}
+  \smalllabel{Tessera / Results}\par
+  \vspace{.02cm}
+  \figureplaceholder{Tessera/Tessera_Figure_08_Cluster_Scale_Throughput.png}{2.65cm}{Figure 8}
+  {\centering\hint{Fig.~8. Offline tokens/s. (a) 2 A100 + 1 L40s. (b) 8 B200 + 8 H100, kernel split inside each TP rank.}\par}
+  \vspace{.03cm}
+  {\centering\scriptsize
+  \begin{tabular}{lccc}\toprule
+    Setup & PD & AF & Tessera\\\midrule
+    GPT-oss 20B, 2 A100 + 1 L40s & 2987 & 3144 & 4253\\
+    Qwen-3 235B, 8 B200 + 8 H100 & 4367 & 4912 & 6799\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.03cm}
+  {\scriptsize PD on (a) uses the L40s for prefill and each A100 as a decode instance. AF runs attention on the two A100s at TP\,=\,2 and FFN on the L40s. The paper summarizes both setups as \(1.5\times\) vs.\ PD and \(1.4\times\) vs.\ AF.}\par
+  \vspace{.02cm}\takeaway{These are offline cluster throughputs. Qwen-3 235B is not in the single-pair Fig.~6 suite.}
+  \src{Sec.~V-C, Fig.~8. PDF p.~9. Units are tokens/s.}
+\end{frame}
+
+% ----- SLIDE 30 -----
+\begin{frame}[t]{Pipeline Effectiveness}
+  \smalllabel{Tessera / Drill-down}\par
+  \vspace{.02cm}
+  \figureplaceholder{Tessera/Tessera_Figure_09_Pipeline_Effectiveness.png}{2.55cm}{Figure 9}
+  {\centering\hint{Fig.~9. GPT-oss 20B, offline. The caption does not name the GPU pair.}\par}
+  \vspace{.03cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.03cm}
+    \item No pipeline: 1443 tokens/s, about half of the 2734 tokens/s zero-communication reference.
+    \item Pipeline: 2123 tokens/s, \(1.47\times\) the no-pipeline bar. Priority: 2641 tokens/s, 96.6\% of that reference.
+    \item On the bottleneck GPU, communication idle time falls from nearly half to under 4\%.
+    \item 2641 tokens/s matches Fig.~11's 200 Gb/s A100+L40s bar. That match is our cross-figure reading, not a caption statement.
+  \end{itemize}
+  \vspace{.02cm}\takeaway{Priority matters because it keeps transfers from lining up. The model does not assume the idle time is zero.}
+  \src{Sec.~V-D, Fig.~9. PDF p.~9.}
+\end{frame}
+
+% ----- SLIDE 31 -----
+\begin{frame}[t]{Online Monitor Sensitivity}
+  \smalllabel{Tessera / Drill-down}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.06cm}
+        \item GPT-oss 20B, 360 s Azure trace. Left: sweep \(W\) at \(\beta=1.5\). Right: sweep \(\beta\) at \(W=300\) ms.
+        \item \(W=30\) ms or \(\beta=1.1\): frequent switches, latency up to \(1.32\times\).
+        \item \(W=1.5\) s or \(\beta=3.0\): slow reaction, latency up to \(1.55\times\).
+        \item Each switch stalls workers for about 30 ms at an iteration boundary.
+        \item The chosen point is \(W=300\) ms, \(\beta=1.5\). It is the best tradeoff in this sweep, not a universal constant.
+      \end{itemize}}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Tessera/Tessera_Figure_10_Online_Monitor_Sensitivity.png}{4.70cm}{Figure 10}
+    \end{column}
+  \end{columns}
+  \vspace{.02cm}\takeaway{Both too many switches and too few switches raise latency on this trace.}
+  \src{Sec.~V-D, Fig.~10. PDF p.~10.}
+\end{frame}
+
+% ----- SLIDE 32 -----
+\begin{frame}[t]{Network Bandwidth and MILP Analysis}
+  \smalllabel{Tessera / Drill-down}\par
+  \vspace{.02cm}
+  \figureplaceholder{Tessera/Tessera_Figure_11_Network_Bandwidth_and_MILP.png}{2.15cm}{Figure 11}
+  {\centering\hint{Fig.~11. (a) GPT-oss 20B, A100+L40s. (b) Gurobi time vs.\ kernels per graph.}\par}
+  \vspace{.02cm}
+  {\footnotesize\textbf{(a)} Throughput at 200 / 100 / 50 / 25 Gb/s: 2641 / 2610 / 2550 / 2490 tokens/s. The 25 Gb/s drop is under 6\%. Normalized latency: 1.00 / 1.03 / 1.08 / 1.15, still below the homogeneous A100 line at 1.18.}\par
+  \vspace{.02cm}
+  {\footnotesize\textbf{(b)} Text, 2 GPUs: 0.07 s at 200 kernels and 0.43 s at 1000 kernels. A DeepSeek-V3 671B forward graph of about 1500 kernels solves within 1 s. That is a solver stress test, not a serving result. Time grows with the number of GPU types; repeated layers are solved once.}\par
+  \vspace{.02cm}\takeaway{At 25 Gb/s the offline pipeline still hides most of the extra delay. The latency policy moves work off the slow cut.}
+  \src{Sec.~V-D, Fig.~11. PDF p.~10. Do not read panel (b) as an end-to-end DeepSeek result.}
+\end{frame}
+
+% ----- SLIDE 33 -----
+\begin{frame}[t]{Cost Efficiency of Heterogeneous Pairing}
+  \smalllabel{Tessera / Results}\par
+  \vspace{.06cm}
+  {\footnotesize\textbf{Table III.} Perf/\$: mean throughput over the five workloads, divided by rental cost, then normalized to the left GPU alone. A pair pays for both GPUs.}\par
+  \vspace{.05cm}
+  {\centering\footnotesize
+  \begin{tabular}{lccc}\toprule
+    System & A100+L40s & H100+RTX Pro 6000 & B200+H100\\\midrule
+    Homogeneous left & 1.00 & 1.00 & 1.00\\
+    Homogeneous right & 1.18 & 2.01 & 0.78\\
+    PD disaggregation & 0.87 & 1.00 & 0.70\\
+    AF disaggregation & 1.02 & 1.07 & 0.74\\
+    Tessera & 1.21 & 1.64 & 1.01\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.06cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.04cm}
+    \item Vs.\ PD: \(1.5\times\) cost efficiency on average, up to \(1.6\times\). Vs.\ AF: \(1.4\times\) on average, up to \(1.5\times\).
+    \item On H100+RTX Pro 6000, Tessera is \(1.64\times\) the Perf/\$ of H100 alone and \(2.3\times\) its throughput, above two H100s, at price \(2.9+1.2\) versus \(2\times 2.9\).
+  \end{itemize}
+  \vspace{.04cm}\takeaway{The pair can beat a single expensive GPU on Perf/\$. The prices are Table I's relative rentals, not a new quote.}
+  \src{Sec.~V-B, Table III. The \(2.3\times\) sentence is the cost-efficiency paragraph, not the PD maximum.}
+\end{frame}
+
+% ----- SLIDE 34 -----
+\begin{frame}[t]{Generality Across Model Families}
+  \smalllabel{Tessera / Results}\par
+  \vspace{.06cm}
+  {\centering\footnotesize
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.3cm}*{2}{>{\raggedright\arraybackslash}X}@{}}\toprule
+    What was run & Models & What it does not show\\\midrule
+    Offline pairs & Llama-3 8B, GPT-oss 20B, Qwen2.5-VL 7B, Mamba-Codestral 7B, SD 3.5 & PD or AF is inapplicable on some families\\
+    Online SLO & GPT-oss 20B only & Latency for SSM, MLLM, or diffusion\\
+    Cluster, offline & GPT-oss 20B and Qwen-3 235B & The single-pair Fig.~6 suite\\
+    Solver stress test & DeepSeek-V3 671B, one forward graph & End-to-end serving\\\bottomrule
+  \end{tabularx}\par}
+  \vspace{.08cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.05cm}
+    \item AF needs an attention block, so Mamba and diffusion are out. PD needs a prefill/decode split, so diffusion is out.
+    \item The motivation profiles say ``Mamba 7B''; the evaluated SSM is Mamba-Codestral 7B. Do not merge the two names.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{``Four families'' means the offline pair study. Online evidence is one LLM.}
+  \src{Sec.~II-B, Sec.~V-A--V-D. DeepSeek-V3 is the solver paragraph in Sec.~V-D.}
+\end{frame}
+
+% ----- SLIDE 35 -----
+\begin{frame}[t]{Tessera vs.\ ThunderServe, Hetis, and Helix}
+  \smalllabel{Cross-paper comparison}\par
+  \vspace{.03cm}
+  {\centering\scriptsize
+  \renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{1.55cm}*{4}{>{\raggedright\arraybackslash}X}@{}}\toprule
+    & ThunderServe & Hetis & Helix & Tessera\\\midrule
+    Granularity & Prefill / decode phase & Dense module vs.\ head & Layer range and path & CUDA kernel\\
+    Decision & Group, phase, route & Primary set, then heads & Placement, then a path & Kernel-to-GPU map\\
+    Time scale & Offline + light reschedule & Offline + online re-dispatch & Once per cluster + per request & Offline MILP + window \(W\)\\
+    State moved & KV at phase boundary & QKV and KV shards & Tokens and activations & Cut tensors; KV delta\\
+    Adaptation & Phase role, failure & Re-dispatch, migration & KV mask; path reused & Switch on \(\bar L_{\mathrm{req}}/\bar L_{\mathrm{exec}}\)\\
+    Environment & Heterogeneous cloud & Local heterogeneous cluster & Heterogeneous, incl.\ geo & NVIDIA pairs; NVLink + RDMA\\
+    Models & LLM & LLM & LLaMA 30B / 70B & LLM, SSM, MLLM, diffusion\\
+    Main limit & Heuristic phase search & Head groups; local net & One-shot plan; geo simulated & No memory constraint in MILP\\\bottomrule
+  \end{tabularx}\par}
+  \vspace{.04cm}\takeaway{Kernel splitting is a different cut from phase, head, or layer placement. Do not rank the papers by their largest ratio.}
+  \src{Our synthesis. Tessera cells are this PDF. Other cells come from each system's own paper.}
+\end{frame}
+
+% ----- SLIDE 36 -----
+\begin{frame}[t]{Limitations and Threats to Validity}
+  \smalllabel{Tessera / Discussion}\par
+  \vspace{.08cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item The MILP ignores per-GPU memory. Full weight replication is conservative, and the paper does not show reclamation in the result tables.
+    \item Online latency, the SLO, and the monitor sweep are GPT-oss 20B. Diffusion and Mamba are offline pair results.
+    \item The \(<0.1\%\) delta-replication cost is cited from prior PD work. The \(<4\%\) idle time is Tessera's own Fig.~9.
+    \item Indirect PTX accesses fall back to one GPU. The paper limits the study to NVIDIA.
+    \item Fig.~9's caption does not name the GPU pair. A policy switch stalls about 30 ms.
+    \item There is no shared-hardware comparison against Helix, Hetis, or ThunderServe.
+  \end{itemize}
+  \vspace{.05cm}\takeaway{Generality is real for offline kernels. It is not yet a latency result for every family.}
+  \src{Sec.~IV, Sec.~V, and Sec.~VII. The cross-paper gap is ours, not a claim in Tessera.}
+\end{frame}
+
+% ----- SLIDE 37 -----
+\begin{frame}[t]{Conclusion}
+  \smalllabel{Tessera / Conclusion}\par
+  \vspace{.12cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.32\textwidth}
+      \stepcard{1}{Schedule kernels}{Phase and block labels still mix kernels that prefer different GPUs. The kernel is the unit Tessera places.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{2}{Make the split correct}{PTX ranges build a RAW graph. The throughput MILP overlaps compute with communication; the latency MILP does not.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{3}{What was measured}{Up to \(2.3\times\) throughput vs.\ PD and up to \(1.6\times\) Perf/\$. A pair can beat two H100s on the reported H100+RTX setup.}
+    \end{column}
+  \end{columns}
+  \vspace{.16cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.05cm}
+    \item The same system serves models where PD or AF does not apply, in the offline pair study.
+    \item The monitor's \(1.3\times\) SLO result is GPT-oss 20B at 50 ms/token, not a goodput number under another paper's definition.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{Tessera treats GPU diversity as something to schedule per kernel, with an offline plan and a small online switch.}
+  \src{Sec.~VII, with ratios from Sec.~V-B rather than from the abstract alone.}
+\end{frame}
+
+% ----- SLIDE 38 -----
+\begin{frame}
+  \vfill
+  \begin{center}
+    {\fontsize{32}{38}\selectfont\bfseries\color{Ink}Questions \& Discussion}\par
+    \vspace{.32cm}
+    {\large\color{Accent}Kernel graph \quad / \quad two MILP objectives \quad / \quad what was actually served}\par
+    \vspace{.38cm}
+    {\small\color{Muted}Tessera (kernel) \quad next to phase, head, and layer-pipeline systems}
+  \end{center}
+  \vfill
+\end{frame}
+
+\end{document}

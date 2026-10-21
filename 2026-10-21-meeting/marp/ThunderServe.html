@@ -194,7 +194,7 @@ section.full-algorithm .source { font-size: 14px; }
 <div class="author">
 <p>Yu-Jui Liang</p>
 <p>Advisor: Hsiang-Yun Cheng</p>
-<p>National Taiwan University | 21 Oct 2026</p>
+<p>National Taiwan University | Academia Sinica | 21 Oct 2026</p>
 </div>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="2" data-paginate="true" data-class="text-slide" data-theme="default" data-style="section { background: #FBFCFE; color: #243748; font-family: Arial, &quot;Noto Sans TC&quot;, sans-serif; font-size: 25px; padding: 104px 46px 40px; justify-content: flex-start; line-height: 1.32; }
@@ -9607,7 +9607,9 @@ Prefill 最後選的是預測 latency 最低的候選配置；decode 則選預�
 
 第 1–4 行先讀入 GPU 分組、cluster 和模型資訊，建立結果清單，再逐一處理每個 group。每個 group 都有自己的 plan_list，用來記錄候選配置和分數。
 
-第 5–7 行開始搜尋 TP／PP。TP 從 1 試到 T_i；T_i 是這個 group 裡，數量最少的 GPU 型號有幾張。PP 從 1 試到該 group 的 GPU 數除以 T_i，這個範圍照原文保留。第 8–11 行針對每組 TP／PP，先用 DP 找 pipeline 路徑，再依 GPU 記憶體和算力調整 layer partition。
+第 5–7 行開始搜尋 TP／PP。TP 從 1 試到 T_i；T_i 是這個 group 裡，數量最少的 GPU 型號有幾張。作者限制 TP 使用同型號 GPU，再以 T_i 作為共同上限來縮小搜尋空間，這是 heuristic，不是 TP 的必然限制。PP 從 1 試到該 group 的 GPU 數除以 T_i；若只考慮 GPU 數量，上限應隨當前 TP 計算，因此原文的固定上限較保守，但沒有進一步解釋原因。
+
+第 8–11 行針對每組 TP／PP，先用 DP 找 pipeline 路徑，再依 GPU 記憶體和算力調整 layer partition。
 
 第 12–16 行依 phase 計算分數 C：prefill 用預測 latency，decode 用預測 throughput。第 17 行把分數和 plan 一起放進 plan_list。此時還在搜尋候選方案，尚未選出這個 group 的最終配置。
 
@@ -9619,37 +9621,55 @@ Prefill 最後選的是預測 latency 最低的候選配置；decode 則選預�
 
 Appendix B 把 decode throughput 估計成這組 GPU 能承載的最大 total batched token 數，除以 decode latency。完整的 29 行保留了控制流程，但 DP 和 Pipeline_Partition 的內部實作仍沒有在這段 pseudocode 裡展開。
 
-來源：Appendix B、Algorithm 2 第 18–29 行，論文第 13 頁；throughput 估計說明見第 14 頁。</p></div><div class="bespoke-marp-note" data-index="17" tabindex="0"><p>SLIDE 18</p><p>每個 replica 的 parallel configuration 選好之後，下一個問題是 request 應該走哪一條 prefill-to-decode 路徑。
+來源：Appendix B、Algorithm 2 第 18–29 行，論文第 13 頁；throughput 估計說明見第 14 頁。</p></div><div class="bespoke-marp-note" data-index="17" tabindex="0"><p>SLIDE 18</p><p>每個 replica 的 parallel configuration 選好之後，下一個問題是：request 應該經過哪一組 Prefill → Decode 路徑？這裡的 replica 是一份部署好的模型副本，可以由多張 GPU 共同執行，不一定等於一台 instance。
 
-看這張圖，左邊 coordinator 可以把 request 分給不同的 prefill replicas。每一個 prefill replica 做完後，又可以把 KV cache 送往不同的 decode replicas。因此這裡不是固定一對一配對，而是有很多可能的組合。
+看這張圖，左邊 coordinator 可以把 request 分給不同的 Prefill replicas；Prefill 做完後，又可以把 KV cache 送往不同的 Decode replicas。因此有很多可能的 pairing。我們先回答「每一組 pairing 好不好」，之後才決定實際流量怎麼分配。
 
-ThunderServe 使用 DistServe 的 inference task simulator，再把 KV cache communication cost 加進去，估計每一組 prefill、decode 配對的 SLO attainment。這些分數整理成矩陣 D，其中 D 下標 i、j，就是走第 i 個 prefill 和第 j 個 decode 的預測表現。
+這裡用來評估好壞的指標是 SLO attainment。它不是單純的 latency，而是「有多少比例的 requests 可以在預先設定的 latency deadline 內完成」。更精確地說，要看目前評估的是哪一種時間要求：TTFT，也就是 Time To First Token，關心多快拿到第一個 token；TPOT，也就是 Time Per Output Token，關心後續每個 output token 的生成時間；E2E，也就是 End-to-End latency，關心整個 request 完成的時間。達成率是符合所選 SLO 時間要求的 request 比例，不是把三種 latency 混成一個數字。
 
-重點是 routing 不能只看 GPU 還有沒有空，也要看兩邊的計算能力、工作負載，以及中間的 KV 傳輸成本。下一頁先拆開這個通訊成本怎麼估。
+ThunderServe 沿用 previous work DistServe 的 inference task simulator，並額外考慮 KV cache communication cost，預測每一組 Prefill i → Decode j 的 SLO attainment。這些結果整理成 performance／SLO attainment score matrix D。D_ij 表示在給定 workload 與 SLO deadline 的條件下，若 request 使用 Prefill replica i，再送到 Decode replica j，模擬器預測可以滿足該 SLO 的 request 比例。
 
-來源：Section 3.3、Figure 5，論文第 6 頁。
+例如 D_12 = 0.92，就是在目前 workload 與 deadline 設定下，採用 Prefill 1 → Decode 2 這條路徑的 requests，預測約有 92% 可以符合正在評估的 SLO。這裡的 SLO 可以是 TTFT、TPOT 或 E2E 的時間要求。簡單說，D 是「每條 Prefill → Decode 路徑的預測服務品質評分表」，不是 latency matrix，也不是實際 routing 的流量比例。
 
-備註：Figure 5 的箭頭數值與正文對條件比例 Y 的定義有歧義。圖中從同一 prefill 出發的數值分別加總為 0.6 與 0.4，比較像全體流量占比；正文卻把 Y 定義成條件於該 prefill 的比例。口述以正文定義說明，不把圖上的數值直接當成已正規化的 Y。</p></div><div class="bespoke-marp-note" data-index="18" tabindex="0"><p>SLIDE 19</p><p>論文使用 alpha-beta model，基本概念很簡單：傳輸時間等於啟動一次通訊的固定成本，加上資料量除以頻寬。
+Deadline 不是固定的 1 秒或 2 秒。論文 evaluation 以 A100 的 execution latency 為基準，用不同的 SLO Scale，也就是基準時間的不同倍數，設定 latency deadline，再觀察達成率。反過來，作者也會問：若要求 90% 或 99% 的 requests 滿足 SLO，最小需要多寬鬆的 latency deadline？所以 deadline 是時間門檻，90% 或 99% 則是希望達到的 request 比例。
+
+D 的分數會受到計算能力、workload、執行 latency，以及 KV cache communication cost 影響。下一頁先拆開其中一個重要因素：Prefill 做完後，把 KV cache 搬到 Decode 究竟要多久？
+
+來源：Section 3.3、Figure 5，論文第 6 頁；SLO 定義、SLO Scale 與 90%／99% 目標見 Section 5.1 的 Evaluation metrics。
+
+備註：Figure 5 的箭頭數值與正文對 conditional Y_ij 的定義有歧義。從同一 Prefill 出發的箭頭值分別加總為 0.6 與 0.4，看起來比較像「全體 requests 中走每條完整路徑的比例」，而不是條件於該 Prefill 的比例。口述應以正文對 X、Y 的定義為主，不直接把圖上的箭頭值當成已正規化的 Y。</p></div><div class="bespoke-marp-note" data-index="18" tabindex="0"><p>SLIDE 19</p><p>上一頁先評估每組 pairing 好不好，這頁看其中一個重要因素：Prefill 做完後，把 KV cache 搬到 Decode 要多久。論文使用 alpha-beta model，基本概念很簡單：傳輸時間等於啟動一次通訊的固定成本，加上資料量除以頻寬，也就是 T_comm = alpha_ij + payload / beta_ij。
 
 在這篇的符號裡，alpha 是 network latency，beta 是 bandwidth。這裡要跟著作者的定義看，因為有些文獻會把 beta 定義成每個 byte 的傳輸時間，寫法就會不同。
 
-分子裡的 b 是 batch size，s 是 sequence length，h 是 Transformer block 的 hidden size，N bytes 是每個 KV element 在傳輸時占幾個 bytes。前面的 2 代表 key 和 value 兩份資料。如果 bandwidth 用 bytes per second，那 payload 也要用 bytes；不能把 Gbps 的數字直接當成 GB/s 代進去。
+原文的 payload 寫成 2 × b × s × h × N_bytes。分子裡的 b 是 batch size，s 是 sequence length，h 是 Transformer block 的 hidden size，N bytes 是每個 KV element 在傳輸時占幾個 bytes。前面的 2 代表 key 和 value 兩份資料。如果 bandwidth 用 bytes per second，那 payload 也要用 bytes；不能把 Gbps 的數字直接當成 GB/s 代進去。
 
 不過，原文這個式子沒有明確寫出 layer 數。如果要計算整個模型的 KV cache，還需要考慮 L 個 layers，以及每一層真正的 KV-head width。這一頁下方的完整資料量公式，是根據 tensor 維度補充的說明，不是說原文已經把這些項目都寫出來了。
 
-對一般 multi-head attention，總 KV-head width 通常等於 hidden size；如果是 grouped-query attention，就不能直接用完整 hidden size 代替 KV 的寬度。此外，TP、PP 分片會影響每條 link 實際要傳多少資料。因此實作時要估的是實際傳輸的 shards，再加上必要的量化 metadata，而不是只照抄一個總量公式。
+對一般 multi-head attention，總 KV-head width 通常等於 hidden size；如果是 grouped-query attention，也就是 GQA，就不能直接用完整 hidden size 代替 KV 的寬度。此外，TP、PP 分片會影響每條 link 實際要傳多少資料。因此實作時要估的是實際傳輸的 shards，再加上必要的量化 metadata，而不是只照抄一個總量公式。
 
-來源：Section 3.3、Equation 1，論文第 6 頁。全模型資料量與分片注意事項為補充解釋。</p></div><div class="bespoke-marp-note" data-index="19" tabindex="0"><p>SLIDE 20</p><p>有了 D 矩陣，就可以描述 routing 的目標。X_i 是所有 incoming requests 裡，有多少比例先送到 prefill i。Y_ij 則是已經送到 prefill i 的 request 裡，有多少比例接著送到 decode j。
+最後把它接回 D：KV cache communication time 並不是最終 routing objective 本身，而是影響 Prefill i → Decode j 這條路徑的整體 latency，進一步影響 request 是否超過所選 SLO 的 deadline，也就影響 D_ij 的預測達成率。可以記成「KV 傳輸成本 → latency → 是否超過 SLO deadline → D_ij」。對不同 SLO 指標的影響，仍要依其計時範圍判斷，不能說傳輸時間會等量加到 TTFT、TPOT 與 E2E 上。
 
-因此，X_i 乘上 Y_ij，就是所有 requests 當中走 i 到 j 這條路的比例。再乘上這條路的預測 SLO attainment，最後全部加總，就是作者想最大化的加權分數。
+來源：Section 3.3、Equation 1，論文第 6 頁。全模型資料量與分片注意事項為補充解釋。</p></div><div class="bespoke-marp-note" data-index="19" tabindex="0"><p>SLIDE 20</p><p>前兩頁回答了「每組 pairing 的預測表現如何」，也說明 KV 傳輸成本怎麼影響評分。現在才要回答「實際流量應該怎麼分配」。D 是評分表；X 和 Y 才是 routing proportion。
 
-作者把這件事描述成 two-stage transportation problem，並且說可以用 linear programming 求解。不過這裡要把「想法」和「論文寫出的完整數學形式」分開看。以目前印出的式子來說，X 和 Y 都是變數，兩者相乘是 bilinear，不是直接就成為 linear objective。另外，Y 的 row-sum constraint 少了等號和右側，式子裡也沒有明確列出 replica 的容量限制。
+先看第一階段的向量 X。X_i 是所有 incoming requests 中，有多少比例先送到 Prefill replica i。例如 X_1 = 0.6、X_2 = 0.4，意思是用 100 個 requests 來看，60 個先到 Prefill 1，40 個先到 Prefill 2。因此 sum_i X_i = 1，也就是所有流量都要分配出去。
 
-投影片現在把原文印出的約束也放上來：所有 X_i 加總等於 1；每個 i 的 Y_ij 對 j 加總那一項沒有等號；X 和 Y 都要非負。所以報告時我會說，它用 transportation formulation 來決定 routing；但如果要重現 solver，只靠這個印出的式子還不夠。這是論文描述不完整的地方，不能在這裡自行補一套限制，再當成作者實際做法。
+第二階段的矩陣 Y 是 conditional routing proportion。Y_ij 的意思是：「已經送到 Prefill i 的 requests 裡，有多少比例接著送到 Decode j。」例如剛剛有 60 個 requests 到 Prefill 1，其中 18 個接著送到 Decode 2，那 Y_12 = 18 / 60 = 0.3。注意，這個 30% 的分母是到 Prefill 1 的 60 個 requests，不是全部 100 個。
 
-來源：Section 3.3，論文第 6 頁；數學形式的限制為報告者分析。
+因此，依照條件比例的語意，每個 Prefill i 對應的一整列 Y 應該滿足 sum_j Y_ij = 1。不過原文印出的 constraint 在這裡缺少等號與右側，這是數學表達不完整的地方。我們可以解釋條件比例應有的意思，但不能說論文已經完整寫出了這條約束。
 
-備註：可引入聯合流量 Z_ij = X_i Y_ij，讓目標寫成 sum Z_ij D_ij。但若只要求 Z 非負且總和為 1，又把 D 當成固定分數，最佳化會傾向把流量全放在最高分的配對。合理的負載分配還需要容量、流量與排隊模型之間的關係；原文沒有充分展開，不能宣稱換個變數就已完整重現原方法。</p></div><div class="bespoke-marp-note" data-index="20" tabindex="0"><p>SLIDE 21</p><p>這個例子可以把剛剛的方法串起來。作者用 4 張 A40 和 4 張 3090 Ti 來跑 LLaMA-30B，改變兩個 instances 之間的 bandwidth。
+為了把流量看得更直觀，我們額外引入 Z_ij = X_i Y_ij。Z 是輔助理解用的 joint traffic fraction，不是 ThunderServe 論文原文獨立定義的變數。它表示「所有 incoming requests 中，真正走 Prefill i → Decode j 這條完整路徑的比例」。延續剛剛的例子，Z_12 = 0.6 × 0.3 = 0.18，也就是全體 requests 中有 18% 走 Prefill 1 → Decode 2。
+
+原文想最大化的 objective 是 sum_i sum_j X_i Y_ij D_ij。如果用我們引入的 Z 表示，就是 sum_i sum_j Z_ij D_ij。口頭上可以讀成「每條路徑的流量比例，乘上該路徑的預測 SLO attainment，最後全部加總」。例如 Z_12 = 0.18、D_12 = 0.92，這條路徑對加權分數的貢獻就是 0.18 × 0.92 = 0.1656，也就是 16.56 個百分點；這只是其中一條路徑的貢獻，還要加上其他路徑。直觀目的就是把更多 requests 分配給預測 SLO attainment 比較好的路徑。
+
+但這裡有一個不能省略的 formulation caveat：如果把 D 當成固定分數，而只要求 Z 非負、總和為 1，沒有其他與負載相關的限制，那把全部流量放到 D 最大的那條路徑就能取得最大值；若有多條同分最高的路徑，也可以在它們之間分配。這個式子本身沒有解釋集中流量後，replica capacity、queueing 或其他負載效應會如何改變可行性或分數。原文沒有完整展開這些關係，我們不能自行補出限制，再宣稱是作者的方法。
+
+此外，作者把問題稱為 two-stage transportation problem，並宣稱可以用 linear programming 求解；但目前印出的 objective 裡，X_i 與 Y_ij 都是變數，兩者相乘在形式上是 bilinear。引入 Z 可以讓目標寫成對 Z 的線性形式，卻不代表已經補齊完整 solver。投影片保留的原文約束包括 X 的總和為 1、X 與 Y 非負，以及缺少等號與右側的 Y row-sum 項；這些資訊不足以完整重現實際 routing solver。
+
+所以報告時應說：「論文用 transportation formulation 描述 Prefill–Decode routing，並宣稱以 LP 求解；但 paper 中印出的數學式沒有完整展開所有必要 constraints，因此不能只根據這個式子推斷完整 solver implementation。」這是對論文呈現方式的限制提醒，不代表我們已經知道實作使用了哪些額外約束。
+
+最後記住四個符號：D 是每條路徑的預測 SLO 表現；X 是第一階段選 Prefill 的比例；Y 是在某個 Prefill 之後選 Decode 的條件比例；我們引入的 Z_ij = X_i Y_ij，則是全體 requests 中走某條完整路徑的比例。這裡是逐條路徑相乘，不是一般的矩陣乘法 Z = XY。
+
+來源：Section 3.3，論文第 6 頁。Z、數值例子與數學形式的限制為報告者的輔助解釋及分析。</p></div><div class="bespoke-marp-note" data-index="20" tabindex="0"><p>SLIDE 21</p><p>這個例子可以把剛剛的方法串起來。作者用 4 張 A40 和 4 張 3090 Ti 來跑 LLaMA-30B，改變兩個 instances 之間的 bandwidth。
 
 在 40 Gbps 時，A40 全部用來做 prefill，3090 Ti 全部用來做 decode。這很符合前面的直覺：計算能力比較適合 prefill 的一組做 prefill，memory bandwidth 比較有利的一組做 decode。整體 throughput 是 3292 tokens per second，約是 non-disaggregating baseline 的兩倍。
 

@@ -1,0 +1,862 @@
+% Standalone Helix: 27 Oct 2026 Research Meeting
+% Visual style follows the 21 Oct 2026 light Madrid decks.
+% Facts are taken from the local ASPLOS '25 PDF only.
+% Compile with pdfLaTeX from this directory. Keep Helix/ beside this file.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\graphicspath{{./}{figures/}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{hyperref}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{Ink}{HTML}{243748}
+\definecolor{Muted}{HTML}{667B8B}
+\definecolor{Accent}{HTML}{347E74}
+\definecolor{AccentBlue}{HTML}{507DAD}
+\definecolor{SoftMint}{HTML}{E6F4EE}
+\definecolor{SoftBlue}{HTML}{E9F2F9}
+\definecolor{SoftLilac}{HTML}{F1EEF8}
+\definecolor{Paper}{HTML}{FBFCFE}
+\definecolor{Divider}{HTML}{D8E4EB}
+
+\setbeamercolor{background canvas}{bg=Paper}
+\setbeamercolor{normal text}{fg=Ink}
+\setbeamercolor{structure}{fg=Accent}
+\setbeamercolor{frametitle}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{title}{fg=Ink}
+\setbeamercolor{subtitle}{fg=Muted}
+\setbeamercolor{block title}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block body}{fg=Ink,bg=white}
+\setbeamercolor{item}{fg=Accent}
+\setbeamercolor{caption name}{fg=Muted}
+\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamerfont{footline}{size=\tiny}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm plus 1fil]{footline}%
+      \hfill\insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}}}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=.72cm,dp=.16cm,leftskip=.55cm,rightskip=.40cm]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}}
+
+\newcommand{\smalllabel}[1]{{\scriptsize\bfseries\color{Accent}\MakeUppercase{#1}}}
+\newcommand{\hint}[1]{{\scriptsize\color{Muted}#1}}
+\newcommand{\takeaway}[1]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.12cm,wd=\linewidth]{block title}%
+    {\small\bfseries #1}
+  \end{beamercolorbox}}
+\newcommand{\stepcard}[3]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.10cm,wd=\linewidth]{block body}%
+    {\scriptsize\bfseries\color{Accent}#1}\par\vspace{.4mm}
+    {\footnotesize\bfseries #2}\par\vspace{.4mm}
+    {\scriptsize\color{Muted}#3}%
+  \end{beamercolorbox}}
+
+\newcommand{\figureplaceholder}[3]{%
+  \begingroup\centering
+  \IfFileExists{#1}{%
+    \includegraphics[width=.98\linewidth,height=#2,keepaspectratio]{#1}%
+  }{%
+    \IfFileExists{figures/#1}{%
+      \includegraphics[width=.98\linewidth,height=#2,keepaspectratio]{figures/#1}%
+    }{%
+      \begin{tikzpicture}
+        \node[draw=AccentBlue!55,dashed,line width=.7pt,rounded corners=4pt,
+              fill=SoftBlue!60,minimum height=#2,minimum width=.95\linewidth,
+              text width=.85\linewidth,align=center,inner sep=2mm] {
+           {\color{AccentBlue}\bfseries FIGURE PLACEHOLDER}\\[2.2mm]
+           {\color{Ink}\small #3}\\[1.5mm]
+           {\color{Muted}\scriptsize\ttfamily\detokenize{#1}}};
+      \end{tikzpicture}%
+    }%
+  }\par\endgroup}
+
+\newcommand{\src}[1]{\vspace{0.05cm}\hint{Source: #1}}
+
+\title[Helix]{Helix: Serving LLMs over Heterogeneous GPUs and Network via Max-Flow}
+\subtitle{Joint Model Placement and Per-Request Scheduling}
+\author{Yu-Jui Liang}
+\institute{National Taiwan University \quad | \quad Academia Sinica}
+\date{27 Oct 2026}
+\begin{document}
+
+% ----- SLIDE 01 -----
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \vspace*{0.85cm}
+  \smalllabel{Research meeting}\par
+  \vspace{.42cm}
+  {\raggedright\color{Ink}\LARGE\bfseries
+    Helix: Serving Large Language Models over\\[0.18cm]
+    Heterogeneous GPUs and Network via Max-Flow\par}
+  \vspace{.32cm}
+  {\color{Muted}\large Joint Model Placement and Per-Request Scheduling\par}
+  \vspace{.85cm}
+  {\bfseries Yu-Jui Liang}\par\vspace{.06cm}
+  {\small\color{Muted}Advisor: Hsiang-Yun Cheng}\par\vspace{.04cm}
+  {\small\color{Muted}National Taiwan University \quad | \quad Academia Sinica \quad | \quad 27 Oct 2026\par}
+  \vfill
+  {\color{Accent}\rule{\textwidth}{.7pt}}\par\vspace{.08cm}
+  {\scriptsize\color{Muted}Paper: Mei et al., ASPLOS 2025. Local PDF is the sole factual source.}
+\end{frame}}
+
+% ----- SLIDE 02 -----
+\begin{frame}[t]{Presentation Roadmap}
+  \smalllabel{Helix / Overview}\par
+  \vspace{.18cm}
+  \begin{enumerate}
+    \setlength{\itemsep}{.16cm}
+    \item \textbf{Background / Motivation}\par
+      {\small\color{Muted}Why mixed GPUs and wide-area links break uniform pipelines.}
+    \item \textbf{Methodology}\par
+      {\small\color{Muted}Max-flow placement, MILP constraints, and per-request pipelines.}
+    \item \textbf{Experimental Results}\par
+      {\small\color{Muted}Single-cluster prototype, plus simulated geo-distributed and 42-node runs.}
+    \item \textbf{Discussion / Conclusion}\par
+      {\small\color{Muted}What the ratios do and do not say, next to ThunderServe, Hetis, and Tessera.}
+  \end{enumerate}
+  \src{ASPLOS '25 Helix, local PDF. The comparison page is our synthesis.}
+\end{frame}
+
+% ----- SLIDE 03 -----
+\begin{frame}[t]{Why Heterogeneous and Geo-Distributed Serving?}
+  \smalllabel{Helix / Background}\par
+  \vspace{.08cm}
+  {\footnotesize\textbf{Table 3.} Datasheet properties. SXM for H100 and A100. Not measured serving throughput.}\par
+  \vspace{.04cm}
+  {\centering\footnotesize
+  \begin{tabular}{lcccc}\toprule
+    GPU & FP16 (TFLOP/s) & Memory & Bandwidth & Price (USD)\\\midrule
+    H100 & 1979 & 80 GB & 3350 GB/s & 25k--40k\\
+    A100 & 312 & 40 GB & 1555 GB/s & 10k--15k\\
+    L4 & 242 & 24 GB & 300 GB/s & $\sim$3k\\
+    T4 & 65 & 16 GB & 300 GB/s & $\sim$1k\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.08cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.05cm}
+    \item Table 1: if half the memory stores parameters, LLaMA-2 70B needs 12 L4s, 7 A100s, or 4 H100s.
+    \item Table 4: in one us-east window the quota was 8 A100 + 8 L4 + 16 T4, but only 16 T4s were deployed.
+    \item The paper's claim: eight L4s have FP16 throughput comparable to one H100, with more memory and less power.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{Scarcity, not a universal speed ranking, is why Helix aggregates mixed GPUs across regions.}
+  \src{Sec.~1, Tables 1--4. Eight-L4 comparison is a datasheet argument.}
+\end{frame}
+
+% ----- SLIDE 04 -----
+\begin{frame}[t]{Parallelism Across Nodes and GPUs}
+  \smalllabel{Helix / Background}\par
+  \vspace{.12cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{TENSOR PARALLELISM}{Inside one node}{Each layer needs two collectives. Helix does not use TP across the high-latency network.}
+      \vspace{.12cm}
+      \stepcard{PIPELINE PARALLELISM}{Across nodes}{Only the activation crosses a stage boundary. Equal cuts leave pipeline bubbles on slow GPUs.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{PETALS}{Decentralized, greedy}{A new machine takes the least-loaded stage. There is no global plan for a known cluster.}
+      \vspace{.12cm}
+      \stepcard{SWARM}{Even cuts, local routing}{The model is partitioned evenly. The next stage is chosen from real-time throughput. It is a training method, reused here as a baseline.}
+    \end{column}
+  \end{columns}
+  \vspace{.16cm}\takeaway{Helix keeps TP inside a node and uses PP across nodes, then refuses to cut the model into equal stages.}
+  \src{Sec.~2.2 and Sec.~3. Swarm is Ryabinin et al.; Petals is Borzunov et al.}
+\end{frame}
+
+% ----- SLIDE 05 -----
+\begin{frame}[t]{Uniform Model Placement Is Sub-Optimal}
+  \smalllabel{Helix / Motivation}\par
+  \vspace{.04cm}
+  \figureplaceholder{Helix/Helix_Figure_01_Model_Placement_Examples.png}{3.35cm}{Figure 1}
+  {\centering\hint{Fig.~1a--c. Illustrative example, not the 24-node cluster. Order: A100 $>$ L4 $>$ T4.}\par}
+  \vspace{.02cm}
+  {\footnotesize (b) Equal cuts still wait on the slower stage. (c) Balanced FLOPs still cross the slow inter-region link on every request.}
+  \vspace{.04cm}\takeaway{A balanced FLOP cut is not a maximum-throughput serving plan.}
+  \src{Sec.~3.1 and Sec.~4.2, Fig.~1a--c. PDF p.~4.}
+\end{frame}
+
+% ----- SLIDE 06 -----
+\begin{frame}[t]{Network-Unaware Routing Creates Congestion}
+  \smalllabel{Helix / Motivation}\par
+  \vspace{.04cm}
+  \figureplaceholder{Helix/Helix_Figure_01_Model_Placement_Examples.png}{3.35cm}{Figure 1}
+  {\centering\hint{Fig.~1c--d. Same illustrative cluster as the previous slide.}\par}
+  \vspace{.04cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.05cm}
+    \item In (c) the A100's send side congests: every activation still crosses into Region 2.
+    \item (d) runs two T4s beside the A100, so less traffic uses the slow link.
+    \item Partition, placement, and routing have to be chosen together.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{Network capacity is part of placement, not a detail added after the GPUs are assigned.}
+  \src{Sec.~4.2, Fig.~1c--d. PDF p.~4.}
+\end{frame}
+
+% ----- SLIDE 07 -----
+\begin{frame}[t]{Helix Design Requirements}
+  \smalllabel{Helix / Problem}\par
+  \vspace{.14cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.32\textwidth}
+      \stepcard{1 / PLACEMENT}{One plan per cluster}{Assign each node a contiguous layer range that respects GPU memory and the links it will use.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{2 / ESTIMATE}{Tokens per second}{Score a placement by how many tokens can move from the coordinator, through the GPUs, and back.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{3 / SCHEDULE}{One path per request}{Do not freeze a few disjoint pipelines. Let requests share nodes when the flow says they should.}
+    \end{column}
+  \end{columns}
+  \vspace{.22cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item Offline placement and online scheduling are different timescales. They share one graph.
+    \item KV-cache capacity is not a third MILP objective. It is enforced later by masking nodes.
+  \end{itemize}
+  \vspace{.10cm}\takeaway{Helix separates a slow placement search from a fast per-request routing decision.}
+  \src{Sec.~3 and Sec.~5. The KV split is the paper's design, stated across Sec.~4.4 and Sec.~5.2.}
+\end{frame}
+
+% ----- SLIDE 08 -----
+\begin{frame}[t]{Helix System Overview}
+  \smalllabel{Helix / System}\par
+  \vspace{.02cm}
+  \figureplaceholder{Helix/Helix_Figure_03_System_Overview.png}{3.05cm}{Figure 3}
+  {\centering\hint{Fig.~3. Coordinator plans once; workers execute the assigned layers.}\par}
+  \vspace{.04cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.03cm}
+        \item Profiler collects cluster info. The planner solves placement once per cluster.
+        \item A new request gets a pipeline and is sent to the first node only.
+      \end{itemize}}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.03cm}
+        \item Each node runs its layers and forwards the activation.
+        \item The last node returns the token. The next token reuses the same pipeline.
+      \end{itemize}}
+    \end{column}
+  \end{columns}
+  \vspace{.04cm}\takeaway{The coordinator owns placement and scheduling. Compute nodes do not re-plan the route.}
+  \src{Sec.~5, Fig.~3. PDF p.~7.}
+\end{frame}
+
+% ----- SLIDE 09 -----
+\begin{frame}[t]{From Model Placement to a Flow Network}
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item A cluster has one coordinator \(h\) and compute nodes \(C\). A multi-GPU machine is one logical node: compute and VRAM are summed.
+    \item Placement \(\Psi\) gives each node a contiguous layer range. Scheduling \(\phi\) gives each request an ordered node sequence.
+    \item A common score keeps only the slowest stage, \(\min_i \sum_j \mathrm{capacity}(j)\cdot \mathbf{1}[i\in\Psi(j)]\).
+    \item Fig.~1c has balanced stage FLOPs and is still limited by the wide-area link. The min-stage score cannot see that.
+  \end{itemize}
+  \vspace{.10cm}\takeaway{Helix scores a placement by the max flow of a graph, in tokens per second.}
+  \src{Sec.~4.1--4.2. The min-stage formula is the paper's description of prior heuristics.}
+\end{frame}
+
+% ----- SLIDE 10 -----
+\begin{frame}[t]{Max-Flow Graph Abstraction}
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.46\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.08cm}
+        \item Each compute node becomes \(c^{\mathrm{in}}\rightarrow c^{\mathrm{out}}\).
+        \item The coordinator becomes the source and the sink.
+        \item An edge capacity is how many tokens may cross it per second.
+        \item Max flow from source to sink is the serving throughput of this placement.
+      \end{itemize}}
+      \vspace{.08cm}\takeaway{The graph is an accounting device for one fixed placement.}
+    \end{column}
+    \begin{column}{.52\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_02_Max_Flow_Graph_Abstraction.png}{5.15cm}{Figure 2}
+      {\centering\hint{Fig.~2. Capacities are tokens/s.}\par}
+    \end{column}
+  \end{columns}
+  \src{Sec.~4.3, Fig.~2. PDF p.~4.}
+\end{frame}
+
+% ----- SLIDE 11 -----
+\begin{frame}[t]{Modeling Compute Capacity}
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.12cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{NODE EDGE}{\(c^{\mathrm{in}}\rightarrow c^{\mathrm{out}}\)}{Capacity is the minimum of profiled compute throughput and the node's network throughput.}
+      \vspace{.14cm}
+      \stepcard{PROFILING}{Once per node}{Helix measures throughput rather than using the datasheet TFLOP/s from Table 3.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{LAYER COUNT}{\(T_j\) tokens/s}{\(T_j\) is the profiled rate when that node holds \(j\) layers. It becomes the MILP compute limit.}
+      \vspace{.14cm}
+      \stepcard{NOT A GPU}{Source and sink}{The coordinator injects tokens and collects tokens. It is not given a compute edge.}
+    \end{column}
+  \end{columns}
+  \vspace{.16cm}\takeaway{Compute capacity is a profiled token rate, and it already takes the node's network limit into account.}
+  \src{Sec.~4.3. \(T_j\) is defined with Constraint~3 in Sec.~4.4.}
+\end{frame}
+
+% ----- SLIDE 12 -----
+\begin{frame}[t]{Modeling Network Capacity}
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.08cm}
+  {\footnotesize A link is valid only in one of three cases:}\par
+  \vspace{.08cm}
+  \begin{enumerate}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item Coordinator \(\rightarrow\) a node that holds the first layer. Payload is a token (Fig.~2 uses 4 bytes).
+    \item A node that holds the last layer \(\rightarrow\) coordinator. Payload is again a token.
+    \item Node \(i\rightarrow\) node \(j\) when \(j\) holds the layers needed immediately after \(i\). Payload is an activation (Fig.~2 uses 16 KB).
+  \end{enumerate}
+  \vspace{.08cm}
+  \[
+    \text{capacity (tokens/s)}=\frac{\text{profiled average bandwidth}}{\text{bytes per token or activation}}.
+  \]
+  {\footnotesize The formula is the paper's rule. The byte sizes above are the Fig.~2 annotations, not universal constants.}\par
+  \vspace{.06cm}\takeaway{Activations cost far more tokens of budget than the final output token, so wide-area links saturate first.}
+  \src{Sec.~4.3. Bandwidth is a one-time average, not a runtime measurement.}
+\end{frame}
+
+% ----- SLIDE 13 -----
+\begin{frame}[t]{Why Max Flow Represents Serving Throughput}
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item One unit of flow is one token that can pass a node or a link in one second.
+    \item Conservation forces tokens into \(c^{\mathrm{in}}\) to leave through \(c^{\mathrm{out}}\).
+    \item Helix computes the source--sink max flow with preflow-push. That value is the placement's max serving throughput.
+    \item The model is a steady token rate. It does not output prompt latency, decode latency, or a percentile.
+    \item A later early-stop bound is the sum of node compute rates, divided by the number of layers.
+  \end{itemize}
+  \vspace{.08cm}\takeaway{Max flow answers ``how many tokens/s can this placement carry?'' It is not a latency model.}
+  \src{Sec.~4.3 and the early-stop remark in Sec.~4.5.}
+\end{frame}
+
+% ----- SLIDE 14 -----
+\begin{frame}[t]{Worked Three-Node Example}
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+        \item A100 holds layers 1--2. T4-1 holds layer 1. T4-2 holds layer 3.
+        \item Node edges are marked 1500, 1000, and 1000 tokens/s.
+        \item Token-sized edges are marked 1.25M, 2.5M, and 625K tokens/s.
+        \item Activation edges are marked 458 and 687 tokens/s.
+      \end{itemize}}
+      \vspace{.06cm}\takeaway{The hundreds, not the millions, set the flow. This is an illustration, not a measured cluster.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_02_Max_Flow_Graph_Abstraction.png}{5.05cm}{Figure 2}
+    \end{column}
+  \end{columns}
+  \src{Fig.~2 annotations. PDF p.~4. Endpoint of each number is the figure's, not a new measurement.}
+\end{frame}
+
+% ----- SLIDE 15 -----
+\begin{frame}[t]{MILP Variables and Objective}
+  \smalllabel{Helix / MILP}\par
+  \vspace{.06cm}
+  {\centering\footnotesize
+  \begin{tabular}{lll}\toprule
+    Symbol & Role & Meaning\\\midrule
+    \(s_i\) & integer & first layer on node \(i\)\\
+    \(b_{ij}\) & binary & node \(i\) holds exactly \(j\) layers\\
+    \(f_{i,j}\) & real & flow from \(i\) to \(j\), in tokens/s\\
+    \(d_{i,j}\) & binary & whether link \((i,j)\) is valid\\
+    \(\mathit{cond}\) & binary & auxiliaries that linearize overlap\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.08cm}
+  {\footnotesize \(e_i=s_i+\sum_j j\,b_{ij}\). Node \(i\) holds the half-open range \([s_i,e_i)\). \(k\) is the most layers that fit on that GPU.}\par
+  \vspace{.06cm}
+  \[
+    \max \sum_i f_{\mathrm{source},i}
+  \]
+  \vspace{.02cm}\takeaway{The objective maximizes coordinator outflow. Table 5 groups the variable counts as linear in \(|C|\) or \(|E|\).}
+  \src{Sec.~4.4, Tables 5--6. Notation here is compacted from the paper.}
+\end{frame}
+
+% ----- SLIDE 16 -----
+\begin{frame}[t]{Placement and Memory Constraints}
+  \smalllabel{Helix / MILP}\par
+  \vspace{.10cm}
+  \[
+    \sum_{j=1}^{k} b_{ij}=1,
+    \qquad 0\le s_i<L,
+    \qquad e_i\le L.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.07cm}
+    \item Exactly one layer-count is chosen. The range must lie inside the model's \(L\) layers.
+    \item Memory enters as \(k\), the maximum number of layers the GPU can hold. Table 6 has no KV-byte variable.
+    \item If \(s_j<e_i<e_j\), traffic from \(i\) runs only layers \([e_i,e_j)\) on \(j\). The paper calls this partial inference.
+    \item The solver may be run with partial inference disabled. Then a link is valid only when \(e_i=s_j\).
+  \end{itemize}
+  \vspace{.06cm}\takeaway{GPU memory limits how many layers are placed. KV capacity is enforced later, at schedule time.}
+  \src{Sec.~4.4, Constraint~1, and the partial-inference remark.}
+\end{frame}
+
+% ----- SLIDE 17 -----
+\begin{frame}[t]{Flow and Compute Constraints}
+  \smalllabel{Helix / MILP}\par
+  \vspace{.12cm}
+  {\footnotesize\textbf{Constraint 2: conservation at node \(i\).}}\par
+  \[
+    \sum_u f_{u,i}=\sum_v f_{i,v}.
+  \]
+  {\footnotesize\textbf{Constraint 3: profiled inference throughput.}}\par
+  \[
+    \sum_u f_{u,i}\le \sum_{j=1}^{k} b_{ij}\,T_j.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item \(T_j\) is a profiled constant: tokens per second when this node holds \(j\) layers.
+    \item The binaries \(b_{ij}\) pick exactly one of those profiled rates.
+    \item Flow is still also limited by the network edges on the next slide.
+  \end{itemize}
+  \vspace{.04cm}\takeaway{A node cannot be assigned more token flow than the profiled rate for the layer count it actually holds.}
+  \src{Sec.~4.4, Constraints 2--3. Sums skip node \(i\) itself, as stated in the paper.}
+\end{frame}
+
+% ----- SLIDE 18 -----
+\begin{frame}[t]{Connectivity and Network Constraints}
+  \smalllabel{Helix / MILP}\par
+  \vspace{.06cm}
+  {\footnotesize\textbf{Constraint 4, compacted.} A coordinator link into \(i\) exists only if \(i\) holds the first layer:}\par
+  \[
+    s_i\le L\,(1-d_{\mathrm{source},i}).
+    \qquad
+    L\,d_{i,\mathrm{sink}}\le e_i.
+  \]
+  {\footnotesize Between compute nodes, \(d_{ij}=1\) only if \(s_j\le e_i<e_j\). Two auxiliary binaries linearize that test, and \(d_{ij}\le 0.5\,\mathit{cond}^{1}+0.5\,\mathit{cond}^{2}\).}\par
+  \vspace{.06cm}
+  {\footnotesize\textbf{Constraint 5: transmission throughput.}}\par
+  \[
+    f_{ij}\le d_{ij}\,S_{ij}.
+  \]
+  {\footnotesize \(S_{ij}\) is the profiled token rate of that link, from Sec.~4.3. Invalid links carry zero flow.}\par
+  \vspace{.04cm}\takeaway{Routing variables cannot use a hop that the layer ranges do not justify.}
+  \src{Sec.~4.4, Constraints 4--5. The two-auxiliary form is the paper's linearization.}
+\end{frame}
+
+% ----- SLIDE 19 -----
+\begin{frame}[t]{Making the MILP Practical}
+  \smalllabel{Helix / MILP}\par
+  \vspace{.10cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.32\textwidth}
+      \stepcard{PRUNE}{Average degree 12}{Drop slow links before solving. Sec.~6.8 checks the throughput effect.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{WARM START}{Heuristic seeds}{Petals, Swarm, and separate pipelines provide the initial solution.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{EARLY STOP}{Analytic bound}{Stop near the sum of compute rates divided by the layer count.}
+    \end{column}
+  \end{columns}
+  \vspace{.16cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item Relaxing the integers to an LP is rejected: rounding \(s_i\) or \(b_{ij}\) can delete edges and change the flow.
+    \item Gurobi stops if 10 minutes pass with no improvement. The budget is 4 hours on a 14-core CPU.
+    \item For hundreds of nodes, the paper only suggests cutting the cluster into smaller pieces first.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{The formulation can certify optimality. The running system also prunes, seeds, and stops early.}
+  \src{Sec.~4.5--4.6 and the Helix setup in Sec.~6.2.}
+\end{frame}
+
+% ----- SLIDE 20 -----
+\begin{frame}[t]{Runtime Components and Control Flow}
+  \smalllabel{Helix / Runtime}\par
+  \vspace{.12cm}
+  \begin{enumerate}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item \textbf{Once per cluster:} profile nodes and links, solve the MILP, load each node's layer range.
+    \item \textbf{On request arrival:} the coordinator's scheduler builds one pipeline and sends the request to its first node.
+    \item \textbf{On each node:} run the assigned layers for the requests that arrived during the previous batch. Do not add a waiting window.
+    \item \textbf{On the last node:} return the output token to the coordinator.
+    \item \textbf{On the next token:} reuse that request's pipeline. Do not solve the MILP again.
+  \end{enumerate}
+  \vspace{.08cm}\takeaway{Placement is a cluster constant. The per-token path is a walk on the graph that placement created.}
+  \src{Sec.~5 and Fig.~3. Batching details are in Sec.~5.1.}
+\end{frame}
+
+% ----- SLIDE 21 -----
+\begin{frame}[t]{Per-Request Pipelines}
+  \smalllabel{Helix / Runtime}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item A valid pipeline runs every layer once, in order. Each stage names a node and the layers it will run.
+    \item Petals-style fixed pipelines give each pipeline a disjoint set of machines.
+    \item Helix lets pipelines intersect. The candidates are the source--sink paths of the placement graph.
+    \item After the pipeline is chosen, a node batches every request that arrived while it ran the previous batch. There is no extra collect window.
+    \item Later tokens of the same request keep that pipeline.
+  \end{itemize}
+  \vspace{.08cm}\takeaway{Flexibility comes from many overlapping paths, not from re-solving placement per token.}
+  \src{Sec.~5.1. Fixed-pipeline contrast cites prior systems, including HexGen in the related work.}
+\end{frame}
+
+% ----- SLIDE 22 -----
+\begin{frame}[t]{Converting Max-Flow Weights into Scheduling}
+  \smalllabel{Helix / Runtime}\par
+  \vspace{.10cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{IWRR}{Interleaved weighted round-robin}{Each vertex has a scheduler. A neighbor's weight is the max-flow value on that outgoing edge.}
+      \vspace{.12cm}
+      \stepcard{WHY INTERLEAVE}{Avoid bursts}{Frequency follows the weight, but choices are interleaved so one heavy edge is not drained in a burst.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{THE WALK}{Coordinator, then each node}{Pick stage 1 from the coordinator. Pick stage 2 from that node's scheduler. Stop when the path is complete.}
+      \vspace{.12cm}
+      \stepcard{MASK}{Before the walk}{Nodes over the KV high-water mark are removed from the candidate list. Details are on the KV slide.}
+    \end{column}
+  \end{columns}
+  \vspace{.14cm}\takeaway{The MILP decides the rates. IWRR is the online rule that realizes those rates.}
+  \src{Sec.~5.1. IWRR follows Tabatabaee et al.\ as cited by the paper.}
+\end{frame}
+
+% ----- SLIDE 23 -----
+\begin{frame}[t]{Pipeline Scheduling Example}
+  \smalllabel{Helix / Runtime}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.46\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.07cm}
+        \item Vertices are compute nodes. An edge exists only if the MILP placement made it valid.
+        \item The number on an edge is flow in the max-flow solution, not link capacity.
+        \item The figure's two example pipelines are \(1\rightarrow 5\rightarrow 9\) and \(2\rightarrow 6\rightarrow 8\).
+        \item Those paths can share the cluster. They are not two frozen replicas.
+      \end{itemize}}
+      \vspace{.06cm}\takeaway{Read the integers as scheduled token rates, then read the paths as two requests.}
+    \end{column}
+    \begin{column}{.52\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_04_Per_Request_Pipeline_Scheduling.png}{4.85cm}{Figure 4}
+    \end{column}
+  \end{columns}
+  \src{Sec.~5.1, Fig.~4. PDF p.~8.}
+\end{frame}
+
+% ----- SLIDE 24 -----
+\begin{frame}[t]{KV-Cache Masking and Backpressure}
+  \smalllabel{Helix / Runtime}\par
+  \vspace{.12cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.09cm}
+    \item Each GPU has a finite VRAM budget for KV cache. Exceeding it forces offload to host memory, which the paper says significantly cuts throughput.
+    \item Output length is unknown until generation ends, so the scheduler cannot know the exact KV footprint.
+    \item Helix estimates each node's KV use with the average output length.
+    \item A node above the high-water mark is masked out of IWRR until some of its current requests finish.
+    \item The paper does not print the numeric threshold or the byte formula for that estimate.
+  \end{itemize}
+  \vspace{.08cm}\takeaway{Backpressure is a mask on the same IWRR walk. It is not a second placement solver.}
+  \src{Sec.~5.2. ``High water mark'' is the paper's term; its value is not specified.}
+\end{frame}
+
+% ----- SLIDE 25 -----
+\begin{frame}[t]{Implementation and Prototype}
+  \smalllabel{Helix / Evaluation}\par
+  \vspace{.10cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{PROTOTYPE}{vLLM 0.4.0.post1}{1.5k lines of Python and 1.7k lines of C++. A unified page pool supports partial inference. ZeroMQ carries inter-node traffic. Gurobi solves the MILP.}
+      \vspace{.12cm}
+      \stepcard{SIMULATOR}{14k lines of Python}{It replays heterogeneous GPUs and links. Geo-distributed and 42-node results use this simulator.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{FIDELITY}{Single-cluster check}{Against the prototype, decode-throughput error is under 5\%. Prompt-latency error is under 5\%, decode-latency error under 4\%.}
+      \vspace{.12cm}
+      \stepcard{SCOPE}{Single-GPU nodes}{Multi-GPU nodes are supported by in-node TP, but the prototype experiments use one GPU per node.}
+    \end{column}
+  \end{columns}
+  \vspace{.12cm}\takeaway{Trust the simulator inside the single-cluster error above. Do not treat that as a geo-network error bar.}
+  \src{Sec.~6.1 and Sec.~6.3. FP16 execution is stated in Sec.~6.2.}
+\end{frame}
+
+% ----- SLIDE 26 -----
+\begin{frame}[t]{Evaluation Methodology}
+  \smalllabel{Helix / Evaluation}\par
+  \vspace{.06cm}
+  {\centering\footnotesize
+  \begin{tabular}{llll}\toprule
+    Setup & Hardware & Network & Where\\\midrule
+    Single & 4 A100, 8 L4, 12 T4 & 10 Gb/s, one region & Prototype\\
+    Geo & 4 A100; 2 L4+8 T4; 6 L4+4 T4 & \(\sim\)100 Mb/s, \(\sim\)50 ms & Simulator\\
+    42-node & 7 node types, including V100 and multi-GPU & same simulator stack & Simulator\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.08cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.05cm}
+    \item Models: LLaMA-1 30B and LLaMA-2 70B, FP16. Baselines: Swarm, and separate pipelines (SP) inside Helix.
+    \item Petals is compared only as a placement (Sec.~6.6), not as an end-to-end server.
+    \item Offline metric: average decode throughput, in generated tokens/s. Online adds average prompt and decode latency.
+    \item Online arrivals are the Azure shape scaled to 75\% of that cluster's peak. Offline arrivals saturate the cluster.
+  \end{itemize}
+  \vspace{.04cm}\takeaway{A \(3\times\) on the 42-node simulator is not a \(3\times\) on the 24-node prototype.}
+  \src{Sec.~6.2. The 100 Mb/s geo setting is justified by Table 7, whose pairs span 54--204 Mb/s.}
+\end{frame}
+
+% ----- SLIDE 27 -----
+\begin{frame}[t]{Workload Characteristics}
+  \smalllabel{Helix / Evaluation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.07cm}
+        \item Source: Azure Conversation. Requests with input \(>2048\) or output \(>1024\) are removed.
+        \item What remains: 16{,}657 requests, mean input 763 tokens, mean output 232 tokens.
+        \item Online: 30 s warmup, then 30 min. Offline: 1 min warmup, then 10 min.
+        \item Fig.~5 is the trace's length mix and arrival shape, before the 75\% scaling used online.
+      \end{itemize}}
+      \vspace{.06cm}\takeaway{Latency ratios below are for this pruned trace, not for short-prompt serving.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_05_Azure_Conversation_Statistics.png}{4.55cm}{Figure 5}
+    \end{column}
+  \end{columns}
+  \src{Sec.~6.2, Fig.~5. PDF p.~8.}
+\end{frame}
+
+% ----- SLIDE 28 -----
+\begin{frame}[t]{Single-Cluster Results}
+  \smalllabel{Helix / Results}\par
+  \vspace{.02cm}
+  \figureplaceholder{Helix/Helix_Figure_06_Single_Cluster_Results.png}{2.58cm}{Figure 6}
+  {\centering\hint{Fig.~6. Prototype. (a--d) decode throughput; (e--h) online latency. Box 25--75, whisker 5--95, red line = median.}\par}
+  \vspace{.02cm}
+  {\centering\scriptsize
+  \begin{tabular}{llcccc}\toprule
+    Model & Versus & Offline tput & Online tput & Prompt lat. & Decode lat.\\\midrule
+    30B & SP & \(+4\%\) & \(+14\%\) & \(-2\%\) & \(+10\%\)\\
+    30B & Swarm & \(2.14\times\) & \(2.07\times\) & \(-32\%\) & \(-12\%\)\\
+    70B & SP & \(1.86\times\) & \(1.69\times\) & \multicolumn{2}{c}{average latency higher}\\
+    70B & Swarm & \(1.94\times\) & \(2.00\times\) & \(-15\%\) & \(+16\%\)\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.02cm}
+  {\scriptsize 30B: three replicas, one GPU type each. 70B vs.\ SP: latency is higher because SP serves most requests on A100s and leaves L4/T4 idle.}\par
+  \vspace{.02cm}\takeaway{Throughput gains are real on the prototype. They are not a uniform latency win.}
+  \src{Sec.~6.3, Fig.~6. Pairs are offline then online. PDF p.~9.}
+\end{frame}
+
+% ----- SLIDE 29 -----
+\begin{frame}[t]{Geo-Distributed Results}
+  \smalllabel{Helix / Results}\par
+  \vspace{.02cm}
+  \figureplaceholder{Helix/Helix_Figure_07_Geo_Distributed_Cluster_Results.png}{2.55cm}{Figure 7}
+  {\centering\hint{Fig.~7. Simulator. H = Helix, S = Swarm. Same GPUs as the single cluster, with \(\sim\)100 Mb/s between clusters.}\par}
+  \vspace{.02cm}
+  {\footnotesize\textbf{LLaMA 30B vs.\ SP:} \(+7\%\) / \(+10\%\) throughput; prompt \(-14\%\), decode latency \(+2\%\). \textbf{Vs.\ Swarm:} \(2.41\times\) and \(2.33\times\) across the two modes; prompt \(-66\%\), decode latency \(-24\%\).}\par
+  \vspace{.02cm}
+  {\footnotesize\textbf{LLaMA 70B.} Helix's pipeline is 28\% shallower than Swarm, and 19\% shallower than Helix's own fast-network plan. Vs.\ SP: \(1.61\times\) / \(1.79\times\). Vs.\ Swarm: \(1.92\times\) / \(1.97\times\); prompt \(-21\%\), decode \(-7\%\). Swarm's offline prompt latency is 71 s, \(7.5\times\) Helix.}\par
+  \vspace{.02cm}\takeaway{The abstract's ``up to 66\% and 24\%'' is this 30B online comparison against Swarm, in simulation.}
+  \src{Sec.~6.4, Fig.~7. Sec.~6.4 does not label which of 2.41 and 2.33 is online. PDF p.~10.}
+\end{frame}
+
+% ----- SLIDE 30 -----
+\begin{frame}[t]{High GPU-Heterogeneity Results}
+  \smalllabel{Helix / Results}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+        \item Simulator, LLaMA 70B, 42 nodes, 7 types. V100, T4, and \(2\times\)T4 cannot form a pipeline alone.
+        \item SP drops those machines. SP+ adds a mixed pipeline that uses them.
+        \item Vs.\ Swarm / SP / SP+, offline throughput is \(1.37\times\), \(2.91\times\), \(2.24\times\).
+        \item Online: \(1.48\times\), \(3.29\times\), \(2.54\times\). Prompt latency changes by \(-17\%\), \(-1\%\), \(-7\%\).
+        \item Helix's decode latency is slightly higher: baselines leave slow GPUs idle.
+      \end{itemize}}
+      \vspace{.04cm}\takeaway{The abstract's \(3.3\times\) is the \(3.29\times\) online gain versus SP, rounded.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_08_High_GPU_Heterogeneity_Results.png}{4.70cm}{Figure 8}
+    \end{column}
+  \end{columns}
+  \src{Sec.~6.5, Fig.~8. PDF p.~10. Not a prototype measurement.}
+\end{frame}
+
+% ----- SLIDE 31 -----
+\begin{frame}[t]{Model Placement Deep Dive}
+  \smalllabel{Helix / Ablation}\par
+  \vspace{.02cm}
+  \figureplaceholder{Helix/Helix_Figure_09_Model_Placement_Comparison.png}{2.85cm}{Figure 9}
+  {\centering\hint{Fig.~9. Offline LLaMA 70B. Every method uses Helix's scheduler. Integers in (b) are layer counts.}\par}
+  \vspace{.03cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.04cm}
+    \item Vs.\ Petals / Swarm: \(1.23\times\) / \(2.10\times\) on the single cluster, and \(1.49\times\) / \(2.38\times\) on the geo-distributed simulator.
+    \item Single-cluster case: Swarm's tail is four T4s with four layers each, so A100 and L4 stay under-used.
+    \item Petals leaves eight T4s and one L4 under-used. Helix's plan keeps almost every node busy.
+  \end{itemize}
+  \vspace{.03cm}\takeaway{The placement gap remains after the scheduler is held fixed.}
+  \src{Sec.~6.6, Fig.~9. PDF p.~11. Petals is not an end-to-end baseline.}
+\end{frame}
+
+% ----- SLIDE 32 -----
+\begin{frame}[t]{Request Scheduling Deep Dive}
+  \smalllabel{Helix / Ablation}\par
+  \vspace{.02cm}
+  \figureplaceholder{Helix/Helix_Figure_10_Request_Scheduling_Comparison.png}{2.72cm}{Figure 10}
+  {\centering\hint{Fig.~10. Offline LLaMA 70B. Every method uses Helix's placement. (b) is the geo-distributed case study.}\par}
+  \vspace{.03cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.04cm}
+    \item Vs.\ Swarm / random: \(+30\%\) / \(+29\%\) on the single cluster, and \(+22\%\) / \(+15\%\) on the geo-distributed clusters.
+    \item Vs.\ shortest queue, geo-distributed only: \(+19\%\) decode throughput.
+    \item In (b), prompt traffic waits 5--16 s on three slow links. One of those queues is caused by a scheduler three hops away.
+  \end{itemize}
+  \vspace{.03cm}\takeaway{A local queue rule cannot see a congested cut that starts several hops upstream.}
+  \src{Sec.~6.7, Fig.~10. PDF p.~12.}
+\end{frame}
+
+% ----- SLIDE 33 -----
+\begin{frame}[t]{MILP Optimization Ablation}
+  \smalllabel{Helix / Ablation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.46\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+        \item Offline LLaMA 70B. 24-node is the geo setup; 42-node is the high-heterogeneity setup.
+        \item Degree-12 pruning drops 50\% and 72\% of the links, and 36\% and 46\% of the problem size.
+        \item With pruning, decode throughput is 16\% and 2\% higher. The paper attributes this to an easier search under a time limit.
+        \item Warm start finds the same placement, in 43\% and 8\% less wall time.
+      \end{itemize}}
+    \end{column}
+    \begin{column}{.52\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_11_MILP_Optimization_Ablation.png}{3.15cm}{Figure 11}
+      {\centering\scriptsize
+      \begin{tabular}{lcc}\toprule
+        & With pruning & Without\\\midrule
+        24-node & 876 var, 1122 cstr & 1376 var, 1848 cstr\\
+        42-node & 2144 var, 2772 cstr & 4004 var, 5502 cstr\\\bottomrule
+      \end{tabular}\par}
+    \end{column}
+  \end{columns}
+  \vspace{.04cm}\takeaway{Pruning changes the search problem. It is not a proof that the deleted links were useless.}
+  \src{Sec.~6.8, Fig.~11, Table 8. PDF p.~12. Speedups vary by instance, as the paper notes.}
+\end{frame}
+
+% ----- SLIDE 34 -----
+\begin{frame}[t]{Solver Time and Solution Quality}
+  \smalllabel{Helix / Ablation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.07cm}
+        \item Instance: LLaMA 30B on 4 L4s and 6 T4s. This is smaller than the 24- and 42-node runs.
+        \item The best feasible placement reaches the optimum in under 5 minutes.
+        \item Certifying that optimum takes more than an hour of branch-and-bound.
+        \item The red dotted line is that cluster's optimal throughput. The upper bound tightens as cuts are added.
+      \end{itemize}}
+      \vspace{.06cm}\takeaway{Early stop is reasonable here. Fig.~12 does not certificate the 42-node plan.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_12_MILP_Solution_Quality.png}{4.85cm}{Figure 12}
+    \end{column}
+  \end{columns}
+  \src{Sec.~6.9, Fig.~12. PDF p.~13.}
+\end{frame}
+
+% ----- SLIDE 35 -----
+\begin{frame}[t]{Helix vs.\ ThunderServe, Hetis, and Tessera}
+  \smalllabel{Cross-paper comparison}\par
+  \vspace{.04cm}
+  {\centering\scriptsize
+  \renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{1.55cm}*{4}{>{\raggedright\arraybackslash}X}@{}}\toprule
+    & ThunderServe & Hetis & Helix & Tessera\\\midrule
+    Granularity & Prefill / decode phase & Dense module vs.\ attention head & Layer range and pipeline & CUDA kernel\\
+    Decision & Group, phase, route & Primary set, then heads & Placement, then a path & Kernel-to-GPU map\\
+    Time scale & Offline search + light reschedule & Offline plan + online re-dispatch & Once per cluster + per request & Offline MILP + monitor window\\
+    State moved & KV at the phase boundary & QKV, attention output, KV shards & Tokens and activations & Cut tensors; KV delta\\
+    Adaptation & Phase role and failure & Re-dispatch, migration & KV mask; path is reused & Latency / throughput switch\\
+    Environment & Heterogeneous cloud & Local heterogeneous cluster & Heterogeneous, including geo & Heterogeneous pairs and clusters\\
+    Models & LLM & LLM & LLM (LLaMA 30B/70B) & LLM, SSM, MLLM, diffusion\\
+    Main limit & Heuristic phase search & Head groups; local network & One-shot plan; geo is simulated & MILP ignores GPU memory\\\bottomrule
+  \end{tabularx}\par}
+  \vspace{.06cm}\takeaway{These systems cut different bottlenecks. Their speedups are not a ranking.}
+  \src{Our synthesis. Helix cells: this PDF. Other cells: each system's own paper, not Helix's related work.}
+\end{frame}
+
+% ----- SLIDE 36 -----
+\begin{frame}[t]{Limitations and Threats to Validity}
+  \smalllabel{Helix / Discussion}\par
+  \vspace{.08cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.07cm}
+    \item Placement is computed once. A workload shift does not trigger a new MILP in the described runtime.
+    \item Geo-distributed and 42-node numbers are simulated. The \(<5\%\) error is a single-cluster prototype check.
+    \item The KV mask uses average output length. The paper does not specify the high-water mark.
+    \item Pruning and the 10-minute stall rule mean a deployed plan need not be a proven optimum.
+    \item Decode latency can rise when Helix actually uses the slow GPUs that SP leaves idle.
+    \item Evidence is FP16 LLaMA-1 30B and LLaMA-2 70B on one pruned Azure trace. The conclusion's ``guaranteed optimal'' is the MILP's claim, not every timed run.
+  \end{itemize}
+  \vspace{.06cm}\takeaway{Report the cluster, the simulator, and the metric together with any ratio.}
+  \src{Sec.~4.5, Sec.~6, and Sec.~8. The last bullet contrasts the conclusion with Sec.~6.2 and Sec.~6.9.}
+\end{frame}
+
+% ----- SLIDE 37 -----
+\begin{frame}[t]{Conclusion}
+  \smalllabel{Helix / Conclusion}\par
+  \vspace{.14cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.32\textwidth}
+      \stepcard{1}{A placement is a flow}{Edge capacity is tokens per second. Max flow is the throughput of that placement, not its latency.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{2}{Two clocks}{MILP places layers once. IWRR turns the flow into a per-request path and reuses it for later tokens.}
+    \end{column}
+    \begin{column}{.32\textwidth}
+      \stepcard{3}{Where it pays}{The large gains appear when one GPU type cannot hold the model, or when the wide-area network is the bottleneck.}
+    \end{column}
+  \end{columns}
+  \vspace{.20cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.06cm}
+    \item On the reported settings, decode throughput improves by up to \(3.29\times\) versus SP (abstract: \(3.3\times\)).
+    \item The largest latency cuts versus Swarm, 66\% prompt and 24\% decode, are the simulated geo-distributed LLaMA 30B online run.
+  \end{itemize}
+  \vspace{.08cm}\takeaway{Helix jointly chooses layer placement and request paths. It does not claim a latency win on every baseline.}
+  \src{Sec.~8, with the ratios taken from Sec.~6.4 and Sec.~6.5 rather than from the abstract alone.}
+\end{frame}
+
+% ----- SLIDE 38 -----
+\begin{frame}
+  \vfill
+  \begin{center}
+    {\fontsize{32}{38}\selectfont\bfseries\color{Ink}Questions \& Discussion}\par
+    \vspace{.34cm}
+    {\large\color{Accent}Max flow \quad / \quad per-request pipelines \quad / \quad what is simulated}\par
+    \vspace{.42cm}
+    {\small\color{Muted}Helix (layer and path) \quad next to phase, head, and kernel systems}
+  \end{center}
+  \vfill
+\end{frame}
+
+\end{document}
+
+
+

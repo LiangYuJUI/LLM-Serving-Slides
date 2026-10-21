@@ -117,7 +117,7 @@ Yu-Jui Liang
 
 Advisor: Hsiang-Yun Cheng
 
-National Taiwan University | 21 Oct 2026
+National Taiwan University | Academia Sinica | 21 Oct 2026
 
 </div>
 

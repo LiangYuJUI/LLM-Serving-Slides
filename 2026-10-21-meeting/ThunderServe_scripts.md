@@ -233,62 +233,93 @@ Appendix B 把 decode throughput 估計成這組 GPU 能承載的最大 total ba
 
 ## 第 18 頁｜Orchestrating Prefill and Decode Replicas
 
-每個 replica 的 parallel configuration 選好之後，下一個問題是 request 應該走哪一條 prefill-to-decode 路徑。
+每個 replica 的 parallel configuration 選好之後，下一個問題是：request 應該經過哪一組 Prefill → Decode 路徑？這裡的 replica 是一份部署好的模型副本，可以由多張 GPU 共同執行，不一定等於一台 instance。
 
-看這張圖，左邊 coordinator 可以把 request 分給不同的 prefill replicas。每一個 prefill replica 做完後，又可以把 KV cache 送往不同的 decode replicas。因此這裡不是固定一對一配對，而是有很多可能的組合。
+看這張圖，左邊 coordinator 可以把 request 分給不同的 Prefill replicas；Prefill 做完後，又可以把 KV cache 送往不同的 Decode replicas。因此有很多可能的 pairing。我們先回答「每一組 pairing 好不好」，之後才決定實際流量怎麼分配。
 
-ThunderServe 使用 DistServe 的 inference task simulator，再把 KV cache communication cost 加進去，估計每一組 prefill、decode 配對的 SLO attainment。這些分數整理成矩陣 D，其中 D 下標 i、j，就是走第 i 個 prefill 和第 j 個 decode 的預測表現。
+這裡用來評估好壞的指標是 SLO attainment。它不是單純的 latency，而是「有多少比例的 requests 可以在預先設定的 latency deadline 內完成」。更精確地說，要看目前評估的是哪一種時間要求：TTFT，也就是 Time To First Token，關心多快拿到第一個 token；TPOT，也就是 Time Per Output Token，關心後續每個 output token 的生成時間；E2E，也就是 End-to-End latency，關心整個 request 完成的時間。達成率是符合所選 SLO 時間要求的 request 比例，不是把三種 latency 混成一個數字。
 
-重點是 routing 不能只看 GPU 還有沒有空，也要看兩邊的計算能力、工作負載，以及中間的 KV 傳輸成本。下一頁先拆開這個通訊成本怎麼估。
+ThunderServe 沿用 previous work DistServe 的 inference task simulator，並額外考慮 KV cache communication cost，預測每一組 Prefill i → Decode j 的 SLO attainment。這些結果整理成 performance／SLO attainment score matrix D。D_ij 表示在給定 workload 與 SLO deadline 的條件下，若 request 使用 Prefill replica i，再送到 Decode replica j，模擬器預測可以滿足該 SLO 的 request 比例。
 
-來源：Section 3.3、Figure 5，論文第 6 頁。
+例如 D_12 = 0.92，就是在目前 workload 與 deadline 設定下，採用 Prefill 1 → Decode 2 這條路徑的 requests，預測約有 92% 可以符合正在評估的 SLO。這裡的 SLO 可以是 TTFT、TPOT 或 E2E 的時間要求。簡單說，D 是「每條 Prefill → Decode 路徑的預測服務品質評分表」，不是 latency matrix，也不是實際 routing 的流量比例。
 
-備註：Figure 5 的箭頭數值與正文對條件比例 Y 的定義有歧義。圖中從同一 prefill 出發的數值分別加總為 0.6 與 0.4，比較像全體流量占比；正文卻把 Y 定義成條件於該 prefill 的比例。口述以正文定義說明，不把圖上的數值直接當成已正規化的 Y。
+Deadline 不是固定的 1 秒或 2 秒。論文 evaluation 以 A100 的 execution latency 為基準，用不同的 SLO Scale，也就是基準時間的不同倍數，設定 latency deadline，再觀察達成率。反過來，作者也會問：若要求 90% 或 99% 的 requests 滿足 SLO，最小需要多寬鬆的 latency deadline？所以 deadline 是時間門檻，90% 或 99% 則是希望達到的 request 比例。
+
+D 的分數會受到計算能力、workload、執行 latency，以及 KV cache communication cost 影響。下一頁先拆開其中一個重要因素：Prefill 做完後，把 KV cache 搬到 Decode 究竟要多久？
+
+來源：Section 3.3、Figure 5，論文第 6 頁；SLO 定義、SLO Scale 與 90%／99% 目標見 Section 5.1 的 Evaluation metrics。
+
+備註：Figure 5 的箭頭數值與正文對 conditional Y_ij 的定義有歧義。從同一 Prefill 出發的箭頭值分別加總為 0.6 與 0.4，看起來比較像「全體 requests 中走每條完整路徑的比例」，而不是條件於該 Prefill 的比例。口述應以正文對 X、Y 的定義為主，不直接把圖上的箭頭值當成已正規化的 Y。
 
 ## 第 19 頁｜Modeling KV Cache Communication Cost
 
-論文使用 alpha-beta model，基本概念很簡單：傳輸時間等於啟動一次通訊的固定成本，加上資料量除以頻寬。
+上一頁先評估每組 pairing 好不好，這頁看其中一個重要因素：Prefill 做完後，把 KV cache 搬到 Decode 要多久。論文使用 alpha-beta model，基本概念很簡單：傳輸時間等於啟動一次通訊的固定成本，加上資料量除以頻寬，也就是 T_comm = alpha_ij + payload / beta_ij。
 
 在這篇的符號裡，alpha 是 network latency，beta 是 bandwidth。這裡要跟著作者的定義看，因為有些文獻會把 beta 定義成每個 byte 的傳輸時間，寫法就會不同。
 
-分子裡的 b 是 batch size，s 是 sequence length，h 是 Transformer block 的 hidden size，N bytes 是每個 KV element 在傳輸時占幾個 bytes。前面的 2 代表 key 和 value 兩份資料。如果 bandwidth 用 bytes per second，那 payload 也要用 bytes；不能把 Gbps 的數字直接當成 GB/s 代進去。
+原文的 payload 寫成 2 × b × s × h × N_bytes。分子裡的 b 是 batch size，s 是 sequence length，h 是 Transformer block 的 hidden size，N bytes 是每個 KV element 在傳輸時占幾個 bytes。前面的 2 代表 key 和 value 兩份資料。如果 bandwidth 用 bytes per second，那 payload 也要用 bytes；不能把 Gbps 的數字直接當成 GB/s 代進去。
 
 不過，原文這個式子沒有明確寫出 layer 數。如果要計算整個模型的 KV cache，還需要考慮 L 個 layers，以及每一層真正的 KV-head width。這一頁下方的完整資料量公式，是根據 tensor 維度補充的說明，不是說原文已經把這些項目都寫出來了。
 
-對一般 multi-head attention，總 KV-head width 通常等於 hidden size；如果是 grouped-query attention，就不能直接用完整 hidden size 代替 KV 的寬度。此外，TP、PP 分片會影響每條 link 實際要傳多少資料。因此實作時要估的是實際傳輸的 shards，再加上必要的量化 metadata，而不是只照抄一個總量公式。
+對一般 multi-head attention，總 KV-head width 通常等於 hidden size；如果是 grouped-query attention，也就是 GQA，就不能直接用完整 hidden size 代替 KV 的寬度。此外，TP、PP 分片會影響每條 link 實際要傳多少資料。因此實作時要估的是實際傳輸的 shards，再加上必要的量化 metadata，而不是只照抄一個總量公式。
+
+最後把它接回 D：KV cache communication time 並不是最終 routing objective 本身，而是影響 Prefill i → Decode j 這條路徑的整體 latency，進一步影響 request 是否超過所選 SLO 的 deadline，也就影響 D_ij 的預測達成率。可以記成「KV 傳輸成本 → latency → 是否超過 SLO deadline → D_ij」。對不同 SLO 指標的影響，仍要依其計時範圍判斷，不能說傳輸時間會等量加到 TTFT、TPOT 與 E2E 上。
 
 來源：Section 3.3、Equation 1，論文第 6 頁。全模型資料量與分片注意事項為補充解釋。
 
 ## 第 20 頁｜Replica Routing Objective and Formulation Caveats
 
-有了 D 矩陣，就可以描述 routing 的目標。X_i 是所有 incoming requests 裡，有多少比例先送到 prefill i。Y_ij 則是已經送到 prefill i 的 request 裡，有多少比例接著送到 decode j。
+前兩頁回答了「每組 pairing 的預測表現如何」，也說明 KV 傳輸成本怎麼影響評分。現在才要回答「實際流量應該怎麼分配」。D 是評分表；X 和 Y 才是 routing proportion。
 
-因此，X_i 乘上 Y_ij，就是所有 requests 當中走 i 到 j 這條路的比例。再乘上這條路的預測 SLO attainment，最後全部加總，就是作者想最大化的加權分數。
+先看第一階段的向量 X。X_i 是所有 incoming requests 中，有多少比例先送到 Prefill replica i。例如 X_1 = 0.6、X_2 = 0.4，意思是用 100 個 requests 來看，60 個先到 Prefill 1，40 個先到 Prefill 2。因此 sum_i X_i = 1，也就是所有流量都要分配出去。
 
-作者把這件事描述成 two-stage transportation problem，並且說可以用 linear programming 求解。不過這裡要把「想法」和「論文寫出的完整數學形式」分開看。以目前印出的式子來說，X 和 Y 都是變數，兩者相乘是 bilinear，不是直接就成為 linear objective。另外，Y 的 row-sum constraint 少了等號和右側，式子裡也沒有明確列出 replica 的容量限制。
+第二階段的矩陣 Y 是 conditional routing proportion。Y_ij 的意思是：「已經送到 Prefill i 的 requests 裡，有多少比例接著送到 Decode j。」例如剛剛有 60 個 requests 到 Prefill 1，其中 18 個接著送到 Decode 2，那 Y_12 = 18 / 60 = 0.3。注意，這個 30% 的分母是到 Prefill 1 的 60 個 requests，不是全部 100 個。
 
-投影片現在把原文印出的約束也放上來：所有 X_i 加總等於 1；每個 i 的 Y_ij 對 j 加總那一項沒有等號；X 和 Y 都要非負。所以報告時我會說，它用 transportation formulation 來決定 routing；但如果要重現 solver，只靠這個印出的式子還不夠。這是論文描述不完整的地方，不能在這裡自行補一套限制，再當成作者實際做法。
+因此，依照條件比例的語意，每個 Prefill i 對應的一整列 Y 應該滿足 sum_j Y_ij = 1。不過原文印出的 constraint 在這裡缺少等號與右側，這是數學表達不完整的地方。我們可以解釋條件比例應有的意思，但不能說論文已經完整寫出了這條約束。
 
-來源：Section 3.3，論文第 6 頁；數學形式的限制為報告者分析。
+為了把流量看得更直觀，我們額外引入 Z_ij = X_i Y_ij。Z 是輔助理解用的 joint traffic fraction，不是 ThunderServe 論文原文獨立定義的變數。它表示「所有 incoming requests 中，真正走 Prefill i → Decode j 這條完整路徑的比例」。延續剛剛的例子，Z_12 = 0.6 × 0.3 = 0.18，也就是全體 requests 中有 18% 走 Prefill 1 → Decode 2。
 
-備註：可引入聯合流量 Z_ij = X_i Y_ij，讓目標寫成 sum Z_ij D_ij。但若只要求 Z 非負且總和為 1，又把 D 當成固定分數，最佳化會傾向把流量全放在最高分的配對。合理的負載分配還需要容量、流量與排隊模型之間的關係；原文沒有充分展開，不能宣稱換個變數就已完整重現原方法。
+原文想最大化的 objective 是 sum_i sum_j X_i Y_ij D_ij。如果用我們引入的 Z 表示，就是 sum_i sum_j Z_ij D_ij。口頭上可以讀成「每條路徑的流量比例，乘上該路徑的預測 SLO attainment，最後全部加總」。例如 Z_12 = 0.18、D_12 = 0.92，這條路徑對加權分數的貢獻就是 0.18 × 0.92 = 0.1656，也就是 16.56 個百分點；這只是其中一條路徑的貢獻，還要加上其他路徑。直觀目的就是把更多 requests 分配給預測 SLO attainment 比較好的路徑。
+
+但這裡有一個不能省略的 formulation caveat：如果把 D 當成固定分數，而只要求 Z 非負、總和為 1，沒有其他與負載相關的限制，那把全部流量放到 D 最大的那條路徑就能取得最大值；若有多條同分最高的路徑，也可以在它們之間分配。這個式子本身沒有解釋集中流量後，replica capacity、queueing 或其他負載效應會如何改變可行性或分數。原文沒有完整展開這些關係，我們不能自行補出限制，再宣稱是作者的方法。
+
+此外，作者把問題稱為 two-stage transportation problem，並宣稱可以用 linear programming 求解；但目前印出的 objective 裡，X_i 與 Y_ij 都是變數，兩者相乘在形式上是 bilinear。引入 Z 可以讓目標寫成對 Z 的線性形式，卻不代表已經補齊完整 solver。投影片保留的原文約束包括 X 的總和為 1、X 與 Y 非負，以及缺少等號與右側的 Y row-sum 項；這些資訊不足以完整重現實際 routing solver。
+
+所以報告時應說：「論文用 transportation formulation 描述 Prefill–Decode routing，並宣稱以 LP 求解；但 paper 中印出的數學式沒有完整展開所有必要 constraints，因此不能只根據這個式子推斷完整 solver implementation。」這是對論文呈現方式的限制提醒，不代表我們已經知道實作使用了哪些額外約束。
+
+最後記住四個符號：D 是每條路徑的預測 SLO 表現；X 是第一階段選 Prefill 的比例；Y 是在某個 Prefill 之後選 Decode 的條件比例；我們引入的 Z_ij = X_i Y_ij，則是全體 requests 中走某條完整路徑的比例。這裡是逐條路徑相乘，不是一般的矩陣乘法 Z = XY。
+
+來源：Section 3.3，論文第 6 頁。Z、數值例子與數學形式的限制為報告者的輔助解釋及分析。
 
 ## 第 21 頁｜Network-Aware Deployment Plans
 
-這個例子可以把剛剛的方法串起來。作者用 4 張 A40 和 4 張 3090 Ti 來跑 LLaMA-30B，改變兩個 instances 之間的 bandwidth。
+這個例子把前面的方法串起來：同樣是 4 張 A40 加上 4 張 3090 Ti，網路條件不同，最佳 deployment plan 也可能不同。作者在兩個 GPU instances 上執行 LLaMA-30B，一台有 4×A40，另一台有 4×3090 Ti，持續送入長度為 1024 的 input sequences，測試 inter-instance bandwidth 為 40 Gbps 和 5 Gbps 時的表現。這裡研究的是跨 GPU instance 的網路條件差異，不是明確比較「40 Gbps 是同機器、5 Gbps 是跨資料中心」。
 
-在 40 Gbps 時，A40 全部用來做 prefill，3090 Ti 全部用來做 decode。這很符合前面的直覺：計算能力比較適合 prefill 的一組做 prefill，memory bandwidth 比較有利的一組做 decode。整體 throughput 是 3292 tokens per second，約是 non-disaggregating baseline 的兩倍。
+先釐清 replica。它是一份可以獨立承接 request、執行所負責推論工作的模型服務實例，不是單張 GPU。一個 replica 可以由多張 GPU 組成，內部透過 TP、PP 共同執行模型。例如 4×A40 可以組成一個 model replica，4×3090 Ti 也可以組成另一個。在一般 non-disaggregated serving 中，每個 replica 同時負責 Prefill 和 Decode；在 ThunderServe 中，則可以指定為只負責 Prefill 的 replica，或只負責 Decode 的 replica，由兩者接力完成 request。
 
-但是把 inter-instance bandwidth 降到 5 Gbps 後，繼續把所有 KV cache 從 A40 那台送到 3090 Ti 那台，就會很吃虧。所以部署變成每個 phase 各用 2 張 A40 加 2 張 3090 Ti，透過 PP 把不同 instances 上的 stages 接起來。
+這裡的 non-disaggregating baseline，是作者在 Appendix H 建立的對照配置，不是 vLLM、DistServe 或 HexGen 等另一個系統名稱。Baseline 用 4×A40 組成一個完整 model replica，再用 4×3090 Ti 組成另一個；兩個 replica 各自都做 Prefill 加 Decode，不進行 phase disaggregation。可以把它想成兩組各自完整跑模型的服務實例。
 
-這樣的關鍵，是讓對應 layer 的 KV cache 可以留在同一個 instance 內傳，跨 instance 的部分改成 pipeline activation communication。它不是消除了所有跨機器通訊，而是改變跨慢連線傳輸的資料種類和配置。
+相對地，在 40 Gbps 下，ThunderServe 讓 4×A40 組成 1 個 Prefill replica，4×3090 Ti 組成 1 個 Decode replica。原因是這個例子中，A40 較高的 peak FLOPS 有利於 compute-heavy 的 Prefill，而 3090 Ti 較高的 memory access bandwidth 有利於 memory-bound 的 Decode。在這個 workload 和配置下，40 Gbps 的跨 instance 網路讓 KV cache 傳輸成本仍可接受，因此可以利用兩種 GPU 各自的優勢。
 
-在這個部署下，throughput 是 2196 tokens per second，約是 baseline 的 1.4 倍。這也說明「每種 GPU 固定負責某一個 phase」並不是最好的通用規則，網路會改變答案。
+這裡的資料流是：request 先到 Prefill replica，產生 KV cache，再把 KV cache 傳給 Decode replica，讓 Decode 接著生成 tokens。如果兩個 replica 位於不同 instances，KV cache 就可能經過 inter-instance network。圖表中的 KV Comm 不是泛指所有 communication，主要指這個 Prefill 到 Decode 搬移 KV cache 所需的 communication time。
 
-來源：Appendix H、Figures 16–17、Table 5，論文第 16–17 頁。
+在 40 Gbps 的配置下，ThunderServe 系統 throughput 是 3292 tokens/s，而不做 Prefill／Decode 分離的 baseline 是 1610 tokens/s。3292 除以 1610 約等於 2.04，也就是整體 throughput 約為 baseline 的兩倍。這個數字是整個 serving system、所有 requests 加總後每秒處理的 token 數，不是單一 request 每秒生成 3292 個 tokens。
 
-備註：Table 5 的單次 KV communication 在 40 Gbps 配置是 133 ms，在 5 Gbps 配置是 41 ms。不能因此說慢網路傳得更快；兩者的部署與 KV 路徑已經改變。也不能用單次 prefill、decode 時間相加的倒數，直接推導整個多 replica 系統的 throughput。
+接著把 inter-instance bandwidth 降到 5 Gbps。如果仍然讓 A40 做全部 Prefill、3090 Ti 做全部 Decode，每個 request 的 KV cache 都要經過這條慢連線，大量 KV cache transfer 就會成為瓶頸。因此 ThunderServe 改成 Prefill replica 使用 2×A40 加 2×3090 Ti，Decode replica 也使用 2×A40 加 2×3090 Ti，並透過 PP 把不同 instances 上的 stages 接起來。
 
+這個改動的重點，是重新安排什麼資料需要經過慢網路。透過對應 layers 的 placement，昂貴的 KV cache transfer 可以盡量留在同一個 instance 內，利用 intra-instance 的高頻寬連線；跨 instance 的低頻寬連線則用來傳 pipeline stages 之間的 activations。它沒有消除跨機器通訊，仍然存在 pipeline communication，而是改變了跨慢 link 傳輸的資料種類與資料量。
+
+在這個 5 Gbps 部署下，系統 throughput 是 2196 tokens/s，約為 baseline 的 1.4 倍。這些數字要和 optimization 的結果分開看：deployment／scheduling optimization 根據 GPU profile、parallel configuration、network bandwidth、KV communication cost 與 workload 等資訊選擇 deployment plan；3292、2196 與 1610 tokens/s，則是論文對相應配置進行 serving execution／benchmark evaluation 後報告的系統表現，不是 solver 直接算出的 throughput。
+
+Table 5 還有一個容易誤讀的地方：40 Gbps 配置的單次 KV Comm 約為 133 ms，5 Gbps 配置卻只有約 41 ms。這不代表 5 Gbps 傳 KV cache 比 40 Gbps 快，因為兩種情況的 deployment plan、KV 傳輸路徑，以及實際跨各條 link 的資料量都不同。低頻寬配置透過改變 placement，讓更多 KV communication 留在 intra-instance 的高頻寬連線上，因此 KV Comm 反而較低。
+
+另外，也不能用 1 / (Prefill time + KV Comm + Decode time) 直接推導 system throughput。這些單次 request 的時間，和整個系統透過多個 replicas、pipeline、batching 與 concurrent requests 達成的總吞吐量，是不同層次的量測；系統 throughput 不是單一 request latency 的簡單倒數。
+
+所以這個例子要傳達的是：不能只看 GPU compute 或 memory bandwidth，就固定指定某種 GPU 永遠做哪個 phase。同樣是 4×A40 加 4×3090 Ti，網路快時可以讓 A40 專門 Prefill、3090 Ti 專門 Decode；網路慢時，就要重新安排 replicas 與 PP placement，避免大量 KV cache 經過慢 link。Deployment plan 必須一起考慮 GPU capability、parallel configuration、KV communication cost、network bandwidth 與 workload。
+
+ThunderServe 最重要的不是固定 GPU-to-phase mapping，而是 network-aware heterogeneous deployment。
+
+來源：Appendix H、Figures 16–17、Table 5，論文第 16–17 頁。Replica 定義與 throughput 解讀為輔助說明。
 
 ## 第 22 頁｜Request-Time Breakdown in Table 5
 
@@ -318,13 +349,19 @@ ThunderServe 使用 DistServe 的 inference task simulator，再把 KV cache com
 
 上一頁看 throughput，這一頁改看 SLO attainment。設定是 16 張 A5000，兩張一個 replica，所以總共 8 個 replicas。
 
-作者在這組實驗裡指出，coding 適合 5 個 prefill 搭配 3 個 decode；conversation 則適合 3 個 prefill 搭配 5 個 decode。可以看到，不同的 phase ratio 會讓 SLO 曲線往左或往右移。
+這裡先釐清 coding 和 conversation。它們是 LLM 的兩類應用任務，在這個實驗中，更精確地說，是兩種 request workload，也就是工作負載。Coding 指程式相關的使用情境，例如程式碼補全；conversation 則是對話、問答等情境。作者採用 Azure 資料集中的這兩類 workload，這裡關心的是 requests 的輸入、輸出長度與服務需求，不是在比較模型寫程式或聊天的回答品質。
 
-橫軸 SLO scale 越大，代表 deadline 越寬鬆；縱軸越高，代表越多 request 在 deadline 內完成。所以在同一個 deadline 下，較高的曲線比較好；如果固定想達成的比例，就看哪個配置需要的 deadline 比較短。
+在論文採用的 workload 中，coding 的輸入較長、輸出較短。Prefill 要處理整段輸入，所以較長的 prompt 會增加 Prefill 的工作量；輸出較短，則需要較少的 Decode 生成步數。因此作者在這組實驗裡發現，5 個 Prefill 搭配 3 個 Decode 的配置較合適。
 
-要注意，這裡的 5:3 和 3:5 是這個模型、硬體及 workload 下作者報告的配置。當 deadline 放得很鬆，很多配置都能達到接近 100%，也就不會一直有明顯差距。
+Conversation 則是輸入相對較短、輸出較長。因為 Decode 要逐步生成後續 tokens，較長的回覆會增加 Decode 的工作量，因此這組實驗較適合 3 個 Prefill 搭配 5 個 Decode。這裡的 5:3 和 3:5 都是 Prefill replica 數量比上 Decode replica 數量；同樣的 8 個 replicas，會因為 workload 不同而採用不同的 phase ratio。
 
-來源：Appendix D、Figure 14，論文第 14 頁。
+可以看到，不同的 phase ratio 會讓 SLO 曲線往左或往右移。橫軸 SLO scale 越大，代表 deadline 越寬鬆；縱軸越高，代表越多 requests 能符合這個 deadline。所以在同一個 deadline 下，較高的曲線比較好；如果固定想達成的比例，就看哪個配置需要的 deadline 比較短。
+
+要注意，「coding 輸入較長、輸出較短」是這篇採用的 workload 特徵，不是所有程式任務都一定如此；conversation 也不一定永遠需要更多 Decode。這裡的 5:3 和 3:5 是這個模型、硬體及 workload 下作者報告的配置，不能直接當成其他部署的固定比例。當 deadline 放得很鬆，很多配置都能達到接近 100%，也就不會一直有明顯差距。
+
+因此這一頁的重點是：要根據實際 workload 的輸入與輸出需求分配 Prefill／Decode 資源，才能提高在指定 deadline 下的 SLO attainment，不能只看任務名稱就固定 phase ratio。
+
+來源：Appendix D、Figure 14，論文第 14 頁；workload 來源見 Section 5.1 的 Model and workloads。任務情境例子為輔助解釋。
 
 ## 第 25 頁｜Lightweight Re-scheduling in Real Time
 
@@ -463,13 +500,21 @@ SLO attainment 是符合指定 deadline 的 request 比例。論文分別評估 
 
 這張圖看 throughput。ThunderServe 被 normalize 成 1，所以其他系統的柱子越低，代表相對於 ThunderServe 的 throughput 越低。柱子上標的倍數，則是 ThunderServe 除以那個 baseline 的 throughput。
 
+這裡先提醒，四個系統不是全部使用相同硬體。ThunderServe 和 HexGen 使用同一組異質 cloud 環境，共 32 張 GPU：8 張 A6000、8 張 A5000、8 張 A40 和 8 張 3090 Ti。DistServe 和 vLLM 則使用一台配備 8 張 A100-80GB 的 in-house server。
+
+作者對齊的是接近的 GPU 租用價格預算，不是相同 GPU 數量或相同總算力。Cloud 配置在論文中的租金合計為每小時 13.542 美元；in-house 的 8 張 A100，則以「租用同樣 GPU 要多少錢」估算為每小時 14.024 美元，作為預算對照。這不是先把硬體換算成 FLOPS，再根據算力推估報價。
+
+也要區分價格與效能數據：租用價格用來建立預算比較基準；圖上的 throughput 則是實際執行實驗得到的系統表現，不是根據報價或理論算力推算出來的。因此，和 HexGen 的比較是在相同硬體環境下看不同系統的整體效果；和 DistServe、vLLM 的比較，則是在接近租用預算下看「系統加上硬體部署」的整體效益。後者的 GPU 型號、數量與網路條件都不同，不能把差距全部歸因於 ThunderServe 的演算法。
+
 跟相同 cloud 環境的 HexGen 比，coding 是 1.5 倍，conversation 是 1.3 倍。跟 in-house 的 DistServe 比，則分別是 1.5 倍和 2.1 倍。
 
 Figure 9 另外標了跟 vLLM 比的結果，coding 是 1.7 倍，conversation 是 2.3 倍。這裡有一個論文內部的不一致：摘要說最高 throughput 改善 2.1 倍，但圖上 vLLM 的 conversation 比較寫 2.3 倍。
 
 所以我這裡不把它們壓成一個「全篇最高幾倍」的說法，而是保留每個 baseline 的具體結果。能確定的趨勢是，在這兩個 workload 與設定下，ThunderServe 的整體 throughput 都比圖中 baselines 高。
 
-來源：Section 5.2、Figure 9，論文第 9 頁；與摘要的差異見論文第 1 頁。
+來源：硬體配置與價格基準見 Section 5.1；throughput 結果見 Section 5.2、Figure 9，論文第 9 頁；與摘要的差異見論文第 1 頁。
+
+備註：上述 in-house 價格是等效 GPU 租用價格的估算，不是完整的自建機房總成本分析，不能直接當成已計入採購、電力與維運的成本。
 
 備註：Figure 9 是 normalized system throughput，不能把縱軸的 1.0 解釋成每秒 1 個 request。正文沒有在這張圖清楚交代一個固定 attainment 門檻，因此不另行把它命名為「99% SLO goodput」。
 
