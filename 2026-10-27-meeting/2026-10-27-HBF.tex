@@ -1,0 +1,349 @@
+% Standalone HBF: 27 Oct 2026 Research Meeting
+% Visual style follows the 21 Oct 2026 light Madrid decks.
+% Quantitative evidence is limited to the task brief and verified figure content.
+% Compile with pdfLaTeX from this directory. Keep HBF/ beside this file.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\graphicspath{{./}{figures/}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{hyperref}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{Ink}{HTML}{243748}
+\definecolor{Muted}{HTML}{667B8B}
+\definecolor{Accent}{HTML}{347E74}
+\definecolor{AccentBlue}{HTML}{507DAD}
+\definecolor{SoftMint}{HTML}{E6F4EE}
+\definecolor{SoftBlue}{HTML}{E9F2F9}
+\definecolor{SoftLilac}{HTML}{F1EEF8}
+\definecolor{Paper}{HTML}{FBFCFE}
+\definecolor{Divider}{HTML}{D8E4EB}
+
+\setbeamercolor{background canvas}{bg=Paper}
+\setbeamercolor{normal text}{fg=Ink}
+\setbeamercolor{structure}{fg=Accent}
+\setbeamercolor{frametitle}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{title}{fg=Ink}
+\setbeamercolor{subtitle}{fg=Muted}
+\setbeamercolor{block title}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block body}{fg=Ink,bg=white}
+\setbeamercolor{item}{fg=Accent}
+\setbeamercolor{caption name}{fg=Muted}
+\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamerfont{footline}{size=\tiny}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm plus 1fil]{footline}%
+      \hfill\insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}}}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=.72cm,dp=.16cm,leftskip=.55cm,rightskip=.40cm]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}}
+
+\newcommand{\smalllabel}[1]{{\scriptsize\bfseries\color{Accent}\MakeUppercase{#1}}}
+\newcommand{\hint}[1]{{\scriptsize\color{Muted}#1}}
+\newcommand{\takeaway}[1]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.12cm,wd=\linewidth]{block title}%
+    {\small\bfseries #1}
+  \end{beamercolorbox}}
+\newcommand{\stepcard}[3]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.10cm,wd=\linewidth]{block body}%
+    {\scriptsize\bfseries\color{Accent}#1}\par\vspace{.4mm}
+    {\footnotesize\bfseries #2}\par\vspace{.4mm}
+    {\scriptsize\color{Muted}#3}%
+  \end{beamercolorbox}}
+
+\newcommand{\figureplaceholder}[3]{%
+  \begingroup\centering
+  \IfFileExists{#1}{%
+    \includegraphics[width=.98\linewidth,height=#2,keepaspectratio]{#1}%
+  }{%
+    \IfFileExists{figures/#1}{%
+      \includegraphics[width=.98\linewidth,height=#2,keepaspectratio]{figures/#1}%
+    }{%
+      \begin{tikzpicture}
+        \node[draw=AccentBlue!55,dashed,line width=.7pt,rounded corners=4pt,
+              fill=SoftBlue!60,minimum height=#2,minimum width=.95\linewidth,
+              text width=.85\linewidth,align=center,inner sep=2mm] {
+           {\color{AccentBlue}\bfseries FIGURE PLACEHOLDER}\\[2.2mm]
+           {\color{Ink}\small #3}\\[1.5mm]
+           {\color{Muted}\scriptsize\ttfamily\detokenize{#1}}};
+      \end{tikzpicture}%
+    }%
+  }\par\endgroup}
+
+\newcommand{\src}[1]{\vspace{0.05cm}\hint{Source: #1}}
+
+\title[HBF]{HBF Sucks?}
+\author{Yu-Jui Liang}
+\date{27 Oct 2026}
+\begin{document}
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+\vspace*{.45cm}
+\smalllabel{Research meeting / paper summary}\par\vspace{.3cm}
+{\LARGE\bfseries HBF Sucks?\par}\vspace{.14cm}
+{\Large\bfseries A Full-Stack Characterization of High-Bandwidth Flash\\[.1cm]
+for KV-Centric LLM Serving\par}\vspace{.35cm}
+{\large\color{Accent}A faster flash tier can make the serving system slower.\par}
+\vspace{.55cm}
+{\bfseries Yu-Jui Liang}\par
+{\small\color{Muted}Advisor: Hsiang-Yun Cheng}\par
+{\small\color{Muted}National Taiwan University \quad | \quad Academia Sinica \quad | \quad 27 Oct 2026}\par
+\vfill
+{\scriptsize\color{Muted}Zhuoran Li, Zhuohang Bian, Xin Huang, Yibo Zhao, Guangyu Sun, Youwei Zhuo\par
+arXiv:2608.11668v4}\par\vspace{.08cm}
+{\color{Accent}\rule{\textwidth}{.7pt}}
+\end{frame}}
+
+\begin{frame}[t]{Why Replace SSD with HBF?}
+\smalllabel{Motivation / the intuitive upgrade}\par\vspace{.35cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.46\textwidth}
+\begin{block}{KV cache grows beyond GPU memory}
+\small Serving systems offload reusable KV to a larger backing tier.
+\end{block}
+\vspace{.12cm}
+\begin{block}{SSD supplies capacity}
+\small But restoring KV incurs storage access latency.
+\end{block}
+\end{column}
+\begin{column}{.49\textwidth}
+\begin{block}{HBF promises a faster flash tier}
+\small Package-local flash offers lower latency and higher bandwidth than SSD.
+\end{block}
+\vspace{.25cm}
+{\large\bfseries Does faster flash translate into faster end-to-end LLM serving?\par}
+\end{column}
+\end{columns}
+\vfill\takeaway{The paper tests the intuitive ``SSD $\rightarrow$ HBF'' upgrade at the full-system level.}
+\src{HBF Sucks?, abstract and introduction.}
+\end{frame}
+
+\begin{frame}[t]{What Did the Paper Actually Evaluate?}
+\smalllabel{Method / drop-in substitution}\par\vspace{.18cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.49\textwidth}
+\textbf{Keep the Mooncake-style runtime}\par
+\small Admission / retention / lookup / KV save \& restore\par\vspace{.12cm}
+\textbf{Swap capacity-matched SSD for HBF-1 / HBF-2}
+\end{column}
+\begin{column}{.48\textwidth}
+\textbf{Extended TokenSim}\par
+\small 4 complete two-hour traces; 5 dense / MoE models\\
+H100 / B200 profiles; thermal + endurance models
+\end{column}
+\end{columns}
+\vspace{.25cm}
+\smalllabel{How the modeled organizations differ}\par\vspace{.06cm}
+{\small\renewcommand{\arraystretch}{1.28}
+\begin{tabularx}{\textwidth}{@{}lXX@{}}\toprule
+ & \textbf{HBF-1} & \textbf{HBF-2}\\\midrule
+Package stack sites & All assigned to HBF & Split equally: HBM + HBF\\
+GPU near tier & GDDR7 on the card PCB & HBM3e on the interposer\\
+HBF capacity / bandwidth & $2\times$ HBF-2 & Reference ($1\times$)\\\bottomrule
+\end{tabularx}}\par\vspace{.1cm}
+\hint{At the same GPU profile, near-tier capacity is equal; memory technology and bandwidth differ.}\par
+\vfill\takeaway{Same SSD-style runtime, but HBF trades near-tier resources for package-local flash.}
+\src{Sec. 2.2, Tables 2 and 3(c), Sec. 6.1. Modeled roadmap profiles, not production hardware.}
+\end{frame}
+
+\begin{frame}[t]{Three Conditions for HBF to Help}
+\smalllabel{Organizing principle}\par\vspace{.55cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.31\textwidth}
+\begin{block}{C1 --- Critical Path}
+\normalsize Read I/O must be a real serving bottleneck.\par\vspace{.25cm}
+\hint{F1--F2: package tradeoff and limited base-die compute leverage.}
+\end{block}
+\end{column}
+\begin{column}{.31\textwidth}
+\begin{block}{C2 --- Reuse}
+\normalsize Useful reads must repay every HBF write.\par\vspace{.25cm}
+\hint{F3--F4: cold write-heavy traffic and limited batching benefit.}
+\end{block}
+\end{column}
+\begin{column}{.31\textwidth}
+\begin{block}{C3 --- Sustainability}
+\normalsize High bandwidth must remain sustainable.\par\vspace{.25cm}
+\hint{F5--F6: thermal throttling and flash write wear.}
+\end{block}
+\end{column}
+\end{columns}
+\vspace{.45cm}
+\centering\textbf{6 findings = 2 findings for each condition}\par
+\vfill\takeaway{A faster medium helps only if all three conditions hold.}
+\src{Sections 5--8.}
+\end{frame}
+
+\begin{frame}[t]{Faster HBF Barely Improves E2E Latency}
+\smalllabel{C1 fails / flash is barely on the critical path}\par\vspace{.2cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.56\textwidth}
+\figureplaceholder{HBF/HBF_Figure04.png}{2.9cm}{Figure 4}
+\hint{Fig. 4: matched pairs, media sweep, and queue behavior.}\par\vspace{.25cm}
+\textbf{Less near-tier capacity/bandwidth}\par
+$\rightarrow$ fewer admitted requests\par
+$\rightarrow$ more queueing\par
+$\rightarrow$ worse E2E latency
+\end{column}
+\begin{column}{.41\textwidth}
+\smalllabel{Evidence}\par\vspace{.08cm}
+\small Faster connector, yet mean E2E latency is\par
+{\Large\bfseries\color{Accent}2--5.5$\times$ higher}\par
+\small than capacity-matched SSD.\par\vspace{.18cm}
+\textbf{3.75$\times$ faster raw HBF latency}\par
+$\rightarrow$ only \textbf{0.75\% / 0.88\%} lower E2E\par
+\hint{HBF-1 / HBF-2, vs. their slower-media settings.}\par\vspace{.16cm}
+$\rightarrow$ exposed secondary-tier I/O $\approx$ \textbf{1\%}
+\end{column}
+\end{columns}
+\vfill\takeaway{The bottleneck is not flash-media latency.}
+\src{Fig. 4 and Sec. 6.1. HBF-1 vs. SSD24; HBF-2 vs. SSD12. H100/B200 simulation.}
+\end{frame}
+
+\begin{frame}[t]{All Production Traces Send More Writes Than Reads to HBF}
+\smalllabel{C2 fails / useful reads do not repay writes}\par\vspace{.25cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.56\textwidth}
+\figureplaceholder{HBF/HBF_Table08.png}{2.4cm}{Table 8}
+\hint{Table 8: flash-tier byte traffic over each full two-hour replay.}\par\vspace{.28cm}
+\small Hot, highly reused KV $\rightarrow$ retained in HBM / GDDR\par\vspace{.13cm}
+Cold, low-reuse KV $\rightarrow$ evicted to HBF
+\end{column}
+\begin{column}{.40\textwidth}
+\smalllabel{Evidence / write bytes per read byte}\par\vspace{.1cm}
+{\large
+\begin{tabular}{lr}
+traceA & \textbf{2.14$\times$}\\[.09cm]
+traceB & \textbf{4.90$\times$}\\[.09cm]
+coder & \textbf{1.14$\times$}\\[.09cm]
+thinking & \textbf{2.20$\times$}
+\end{tabular}}\par\vspace{.22cm}
+\small All exceed \textbf{1$\times$ (equal write/read bytes)}. Every write costs flash work; many blocks are never read back.
+\end{column}
+\end{columns}
+\vfill\takeaway{The cache hierarchy gives HBF a write-heavy, low-reuse KV stream.}
+\src{Table 8 and Sec. 7.1. Production-trace replay, not HBF device measurements.}
+\end{frame}
+
+\begin{frame}[t]{Write-Heavy KV Traffic Makes Peak HBF Bandwidth Unsustainable}
+\smalllabel{C3 fails / thermal limits and write wear}\par\vspace{.2cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.55\textwidth}
+\figureplaceholder{HBF/HBF_Figure10a.png}{2.5cm}{Figure 10a}
+\hint{Fig. 10(a): modeled temperature vs. single-stack bandwidth.}\par\vspace{.18cm}
+\textbf{Thermal = short-term throttling}\par
+\small 16-Hi TLC HBF model; \textbf{80$^\circ$C} limit\par
+$\approx$ \textbf{202.27 GB/s} sustainable point\par\vspace{.1cm}
+\textbf{Peak interface BW $\ne$ sustained workload BW}
+\end{column}
+\begin{column}{.41\textwidth}
+\smalllabel{Evidence / long-term endurance}\par\vspace{.15cm}
+\textbf{Endurance = long-term write wear}\par\vspace{.18cm}
+\small Measured trace writes:\par
+{\Large\bfseries\color{Accent}48--140 TB/day}\par\vspace{.22cm}
+\small Modeled HBF lifetime:\par
+{\Large\bfseries\color{Accent}$\approx$ 0.56$\times$}\par
+\small the capacity-matched SSD pool\par\vspace{.1cm}
+\hint{Under unchanged KV pooling and the paper's TLC write-budget model.}
+\end{column}
+\end{columns}
+\vfill\takeaway{Write-heavy KV reduces sustained bandwidth and consumes flash lifetime.}
+\src{Fig. 10(a), Fig. 11 and Sec. 8. Model projections, not hardware lifetime measurements.}
+\end{frame}
+
+\begin{frame}[t]{The Device Is Fine; the Drop-In Deployment Is Not}
+\smalllabel{Conclusion / placement requirements}\par\vspace{.15cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.43\textwidth}
+\figureplaceholder{HBF/HBF_Figure12.png}{3.1cm}{Figure 12}
+\hint{Fig. 12: conceptual map; not a calibrated boundary.}
+\end{column}
+\begin{column}{.54\textwidth}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.49\textwidth}
+\textbf{Poor HBF targets}\par\small
+Private KV\\Transient decode KV\\Low-reuse objects
+\end{column}
+\begin{column}{.49\textwidth}
+\textbf{Better HBF targets}\par\small
+Model weights\\Shared prefixes\\Read-mostly objects
+\end{column}
+\end{columns}
+\vspace{.3cm}
+\textbf{Requirements for a future runtime}\par\vspace{.1cm}
+\small Critical-path-aware / reuse-aware\\Write-budgeted / thermal-aware
+\end{column}
+\end{columns}
+\vspace{.15cm}
+\takeaway{HBF should not be treated as a faster SSD.}
+\vspace{.1cm}\small The paper characterizes the problem and gives design requirements; it does not implement a complete new HBF-aware serving runtime.\par
+\src{Fig. 12 and Sections 9--10.}
+\end{frame}
+
+% ----- SLIDE 09: Sources after the main conclusion -----
+\begin{frame}[t]{Sources Behind the HBF Evaluation}
+\vspace{0cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.30\textwidth}
+\smalllabel{System / workload}\par\vspace{.06cm}
+\textbf{\href{https://github.com/pku-lemonade/TokenSim}{TokenSim} / \href{https://github.com/pku-lemonade/TokenSim/tree/hbf}{HBF code}}\par
+\footnotesize pku-lemonade research project\\
+Open-source serving simulator\par
+$\rightarrow$ Serving, KV transfers, queueing and E2E latency\par\vspace{.27cm}
+\normalsize\textbf{\href{https://www.usenix.org/conference/atc25/presentation/wang-jiahao}{Qwen-Bailian traces}}\par
+\footnotesize Alibaba / SJTU; production data\par
+$\rightarrow$ Request and reuse replay:\\
+traceA, traceB, coder, thinking
+\end{column}
+\begin{column}{.37\textwidth}
+\smalllabel{HBF definition}\par\vspace{.06cm}
+\textbf{\href{https://www.opencompute.org/contributions/?project=Storage}{OCP HBF v0.7.0}}\par
+\footnotesize Open Compute Project --- \textbf{industry spec}\\
+Contributors: Sandisk + SK hynix\par
+$\rightarrow$ Interface, page-write and lifecycle rules\par\vspace{.06cm}
+\normalsize\textbf{\href{https://tera.kaist.ac.kr/}{KAIST HBF roadmap}}\par
+\footnotesize Joungho Kim / KAIST TERA Lab\par
+$\rightarrow$ HBF-1 / HBF-2 organizations\par
+\textbf{Academic roadmap, not a product datasheet}\par\vspace{.06cm}
+\normalsize\textbf{\href{https://arxiv.org/abs/2603.01175}{HAVEN}}\par
+\footnotesize Hsu et al.; academic architecture/model\par
+$\rightarrow$ NAND latency, energy, bandwidth, power
+\end{column}
+\begin{column}{.29\textwidth}
+\smalllabel{Physical limits}\par\vspace{.06cm}
+\textbf{\href{https://github.com/esl-epfl/3d-ice}{3D-ICE}}\par
+\footnotesize EPFL; open-source thermal tool\par
+$\rightarrow$ 16-Hi HBF temperature model\par
+\hint{80$^\circ$C policy: chosen by this paper.}\par\vspace{.27cm}
+\normalsize\textbf{\href{https://americas.kioxia.com/content/dam/kioxia/en-us/business/ssd/oem/supermicro/asset/KIOXIA_Supermicro_SSD_Data_Sheet_Global.pdf}{KIOXIA CM7-V data}}\par
+\footnotesize KIOXIA America; vendor datasheet\par
+$\rightarrow$ SSD baseline / rated endurance\par
+\hint{HBF lifetime: authors' TLC budget + trace writes; not a wear-out test.}
+\end{column}
+\end{columns}
+\vspace{.06cm}
+\hint{2028 / 2030 are roadmap generations, not guaranteed mass-production dates.}\par
+\vfill\takeaway{No physical HBF hardware is measured here: the full-stack model combines code, specifications, roadmaps, device models, production traces and thermal modeling.}
+\src{Paper Refs. [1], [9], [11], [13], [23], [24], [26]; Sections 2 and 4.}
+\end{frame}
+\end{document}
