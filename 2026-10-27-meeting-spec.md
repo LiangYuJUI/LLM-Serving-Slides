@@ -2,12 +2,21 @@
 
 ## 0. 文件目的
 
-本文件是 `2026-10-27-meeting/` 的實作規格。目標是根據本地兩篇論文與已整理的 figures，完成 **Helix** 與 **Tessera** 兩份彼此獨立、可直接報告的 Beamer 簡報，以及逐頁繁體中文講稿、編譯後 PDF 和可匯入 Overleaf 的封裝檔。
+本文件是 `2026-10-27-meeting/` 的實作規格。Helix 與 Tessera 各有一份完整 reference deck；**2026-10-27 meeting 真正要報告的是另一份精簡 combined deck**。
 
 - 目標 meeting 日期：2026-10-27
 - 規格建立時基準 commit：`0b7c2f5f9490c614e0ed351b72832801b4297101`
 - 參考 meeting：`2026-10-21-meeting/`
 - 第一輪先完成 LaTeX／Beamer 主線；**不要先製作 Marp 版本**。
+
+### 兩種 deck，不要混用
+
+| 角色 | 檔案 | 頁數 | 用途 |
+|---|---|---|---|
+| Meeting main deck | `2026-10-27-Meeting-Main.tex`、`Meeting-Main_scripts.md` | 約 13–14 張 main slides，另加 appendix | **15–20 分鐘正式報告**。故事是 Summary → Why → Method → Experiments as research questions → Conclusion。 |
+| Full reference decks | `2026-10-27-Helix.tex`、`2026-10-27-Tessera.tex` 與對應 `_scripts.md` | 各 36–40 頁（目前各 38 頁） | Paper-reading reference 與 Q&A backup。保留，不要刪除或為了報告時間大幅改寫。 |
+
+後面第 3、5、6 節的 36–40 頁結構只適用於 **full reference decks**。不要再把「每篇 36–40 頁」當成正式 meeting deck 的要求，也不要把 reference deck 當成下次報告版本。
 
 ---
 
@@ -88,13 +97,24 @@ Tessera：
 - `2026-10-27-meeting/output/pdf/2026-10-27-Tessera.pdf`
 - `2026-10-27-meeting/output/overleaf/Tessera.zip`
 
-### 2.3 建議附加檔
+### 2.3 Meeting main deck
+
+15–20 分鐘正式報告，不取代 2.1 與 2.2：
+
+- `2026-10-27-meeting/2026-10-27-Meeting-Main.tex`
+- `2026-10-27-meeting/Meeting-Main_scripts.md`
+- `2026-10-27-meeting/output/pdf/2026-10-27-Meeting-Main.pdf`
+- `2026-10-27-meeting/output/overleaf/Meeting-Main.zip`
+
+Main story 約 13–14 張。Appendix 用 `\appendix` 接在最後一張正式 slide 之後，不計入 15–20 分鐘。講稿頁碼對齊編譯後 PDF，含 appendix。
+
+### 2.4 建議附加檔
 
 - `2026-10-27-meeting/README.md`
   - 列出兩份簡報、講稿、來源 PDF、figure 資料夾、輸出檔與編譯方式。
   - 記錄最終頁數與最後驗證日期。
 
-第一輪不要求 Marp、HTML 或合併版 deck。除非完成上述全部交付物且仍有明確需求，否則不要分散時間製作第二套版型。
+不要另做 Marp 或 HTML。正式 15–20 分鐘報告是 2.3 的 Meeting-Main；2.1 與 2.2 維持完整 reference decks。不要再做第三套版型。
 
 ---
 
@@ -102,7 +122,9 @@ Tessera：
 
 ### 3.1 Deck 結構
 
-每篇論文各自是一份 standalone deck，建議 **36–40 頁**。頁數是內容密度指引，不是硬性湊頁；不得為達頁數而拆成空洞頁面，也不得因壓頁而把字縮到難以閱讀。
+**Full reference decks：** 每篇論文各自是一份 standalone deck，建議 **36–40 頁**。頁數是內容密度指引，不是硬性湊頁；不得為達頁數而拆成空洞頁面，也不得因壓頁而把字縮到難以閱讀。這兩份不是 15–20 分鐘 meeting 的報告稿。
+
+**Meeting main deck：** 約 **13–14 張**主要 slides，外加 appendix。每一張 main slide 只有一個研究問題或 takeaway。實驗頁標題寫成 research question。不要把 reference deck 縮印成 30–40 頁的正式報告。
 
 每份 deck 至少包含：
 
@@ -452,7 +474,9 @@ pdftoppm -png -r 120 2026-10-27-Tessera.pdf .render/tessera/slide
 
 只有以下全部成立才算完成：
 
-- [ ] Helix 與 Tessera 各有一份獨立 `.tex`。
+- [ ] Helix 與 Tessera 各有一份獨立 reference `.tex`，且沒有被 meeting main deck 覆蓋。
+- [ ] `2026-10-27-Meeting-Main.tex` 是 15–20 分鐘報告：約 13–14 張 main slides，appendix 另計。
+- [ ] Meeting main 的講稿頁碼與 PDF 一致，實驗頁先回答「這個實驗要證明什麼」。
 - [ ] 兩份 deck 都能在乾淨環境以 pdfLaTeX 編譯兩次。
 - [ ] 沒有 missing figure、Undefined control sequence 或 fatal LaTeX error。
 - [ ] 所有頁面已做視覺檢查，沒有文字截斷與圖表變形。

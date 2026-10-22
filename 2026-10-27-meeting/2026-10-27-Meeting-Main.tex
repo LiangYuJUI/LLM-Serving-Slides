@@ -93,7 +93,10 @@
 \newcommand{\src}[1]{\vspace{0.05cm}\hint{Source: #1}}
 
 
-\newcommand{\mainfig}[2]{\begin{center}\includegraphics[width=\linewidth,height=#2,keepaspectratio]{#1}\end{center}}
+\newcommand{\mainfig}[2]{%
+  \begingroup\centering
+  \includegraphics[width=\linewidth,height=#2,keepaspectratio]{#1}\par
+  \endgroup}
 \newif\ifbackup
 \setbeamertemplate{footline}{\leavevmode\hbox{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm]{footline}\hfill\ifbackup Backup\quad PDF \insertframenumber\else Main \insertframenumber/13\fi\end{beamercolorbox}}}
 \title{Heterogeneous Model Serving at Different Granularities: Helix and Tessera}
@@ -106,208 +109,245 @@
 \smalllabel{Research meeting}\par\vspace{.32cm}
 {\LARGE\bfseries Heterogeneous Model Serving\\[.14cm]at Different Granularities:\\[.14cm]Helix and Tessera\par}
 \vspace{.32cm}{\large\color{Muted}Helix (ASPLOS 2025) + Tessera\par}
-\vspace{.40cm}\textbf{Yu-Jui Liang}\par
-\vspace{.08cm}Advisor: Hsiang-Yun Cheng\par
-\vspace{.08cm}National Taiwan University \quad | \quad Academia Sinica\par
-\vspace{.08cm}27 Oct 2026\par
-\vfill{\color{Accent}\rule{\textwidth}{.7pt}}
+\vspace{.28cm}\textbf{Yu-Jui Liang}\par
+\vspace{.06cm}Advisor: Hsiang-Yun Cheng\par
+\vspace{.06cm}National Taiwan University \quad | \quad Academia Sinica\par
+\vspace{.06cm}27 Oct 2026\par
+\vfill
+{\scriptsize\color{Muted}Helix: Yixuan Mei et al., ASPLOS 2025\\
+Tessera: Tiancheng Hu et al., arXiv:2604.10180v2}\par
+\vspace{.08cm}{\color{Accent}\rule{\textwidth}{.7pt}}
 
 \end{frame}
 
 \begin{frame}[t]{Put the Two Papers on One Map}
 
 \small
-\renewcommand{\arraystretch}{1.22}
-\begin{tabularx}{\textwidth}{@{}p{2.5cm}XX@{}}\toprule
+\renewcommand{\arraystretch}{1.28}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.55cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}\toprule
  & \textbf{Helix} & \textbf{Tessera}\\\midrule
 Heterogeneity & GPU capability + network topology & Kernel-specific GPU preference\\
 Optimization unit & Layer placement + request pipeline & GPU kernel\\
-Main bottleneck & Compute + network capacity & Compute/memory + communication\\
+Main bottleneck & Compute + network capacity & Compute/memory characteristics + communication\\
 Offline planning & MILP placement & Analyzer + DDG + MILP\\
 Runtime & Request path scheduling & Stored policy selection / switching\\\bottomrule
 \end{tabularx}
-\vspace{.25cm}
-\textbf{Helix:} Where should layers be placed, and how should requests flow?\par\vspace{.12cm}
-\textbf{Tessera:} Which GPU should execute each kernel?\par
-\vspace{.20cm}\takeaway{The papers choose optimization units along different dimensions.}
+\vspace{.28cm}
+\takeaway{Helix asks where layers should be placed and how requests should flow. Tessera asks which GPU should execute each kernel.}
+\vspace{.10cm}
+{\small These are different optimization dimensions, not a coarse-to-fine ranking.\par}
 \src{Our synthesis. Helix Sec.~4--5; Tessera Sec.~III.}
 
 \end{frame}
 
 \begin{frame}[t]{Helix: What Problem Is It Solving?}
 
-{\small Helix jointly optimizes layer placement and request routing for heterogeneous, potentially geo-distributed GPU clusters.}
-\mainfig{Helix/Helix_Figure_01_Model_Placement_Examples.png}{2.75cm}
-\begin{itemize}\small\setlength{\itemsep}{.08cm}
-\item GPU availability, compute capability, and memory capacity differ.
-\item Geo-distribution adds slow links. Compute-proportional cuts can still send every activation over the bottleneck.
-\item Joint placement and routing must account for both resources.
+{\small Helix jointly optimizes model-layer placement and request routing for heterogeneous, potentially geo-distributed GPU clusters.\par}
+\vspace{.06cm}
+\mainfig{Helix/Helix_Figure_01_Model_Placement_Examples.png}{2.78cm}
+\vspace{.08cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+{\small\textbf{Because}}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.05cm}
+\item GPU types, compute, and memory differ.
+\item Clusters may also sit in different regions, so link bandwidth differs. That is geo-distribution, not another word for heterogeneity.
 \end{itemize}
-\takeaway{A balanced compute partition need not maximize serving throughput.}
-\src{Helix Sec.~1, 4.2; Fig.~1. Heterogeneous hardware and geographic distribution are distinct.}
+\end{column}
+\begin{column}{.50\textwidth}
+{\small\textbf{Therefore}}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.05cm}
+\item A FLOP-proportional cut only balances compute.
+\item If every activation still crosses a slow link, the network becomes the bottleneck.
+\end{itemize}
+\end{column}
+\end{columns}
+\vspace{.08cm}\takeaway{A balanced compute partition is not a maximum-throughput serving plan.}
+\src{Helix Sec.~1, 4.2; Fig.~1. Panel (c) balances FLOPs and still congests the slow link.}
 
 \end{frame}
 
 \begin{frame}[t]{Helix: How Does It Work?}
 
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.52\textwidth}
-\mainfig{Helix/Helix_Figure_03_System_Overview.png}{3.35cm}
-{\small Edge capacity = tokens/s through a compute or network resource.\par\vspace{.12cm}
-For a fixed placement, source--sink max flow estimates its sustainable throughput.}
+\begin{column}{.56\textwidth}
+\mainfig{Helix/Helix_Figure_03_System_Overview.png}{4.15cm}
+\vspace{.06cm}
+{\footnotesize Edge capacity = tokens/s through one compute or network resource. For a fixed placement, source--sink max flow estimates sustainable throughput.}
 \end{column}
-\begin{column}{.46\textwidth}
-\small\textbf{Offline planning}\par
-\begin{enumerate}\small\setlength{\itemsep}{.03cm}
-\item Profile GPU compute/memory and network links.
-\item MILP chooses layer placement.
-\item Model the fixed placement as a flow graph.
-\item Max-flow supplies token rates and path budgets.
+\begin{column}{.42\textwidth}
+{\small\textbf{Offline planning}}
+\begin{enumerate}\footnotesize\setlength{\itemsep}{.06cm}
+\item Profile GPU compute, memory, and links.
+\item MILP chooses the layer placement.
+\item Represent that placement as a flow graph.
+\item Max-flow gives token rates and path budgets.
 \end{enumerate}
-\textbf{Online runtime}\par
-\begin{enumerate}\small\setcounter{enumi}{4}
-\item Assign each request a pipeline.
-\item Reuse it for later decode tokens.
+\vspace{.08cm}
+{\small\textbf{Online runtime}}
+\begin{enumerate}\footnotesize\setcounter{enumi}{4}\setlength{\itemsep}{.06cm}
+\item Assign each request one pipeline.
+\item Later decode tokens reuse that pipeline.
 \end{enumerate}
 \end{column}\end{columns}
-\vspace{.02cm}\takeaway{Max-flow is a throughput model, not a latency model. No per-request MILP.}
-\src{Helix Sec.~4.3--5, Fig.~3. Offline/online here refer to optimization timing.}
+\vspace{.06cm}\takeaway{Max-flow is a throughput model, not a latency model. The MILP is not rerun per request.}
+\src{Helix Sec.~4.3--5, Fig.~3. Offline/online here mean when the optimization runs.}
 
 \end{frame}
 
 \begin{frame}[t]{Q1: Does Helix Improve End-to-End Serving on Real Hardware?}
-{\small\textbf{Test:} Does the throughput model translate into a working server?}\par\vspace{.15cm}
-\begin{columns}[c,onlytextwidth]
-\begin{column}{.62\textwidth}
-\mainfig{Helix/Helix_Figure_06_Single_Cluster_Results.png}{4.45cm}
+{\footnotesize\textbf{Question:} Does the throughput model still help once it is a real server?\par}
+\vspace{.04cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.64\textwidth}
+\mainfig{Helix/Helix_Figure_06_Single_Cluster_Results.png}{5.05cm}
 \end{column}
-\begin{column}{.36\textwidth}\small
-\textbf{Prototype}\par One heterogeneous cluster, LLaMA 30B/70B, SP and Swarm.\par\vspace{.15cm}
-\textbf{Offline workload}\par Continuously available requests; saturated throughput.\par\vspace{.15cm}
-\textbf{Online workload}\par Arrivals over time; queueing and latency.\par\vspace{.15cm}
-Decode throughput: about $2\times$ Swarm. Latency is not always lower.
+\begin{column}{.34\textwidth}
+{\footnotesize\textbf{Prototype,} one region, 10\,Gb/s: 4 A100 + 8 L4 + 12 T4. LLaMA 30B/70B vs.\ SP and Swarm.}
+\vspace{.10cm}
+{\footnotesize\textbf{Offline workload:} requests stay available. Read saturated decode throughput.}
+\vspace{.10cm}
+{\footnotesize\textbf{Online workload:} Azure arrivals over time. Throughput, queueing, and latency all matter.}
+\vspace{.10cm}
+{\footnotesize Vs.\ Swarm, decode throughput is about $2\times$. Latency is not always lower.}
 \end{column}\end{columns}
-\vspace{.13cm}\takeaway{Helix improves prototype throughput without guaranteeing a latency win.}
-\src{Helix Sec.~6.2--6.3, Fig.~6 also validates the simulator. Workload modes differ from planner timing.}
+\vspace{.04cm}\takeaway{The prototype gains throughput. The objective does not guarantee a latency win.}
+\src{Helix Sec.~6.2--6.3, Fig.~6. Simulation columns check the simulator. Workload $\neq$ planner timing.}
 \end{frame}
 
 \begin{frame}[t]{Q2: Does Network-Aware Placement Matter under Slow Inter-Cluster Links?}
 
-{\small\textbf{Test:} Stress the network bottleneck with approximately 100 Mb/s inter-cluster links.}
-\mainfig{Helix/Helix_Figure_07_Geo_Distributed_Cluster_Results.png}{2.95cm}
-\begin{itemize}\small\setlength{\itemsep}{.07cm}
-\item \textbf{Simulator, not prototype.} Same GPU pool split across three clusters.
-\item LLaMA 30B vs. Swarm: approximately $2.3$--$2.4\times$ decode throughput across the offline/online modes.
-\item In the \textbf{30B online} comparison vs. Swarm: prompt latency $-66\%$, decode latency $-24\%$.
+{\footnotesize\textbf{Question:} If the inter-cluster network is slow, does putting it inside placement actually matter?\par}
+\vspace{.04cm}
+\mainfig{Helix/Helix_Figure_07_Geo_Distributed_Cluster_Results.png}{3.15cm}
+\vspace{.04cm}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.05cm}
+\item \textbf{Simulator, not prototype.} Same GPUs, three clusters, about 100\,Mb/s and 50\,ms between clusters.
+\item LLaMA 30B vs.\ Swarm: about $2.3$--$2.4\times$ decode throughput in both offline and online workloads.
+\item Those 30B \textbf{online} latency reductions vs.\ Swarm are 66\% prompt and 24\% decode.
 \end{itemize}
-\takeaway{Slow links make joint placement and routing substantially more valuable.}
-\src{Helix Sec.~6.2, 6.4, Fig.~7. Inter-cluster average latency: approximately 50 ms.}
+\vspace{.02cm}\takeaway{When the network is the bottleneck, joint placement and routing matter much more.}
+\src{Helix Sec.~6.2, 6.4, Fig.~7. Do not read these latency drops as prototype results.}
 
 \end{frame}
 
 \begin{frame}[t]{Q3: Where Do the Gains Come From: Placement or Scheduling?}
 
-{\small\textbf{Controlled ablations:} offline LLaMA 70B, single cluster and geo-distributed setting.}
-\vspace{.12cm}
+{\footnotesize\textbf{Question:} Are the gains from placement, scheduling, or both? Offline LLaMA 70B. Metric: decode tokens/s.\par}
+\vspace{.04cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.49\textwidth}
-\textbf{Placement ablation}\par
-\mainfig{Helix/Helix_Figure_09_Model_Placement_Comparison.png}{2.5cm}
-{\small Fix \textbf{Helix scheduler}; change placement.\par\vspace{.12cm}
-Helix vs. Petals / Swarm:\par
-Single: $1.23\times$ / $2.10\times$\par
-Geo: $1.49\times$ / $2.38\times$}
+{\footnotesize\textbf{Placement ablation.} Helix scheduler fixed.\par}
+{\footnotesize vs.\ Petals / Swarm\par}
+{\footnotesize Single: $1.23\times$ / $2.10\times$\quad Geo: $1.49\times$ / $2.38\times$\par}
+\vspace{.02cm}
+\includegraphics[width=\linewidth]{Helix/Helix_Figure_09_Model_Placement_Comparison.png}
 \end{column}
 \begin{column}{.49\textwidth}
-\textbf{Scheduling ablation}\par
-\mainfig{Helix/Helix_Figure_10_Request_Scheduling_Comparison.png}{2.5cm}
-{\small Fix \textbf{Helix placement}; change scheduler.\par\vspace{.12cm}
-Helix vs. Swarm / random:\par
-Single: $+30\%$ / $+29\%$\par
-Geo: $+22\%$ / $+15\%$}
+{\footnotesize\textbf{Scheduling ablation.} Helix placement fixed.\par}
+{\footnotesize vs.\ Swarm / random\par}
+{\footnotesize Single: $+30\%$ / $+29\%$\quad Geo: $+22\%$ / $+15\%$\par}
+\vspace{.02cm}
+\includegraphics[width=\linewidth]{Helix/Helix_Figure_10_Request_Scheduling_Comparison.png}
 \end{column}\end{columns}
-\vspace{.18cm}\takeaway{Both matter: placement creates the resource graph; scheduling uses its capacity.}
-\src{Helix Sec.~6.6--6.7, Figs.~9--10. Geo results use the simulator. Metric: decode tokens/s.}
+\vspace{.06cm}\takeaway{Placement builds the resource graph. Scheduling is what actually uses that capacity.}
+\src{Helix Sec.~6.6--6.7, Figs.~9--10. Geo-distributed bars are simulator results.}
 
 \end{frame}
 
 \begin{frame}[t]{Tessera: Why Is Phase-Level Disaggregation Too Coarse?}
-{\small Tessera observes that the best GPU differs across kernels, and schedules model execution at GPU-kernel granularity.}\par\vspace{.12cm}
-\begin{columns}[c,onlytextwidth]
-\begin{column}{.57\textwidth}
-\mainfig{Tessera/Tessera_Figure_03_Kernel_Duration_Ratios.png}{4.30cm}
+{\footnotesize Tessera finds that the best GPU changes from kernel to kernel, so it places execution at GPU-kernel granularity.\par}
+\vspace{.04cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.60\textwidth}
+\mainfig{Tessera/Tessera_Figure_03_Kernel_Duration_Ratios.png}{5.15cm}
 \end{column}
-\begin{column}{.41\textwidth}\small
-\textbf{GPT-oss 20B on A100/L40s}\par\vspace{.22cm}
-About \textbf{45\% of prefill} and \textbf{57\% of decode} kernels run faster on L40s.\par\vspace{.22cm}
-Even attention and FFN contain kernels with mixed GPU preferences.
+\begin{column}{.38\textwidth}
+\vspace{.15cm}
+{\footnotesize\textbf{GPT-oss 20B, A100 vs.\ L40s.}}
+\vspace{.12cm}
+{\footnotesize About \textbf{45\% of prefill} kernels and \textbf{57\% of decode} kernels are faster on L40s.}
+\vspace{.12cm}
+{\footnotesize Attention and FFN blocks are mixed too: a block name does not pick the GPU.}
+\vspace{.12cm}
+{\footnotesize Points below the dashed line prefer L40s. The 45\%/57\% figures count kernels, not execution time.}
 \end{column}\end{columns}
-\vspace{.08cm}\takeaway{A phase label is not a hardware preference.}
-\src{Tessera Sec.~II-C, Fig.~3. Percentages count kernels; they are not fractions of execution time.}
+\vspace{.04cm}\takeaway{A phase label is not a hardware preference.}
+\src{Tessera Sec.~II-C, Fig.~3. X-axis: kernel duration on A100. Y-axis: L40s/A100 time.}
 \end{frame}
 
 \begin{frame}[t]{Tessera: How Does It Work?}
 
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.52\textwidth}
-\mainfig{Tessera/Tessera_Figure_04_System_Overview.png}{2.90cm}
-{\small\textbf{Throughput policy:} balance compute and communication stages when requests can overlap.\par\vspace{.15cm}
-\textbf{Latency policy:} shorten one request's critical path, including transfers that cannot be hidden.}
-\end{column}
 \begin{column}{.46\textwidth}
-\begin{enumerate}\small\setlength{\itemsep}{.05cm}
-\item \textbf{Analyzer:} memory ranges and RAW dependencies (Read After Write).
+\mainfig{Tessera/Tessera_Figure_04_System_Overview.png}{4.85cm}
+\end{column}
+\begin{column}{.52\textwidth}
+\begin{enumerate}\footnotesize\setlength{\itemsep}{.08cm}
+\item \textbf{Analyzer:} memory ranges and RAW dependencies. If B reads what A wrote, B waits for that data.
 \item \textbf{Profiling:} each kernel's latency on each GPU type.
-\item \textbf{Planner:} dependency graphs (DDGs) and offline MILP policies.
-\item \textbf{Runtime:} workers execute kernels/transfers; monitor selects stored policies.
+\item \textbf{Planner:} build DDGs and solve offline policies.
+\item \textbf{Runtime:} workers run assigned kernels and transfers. The monitor selects a stored policy.
 \end{enumerate}
-{\small B must wait for the data written by A.}
+\vspace{.10cm}
+{\footnotesize\textbf{Throughput policy:} balance compute and communication when requests can overlap.}
+\vspace{.08cm}
+{\footnotesize\textbf{Latency policy:} at low load, shorten one request's compute plus the transfers that cannot be hidden.}
 \end{column}\end{columns}
-\vspace{.02cm}\takeaway{Analysis and MILP happen offline. Runtime executes or switches stored policies.}
-\src{Tessera Sec.~III, Fig.~4. Low-load objective sums compute and cut-edge transfer costs.}
+\vspace{.06cm}\takeaway{Analysis and MILP stay offline. Runtime only executes or switches stored policies.}
+\src{Tessera Sec.~III, Fig.~4. RAW = Read After Write. The latency objective sums kernel and cut-edge costs.}
 
 \end{frame}
 
 \begin{frame}[t]{Q1: Does Kernel-Level Disaggregation Outperform Phase/Block-Level Methods?}
 
-{\small\textbf{Test:} Do mixed kernel preferences translate into end-to-end throughput gains?}
-\mainfig{Tessera/Tessera_Figure_06_Offline_Throughput.png}{2.75cm}
-{\small Five workloads, three GPU pairs. PD = prefill/decode; AF = attention/FFN.}
-\begin{itemize}\small\setlength{\itemsep}{.07cm}
-\item Vs. PD: $1.5\times$ average, up to $2.3\times$ throughput.
-\item Vs. AF: $1.35\times$ average, up to $1.7\times$ throughput.
+{\footnotesize\textbf{Question:} Does scheduling at kernel granularity raise end-to-end throughput, or only individual kernel speed?\par}
+\vspace{.04cm}
+\mainfig{Tessera/Tessera_Figure_06_Offline_Throughput.png}{3.15cm}
+\vspace{.04cm}
+{\footnotesize Five offline workloads, three GPU pairs. PD = prefill/decode. AF = attention/FFN.}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.04cm}
+\item Vs.\ PD: $1.5\times$ average, up to $2.3\times$ throughput.
+\item Vs.\ AF: $1.35\times$ average, up to $1.7\times$ throughput.
 \end{itemize}
-\takeaway{Kernel scheduling yields measurable throughput gains over coarser units.}
-\src{Tessera Sec.~V-A--B, Fig.~6. Tokens/s; diffusion: images/min. Red X: baseline inapplicable.}
+\vspace{.02cm}\takeaway{Kernel-level scheduling turns the motivation into end-to-end throughput gains.}
+\src{Tessera Sec.~V-A--B, Fig.~6. Tokens/s; SD axis is images/min. Red X: baseline inapplicable.}
 
 \end{frame}
 
 \begin{frame}[t]{Q2: Can Tessera Sustain More Requests under the Same Latency SLO?}
-{\small\textbf{Test:} Does the benefit survive online arrivals and a latency constraint?}\par\vspace{.15cm}
-\begin{columns}[c,onlytextwidth]
-\begin{column}{.60\textwidth}
-\mainfig{Tessera/Tessera_Figure_07_Online_Latency.png}{4.30cm}
+{\footnotesize\textbf{Question:} Under arrivals and a latency cap, can Tessera carry a higher request rate?\par}
+\vspace{.04cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.62\textwidth}
+\mainfig{Tessera/Tessera_Figure_07_Online_Latency.png}{4.55cm}
 \end{column}
-\begin{column}{.38\textwidth}\small
-GPT-oss 20B, Poisson arrivals, three GPU pairs.\par\vspace{.15cm}
-\textbf{Low load:} latency about $1.3\times$ / $1.2\times$ lower than PD / AF.\par\vspace{.15cm}
-\textbf{Same 50 ms/token SLO:} up to $1.3\times$ the request rate of the best baseline.
+\begin{column}{.36\textwidth}
+{\footnotesize GPT-oss 20B, Poisson arrivals, three GPU pairs.}
+\vspace{.12cm}
+{\footnotesize\textbf{Low load:} normalized latency about $1.3\times$ / $1.2\times$ lower than PD / AF.}
+\vspace{.12cm}
+{\footnotesize\textbf{Same 50\,ms/token SLO:} up to about $1.3\times$ the request rate of the best baseline.}
+\vspace{.12cm}
+{\footnotesize Offline throughput and this SLO capacity are different regimes.}
 \end{column}\end{columns}
-\vspace{.10cm}\takeaway{Online latency and SLO capacity add evidence beyond saturated throughput.}
-\src{Tessera Sec.~V-B, Fig.~7. Normalized latency = end-to-end request time / output tokens, not decode-token time.}
+\vspace{.04cm}\takeaway{The gain is not only saturated throughput. Stored policies also help online.}
+\src{Tessera Sec.~V-B, Fig.~7. Normalized latency = end-to-end time / output tokens.}
 \end{frame}
 
 \begin{frame}[t]{Q3: Does Communication Overhead Cancel the Benefit of Kernel Splitting?}
 
-{\small\textbf{Test:} Can runtime overlap hide the transfers introduced by kernel splitting?}
-\mainfig{Tessera/Tessera_Figure_09_Pipeline_Effectiveness.png}{2.80cm}
-{\small\textbf{GPT-oss 20B, offline.} No pipeline: \textbf{1443}; pipeline: \textbf{2123}; pipeline + priority: \textbf{2641 tokens/s}.}
-\begin{itemize}\small\setlength{\itemsep}{.08cm}
-\item Zero-communication reference: 2734 tokens/s. $2641/2734\approx96.6\%$.
-\item Later requests get lower CUDA stream priority, staggering transfer phases.
+{\footnotesize\textbf{Question:} Kernel splits add cross-GPU transfers. Can pipelining hide enough of that cost?\par}
+\vspace{.04cm}
+\mainfig{Tessera/Tessera_Figure_09_Pipeline_Effectiveness.png}{3.35cm}
+\vspace{.04cm}
+{\footnotesize\textbf{GPT-oss 20B, offline.} No pipeline 1443; pipeline 2123; pipeline + priority \textbf{2641 tokens/s}.}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.04cm}
+\item Zero-communication reference: 2734 tokens/s. $2641/2734 \approx 96.6\%$.
+\item Later requests use a lower CUDA stream priority, so their transfers do not all line up.
 \end{itemize}
-\takeaway{Kernel placement needs runtime overlap to realize its throughput potential.}
-\src{Tessera Sec.~III-C, V-D, Fig.~9. Reference assumes zero communication cost; the figure does not name the GPU pair.}
+\vspace{.02cm}\takeaway{Placement alone is not enough. Overlap is a necessary runtime mechanism.}
+\src{Tessera Sec.~III-C, V-D, Fig.~9. The reference assumes zero communication cost. GPU pair not named here.}
 
 \end{frame}
 

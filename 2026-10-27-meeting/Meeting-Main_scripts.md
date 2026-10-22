@@ -58,11 +58,11 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 1. **Question**：前面的數學模型看起來合理，但真正做成 server 後，是否仍有 end-to-end 的收益？
 
-2. **Setup**：作者使用含 4 A100、8 L4、12 T4 節點的單一異質 cluster，測 LLaMA 30B 和 70B。這裡有真實 prototype，不只有 simulator。
+2. **Setup**：作者使用同一 region 的單一異質 cluster，4 個 A100、8 個 L4、12 個 T4，節點間設成 10 Gb/s，測 LLaMA 30B 和 70B。這個頻寬刻意讓瓶頸落在 GPU，而不是廣域網路。這裡有真實 prototype，不只有 simulator。
 
 3. **What is controlled / compared**：在相同 cluster 和模型下，對比 Helix、separate pipelines，也就是 SP，以及實作在同一系統內的 Swarm 方法。圖也放入 simulator 結果驗證模擬器。
 
-4. **Metric**：這裡的 offline/online 是 workload 定義，不是前面 planner 的 offline/online。Offline 持續供給 requests，讓系統接近滿載，觀察 decode tokens/s，越高越好。Online 按 Azure trace 的 arrival shape 送入，除吞吐量外，也看 prompt 和 decode latency，越低越好。上排是 throughput，下排是 online latency。
+4. **Metric**：這裡的 offline/online 是 workload 定義，不是前面 planner 的 offline/online。Offline 持續供給 requests，讓系統接近滿載，觀察 decode tokens/s，越高越好。Online 依 Azure Conversation trace 的到達形狀送入，並把平均到達率縮到叢集尖峰吞吐的 75%，避免 burst 造成記憶體不足；除吞吐量外，也看 prompt 和 decode latency，越低越好。上排是 throughput，下排是 online latency。每個小圖同時有 prototype 與 simulation，後者是在檢查 simulator。
 
 5. **Observation**：相對 Swarm，30B 的 offline／online throughput 是 2.14／2.07 倍；70B 是 1.94／2.00 倍，所以主頁用約兩倍概括。
 
@@ -78,7 +78,7 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 1. **Question**：如果跨 cluster 的 network 很慢，Helix 把 network 納入 placement 和 routing 是否真的有價值？
 
-2. **Setup**：作者把同一組 GPUs 分成三個 cluster，在 simulator 中設定跨 cluster 約 100 Mb/s、平均約 50 ms latency。這頁是模擬結果，不是真實跨區 prototype。
+2. **Setup**：上一頁的 10 Gb/s 單 cluster 還沒有把網路當成瓶頸。這頁把同一組 GPUs 分成三個 cluster，在 simulator 中設定跨 cluster 約 100 Mb/s、平均約 50 ms latency。這頁是模擬結果，不是真實跨區 prototype。
 
 3. **What is controlled / compared**：比較同一環境下的 Helix、SP、Swarm，測 30B 和 70B 的 offline／online workload。這是整個系統的比較，還沒有單獨隔離 placement 的效果。
 
@@ -118,7 +118,7 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 接下來 Tessera 問的是另一個問題：如果同一段模型工作裡面，不同 kernel 偏好的 GPU 就不一樣，把整個 phase 當單位會不會太粗？Kernel 是一次 GPU 上執行的運算工作，例如某個矩陣運算或 attention kernel；它不等於一整層。
 
-作者先做 profiling。圖的縱軸是 L40s 執行時間除以 A100 執行時間，低於一表示 L40s 較快，高於一表示 A100 較快；橫軸是 FLOP/Byte，描述運算相對資料搬移的強度。左右分別按 prefill／decode、attention／FFN 標示 kernel。
+作者先做 profiling。Figure 3 的橫軸是這顆 kernel 在 A100 上的執行時間，單位是微秒；縱軸是 L40s 時間除以 A100 時間。高於 1 表示 A100 較快，低於 1 表示 L40s 較快。左右兩組分別標成 prefill／decode，以及 attention／FFN。論文正文另外用 cublasGEMV 和 FlashAttention 解釋記憶體頻寬與運算強度的差別，但那不是這張圖的橫軸。
 
 以 GPT-oss 20B 為例，約 45% prefill kernels 和 57% decode kernels 在 L40s 比 A100 快。注意這是 kernel 數量占比，不是總執行時間占比，也不是直接代表能加速這麼多。即使在 attention 或 FFN 內，點也落在分界線兩側。
 

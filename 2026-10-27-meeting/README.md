@@ -1,10 +1,32 @@
 # 2026-10-27 Meeting
 
-Helix 與 Tessera 的獨立 Beamer 簡報。事實來源是同目錄的兩份本地論文 PDF。視覺沿用 2026-10-21 meeting 的 Light Madrid 風格。
+下次 meeting 真正要報告的是 **15–20 分鐘** combined deck，不是兩份 38 頁 reference deck。
 
-最後驗證日期：2026-10-21。兩份投影片編譯後都是 **38 頁**。講稿 `## 第 XX 頁` 的標題與 slide title 逐頁對齊。
+`2026-10-27-Meeting-Main.tex` 是正式報告：約 **13 張 main slides**（預算口述約 17–18 分鐘）加上 appendix。故事線是 Summary → Why → Method → Experiments as questions → Conclusion。
 
-## 簡報與講稿
+`2026-10-27-Helix.tex` 與 `2026-10-27-Tessera.tex` 是完整 reference / Q&A backup，各 **38 頁**。不要把它們當成正式報告版本，也不要為了報告時間去刪改它們。
+
+事實來源是同目錄的本地論文 PDF。視覺沿用 2026-10-21 meeting 的 Light Madrid 風格。
+
+最後驗證日期：2026-10-22。
+
+## 正式報告
+
+| 用途 | 簡報 | 講稿 | 頁數 |
+|---|---|---|---|
+| 15–20 分鐘 meeting | `2026-10-27-Meeting-Main.tex` | `Meeting-Main_scripts.md` | 13 main + appendix |
+
+- PDF：`output/pdf/2026-10-27-Meeting-Main.pdf`
+- Overleaf：`output/overleaf/Meeting-Main.zip`（根目錄 `main.tex`）
+- 頁腳 `Main n/13` 是正式報告；`Backup PDF n` 不計入報告時間。
+- 講稿 `## 第 XX 頁` 對齊 PDF 實際頁碼。
+
+```bash
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-27-Meeting-Main.tex
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-27-Meeting-Main.tex
+```
+
+## 完整 reference decks
 
 | 論文 | 簡報 | 講稿 | 頁數 |
 |---|---|---|---|
@@ -38,7 +60,7 @@ pdflatex -interaction=nonstopmode -halt-on-error 2026-10-27-Tessera.tex
 
 Overleaf zip 的根目錄是 `main.tex`，並只附上該簡報實際用到的 PNG。解壓後在該目錄執行兩次 `pdflatex main.tex` 即可。
 
-本輪沒有 Marp、HTML 或合併版。
+本目錄沒有 Marp 或 HTML。正式 meeting 用上面的 Meeting-Main，不另做第二套版型。
 
 
 ## HBF：2026-10-27 短篇 paper summary
