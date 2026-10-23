@@ -1,0 +1,490 @@
+% Facts: user-supplied paper brief; original paper PDF not available locally.
+% Original figure files are preserved. slides/ crops remove captions only.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,booktabs,tabularx,array,graphicx,tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usetheme{Madrid}
+\definecolor{Ink}{HTML}{243748}
+\definecolor{Muted}{HTML}{667B8B}
+\definecolor{Accent}{HTML}{347E74}
+\definecolor{SoftBlue}{HTML}{E9F2F9}
+\definecolor{Paper}{HTML}{FBFCFE}
+\setbeamercolor{background canvas}{bg=Paper}
+\setbeamercolor{normal text}{fg=Ink}
+\setbeamercolor{structure}{fg=Accent}
+\setbeamercolor{frametitle}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block title}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block body}{fg=Ink,bg=white}
+\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamersize{text margin left=.38cm,text margin right=.38cm}
+\setbeamertemplate{frametitle}{\nointerlineskip\begin{beamercolorbox}[wd=\paperwidth,sep=.12cm,leftskip=.22cm]{frametitle}\usebeamerfont{frametitle}\strut\insertframetitle\strut\par\end{beamercolorbox}}
+\newif\ifbackup
+\setbeamertemplate{footline}{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.50cm]{footline}\hfill\scriptsize\ifbackup Backup PDF \insertframenumber\else Main \insertframenumber/11\fi\end{beamercolorbox}}
+\newcommand{\takeaway}[1]{\par\vspace{.12cm}\begin{beamercolorbox}[rounded=true,sep=.12cm,wd=\linewidth]{block title}\small\bfseries #1\end{beamercolorbox}}
+\newcommand{\src}[1]{\par\vfill{\fontsize{7}{8}\selectfont\color{Muted}Source: Characterizing High Bandwidth Flash for LLM Serving, #1.}\par}
+\newcommand{\fig}[2]{\par{\centering\includegraphics[width=\linewidth,height=#2,keepaspectratio]{CharacterizingHBFforLLMServing/slides/Fig#1.png}\par}}
+\newcommand{\head}[1]{\par{\color{Accent}\bfseries #1}\par\smallskip}
+\newcommand{\arr}{\,$\rightarrow$\,}
+\renewcommand{\arraystretch}{1.15}
+\begin{document}
+\begin{frame}[t]{Characterizing High Bandwidth Flash for LLM Serving}
+
+\par\vspace{.12cm}
+{\Large\color{Accent}When does additional flash capacity\\actually improve LLM serving?\par}
+\vspace{.3cm}
+Zack Yu et al.\quad arXiv:2609.39131v2, 5 Oct 2026\par
+\vspace{.35cm}
+\textbf{Yu-Jui Liang}\\[.08cm]
+Advisor: Hsiang-Yun Cheng\\[.08cm]
+National Taiwan University | Academia Sinica\\[.08cm]
+27 Oct 2026
+\vspace{.25cm}
+\takeaway{HBF helps high-throughput serving mainly by expanding usable device memory, with memory architecture, placement, and scheduling co-designed.}
+
+\src{paper summary; supplied research brief}
+\end{frame}
+
+\begin{frame}[t]{Why Does Agentic Serving Need More Device Memory?}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\head{Why is HBM capacity a bottleneck?}
+\begin{block}{Limited HBM capacity}
+Model weights\\[.16cm]
+Active request KV\\[.16cm]
+Reusable completed-session KV
+\end{block}
+\small Completed-session KV can be useful again at the next turn.
+\end{column}
+\begin{column}{.48\textwidth}
+\head{One agent session}
+\centering Turn 1\par $\downarrow$\par KV generated\par $\downarrow$\par Tool / environment wait\par $\downarrow$\par Turn 2 reuses Turn-1 prefix
+\end{column}
+\end{columns}
+\vspace{.2cm}
+\textbf{HBF:} larger package-local capacity.\quad\textbf{Cost:} higher read energy, slow writes, finite endurance.
+\takeaway{The opportunity is capacity, but HBF cannot be treated as free extra memory.}
+
+\src{motivation; Table 1}
+\end{frame}
+
+\begin{frame}[t]{Two Ways to Add HBF: Shared-Site vs. H$^3$}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.59\textwidth}\fig{02}{4.35cm}\end{column}
+\begin{column}{.38\textwidth}
+\head{Shared-site: fixed 8 sites}
+4 HBM + 4 HBF, for example.\\
+More HBF sacrifices HBM capacity / bandwidth.
+\par\vspace{.12cm}
+\head{H$^3$: 8 HBM + 8 HBF}
+HBF connects behind HBM. Assumed HBM buffering stages HBF data and hides latency.\\[.12cm]
+Full HBM resources, but more stacks and costlier packaging.
+\end{column}
+\end{columns}
+\takeaway{Shared-site trades HBM for HBF; H$^3$ adds HBF without giving up the original HBM capacity.}
+
+\src{Sec. 4.1; Fig. 2}
+\end{frame}
+
+\begin{frame}[t]{How Does the HBM--HBF--Host Hierarchy Work?}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.34\textwidth}\fig{03}{4.4cm}\end{column}
+\begin{column}{.63\textwidth}
+\small
+\head{HOT: HBM}
+Frequent weights, activations, hot index, active / hot KV. New KV and reloaded prefixes enter here.
+\vspace{.12cm}\head{HBF $\rightarrow$ host DRAM $\rightarrow$ SSD: COLD}
+Request-level LRU demotes older KV. Host holds colder state; SSD is coldest.
+\vspace{.12cm}\head{Placement depends on the object}
+Activations stay in HBM. Weights stay fixed per configuration. Split MoE: frequent experts in HBM, remaining experts in HBF.
+\begin{block}{Index-first under HBM pressure}
+Indexer scans context; attention reads Top-K KV. Demote eligible KV before the hotter index.
+\end{block}
+\end{column}
+\end{columns}
+\takeaway{The hierarchy treats different objects differently; HBF is not a generic overflow bucket.}
+
+\src{Fig. 3; placement and cache policy}
+\end{frame}
+
+\begin{frame}[t]{Why Is Cache-Aware Scheduling Alone Not Enough?}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.49\textwidth}
+\head{Vanilla cache-aware}\fig{04}{2.35cm}
+\small Cache hit first \arr too much active state\\
+\arr growing locked KV \arr evict reusable KV\\
+\arr future turn loses its cache hit.
+\end{column}
+\begin{column}{.49\textwidth}
+\head{Buffered cache-aware}\fig{05}{2.35cm}
+\small $L+A_i\leq bC$,\quad $b=0.9$.\\
+$C$: usable KV/index capacity after weights;\\
+$L$: locked active state; $A_i$: added locked state.
+\end{column}
+\end{columns}
+\vspace{.14cm}
+\small\textbf{10\% is an admission threshold, not a permanently reserved physical partition.} Active contexts can keep growing after admission.\\[.10cm]
+Less admission pressure \arr less churn \arr retained prefixes \arr fewer reloads / repeated prefills / HBF writes.
+\takeaway{Sacrificing some instantaneous concurrency can improve total throughput by preserving reuse.}
+
+\src{Figs. 4--5; buffered admission policy}
+\end{frame}
+
+\begin{frame}[t]{What Exactly Does the Simulator Model?}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.55\textwidth}
+\head{HBM-only validation against profiled vLLM}
+\fig{01}{2.7cm}
+\small Llama-3.1-8B on H100; 32--4096 single-turn requests. Mean input 4096; output 128 / 512.\\[.12cm]
+\textbf{Throughput MAPE: 9.14\%.}\\
+H100/B200 profiling calibrates fitted kernel latency models. Main experiments use B200 compute.
+\end{column}
+\begin{column}{.42\textwidth}
+\centering\small
+Request trace\\$\downarrow$\\Scheduler / cache state\\$\downarrow$\\Kernel latency models\\$\downarrow$\\HBM / HBF / DRAM / SSD\\$\downarrow$\\PCIe / NVLink transfer model\\$\downarrow$\\Discrete request-level execution\\$\downarrow$\\Completion time / energy / writes
+\end{column}
+\end{columns}
+\takeaway{Request-level serving simulation with calibrated kernel models. Not a cycle-level GPU simulator.}
+\small HBF behavior is extrapolated from assumed specifications.
+
+\src{Fig. 1; simulator methodology}
+\end{frame}
+
+\begin{frame}[t]{Experimental Setup: What Workload Stresses HBF?}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.46\textwidth}
+\head{Session $\neq$ turn}
+Session = one agent conversation / trajectory.\\
+Turn = one LLM request within it.\\[.15cm]
+Session A: Turn 1 \arr gap \arr Turn 2 \arr gap \arr Turn 3
+\par\vspace{.12cm}
+\head{LMCache workload}
+Original: \textbf{24,880 turns / 767 sessions}.\\
+25k experiments: 771 sessions.\\
+100k experiments: 3,080 sessions.\par
+\vspace{.2cm}
+\small Qwen3-32B: scheduling / endurance\\
+Llama-3.1-405B: dense model\\
+GLM-5.2: sparse MoE
+\end{column}
+\begin{column}{.51\textwidth}
+\head{Same 3,080 sessions, longer conversations}
+1$\times$: 100k turns, original length pattern\\[.12cm]
+{\color{Accent}\rule{1.7cm}{.18cm}}\\[.15cm]
+5$\times$: 500k turns, five concatenated copies\\[.12cm]
+{\color{Accent}\rule{6.5cm}{.18cm}}\\[.15cm]
+Copies continue the preceding context.\\
+Mean input: \textbf{22,558 $\rightarrow$ 89,125 tokens}.\\[.2cm]
+\textbf{Long-context stress, not merely more independent requests.}
+\end{column}
+\end{columns}
+\takeaway{The 5$\times$ trace tests HBF as per-session KV state grows much larger.}
+
+\src{workload construction; Table 3; bars are schematic}
+\end{frame}
+
+\begin{frame}[t]{Q1: Can Scheduling Make HBF KV Writes Sustainable?}
+
+\head{Qwen3-32B: H$^3$ with 8 HBM + 8 HBF}
+\begin{tabularx}{\textwidth}{@{}Xrrrr@{}}\toprule
+Scheduling & Completion (s)& KV writes (TB)& Device hit& Life (yr)\\\midrule
+FCFS &13,552.76&106.79&32.84\%&1.21\\
+Cache-aware &10,930.78&21.81&86.87\%&4.77\\
+\textbf{Cache-aware + 10\%}&\textbf{10,419.17}&\textbf{6.69}&\textbf{96.46\%}&\textbf{14.82}\\\bottomrule
+\end{tabularx}
+\vspace{.3cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\head{Adding the buffer}
+HBF writes: 21.81 $\rightarrow$ 6.69 TB\\
+{\Large\color{Accent}$-69.33\%$}\\[.12cm]
+Completion time: \textbf{$-4.68\%$}
+\end{column}
+\begin{column}{.48\textwidth}
+\head{Estimated lifetime, not measured lifetime}
+FCFS $\rightarrow$ buffered: 1.21 $\rightarrow$ 14.82 years.\\[.12cm]
+Assumes 100k P/E cycles, uniform wear, and unit write amplification.
+\end{column}
+\end{columns}
+\takeaway{Preserving headroom reduces both churn and write pressure. Endurance depends strongly on serving policy.}
+
+\src{Table 4; simulator lifetime assumptions}
+\end{frame}
+
+\begin{frame}[t]{Q2: Does More HBF Capacity Help Dense LLM Serving?}
+
+\head{Llama-3.1-405B: 8 GPUs, TP8, 1$\times$ / 100k turns, 10\% buffer}
+\begin{tabularx}{\textwidth}{@{}Xrrr@{}}\toprule
+Configuration & Time (s)& Energy (MJ)& TPOT (ms)\\\midrule
+HBM-only, HBM weights&39,666&53.60&90.85\\
+H$^3$, HBM weights&21,439&40.70&438.61\\
+H$^3$, HBF weights&21,423&42.06&438.27\\\bottomrule
+\end{tabularx}
+\par\vspace{.2cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.49\textwidth}
+\head{Extra capacity helps throughput}
+H$^3$ / HBM weights vs. HBM-only:\\
+\textbf{45.95\% less completion time};\\
+about \textbf{24.1\% less modeled energy}.\\[.13cm]
+TPOT: \textbf{90.85 $\rightarrow$ 438.61 ms}.\\
+Higher throughput $\neq$ lower request latency.
+\end{column}
+\begin{column}{.48\textwidth}
+\head{Moving hot weights adds little}
+21,439 vs. 21,423 s: almost equal.\\
+40.70 vs. 42.06 MJ: HBF weights cost \textbf{3.33\% more energy}.\\[.13cm]
+Dense weights stay hot; colder KV can reside in HBF.
+\end{column}
+\end{columns}
+\takeaway{Dense Llama benefits mainly from extra KV capacity, not from moving hot weights to HBF.}
+
+\src{Table 5; modeled energy excludes static / background power}
+\end{frame}
+
+\begin{frame}[t]{Q3: How Do Placement and Parallelism Change MoE Results?}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.56\textwidth}
+\fig{06}{2.6cm}
+\small\textbf{GLM-5.2: HBM-only $\rightarrow$ H$^3$, TP16 / HBM weights}\\
+1$\times$: 11,354 / 9.11 $\rightarrow$ 4,543 / 7.19 (s / MJ)\\
+\textbf{59.99\% less time}.\\
+5$\times$: 198,411 / 91.99 $\rightarrow$ 28,279 / 37.62\\
+\textbf{7.0$\times$ faster; 59.10\% less energy}.
+\end{column}
+\begin{column}{.42\textwidth}
+\small
+\head{DPA attention $\rightarrow$ TP/EP MoE}
+DPA: local requests/KV; combine rank batches for MoE.\\
+TP shards tensor computation; EP routes tokens to selected expert GPUs.\\
+TP16/EP16 + DPA: one 16-GPU replica.\\
+2$\times$TP8/EP8 + DPA: two 8-GPU replicas.
+\vspace{.14cm}\head{Fastest $\neq$ lowest energy}
+5$\times$, H$^3$ 2$\times$TP8 / HBF weights:\\
+\textbf{24,385 s}, but \textbf{52.06 MJ} vs. 37.62 MJ.
+\end{column}
+\end{columns}
+\vspace{.1cm}\small Shared-site: 6+2 best at 1$\times$. At 5$\times$, 4+4 takes 33,459 s vs. 39,019 s for 6+2 (\textbf{14.25\% faster}); 6+2 uses \textbf{4.01\% less energy}.
+\takeaway{Longer contexts favor HBF capacity; placement and parallelism depend on the objective.}
+
+\src{Fig. 6; Table 6; full configurations in Backup PDF 18}
+\end{frame}
+
+\begin{frame}[t]{Where Do the Gains Come From, and What Did the Paper Prove?}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}\small
+More device capacity \arr larger batches\\
+\arr weight reuse $\uparrow$ \arr weight-read energy $\downarrow$\\[.14cm]
+More KV retained \arr prefix reuse $\uparrow$\\
+\arr reload / repeated prefill $\downarrow$\\[.14cm]
+\textbf{HBF itself is not lower-energy memory.}\\
+Read: HBM 3.4 vs. HBF 6.8 pJ/bit.
+\end{column}
+\begin{column}{.50\textwidth}\small
+\begin{tabular}{@{}lrr@{}}\toprule
+Energy saving (pp)& Llama 1$\times$& GLM 5$\times$\\\midrule
+Weight reads&+15.22&+55.14\\
+KV/index reads&$-13.16$&$-0.61$\\
+Avoided prefill&+20.25&0\\
+Other&+1.74&+4.58\\\midrule
+Net (\%)&\textbf{24.06}&\textbf{59.10}\\\bottomrule
+\end{tabular}\\\scriptsize H$^3$ 8+8; component rounding may differ from net.
+\end{column}
+\end{columns}
+\vspace{.16cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.32\textwidth}\begin{block}{1. Capacity matters}\small Expand the on-device working set for long-context throughput.\end{block}\end{column}
+\begin{column}{.32\textwidth}\begin{block}{2. Policy matters}\small Placement and buffered admission control churn and write wear.\end{block}\end{column}
+\begin{column}{.32\textwidth}\begin{block}{3. Co-design matters}\small Co-design HBF with the scheduler rather than treat it as passive overflow.\end{block}\end{column}
+\end{columns}
+\small\textbf{Simulation-based results, not production HBF hardware measurements.}
+
+\src{Table 7; Table 1; reported net values retained}
+\end{frame}
+
+\appendix
+\backuptrue
+\begin{frame}[t]{HBM vs. HBF Assumptions}
+
+\head{Modeled assumptions / extrapolations}
+\begin{center}
+\setlength{\tabcolsep}{9pt}\begin{tabular}{lrr}\toprule Parameter&HBM&HBF\\\midrule
+Capacity / stack&24 GB&375 GB\\
+Read bandwidth&1000 GB/s&1000 GB/s\\
+Write bandwidth&1000 GB/s&8 GB/s\\
+Read startup&0.1 $\mu$s&20 $\mu$s\\
+Write startup&0.1 $\mu$s&250 $\mu$s\\
+Read energy&3.4 pJ/bit&6.8 pJ/bit\\
+Write energy&3.4 pJ/bit&100 pJ/bit\\
+P/E cycles&---&100,000\\\bottomrule
+\end{tabular}\end{center}
+\takeaway{HBF adds capacity with substantial write, latency, and energy costs.}
+
+\src{Table 1}
+\end{frame}
+
+\begin{frame}[t]{Shared-Site vs. H$^3$ Service-Time Model}
+
+\head{Shared-site: 8 total stack sites}
+\[T_{\mathrm{shared}}=\max\left(\frac{D_H}{mB},\frac{D_F}{(8-m)B}\right)\]
+\head{H$^3$: conservative serialized model, 8 HBM + 8 HBF}
+\[T_{H^3}=\frac{D_H}{8B}+\frac{D_F}{8B}\]
+\vspace{.2cm}
+$D_H,D_F$: bytes served from HBM / HBF.\\
+$B$: modeled per-stack bandwidth; $m$: shared-site HBM stack count.
+\takeaway{H$^3$ benefits from retaining 8 HBM stacks and adding 8 HBF stacks. Serialization itself is not an advantage over parallel access.}
+
+\src{Sec. 4.1; service-time model}
+\end{frame}
+
+\begin{frame}[t]{Energy Model}
+
+\vspace{.25cm}
+\[E=\underbrace{\sum_j N_j e_j}_{\text{arithmetic}}+\underbrace{\sum_m 8(R_m e_m^r+W_m e_m^w)}_{\text{memory reads / writes}}+\underbrace{E_{\mathrm{comm}}}_{\text{communication}}\]
+\vspace{.4cm}
+\begin{itemize}
+\item $N_j$: operation count; $e_j$: energy per arithmetic operation.
+\item $R_m,W_m$: bytes read / written in tier $m$; factor 8 converts bytes to bits.
+\item $e_m^r,e_m^w$: per-bit read / write energy.
+\item $E_{\mathrm{comm}}$: modeled communication energy.
+\end{itemize}
+\vspace{.2cm}
+\takeaway{Static / background power is not included. Reported MJ values are not complete wall-plug server energy.}
+
+\src{energy model}
+\end{frame}
+
+\begin{frame}[t]{Sparse Attention and Index-First Placement}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.47\textwidth}\centering
+$Q_{\mathrm{new}}$\\[.1cm]$\downarrow$\\[.1cm]
+Indexer scans context index\\[.1cm]$\downarrow$\\[.1cm]
+Top-2048 token positions\\[.1cm]$\downarrow$\\[.1cm]
+Read selected KV only\\[.1cm]$\downarrow$\\[.1cm]
+Sparse attention
+\end{column}
+\begin{column}{.49\textwidth}
+\head{Different access intensities}
+The indexer sees the full context.\\[.2cm]
+Attention reads a selected KV subset.\\[.2cm]
+The index is therefore hotter than sparse KV.\\[.2cm]
+Under HBM pressure, demote eligible KV before index.
+\end{column}
+\end{columns}
+\takeaway{Top-2048 KV selection is not MoE Top-k expert routing.}
+
+\src{sparse-attention and index-first placement descriptions}
+\end{frame}
+
+\begin{frame}[t]{TP / EP / DPA: A Four-GPU Example}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.47\textwidth}
+\head{DPA: attention home ranks}
+\begin{tabular}{ll}\toprule GPU0&Request A + KV$_A$\\GPU1&Request B + KV$_B$\\GPU2&Request C + KV$_C$\\GPU3&Request D + KV$_D$\\\bottomrule\end{tabular}
+\par\vspace{.12cm}\head{TP: shard one tensor computation}
+The same large tensor computation runs in shards across multiple GPUs.
+\end{column}
+\begin{column}{.50\textwidth}
+\head{EP: illustrative expert ownership}
+GPU0: E0, E1\quad GPU1: E2, E3\\
+GPU2: E4, E5\quad GPU3: E6, E7\\[.2cm]
+Request A finishes attention on GPU0.\\
+Router selects \textbf{E1 + E5}:\\[.12cm]
+E1: local on GPU0.\\
+E5: send token activation to GPU2.\\
+Return / combine expert outputs before the next attention layer.
+\end{column}
+\end{columns}
+\takeaway{Request/KV has an attention home rank; token activations temporarily move to the GPUs holding selected experts.}
+
+\src{parallelism description; illustrative 4-GPU example, not an evaluated configuration}
+\end{frame}
+
+\begin{frame}[t]{Does the Paper Dynamically Swap Experts?}
+
+\head{No. Weight placement is fixed per evaluated configuration.}
+\vspace{.2cm}
+Offline expert-routing profile\arr prioritize frequent experts for HBM\arr remaining experts in HBF.
+\vspace{.3cm}
+Runtime routing may select an HBF-resident expert and incur its weight-read cost. It does not imply moving the whole expert to HBM.
+\begin{block}{Our possible extension, not a contribution of this paper}
+\begin{itemize}
+\item Per-layer expert migration
+\item Dynamic expert caching / runtime expert replacement
+\item Expert prefetch prediction
+\end{itemize}
+\end{block}
+\takeaway{Distinguish dynamic token routing from fixed expert-weight placement.}
+
+\src{weight-placement assumptions}
+\end{frame}
+
+\begin{frame}[t]{Full GLM Table 6}
+
+\small
+\head{GLM-5.2: time (s) / modeled energy (MJ) / TPOT (ms)}
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{@{}Xrrrrrr@{}}\toprule
+&\multicolumn{3}{c}{1$\times$ trace}&\multicolumn{3}{c}{5$\times$ trace}\\
+Configuration / weights&Time&Energy&TPOT&Time&Energy&TPOT\\\midrule
+HBM-only 8+0 TP16 / HBM&11,354&9.11&218.72&198,411&91.99&191.93\\
+H$^3$ 8+8 TP16 / HBM&4,543&7.19&279.15&28,279&37.62&355.63\\
+H$^3$ 8+8 TP16 / HBF&4,538&9.54&278.01&27,036&48.17&333.66\\
+H$^3$ 8+8 2$\times$TP8 / HBF&4,204&10.31&230.67&24,385&52.06&280.43\\
+H$^3$ 8+8 2$\times$TP8 / Split&4,433&7.79&252.61&25,661&40.89&307.66\\
+Shared 2+6 TP16 / Split&6,073&8.51&342.12&35,809&44.81&406.36\\
+Shared 4+4 TP16 / Split&5,264&7.99&322.72&33,459&41.97&423.71\\
+Shared 6+2 TP16 / Split&4,981&7.69&302.87&39,019&40.28&410.47\\\bottomrule
+\end{tabularx}
+\par\vspace{.08cm}
+$X+Y$: HBM + HBF stacks per GPU. TP16: EP16 + DPA. Each TP8 replica: EP8 + DPA.\\[.12cm]
+Split: hot experts fixed in HBM, others in HBF.
+\takeaway{The fastest configuration and the lowest-energy configuration differ.}
+
+\src{Table 6}
+\end{frame}
+
+\begin{frame}[t]{Scope and Limitations}
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\head{Serving scope}
+\begin{itemize}
+\item High-throughput workload completion
+\item Latency-constrained serving outside scope
+\item Autoregressive decoding only
+\item No speculative decoding
+\end{itemize}
+\vspace{.1cm}\head{Calibration and extrapolation}
+Kernel models calibrated on H100/B200. HBF and large-batch results involve extrapolation.
+\end{column}
+\begin{column}{.48\textwidth}
+\head{Hardware / energy scope}
+\begin{itemize}
+\item No production HBF controller
+\item No complete package-power model
+\item Wear leveling not fully modeled
+\item Not every activation / staging write modeled
+\end{itemize}
+\end{column}
+\end{columns}
+\takeaway{Treat speedups and lifetime as architecture / systems characterization under explicit assumptions, not production HBF measurements.}
+
+\src{scope and modeling limitations}
+\end{frame}
+
+\end{document}
