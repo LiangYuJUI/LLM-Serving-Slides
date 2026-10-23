@@ -2,7 +2,7 @@
 
 對應 `2026-10-27-HBF.tex`，共 9 頁（8 頁主報告 + 1 頁來源整理）。目標約 9 分鐘；每頁時間含指圖與停頓，實際仍需口頭試講。正文可直接口述，來源與準備筆記不念。
 
-來源：使用者需求中的 quantitative facts，以及補取的 [arXiv:2608.11668v4](https://arxiv.org/abs/2608.11668v4)，本地保存為 `Arxiv26_HBF_v4.pdf`。原有 `CharacterizingHBFforLLMServing/` 六圖與這版 paper 不一致，沒有混用；詳見 `HBF/README.md`。以下頁碼指論文 PDF 檔案頁碼。
+來源：使用者需求中的 quantitative facts，以及補取的 [arXiv:2608.11668v4](https://arxiv.org/abs/2608.11668v4)，本地保存為 `Arxiv26_HBF_v4.pdf`。原有 `CharacterizingHBFforLLMServing/` 六圖與這版 paper 不一致，沒有混用；本 deck 使用 `CharacterizationOfHBFforKVCentricLLMServing/` 的 Figure 1、3、4、10、11、12，Table 8 以 native LaTeX 重建。以下頁碼指論文 PDF 檔案頁碼。
 
 ## 第 01 頁｜HBF Sucks?
 
@@ -28,7 +28,7 @@ SSD 可以提供容量，但資料還原有 storage latency。HBF 則把 flash �
 
 這兩種架構的 roadmap 來自 KAIST 的 Joungho Kim，在 2026 年 2 月的《HBF Technology, Workload Analysis and Roadmap》簡報中提出，是本文的 reference 11。不過要分清楚：架構方向與世代年份來自這份 roadmap；這篇 paper 實際使用的 stack 數、容量、頻寬和 service settings，則是論文作者依 roadmap 建立的模擬配置，不能全部當成廠商公布的產品規格。
 
-下方表格是兩者的主要差別。HBF-1 把 interposer 上的 memory stack 位置都給 HBF，所以近端記憶體改用板上的 GDDR7。HBF-2 則把位置一半給 HBM、一半給 HBF，保留 interposer 上的 HBM3e。在同一 GPU profile 下，兩者近端容量相同，但記憶體技術和頻寬不同；HBF-1 的 flash 容量與頻寬則是 HBF-2 的兩倍。
+下方 Figure 1 是兩者的 roadmap 架構，右側列出主要差別。HBF-1 把 interposer 上的 memory stack 位置都給 HBF，所以近端記憶體改用板上的 GDDR7。HBF-2 則把位置一半給 HBM、一半給 HBF，保留 interposer 上的 HBM3e。在同一 GPU profile 下，兩者近端容量相同，但記憶體技術和頻寬不同；HBF-1 的 flash 容量與頻寬則是 HBF-2 的兩倍。
 
 所以這不是免費加上更快的 storage，而是用近端資源換取 flash。作者比較的是完整配置的代價，不只是 flash access 速度。這些是 roadmap 配置的模擬，不是量產 HBF 硬體實測。
 
@@ -46,9 +46,9 @@ SSD 可以提供容量，但資料還原有 storage latency。HBF 則把 flash �
 
 ## 第 05 頁｜Faster HBF Barely Improves E2E Latency
 
-這頁要證明，flash-media latency 並不是整個 serving system 的主要瓶頸。左圖是原文 Figure 4，呈現 HBF 與 SSD 的 matched-pair latency、media sensitivity，以及 queue behavior。比較 baseline 是容量匹配的 SSD：HBF-1 對 SSD24，HBF-2 對 SSD12。雖然 connector service 變快，但跨實驗的平均端到端 latency 仍是 SSD 的二到五點五倍。
+這頁要證明，flash-media latency 並不是整個 serving system 的主要瓶頸。上方是原文 Figure 4，呈現 HBF 與 SSD 的 matched-pair latency、media sensitivity，以及 queue behavior。比較 baseline 是容量匹配的 SSD：HBF-1 對 SSD24，HBF-2 對 SSD12。雖然 connector service 變快，但跨實驗的平均端到端 latency 仍是 SSD 的二到五點五倍。
 
-最關鍵的是右邊的 sensitivity 結果。作者把 HBF 原始媒體 latency 加速三點七五倍，對照各自較慢的 media setting，平均 E2E 卻只改善百分之零點七五和零點八八，分別對應 HBF-1 和 HBF-2。依 paper 的模型反推，真正暴露在 critical path 上的 secondary-tier I/O 大約只有百分之一。這些 summary 數字來自正文，並不是要把左圖所有柱子的統計口徑當成同一個平均值。
+最關鍵的是右下方整理的 sensitivity 結果。作者把 HBF 原始媒體 latency 加速三點七五倍，對照各自較慢的 media setting，平均 E2E 卻只改善百分之零點七五和零點八八，分別對應 HBF-1 和 HBF-2。依 paper 的模型反推，真正暴露在 critical path 上的 secondary-tier I/O 大約只有百分之一。這些 summary 數字來自正文，並不是要把上方圖所有柱子的統計口徑當成同一個平均值。
 
 為什麼整體反而更慢？因為換進 HBF 的 package tradeoff 減少了 near-tier 的容量或頻寬，使能同時接納的 requests 減少，排隊變多。加速一個原本只占很小部分的 flash access，無法補回 admission 和 queueing 的損失。這就是 C1 失敗的原因。
 
@@ -56,9 +56,9 @@ SSD 可以提供容量，但資料還原有 storage latency。HBF 則把 flash �
 
 ## 第 06 頁｜All Production Traces Send More Writes Than Reads to HBF
 
-這頁要證明，既有 hierarchy 送給 HBF 的其實是寫多讀少的 cold stream。左邊是原文 Table 8，比較每份完整 trace replay 的 flash-tier byte traffic。這裡的 baseline 是寫入與讀取位元組相等，也就是 ratio 等於一，不是另一台 SSD 的吞吐量。
+這頁要證明，既有 hierarchy 送給 HBF 的其實是寫多讀少的 cold stream。上方是以 LaTeX 重建的原文 Table 8，比較每份完整 trace replay 的 flash-tier byte traffic。這裡的 baseline 是寫入與讀取位元組相等，也就是 ratio 等於一，不是另一台 SSD 的吞吐量。
 
-右邊四個 write/read ratio，traceA 是二點一四，traceB 是四點九，coder 是一點一四，thinking 是二點二，全部都超過一。最重要的不是哪個 trace 最大，而是四份流量都沒有讓有效讀取抵銷寫入量。每個 block 寫入 HBF 都要付出 flash write 的代價，卻有許多 block 之後根本沒有讀回來。
+表格第一列四個 write/read ratio，traceA 是二點一四，traceB 是四點九，coder 是一點一四，thinking 是二點二，全部都超過一。最重要的不是哪個 trace 最大，而是四份流量都沒有讓有效讀取抵銷寫入量。每個 block 寫入 HBF 都要付出 flash write 的代價，卻有許多 block 之後根本沒有讀回來。
 
 原因是 hierarchy 本身把高重用的 hot KV 留在 HBM 或 GDDR，被淘汰到 HBF 的通常就是低重用的冷資料。因此，整體有 prefix reuse，也不代表那些 reuse 會變成 HBF read。這讓 C2 失敗：HBF 得到的正是對 flash 不利的 write-heavy、low-reuse traffic。
 
@@ -66,13 +66,13 @@ SSD 可以提供容量，但資料還原有 storage latency。HBF 則把 flash �
 
 ## 第 07 頁｜Write-Heavy KV Traffic Makes Peak HBF Bandwidth Unsustainable
 
-這頁要證明，寫入多不只浪費工作，也讓 HBF 的峰值頻寬難以持續。左邊 Figure 10(a) 的橫軸是單一 stack 的持續頻寬，縱軸是模型估計的最高溫度。這裡的比較門檻是紅色的八十度 thermal limit，不是 SSD 的溫度。
+這頁要證明，寫入多不只浪費工作，也讓 HBF 的峰值頻寬難以持續。左邊完整 Figure 10 的上方 panel (a)，橫軸是單一 stack 的持續頻寬，縱軸是模型估計的最高溫度。這裡的比較門檻是紅色的八十度 thermal limit，不是 SSD 的溫度。
 
-在這個 16-Hi TLC HBF model 中，約二百零二點二七 GB/s 就到達溫度上限。因此，介面標示的 peak bandwidth，不能直接當成這個 workload 能持續使用的頻寬。Thermal 講的是短期 throttling；右邊 endurance 則是長期寫入磨耗。
+在這個 16-Hi TLC HBF model 中，約二百零二點二七 GB/s 就到達溫度上限。因此，介面標示的 peak bandwidth，不能直接當成這個 workload 能持續使用的頻寬。Figure 10 的中間 panel (b) 是完整 replay，下方 panel (c) 放大 throttling 時段，顯示頻寬受限且溫度維持在八十度附近。Thermal 講的是短期 throttling；右邊 Figure 11 的 endurance 則是長期寫入磨耗。
 
 四份 trace 的寫入量換算為每天四十八到一百四十 TB。在 unchanged KV pooling 和論文的 endurance budget 假設下，HBF 的預估壽命約為容量匹配 SSD pool 的零點五六倍。這是模型壽命，不是硬體真的跑到損壞。結論是同一股 write-heavy traffic 造成兩次成本：當下限制持續頻寬，長期消耗 flash lifetime，所以 C3 也不成立。
 
-時間：65 秒。來源：Figure 10(a)、Figure 11、Section 8，PDF 第 10–11 頁。
+時間：65 秒。來源：Figure 10(a–c)、Figure 11、Section 8，PDF 第 10–11 頁。
 
 ## 第 08 頁｜The Device Is Fine; the Drop-In Deployment Is Not
 

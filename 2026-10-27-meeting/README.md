@@ -65,15 +65,16 @@ Overleaf zip 的根目錄是 `main.tex`，並只附上該簡報實際用到的 P
 
 ## HBF：2026-10-27 短篇 paper summary
 
-新增獨立 **9 頁** HBF 簡報（8 頁主報告 + 結論後的 1 頁來源整理），目標口述約 9 分鐘；不沿用 Helix/Tessera 的 38 頁結構。驗證日期：2026-10-22。
+新增獨立 **9 頁** HBF 簡報（8 頁主報告 + 結論後的 1 頁來源整理），目標口述約 9 分鐘；不沿用 Helix/Tessera 的 38 頁結構。HBF figure refresh 驗證日期：2026-10-23。
 
 - LaTeX：`2026-10-27-HBF.tex`
 - 繁體中文講稿：`HBF_scripts.md`
 - PDF：`output/pdf/2026-10-27-HBF.pdf`
 - Overleaf：`output/overleaf/HBF.zip`（根目錄 `main.tex`）
 - 原文：`Arxiv26_HBF_v4.pdf`，取自 https://arxiv.org/pdf/2608.11668v4
-- 使用素材：`HBF/`，原文 Figure 4、Table 8、Figure 10(a)、Figure 12 的直接擷取圖
-- 素材 mapping、來源與 review 說明：`HBF/README.md`
+- 使用素材：`CharacterizationOfHBFforKVCentricLLMServing/`，原文 Figure 3（動機）、1（架構）、4（C1）、10 + 11（C3）、12（結論）的完整擷取圖
+- Table 8（C2）使用 native LaTeX table，保留 write/read ratio、reads/write、prefix hit rate 三列
+- Figure 2、5–9 保留作未來 Q&A 素材；短版 deck 不引用。Overleaf zip 僅包含實際使用的六張圖與 `main.tex`。
 
 既有 `CharacterizingHBFforLLMServing/` 六張圖均已逐張檢視，但其內容與目標 paper v4 的 Figure 1–6 不同，故全部保留原檔但未納入簡報。
 

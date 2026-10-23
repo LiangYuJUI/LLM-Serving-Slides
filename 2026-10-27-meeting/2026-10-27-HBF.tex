@@ -1,7 +1,7 @@
 % Standalone HBF: 27 Oct 2026 Research Meeting
 % Visual style follows the 21 Oct 2026 light Madrid decks.
 % Quantitative evidence is limited to the task brief and verified figure content.
-% Compile with pdfLaTeX from this directory. Keep HBF/ beside this file.
+% Compile with pdfLaTeX from this directory. Keep CharacterizationOfHBFforKVCentricLLMServing/ beside this file.
 \documentclass[aspectratio=169,10pt]{beamer}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
@@ -115,27 +115,21 @@ arXiv:2608.11668v4}\par\vspace{.08cm}
 \end{frame}}
 
 \begin{frame}[t]{Why Replace SSD with HBF?}
-\smalllabel{Motivation / the intuitive upgrade}\par\vspace{.35cm}
+\smalllabel{Motivation / the intuitive upgrade}\par\vspace{.18cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.46\textwidth}
-\begin{block}{KV cache grows beyond GPU memory}
-\small Serving systems offload reusable KV to a larger backing tier.
-\end{block}
-\vspace{.12cm}
-\begin{block}{SSD supplies capacity}
-\small But restoring KV incurs storage access latency.
-\end{block}
+\begin{column}{.57\textwidth}
+\includegraphics[width=\linewidth,height=4.25cm,keepaspectratio]{CharacterizationOfHBFforKVCentricLLMServing/Figure_03_SSD_KV_offloading_paths.png}
 \end{column}
-\begin{column}{.49\textwidth}
-\begin{block}{HBF promises a faster flash tier}
-\small Package-local flash offers lower latency and higher bandwidth than SSD.
-\end{block}
-\vspace{.25cm}
-{\large\bfseries Does faster flash translate into faster end-to-end LLM serving?\par}
+\begin{column}{.40\textwidth}
+\textbf{KV cache outgrows GPU memory}\par
+\small Save / load KV to an SSD backing tier, through host staging or GPU-direct I/O.\par\vspace{.22cm}
+\textbf{HBF promises faster flash}\par
+Package-local flash offers lower latency and higher bandwidth.\par\vspace{.3cm}
+{\normalsize\bfseries Does faster flash translate into faster end-to-end LLM serving?\par}
 \end{column}
 \end{columns}
 \vfill\takeaway{The paper tests the intuitive ``SSD $\rightarrow$ HBF'' upgrade at the full-system level.}
-\src{HBF Sucks?, abstract and introduction.}
+\src{Fig. 3, abstract and introduction.}
 \end{frame}
 
 \begin{frame}[t]{What Did the Paper Actually Evaluate?}
@@ -152,18 +146,21 @@ arXiv:2608.11668v4}\par\vspace{.08cm}
 H100 / B200 profiles; thermal + endurance models
 \end{column}
 \end{columns}
-\vspace{.25cm}
-\smalllabel{How the modeled organizations differ}\par\vspace{.06cm}
-{\small\renewcommand{\arraystretch}{1.28}
-\begin{tabularx}{\textwidth}{@{}lXX@{}}\toprule
- & \textbf{HBF-1} & \textbf{HBF-2}\\\midrule
-Package stack sites & All assigned to HBF & Split equally: HBM + HBF\\
-GPU near tier & GDDR7 on the card PCB & HBM3e on the interposer\\
-HBF capacity / bandwidth & $2\times$ HBF-2 & Reference ($1\times$)\\\bottomrule
-\end{tabularx}}\par\vspace{.1cm}
-\hint{At the same GPU profile, near-tier capacity is equal; memory technology and bandwidth differ.}\par
-\vfill\takeaway{Same SSD-style runtime, but HBF trades near-tier resources for package-local flash.}
-\src{Sec. 2.2, Tables 2 and 3(c), Sec. 6.1. Modeled roadmap profiles, not production hardware.}
+
+\vspace{.20cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.60\textwidth}
+\includegraphics[width=\linewidth,height=3.5cm,keepaspectratio]{CharacterizationOfHBFforKVCentricLLMServing/Figure_01_HBF1_HBF2_roadmap_layouts.png}
+\end{column}
+\begin{column}{.37\textwidth}
+\small\textbf{HBF-1 (2028): GDDR--GPU--HBF}\par
+Interposer sites go to HBF; near tier moves to off-interposer GDDR7.\par\vspace{.15cm}
+\textbf{HBF-2 (2030): HBM--GPU--HBF}\par
+HBM and HBF share sites; near-tier HBM capacity / bandwidth falls vs. SSD baseline.
+\end{column}
+\end{columns}
+\vfill\takeaway{HBF trades near-tier resources for package-local flash.}
+\src{Fig. 1, Tables 2 and 3(c), Sec. 6.1. Roadmap profiles + TokenSim + 3D-ICE + endurance model.}
 \end{frame}
 
 \begin{frame}[t]{Three Conditions for HBF to Help}
@@ -195,24 +192,19 @@ HBF capacity / bandwidth & $2\times$ HBF-2 & Reference ($1\times$)\\\bottomrule
 \end{frame}
 
 \begin{frame}[t]{Faster HBF Barely Improves E2E Latency}
-\smalllabel{C1 fails / flash is barely on the critical path}\par\vspace{.2cm}
+\smalllabel{C1 fails / flash is barely on the critical path}\par\vspace{.10cm}
+{\centering
+\includegraphics[width=.90\linewidth,height=3.7cm,keepaspectratio]{CharacterizationOfHBFforKVCentricLLMServing/Figure_04_faster_connector_slower_system.png}
+\par}\vspace{.12cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.56\textwidth}
-\figureplaceholder{HBF/HBF_Figure04.png}{2.9cm}{Figure 4}
-\hint{Fig. 4: matched pairs, media sweep, and queue behavior.}\par\vspace{.25cm}
-\textbf{Less near-tier capacity/bandwidth}\par
-$\rightarrow$ fewer admitted requests\par
-$\rightarrow$ more queueing\par
-$\rightarrow$ worse E2E latency
+\begin{column}{.48\textwidth}
+\small Mean E2E latency = \textbf{2--5.5$\times$ SSD baseline}\par
+Less near-tier capacity / bandwidth\par
+$\rightarrow$ fewer admitted requests, more queueing
 \end{column}
-\begin{column}{.41\textwidth}
-\smalllabel{Evidence}\par\vspace{.08cm}
-\small Faster connector, yet mean E2E latency is\par
-{\Large\bfseries\color{Accent}2--5.5$\times$ higher}\par
-\small than capacity-matched SSD.\par\vspace{.18cm}
-\textbf{3.75$\times$ faster raw HBF latency}\par
-$\rightarrow$ only \textbf{0.75\% / 0.88\%} lower E2E\par
-\hint{HBF-1 / HBF-2, vs. their slower-media settings.}\par\vspace{.16cm}
+\begin{column}{.49\textwidth}
+\small \textbf{3.75$\times$ faster raw HBF latency}\par
+$\rightarrow$ E2E only \textbf{0.75\% / 0.88\%} lower (HBF-1 / 2)\par
 $\rightarrow$ exposed secondary-tier I/O $\approx$ \textbf{1\%}
 \end{column}
 \end{columns}
@@ -221,24 +213,26 @@ $\rightarrow$ exposed secondary-tier I/O $\approx$ \textbf{1\%}
 \end{frame}
 
 \begin{frame}[t]{All Production Traces Send More Writes Than Reads to HBF}
-\smalllabel{C2 fails / useful reads do not repay writes}\par\vspace{.25cm}
+\smalllabel{C2 fails / useful reads do not repay writes}\par\vspace{.3cm}
+{\normalsize\renewcommand{\arraystretch}{1.45}
+\begin{tabularx}{\linewidth}{@{}l*{4}{>{\centering\arraybackslash}X}@{}}
+\toprule
+\textbf{Metric} & \textbf{traceA} & \textbf{traceB} & \textbf{coder} & \textbf{thinking}\\
+\midrule
+Write/read ratio & $2.14\times$ & $4.90\times$ & $1.14\times$ & $2.20\times$\\
+$\rho$ = reads/write & 0.47 & 0.20 & 0.88 & 0.45\\
+Prefix hit rate & 38.21\% & 52.46\% & 45.58\% & 44.12\%\\
+\bottomrule
+\end{tabularx}}\par\vspace{.1cm}
+\hint{Table 8: flash-tier byte traffic over each full two-hour replay.}\par\vspace{.3cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.56\textwidth}
-\figureplaceholder{HBF/HBF_Table08.png}{2.4cm}{Table 8}
-\hint{Table 8: flash-tier byte traffic over each full two-hour replay.}\par\vspace{.28cm}
-\small Hot, highly reused KV $\rightarrow$ retained in HBM / GDDR\par\vspace{.13cm}
+\begin{column}{.52\textwidth}
+\small Hot, highly reused KV $\rightarrow$ retained in HBM / GDDR\par\vspace{.12cm}
 Cold, low-reuse KV $\rightarrow$ evicted to HBF
 \end{column}
-\begin{column}{.40\textwidth}
-\smalllabel{Evidence / write bytes per read byte}\par\vspace{.1cm}
-{\large
-\begin{tabular}{lr}
-traceA & \textbf{2.14$\times$}\\[.09cm]
-traceB & \textbf{4.90$\times$}\\[.09cm]
-coder & \textbf{1.14$\times$}\\[.09cm]
-thinking & \textbf{2.20$\times$}
-\end{tabular}}\par\vspace{.22cm}
-\small All exceed \textbf{1$\times$ (equal write/read bytes)}. Every write costs flash work; many blocks are never read back.
+\begin{column}{.44\textwidth}
+\small Prefix reuse exists, but stays in the near tier.\par\vspace{.12cm}
+Every trace writes more bytes than it reads from HBF.
 \end{column}
 \end{columns}
 \vfill\takeaway{The cache hierarchy gives HBF a write-heavy, low-reuse KV stream.}
@@ -246,57 +240,52 @@ thinking & \textbf{2.20$\times$}
 \end{frame}
 
 \begin{frame}[t]{Write-Heavy KV Traffic Makes Peak HBF Bandwidth Unsustainable}
-\smalllabel{C3 fails / thermal limits and write wear}\par\vspace{.2cm}
+\smalllabel{C3 fails / thermal limits and write wear}\par\vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.55\textwidth}
-\figureplaceholder{HBF/HBF_Figure10a.png}{2.5cm}{Figure 10a}
-\hint{Fig. 10(a): modeled temperature vs. single-stack bandwidth.}\par\vspace{.18cm}
-\textbf{Thermal = short-term throttling}\par
-\small 16-Hi TLC HBF model; \textbf{80$^\circ$C} limit\par
-$\approx$ \textbf{202.27 GB/s} sustainable point\par\vspace{.1cm}
-\textbf{Peak interface BW $\ne$ sustained workload BW}
+\raggedright
+\includegraphics[width=\linewidth,height=5.0cm,keepaspectratio]{CharacterizationOfHBFforKVCentricLLMServing/Figure_10_HBF_thermal_throttling.png}
 \end{column}
-\begin{column}{.41\textwidth}
-\smalllabel{Evidence / long-term endurance}\par\vspace{.15cm}
-\textbf{Endurance = long-term write wear}\par\vspace{.18cm}
-\small Measured trace writes:\par
-{\Large\bfseries\color{Accent}48--140 TB/day}\par\vspace{.22cm}
-\small Modeled HBF lifetime:\par
-{\Large\bfseries\color{Accent}$\approx$ 0.56$\times$}\par
-\small the capacity-matched SSD pool\par\vspace{.1cm}
-\hint{Under unchanged KV pooling and the paper's TLC write-budget model.}
+\begin{column}{.42\textwidth}
+\includegraphics[width=\linewidth,height=2.25cm,keepaspectratio]{CharacterizationOfHBFforKVCentricLLMServing/Figure_11_KV_write_endurance.png}\par\vspace{.12cm}
+\small\textbf{Short term: thermal throttling}\par
+\textbf{202.27 GB/s} at \textbf{80$^\circ$C}\par Delivered BW $<$ peak (16-Hi TLC).\par\vspace{.18cm}
+\textbf{Long term: write endurance}\par
+Trace writes: \textbf{48--140 TB/day}\par
+Modeled HBF lifetime $\approx$ \textbf{0.56$\times$ SSD}\par
+
 \end{column}
 \end{columns}
 \vfill\takeaway{Write-heavy KV reduces sustained bandwidth and consumes flash lifetime.}
-\src{Fig. 10(a), Fig. 11 and Sec. 8. Model projections, not hardware lifetime measurements.}
+\src{Figs. 10--11 and Sec. 8. Model projections, not hardware lifetime measurements.}
 \end{frame}
 
 \begin{frame}[t]{The Device Is Fine; the Drop-In Deployment Is Not}
 \smalllabel{Conclusion / placement requirements}\par\vspace{.15cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.43\textwidth}
-\figureplaceholder{HBF/HBF_Figure12.png}{3.1cm}{Figure 12}
-\hint{Fig. 12: conceptual map; not a calibrated boundary.}
+\begin{column}{.55\textwidth}
+\includegraphics[width=\linewidth,height=4.3cm,keepaspectratio]{CharacterizationOfHBFforKVCentricLLMServing/Figure_12_HBF_placement_map.png}
+
 \end{column}
-\begin{column}{.54\textwidth}
+\begin{column}{.42\textwidth}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.49\textwidth}
-\textbf{Poor HBF targets}\par\small
+\small\textbf{Poor HBF targets}\par\small
 Private KV\\Transient decode KV\\Low-reuse objects
 \end{column}
 \begin{column}{.49\textwidth}
-\textbf{Better HBF targets}\par\small
+\small\textbf{Better HBF targets}\par\small
 Model weights\\Shared prefixes\\Read-mostly objects
 \end{column}
 \end{columns}
-\vspace{.3cm}
+\vspace{.2cm}
 \textbf{Requirements for a future runtime}\par\vspace{.1cm}
 \small Critical-path-aware / reuse-aware\\Write-budgeted / thermal-aware
 \end{column}
 \end{columns}
 \vspace{.15cm}
 \takeaway{HBF should not be treated as a faster SSD.}
-\vspace{.1cm}\small The paper characterizes the problem and gives design requirements; it does not implement a complete new HBF-aware serving runtime.\par
+\vspace{.1cm}\small A conceptual design map from the findings, not an implemented runtime or calibrated boundary.\par
 \src{Fig. 12 and Sections 9--10.}
 \end{frame}
 
