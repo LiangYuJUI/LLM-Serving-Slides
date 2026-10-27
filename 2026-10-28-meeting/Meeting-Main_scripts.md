@@ -48,19 +48,13 @@ Online 收到每筆新 request 時，scheduler 會根據流量權重，為它選
 
 預計時間：1.4 分鐘。
 
-1. **Question**：前面的數學模型看起來合理，但真正做成 server 後，是否仍有 end-to-end 的收益？
+前面介紹了 Helix 的數學模型，這頁要看它真正做成 server 之後，能不能帶來 end-to-end 的收益。作者在同一個 region 裡，用 4 個 A100、8 個 L4 和 12 個 T4 組成異質 cluster，節點間設成 10 Gb/s，測試 LLaMA 30B 和 70B。這個設定讓瓶頸主要落在 GPU。在相同 cluster 和模型下，比較 Helix、separate pipelines，也就是 SP，以及實作在同一系統內的 Swarm 方法。
 
-2. **Setup**：作者使用同一 region 的單一異質 cluster，4 個 A100、8 個 L4、12 個 T4，節點間設成 10 Gb/s，測 LLaMA 30B 和 70B。這個頻寬刻意讓瓶頸落在 GPU，而不是廣域網路。這裡有真實 prototype，不只有 simulator。
+這裡的 offline 和 online 是兩種 workload，和前一頁的事前規劃、線上執行不同。Offline 持續供給 requests，讓系統接近滿載，觀察 decode tokens/s。Online 則依 Azure Conversation trace 的到達形狀送入 requests，並把平均到達率縮到叢集尖峰吞吐的 75%，避免突發流量造成記憶體不足，同時觀察吞吐量和 prompt、decode latency。圖的上排是 throughput，下排是 online latency；每個小圖都放了真實 prototype 和 simulation 的結果，用來檢查模擬器是否接近實際系統。
 
-3. **What is controlled / compared**：在相同 cluster 和模型下，對比 Helix、separate pipelines，也就是 SP，以及實作在同一系統內的 Swarm 方法。圖也放入 simulator 結果驗證模擬器。
+結果可以先抓一個重點：相對 Swarm，Helix 在兩個模型、兩種 workload 下，都有大約兩倍的吞吐量。細看 30B，offline 和 online 分別是 2.14 和 2.07 倍；70B 則是 1.94 和 2.00 倍。這表示前面的容量規劃，確實能轉成真實硬體上的吞吐收益。
 
-4. **Metric**：這裡的 offline/online 是 workload 定義，不是前面 planner 的 offline/online。Offline 持續供給 requests，讓系統接近滿載，觀察 decode tokens/s，越高越好。Online 依 Azure Conversation trace 的到達形狀送入，並把平均到達率縮到叢集尖峰吞吐的 75%，避免 burst 造成記憶體不足；除吞吐量外，也看 prompt 和 decode latency，越低越好。上排是 throughput，下排是 online latency。每個小圖同時有 prototype 與 simulation，後者是在檢查 simulator。
-
-5. **Observation**：相對 Swarm，30B 的 offline／online throughput 是 2.14／2.07 倍；70B 是 1.94／2.00 倍，所以主頁用約兩倍概括。
-
-6. **What this experiment proves**：Helix 的容量規劃確實能轉成真實硬體上的吞吐收益。
-
-7. **Caveat**：不能推成 latency 全面更低。例如 70B 對 Swarm 的 decode latency 反而高 16%；對 SP 也有利用較慢 GPU 後平均 latency 較高的情況。
+不過，吞吐量提高不代表每筆 request 都更快。像 70B 相對 Swarm 的 decode latency 反而高了 16%；和 SP 比較時，也有因為利用較慢 GPU，讓平均 latency 較高的情況。所以這頁支持的是整體吞吐量的改善，latency 還是要分情境看。
 
 來源：Helix Sec. 6.1–6.3，Figure 6，PDF pp. 8–11。倍率順序為 offline、online。
 
@@ -68,19 +62,13 @@ Online 收到每筆新 request 時，scheduler 會根據流量權重，為它選
 
 預計時間：1.4 分鐘。
 
-1. **Question**：如果跨 cluster 的 network 很慢，Helix 把 network 納入 placement 和 routing 是否真的有價值？
+上一頁的單一 cluster 有 10 Gb/s 的連線，網路還不是主要瓶頸。這頁接著問，如果跨 cluster 的連線很慢，Helix 把網路一起納入 placement 和 routing，還能不能發揮效果？作者把同一組 GPUs 分到三個 cluster，在 simulator 裡設定跨 cluster 頻寬約 100 Mb/s、平均 latency 約 50 ms，因此這頁看的是跨區環境的模擬結果。
 
-2. **Setup**：上一頁的 10 Gb/s 單 cluster 還沒有把網路當成瓶頸。這頁把同一組 GPUs 分成三個 cluster，在 simulator 中設定跨 cluster 約 100 Mb/s、平均約 50 ms latency。這頁是模擬結果，不是真實跨區 prototype。
+比較方法仍然是 Helix、SP 和 Swarm，在相同環境下測試 30B、70B 的 offline 和 online workload。左邊看 decode tokens/s，越高越好；右邊看 online 的 prompt 和 decode latency，越低越好。這裡比較的是整個系統的效果，placement 和 scheduling 都包含在裡面。
 
-3. **What is controlled / compared**：比較同一環境下的 Helix、SP、Swarm，測 30B 和 70B 的 offline／online workload。這是整個系統的比較，還沒有單獨隔離 placement 的效果。
+先聚焦 30B 相對 Swarm 的結果。Helix 在兩種 workload 下，吞吐量大約是 Swarm 的 2.3 到 2.4 倍；在 online workload 下，prompt latency 降低 66%，decode latency 降低 24%。這些延遲改善屬於這頁的跨區模擬，和上一頁真實 prototype 的結果要分開看。
 
-4. **Metric**：左邊看 decode tokens/s，右邊看 online prompt／decode latency。吞吐量越高越好，延遲越低越好。
-
-5. **Observation**：聚焦 30B 對 Swarm，兩種 workload 的吞吐收益約 2.3 到 2.4 倍。66% prompt 和 24% decode latency 降幅，專指這裡的 30B online 比較。它們不能搬回上一頁當 prototype 的成果。
-
-6. **What this experiment proves**：當慢連線成為實際瓶頸，聯合考慮 placement 與 routing 的設計有明顯價值，支持一開始的 motivation。
-
-7. **Caveat**：這不是單獨切換 network-awareness 的 ablation，而且依賴 simulator 的網路模型。接下來要固定其中一個元件，才能更清楚區分收益來源。
+這組實驗顯示，當慢連線成為瓶頸時，聯合考慮 placement 和 routing 的設計仍然有明顯收益，也呼應了前面的研究動機。不過，這裡沒有單獨開關 network-awareness，結果也依賴 simulator 的網路模型，因此還不能把所有改善都歸因於某一個元件。下一頁就用控制變因的方式，進一步拆開 placement 和 scheduler 的貢獻。
 
 來源：Helix Sec. 6.2、6.4，Figure 7，PDF pp. 8、10–11。原文給 2.41×、2.33×；主稿不強行指派每個倍率的 workload 順序。
 
@@ -88,19 +76,13 @@ Online 收到每筆新 request 時，scheduler 會根據流量權重，為它選
 
 預計時間：1.5 分鐘。
 
-1. **Question**：Helix 的效果是 placement 比較好，還是 scheduler 比較好？作者用兩組控制變因實驗回答。
+前面看到 Helix 的整體效果，這頁要進一步問，收益來自 layer placement 比較好，還是 request scheduling 比較好？作者做了兩組控制變因實驗，都使用 LLaMA 70B 的 offline serving，涵蓋 single cluster 和 geo-distributed setting，其中跨區環境使用 simulator。
 
-2. **Setup**：兩組都用 LLaMA 70B 的 offline serving，涵蓋 single cluster 和 geo-distributed setting，後者使用 simulator。
+左邊先固定所有方法都用 Helix scheduler，只更換 Helix、Petals 或 Swarm 的 placement。這樣比較的是，在相同 scheduler 下，不同 layer 配置能提供多少吞吐量。相對 Petals 和 Swarm，Helix placement 在單一 cluster 分別達到 1.23 和 2.10 倍吞吐量，在跨區環境則是 1.49 和 2.38 倍。旁邊的拓樸圖用來說明，哪些位置出現資源未充分使用或網路壅塞。
 
-3. **What is controlled / compared**：左邊固定所有方法都使用 Helix scheduler，只換 Helix、Petals 或 Swarm placement。右邊反過來固定 Helix placement，換 Swarm、random 等 scheduler。這樣才能隔離各元件在固定搭配下的貢獻。
+右邊反過來固定 Helix placement，只更換 scheduler，觀察同一套 layer 配置如何受到分流方式影響。相對 Swarm 和 random scheduler，Helix 在單一 cluster 的吞吐量分別提高 30% 和 29%，在跨區環境則提高 22% 和 15%。兩邊的長條圖都是 decode tokens/s，越高越好。
 
-4. **Metric**：兩張圖的 bar 都是 decode throughput，單位 tokens/s，越高越好；旁邊的拓樸圖用來解釋資源未充分使用或網路壅塞的位置。
-
-5. **Observation**：Placement 左邊，對 Petals／Swarm，單一 cluster 為 1.23／2.10 倍，geo 為 1.49／2.38 倍。Scheduling 右邊，對 Swarm／random，single 提升 30%／29%，geo 提升 22%／15%。不用記所有數字，重要的是固定另一元件後，差距仍存在。
-
-6. **What this experiment proves**：兩部分都有獨立貢獻。較好的 placement 建立較好的資源圖；scheduler 則把流量送到可承受的路徑。這也是 Helix 最後能成立的結論。
-
-7. **Caveat**：不能把左右倍率相乘當總收益。Petals 在左邊只提供 placement，也不是完整 end-to-end server 的比較。
+這頁的重點是，固定另一個元件後，placement 和 scheduler 的差距都還存在。較好的 placement 決定各張 GPU 放哪些 layers，建立可用的執行路徑；scheduler 再把 requests 分配到這些路徑，讓負載配合 GPU 和連線的容量。不過，左右兩組實驗的比較基準不同，倍率不能直接相乘當成總收益；左邊的 Petals 也只提供 placement，並不是比較完整的 end-to-end server。
 
 來源：Helix Sec. 6.6–6.7，Figures 9–10，PDF pp. 11–12。Geo 對 shortest queue 的額外比較是 +19%，未納入主頁範圍。
 
