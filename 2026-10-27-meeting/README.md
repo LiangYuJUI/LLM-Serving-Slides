@@ -86,17 +86,18 @@ pdfinfo 2026-10-27-HBF.pdf
 
 ## Characterizing High Bandwidth Flash for LLM Serving
 
-獨立的 focused paper presentation，**11 張 main slides + 8 張 appendix，共 19 頁**。主線講稿預算 **14 分 40 秒**，附錄供 Q&A，不計入正式報告時間。
+獨立的 focused paper presentation，**13 張 main slides + 8 張 appendix，共 21 頁**。主線講稿約 **16–18 分鐘**，附錄供 Q&A，不計入正式報告時間。
 
 - Main TeX：`2026-10-27-Characterizing-HBF.tex`
-- 繁體中文講稿：`Characterizing-HBF_scripts.md`（第 01–19 頁對齊 PDF）
+- 繁體中文講稿：`Characterizing-HBF_scripts.md`（第 01–21 頁對齊 PDF）
 - PDF：`output/pdf/2026-10-27-Characterizing-HBF.pdf`
-- Overleaf package：`output/overleaf/Characterizing-HBF.zip`（根目錄 `main.tex`，僅附實際引用的六張裁切圖）
+- Overleaf package：`output/overleaf/Characterizing-HBF.zip`（根目錄 `main.tex`，僅附 TeX 實際引用的五張裁切圖）
 - Source：Zack Yu et al., *Characterizing High Bandwidth Flash for LLM Serving*, arXiv:2609.39131v2, 5 Oct 2026。repo 沒有本篇原始 PDF；本次以使用者提供的 paper facts、數字與既有 Fig. 1–6 為依據，未宣稱核讀不存在的原文，也未補猜未提供的章節編號。
 - 圖片來源：`CharacterizingHBFforLLMServing/`；與另一篇 *HBF Sucks?*（arXiv:2608.11668v4）及其素材完全分開。
-- 投影片實際引用：`CharacterizingHBFforLLMServing/slides/Fig01.png` 至 `Fig06.png`。原始六張圖映射正確，保留原檔；衍生圖只裁去下方圖說，保留座標、面板標籤及圖例，不拉伸。
+- 投影片實際引用：`CharacterizingHBFforLLMServing/slides/Fig01.png` 至 `Fig05.png`。`slides/Fig06.png` 與原始 `CharacterizingHBFforLLMServing_Fig06.png` 仍留在 repo，供 reference 或未來 Q&A；主報告改以 Table 6 的六個 Figure 6 數據點呈現，TeX 不再引用 Fig06。原始六張圖映射正確，保留原檔；衍生圖只裁去下方圖說，保留座標、面板標籤及圖例，不拉伸。
 - 原圖解析度依序：1026×784、1018×876、1022×1564、1022×801、1022×805、2122×1142。裁切圖高度依序為 550、560、1300、540、540、965 px，寬度不變；裁切框左上角均為 (0,0)。
-- 標題頁算 Main 1/11；結論為 Main 11/11；`\appendix` 之後顯示 Backup PDF 12–19。
+- 標題頁算 Main 1/13；結論為 Main 13/13；`\appendix` 之後顯示 Backup PDF 14–21。
+- Q3 拆成三頁：第 10 頁是每一層 DPA attention 再到 TP/EP MoE 的流程；第 11 頁是 Figure 6 六個點的數字表；第 12 頁是 improvement trade-off。第 13 頁收能量機制與結論。TP 只寫成 simulator 的 tensor-parallel computation / communication abstraction，不宣稱論文未給出的 per-expert tensor-to-rank mapping。
 - 數據限制：能耗不含靜態／背景功率；壽命為假設下估計；Table 7 的淨值保留提供的原數字，分項四捨五入後可能與淨值差 0.01 百分點。
 
 在本目錄編譯並更新 PDF：
@@ -108,4 +109,4 @@ cp 2026-10-27-Characterizing-HBF.pdf output/pdf/
 pdfinfo output/pdf/2026-10-27-Characterizing-HBF.pdf
 ```
 
-驗證日期：2026-10-23。19 頁皆渲染為 PNG 並完成視覺檢查；講稿標題與 PDF 頁碼核對。Overleaf zip 在乾淨暫存目錄解壓，使用 pdfLaTeX 兩次編譯驗證。
+驗證日期：2026-10-24。21 頁皆渲染為 PNG 並完成視覺檢查；講稿標題與 PDF 頁碼核對。Overleaf zip 在乾淨暫存目錄解壓後，pdfLaTeX 兩次編譯為 21 頁。

@@ -1,6 +1,6 @@
 # Characterizing High Bandwidth Flash for LLM Serving｜繁體中文講稿
 
-主報告共 11 頁，目標約 14 至 15 分鐘。第 12 至 19 頁是 Backup，主要留給問答使用，不計入正式報告時間。以下頁碼對應 `2026-10-27-Characterizing-HBF.pdf`。
+主報告共 13 頁，目標約 16 至 18 分鐘。第 14 至 21 頁是 Backup，主要留給問答使用，不計入正式報告時間。以下頁碼對應 `2026-10-27-Characterizing-HBF.pdf`。
 
 ## 第 01 頁｜Characterizing High Bandwidth Flash for LLM Serving
 
@@ -116,45 +116,61 @@ Model weights 的情況稍微不同。每一個實驗 configuration 裡的 weigh
 
 因此這組實驗的結論是，dense model 的收益主要來自 extra KV capacity，而不是把 hot model weights 搬到 HBF。
 
-## 第 10 頁｜Q3: How Do Placement and Parallelism Change MoE Results?
+## 第 10 頁｜Q3 Setup: DPA Attention → TP/EP MoE, Every Layer
 
-第三個實驗看的是 MoE model，這時候情況更複雜，因為除了 HBM 和 HBF placement 以外，還有 TP、EP 和不同 replica configuration。
+這一頁先不看數字。原本 Q3 把執行方式、Figure 6 和所有 trade-off 放在同一頁，資訊太擠，所以這裡只回答一件事：GLM 的一個 Transformer layer 到底怎麼執行。
 
-這裡使用的是 GLM-5.2。所謂 TP16、EP16 加上 DPA，可以想成一個十六張 GPU 的 replica。另一種 2×TP8，則是兩個獨立的八張 GPU replica。DPA 讓不同 GPU 負責不同 request 的 attention 和 KV，但是進到 MoE layer 之後，token activation 還是會根據 expert routing 被送到對應的 expert GPU。
+請先看流程的方向。這不是把整個 model 的 Attention 全部算完，再集中去做所有 MoE。每一層都是同一段順序。Layer L 先做 DPA Attention，Attention 的輸出合成 batch 之後進入這一層的 MoE，expert output combine 完，才進到 Layer L+1。下一層又從 DPA Attention 開始。所以這張圖要看的是每一層都會走一次。
 
-左邊圖是 1× workload，右邊是 5× workload。橫軸是 completion time，縱軸是 modeled energy，所以越靠左下越好。不過左右兩張圖的 scale 不一樣，所以不要直接用點跟點之間的視覺距離比較。
+左邊用四張 GPU 當 illustrative example，不是論文實際評估的十六張 GPU 配置。Attention 的時候，GPU0 處理 Request A 和它自己的 KV，GPU1 是 Request B，後面兩張以此類推。每一個 attention DP rank 保有自己的 requests 和 KV state，並且在這個 rank 上做完整的 MLA QKVO projections，也做 indexer。
 
-先看 HBM-only 跟 H³，而且都讓 weights 留在 HBM。1× workload 的 completion time 從一萬一千三百五十四秒降到四千五百四十三秒，減少大約百分之五十九點九九。
+四個 rank 做完之後，輸出是 A'、B'、C'、D'。它們會進到 combined rank batches。論文的 performance model 裡，後面的 shared FFN phase 要等最慢的那個 attention rank，所以框裡有一行很小的註記，不是這頁的重點。
 
-到了 5× long-context workload，差距更大。HBM-only 需要十九萬八千四百一十一秒，而 H³ 只需要兩萬八千二百七十九秒，大約快七倍，同時 energy 從九十一點九九 MJ 降到三十七點六二 MJ，減少百分之五十九點一。
+接著是 MoE router。圖上的例子是 A' 被分到 E1 和 E5。EP 做的事情是把 token activation 送到 expert 所在的 rank：E1 去一個擁有它的 rank，E5 去另一個 rank。真正跨 GPU 移動的是 token activation，不是把整套 expert weights 臨時搬過去。兩邊算完再 combine，得到這個 token 的 MoE output，然後進入下一層。
 
-這代表當 context 變得非常長、KV working set 大幅增加時，額外 HBF capacity 的價值會變得更明顯。
+TP 要分開講。論文說 FFN 和 MoE 使用這些 combined rank batches，以及該實驗設定的 TP/EP layout。TP 在這裡是 tensor-parallel computation，也就是 simulator 裡跨設定好的 TP ranks 所計算的 tensor computation 和 collective cost。論文沒有說明某一個 logical expert 的 tensor 怎麼對到哪些 rank，所以不能把它畫成某個 expert 的 shard 0 在 GPU0、shard 1 在 GPU1，也不能說每個 expert 一定被切成八份或十六份。
 
-不過最快的 configuration 並不是最省 energy 的。5× workload 裡，最快的是兩個 TP8 replica，而且 weights 全放 HBF，完成時間是兩萬四千三百八十五秒。但是它的 energy 是五十二點零六 MJ，比剛才 HBM weights 的三十七點六二 MJ 高很多。
+最後，從 DPA 進到 EP，並不是 runtime 把整套 HBM weights 換掉。每個 evaluated configuration 的 weight placement 是固定的。Attention 和其他 non-expert weights 依照那個 configuration 放好；如果是 split MoE，hot experts 放在 HBM，其餘 experts 放在 HBF。這一頁改變的是 token activation 的 data distribution。
 
-Shared-site 也有類似 trade-off。1× workload 時 6 HBM 加 2 HBF 表現最好，但到了 5×，4+4 的 completion time 比 6+2 快百分之十四點二五；相反地，6+2 的 energy 又比 4+4 少百分之四點零一。
+## 第 11 頁｜Q3: What Are the Six Points in Figure 6?
 
-所以這裡真正想證明的是，當 context 變長，最佳 HBM/HBF ratio 會改變，而且最快、最低 energy、最低 latency 不一定是同一個 configuration。Placement 和 parallelism 必須根據 optimization objective 一起決定。
+上一版這裡直接放 Figure 6。那張 scatter plot 有六個點，可是投影下來 configuration 名稱和座標都太小，不適合在報告裡讓大家自己對數字。這一頁把圖上的六個點，用 Table 6 的 completion time 和 modeled energy 直接列出來。Figure 6 沒有 TPOT，所以這張表也不放 TPOT。
 
-## 第 11 頁｜Where Do the Gains Come From, and What Did the Paper Prove?
+這六列就是 Figure 6 畫出來的六個點，包含 HBM-only、幾種 H³ 的 TP16 或 2×TP8，以及 shared-site 6+2。完整 Table 6 還有 shared-site 2+6 和 4+4，但 Figure 6 沒有把它們畫成另外兩個點，所以它們不在這張表上。八個 configuration 的完整數字，包含 TPOT，在後面的 backup。
 
-最後這頁把前面的結果整理成真正的原因。因為如果只看到 energy 下降，很容易誤會成 HBF 本身比較省電，但其實完全不是。
+我不逐格念。先看 1×。同樣是 TP16、weights 留在 HBM，從 HBM-only 換到 H³，completion time 從一萬一千三百五十四秒降到四千五百四十三秒。H³ 在 1× 已經明顯比 HBM-only 快。
 
-這篇假設 HBM read energy 是每 bit 三點四 pJ，而 HBF 是六點八 pJ。也就是說，直接從 HBF 讀資料其實更耗能。
+到了 5× long-context trace，差距會進一步放大。HBM-only 是十九萬八千四百一十一秒，H³、TP16、HBM weights 是兩萬八千二百七十九秒。
 
-整體 energy 之所以還是會下降，是因為 extra capacity 改變了整個 serving execution pattern。
+另一個要帶走的觀察是，最快的點不是最低 energy 的點。5× 最快的是 H³、2×TP8、weights 放 HBF，兩萬四千三百八十五秒，但 energy 是五十二點零六 MJ。同一張表裡 energy 比較低的是 H³、TP16、HBM weights，三十七點六二 MJ，時間則是兩萬八千二百七十九秒。這個 time 和 energy 的落差，在 5× 長 context 下比 1× 更清楚。下一頁再把比較拆開。
 
-第一條路徑是 batch size。當 device memory 容量增加之後，系統可以同時保留更多 request，形成更大的 batch。這樣同一批 model weights 可以服務更多工作，因此 weight read 被更有效率地 amortize。
+## 第 12 頁｜Q3: What Improves, and What Does It Cost?
 
-第二條路徑是 KV reuse。更多 KV 可以留在 device memory，就比較不容易失去 reusable prefixes，因此可以減少重新載入以及重新執行 prefill。
+這一頁把 trade-off 收成四個比較，不再把百分比散落在圖旁邊。
 
-右邊表格把這些 contribution 拆開。對 Llama 的 1× workload，最後 net energy saving 是百分之二十四點零六；對 GLM 的 5× workload，則是百分之五十九點一。不同 workload 的節能來源不完全相同，但都不是因為 HBF 單次 access 比 HBM 省電。
+第一列是多出來的 device capacity。固定 TP16，weights 都留在 HBM，從 HBM-only 8+0 換成 H³ 8+8。1× 的 completion time 少大約百分之六十，energy 大約少百分之二十一。5× 則快大約七倍，energy 少百分之五十九。Context 變長之後，額外容量的價值會大很多。
 
-所以整篇論文可以整理成三個結論。第一，HBF 最主要的價值是 capacity，可以擴大 on-device working set。第二，這些 capacity 能不能真的轉成效能或 energy benefit，非常依賴 placement 和 scheduling，尤其 scheduler 必須避免反覆 cache churn 和無效 HBF writes。第三，HBF 不能被當成一層被動的 overflow memory，而是需要跟 serving system 以及 GPU memory architecture 一起 co-design。
+第二列固定 H³，而且 weights 放在 HBF，比較一個 TP16 replica 和兩個 TP8 replica。兩個 replica 的 completion time 比較短，1× 大約快百分之七，5× 大約快百分之十，但是 modeled energy 兩邊都增加大約百分之八。這裡比較的是 replica-level concurrency。TP 是 tensor parallelism，不是把 model 切成較少的 pipeline stages。
 
-另外這些結果都是 simulator 在明確 hardware assumptions 下得到的結果，並不是 production HBF hardware measurement。主報告到這裡結束，後面幾頁我保留比較細的 hardware assumptions、equations、parallelism example 和完整 table，如果有問題再往後看。
+第三列固定 H³ 8+8 和 2×TP8，比較 experts 全部放 HBF，以及 split，也就是 hot experts 留在 HBM、其餘放 HBF。1× 時，split 用大約百分之五點四的 completion time，換大約百分之二十四點五的 energy。5× 時 all-HBF 會快大約百分之五，但 energy 比 split 高出大約百分之二十七。把 hot experts 留在 HBM，是用一點速度換明顯較低的 energy。
 
-## 第 12 頁｜HBM vs. HBF Assumptions
+第四列是 shared-site 的 HBM 和 HBF 比例，這裡主要看 5×。4+4 比 6+2 快百分之十四點二五，6+2 的 energy 則少百分之四點零一。1× 的時候，測過的 shared-site 配置裡 6+2 最好。最好的比例取決於 workload，也取決於目標是 time 還是 energy。
+
+下面把 5× 的兩個極端放在一起。最快的是 H³、2×TP8、HBF weights，兩萬四千三百八十五秒、五十二點零六 MJ。最低 energy 的是 H³、TP16、HBM weights，兩萬八千二百七十九秒、三十七點六二 MJ。沒有一個 configuration 同時在 time 和 energy 上全面最佳。
+
+## 第 13 頁｜Where Do the Gains Come From, and What Did the Paper Prove?
+
+最後把 energy 為什麼會下降講清楚。如果只看前面的 MJ，很容易以為是 HBF 讀取比較省電，但其實不是。論文假設 HBM read 是每 bit 三點四 pJ，HBF 是六點八 pJ，單次從 HBF 讀其實更貴。
+
+整體 energy 還是下降，是因為更大的 working set 改變了 batching、weight reuse 和 KV reuse。Device capacity 變大之後，系統可以形成更大的 batch，同一份 weights 服務更多工作，weight-read energy 就被攤平。同時更多 KV 可以留在 device 上，prefix 比較不容易被丟掉，重新載入和重做 prefill 就減少。
+
+右邊是 Table 7。Llama 的 1×，net saving 是百分之二十四點零六，avoided prefill 是很大的一項。GLM 的 5×，net saving 是百分之五十九點一，主要來自 weight reads。KV 和 index reads 這一項在兩個 workload 都是負的，代表這部分本身比較耗能，但被其他項補回來。分項四捨五入之後，加總可能和 net 差大約零點零一個百分點，這裡保留論文給的 net。
+
+所以整篇可以收成一句話。Capacity 創造了機會；placement 和 scheduling 決定這些容量最後會不會變成 throughput 和 energy saving。這些結果是 simulation-based characterization，不是 production HBF hardware measurement。
+
+主報告到這裡結束。後面從第 14 頁開始是 backup。如果要對硬體參數、service-time 公式、energy model、sparse attention、論文對 TP、EP、DPA 到底寫了什麼、expert placement 有沒有動態搬移，或完整 Table 6，我們再往後看。
+
+## 第 14 頁｜HBM vs. HBF Assumptions
 
 這張主要是問答時如果需要確認硬體參數，可以回來看。作者假設 HBM 和 HBF 每個 stack 的 read bandwidth 都是每秒一千 GB，但是其他特性差非常多。HBM 每個 stack 只有二十四 GB，而 HBF 是三百七十五 GB，所以 HBF 的核心優勢是容量。
 
@@ -162,7 +178,7 @@ Shared-site 也有類似 trade-off。1× workload 時 6 HBM 加 2 HBF 表現最�
 
 所以如果教授問為什麼不能直接把所有東西都放 HBF，這張表就是答案。它很大，但是 write 很慢，而且讀寫 energy 都更高。這些數字是這篇 simulation 使用的假設，不代表已經量到量產 HBF device。
 
-## 第 13 頁｜Shared-Site vs. H³ Service-Time Model
+## 第 15 頁｜Shared-Site vs. H³ Service-Time Model
 
 這張是兩種 architecture 在 simulator 裡怎麼估 service time。
 
@@ -172,7 +188,7 @@ H³ 則比較保守，假設 HBM 和 HBF 的部分是 serialized，因此兩段 
 
 不過這裡一定要避免一個誤解。不能看到 H³ 最後 performance 比較好，就說 serialized model 比 parallel model 快。H³ 的關鍵是它有完整八個 HBM stacks，再額外增加八個 HBF stacks；shared-site 則是八個位置在兩種 memory 之間分配。所以兩者的 resource budget 本身就不同。
 
-## 第 14 頁｜Energy Model
+## 第 16 頁｜Energy Model
 
 如果教授問 energy 是怎麼算的，可以看這張。
 
@@ -182,7 +198,7 @@ H³ 則比較保守，假設 HBM 和 HBF 的部分是 serialized，因此兩段 
 
 也因此 completion time 降低，不代表整台系統所有 power component 都會同比例下降。這裡比較適合看不同 architecture 或 policy 造成的 relative energy difference。
 
-## 第 15 頁｜Sparse Attention and Index-First Placement
+## 第 17 頁｜Sparse Attention and Index-First Placement
 
 這張補充前面提到的 sparse attention。
 
@@ -192,17 +208,17 @@ H³ 則比較保守，假設 HBM 和 HBF 的部分是 serialized，因此兩段 
 
 因為 indexer 每次都要看到完整 context，而真正 KV 只讀一個 subset，所以 index 反而是比較 hot 的資料。當 HBM 有 memory pressure 時，作者因此優先把 eligible KV demote 到 HBF，而不是先把 index 移出去。
 
-## 第 16 頁｜TP / EP / DPA: A Four-GPU Example
+## 第 18 頁｜What Does the Paper Specify About TP / EP / DPA?
 
-這張是我為了方便說明 TP、EP 和 DPA 做的四張 GPU 示意，不是論文真正 evaluated configuration。
+這一頁是問答用的。主報告第 10 頁已經有每一層的流程圖，所以這裡不再重複那張四 GPU 示意，而是把論文文字實際支持到哪裡講清楚。
 
-假設 DPA 讓 GPU0 負責 Request A 的 attention 和 KV，GPU1 負責 Request B，以此類推。所以在 attention 階段，每個 request 的 KV 會有一個主要的 home rank。
+左邊是論文有寫明的部分。DPA 的每個 attention rank 擁有自己的 requests 和 KV，並且做完整的 MLA QKVO 和 indexer。FFN 或 MoE 使用 combined rank batches，再加上該 configuration 的 TP/EP layout。Expert balancing 用的是 LPLB。TP16/EP16 加 DPA 是一個十六張 GPU 的 replica，2×TP8/EP8 加 DPA 是兩個獨立的八張 GPU replica。
 
-但是進入 MoE layer 後，情況就不一樣。假設 Request A 在 GPU0 做完 attention，router 選到 Expert 1 和 Expert 5。如果 Expert 1 在 GPU0，那這部分可以本地計算；如果 Expert 5 在 GPU2，就要把 Request A 的 token activation 傳到 GPU2，算完 expert 之後再把 output 拿回來 combine。
+右邊是論文沒有寫明的部分。它沒有給出 exact expert tensor shard mapping，也沒有說某一個 expert 的 tensor 由哪些 TP rank 持有，也沒有把每一步使用哪一種 collective primitive 寫死。因此不能從 TP8 或 TP16 推論每一個 expert 一定被切成八路或十六路 tensor shards。
 
-所以 DPA 說的是 request 和 KV 在 attention 階段的 ownership，EP 說的是 expert weights 放在哪張 GPU，而 TP 又是在切同一個大型 tensor operation。三個 parallelism 是不同維度，不應該混在一起。
+EP 的 routing 和 expert placement 相對明確。TP 在這篇裡主要是 simulator 中的 tensor-parallel computation 和 communication abstraction。除非論文明確寫出 physical mapping，否則我們把這裡的 TP/EP 當成 performance-model abstraction。Pipeline parallelism 是另一件事，指的是把 model 切成前後相接的 stages，不要跟這裡的 TP 混在一起。
 
-## 第 17 頁｜Does the Paper Dynamically Swap Experts?
+## 第 19 頁｜Does the Paper Dynamically Swap Experts?
 
 如果教授問這篇有沒有做動態 expert migration，答案是沒有。
 
@@ -212,17 +228,17 @@ Runtime 當然還是會動態做 MoE routing，也就是每個 token 選不同 e
 
 所以 per-layer expert migration、dynamic expert cache、expert prefetch prediction 這些其實都是我們之後可以考慮的研究方向，但不是這篇 paper 已經做的 contribution。
 
-## 第 18 頁｜Full GLM Table 6
+## 第 20 頁｜Full GLM Table 6
 
-這張是前面 MoE result 的完整 Table 6，主要是教授如果想問某一個 configuration 的 exact number 時再回來看。
+這張是 GLM Table 6 的完整八列。第 11 頁只列 Figure 6 畫出來的六個點，而且只有 completion time 和 modeled energy。這一頁補上 Figure 6 沒有畫出來的 shared-site 2+6 和 4+4，也保留 TPOT。如果要對某一個沒出現在那六個點裡的 configuration，或要看 TPOT，回到這裡。
 
-左半邊是 1× trace，右半邊是 5× trace，每一邊都有 completion time、modeled energy 和 TPOT。這裡比較的時候要一次固定一個變因，例如固定 5× workload，再比較 HBM-only 和 H³，或者固定 H³ 再比較 TP16 和兩個 TP8 replicas。
+左半邊是 1× trace，右半邊是 5× trace，每一邊都有 completion time、modeled energy 和 TPOT。比較的時候一次固定一個變因，例如固定 5× workload，再比較 HBM-only 和 H³，或者固定 H³ 再比較一個 TP16 replica 和兩個 TP8 replicas。
 
-前面主報告提到，5× workload 下最快的是 H³、兩個 TP8 replica，而且 weights 放 HBF，completion time 是兩萬四千三百八十五秒。不過 energy 最低的不是這個 configuration，而是 H³、TP16，而且 weights 留在 HBM，energy 是三十七點六二 MJ。
+5× workload 下最快的是 H³、兩個 TP8 replica，而且 weights 放 HBF，completion time 是兩萬四千三百八十五秒。Energy 最低的不是這個 configuration，而是 H³、TP16，而且 weights 留在 HBM，energy 是三十七點六二 MJ。
 
-Shared-site 也呈現相同現象：不同 HBM/HBF ratio 在 time 和 energy 上的 ranking 不一樣。所以完整表格最主要就是用來支持前面那個結論，也就是 fastest configuration 跟 lowest-energy configuration 不一定相同。
+Shared-site 也呈現相同現象：不同 HBM/HBF ratio 在 time 和 energy 上的 ranking 不一樣。所以這張完整表格支持的結論是，fastest configuration 跟 lowest-energy configuration 不一定相同。
 
-## 第 19 頁｜Scope and Limitations
+## 第 21 頁｜Scope and Limitations
 
 最後這張整理這篇的適用範圍。
 

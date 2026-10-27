@@ -3,7 +3,7 @@
 \documentclass[aspectratio=169,10pt]{beamer}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern,amsmath,booktabs,tabularx,array,graphicx,tikz}
-\usetikzlibrary{arrows.meta,positioning}
+\usetikzlibrary{arrows.meta,positioning,calc}
 \usetheme{Madrid}
 \definecolor{Ink}{HTML}{243748}
 \definecolor{Muted}{HTML}{667B8B}
@@ -24,7 +24,7 @@
 \setbeamersize{text margin left=.38cm,text margin right=.38cm}
 \setbeamertemplate{frametitle}{\nointerlineskip\begin{beamercolorbox}[wd=\paperwidth,sep=.12cm,leftskip=.22cm]{frametitle}\usebeamerfont{frametitle}\strut\insertframetitle\strut\par\end{beamercolorbox}}
 \newif\ifbackup
-\setbeamertemplate{footline}{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.50cm]{footline}\hfill\scriptsize\ifbackup Backup PDF \insertframenumber\else Main \insertframenumber/11\fi\end{beamercolorbox}}
+\setbeamertemplate{footline}{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.50cm]{footline}\hfill\scriptsize\ifbackup Backup PDF \insertframenumber\else Main \insertframenumber/13\fi\end{beamercolorbox}}
 \newcommand{\takeaway}[1]{\par\vspace{.12cm}\begin{beamercolorbox}[rounded=true,sep=.12cm,wd=\linewidth]{block title}\small\bfseries #1\end{beamercolorbox}}
 \newcommand{\src}[1]{\par\vfill{\fontsize{7}{8}\selectfont\color{Muted}Source: Characterizing High Bandwidth Flash for LLM Serving, #1.}\par}
 \newcommand{\fig}[2]{\par{\centering\includegraphics[width=\linewidth,height=#2,keepaspectratio]{CharacterizingHBFforLLMServing/slides/Fig#1.png}\par}}
@@ -252,45 +252,136 @@ Dense weights stay hot; colder KV can reside in HBF.
 \src{Table 5; modeled energy excludes static / background power}
 \end{frame}
 
-\begin{frame}[t]{Q3: How Do Placement and Parallelism Change MoE Results?}
+\begin{frame}[t]{Q3 Setup: DPA Attention $\rightarrow$ TP/EP MoE, Every Layer}
 
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.56\textwidth}
-\fig{06}{2.6cm}
-\small\textbf{GLM-5.2: HBM-only $\rightarrow$ H$^3$, TP16 / HBM weights}\\
-1$\times$: 11,354 / 9.11 $\rightarrow$ 4,543 / 7.19 (s / MJ)\\
-\textbf{59.99\% less time}.\\
-5$\times$: 198,411 / 91.99 $\rightarrow$ 28,279 / 37.62\\
-\textbf{7.0$\times$ faster; 59.10\% less energy}.
+\begin{column}{.69\textwidth}
+\begin{tikzpicture}[
+  font=\footnotesize,
+  gpu/.style={draw=Accent, line width=.7pt, rounded corners=2pt, fill=SoftBlue, align=center,
+    inner sep=2pt, text width=2.28cm, minimum height=.92cm, outer sep=0pt, font=\footnotesize},
+  stage/.style={draw=Ink, line width=.6pt, rounded corners=2pt, fill=white, align=center,
+    inner sep=2.5pt, text width=9.45cm, outer sep=0pt, font=\footnotesize},
+  expert/.style={draw=Accent, line width=.6pt, rounded corners=2pt, fill=SoftBlue, align=center,
+    inner sep=2pt, text width=4.45cm, minimum height=.72cm, outer sep=0pt, font=\footnotesize},
+  flowarrow/.style={-{Stealth[length=2mm]}, draw=Accent, line width=.9pt, shorten >=1.5pt, shorten <=1pt}
+]
+  \node[anchor=north west, inner sep=0pt, font=\small\bfseries, text=Accent] (ltitle) at (0,0) {Transformer layer L};
+  \node[anchor=west, inner sep=0pt, font=\footnotesize, text=Muted] at (ltitle.east) {\ \ illustrative 4-GPU example};
+  \node[anchor=north west, inner sep=0pt, font=\footnotesize, text width=9.6cm] (dpa) at ([yshift=-1pt]ltitle.south west)
+    {Each rank: own requests, own KV, full MLA QKVO + indexer.};
+  \node[gpu, anchor=north west] (g0) at ([yshift=-3pt]dpa.south west) {{\color{Accent}\textbf{GPU0}}\par Req.\ A + KV$_A$};
+  \node[gpu, anchor=north west] (g1) at ([xshift=5pt]g0.north east) {{\color{Accent}\textbf{GPU1}}\par Req.\ B + KV$_B$};
+  \node[gpu, anchor=north west] (g2) at ([xshift=5pt]g1.north east) {{\color{Accent}\textbf{GPU2}}\par Req.\ C + KV$_C$};
+  \node[gpu, anchor=north west] (g3) at ([xshift=5pt]g2.north east) {{\color{Accent}\textbf{GPU3}}\par Req.\ D + KV$_D$};
+  \coordinate (rowmid) at ($({g0.west})!0.5!({g3.east})$);
+  \coordinate (belowrow) at (g0.south -| rowmid);
+  \node[stage, anchor=north] (comb) at ([yshift=-13pt]belowrow) {%
+    \textbf{Combined rank batches}\quad A' \ B' \ C' \ D'\quad{\scriptsize\color{Muted}wait for slowest attention rank}};
+  \draw[flowarrow] (g0.south) -- (g0.south |- comb.north);
+  \draw[flowarrow] (g1.south) -- (g1.south |- comb.north);
+  \draw[flowarrow] (g2.south) -- (g2.south |- comb.north);
+  \draw[flowarrow] (g3.south) -- (g3.south |- comb.north);
+  \node[stage, anchor=north] (router) at ([yshift=-5pt]comb.south) {%
+    \textbf{MoE router}\quad illustrative: A' $\rightarrow$ E1 + E5};
+  \draw[flowarrow] (comb.south) -- (router.north);
+  \node[expert, anchor=north west] (e1) at ([yshift=-5pt]router.south west)
+    {\textbf{E1} $\rightarrow$ one expert-owning rank\par token activation moves};
+  \node[expert, anchor=north east] (e5) at ([yshift=-5pt]router.south east)
+    {\textbf{E5} $\rightarrow$ another expert-owning rank\par token activation moves};
+  \draw[flowarrow] (e1.north |- router.south) -- (e1.north);
+  \draw[flowarrow] (e5.north |- router.south) -- (e5.north);
+  \coordinate (nextpos) at (e1.south -| comb.center);
+  \node[stage, anchor=north, draw=Accent, line width=.8pt] (next) at ([yshift=-5pt]nextpos) {%
+    \textbf{Combine expert outputs}\par Layer L+1 $\rightarrow$ DPA attention again};
+  \draw[flowarrow] (e1.south) -- (e1.south |- next.north);
+  \draw[flowarrow] (e5.south) -- (e5.south |- next.north);
+\end{tikzpicture}
 \end{column}
-\begin{column}{.42\textwidth}
-\small
-\head{DPA attention $\rightarrow$ TP/EP MoE}
-DPA: local requests/KV; combine rank batches for MoE.\\
-TP shards tensor computation; EP routes tokens to selected expert GPUs.\\
-TP16/EP16 + DPA: one 16-GPU replica.\\
-2$\times$TP8/EP8 + DPA: two 8-GPU replicas.
-\vspace{.14cm}\head{Fastest $\neq$ lowest energy}
-5$\times$, H$^3$ 2$\times$TP8 / HBF weights:\\
-\textbf{24,385 s}, but \textbf{52.06 MJ} vs. 37.62 MJ.
+\begin{column}{.29\textwidth}
+\footnotesize
+{\color{Accent}\bfseries TP / EP}\par
+TP: shard tensor computation.\par
+EP: route tokens to experts.
+\par\vspace{.05cm}
+{\color{Accent}\bfseries Weights stay fixed}\par
+Non-expert weights fixed per configuration.\par
+Split: hot $\rightarrow$ HBM, rest $\rightarrow$ HBF.
 \end{column}
 \end{columns}
-\vspace{.1cm}\small Shared-site: 6+2 best at 1$\times$. At 5$\times$, 4+4 takes 33,459 s vs. 39,019 s for 6+2 (\textbf{14.25\% faster}); 6+2 uses \textbf{4.01\% less energy}.
-\takeaway{Longer contexts favor HBF capacity; placement and parallelism depend on the objective.}
+\par\vspace{.02cm}
+{\footnotesize The paper models TP/EP performance but does not specify the exact per-expert tensor-to-rank mapping.}
+\takeaway{DPA partitions requests/KV for attention; MoE then redistributes token activations by expert. This sequence repeats at every layer.}
+\src{Parallelism modeling; Table 3}
+\end{frame}
 
-\src{Fig. 6; Table 6; full configurations in Backup PDF 18}
+\begin{frame}[t]{Q3: What Are the Six Points in Figure 6?}
+
+\small GLM-5.2. Figure 6 plots completion time and modeled energy for these six points only.
+\par\vspace{.12cm}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X r r r r@{}}\toprule
+Configuration &
+\multicolumn{1}{c}{\shortstack{1$\times$ Time\\(s)}} &
+\multicolumn{1}{c}{\shortstack{1$\times$ Energy\\(MJ)}} &
+\multicolumn{1}{c}{\shortstack{5$\times$ Time\\(s)}} &
+\multicolumn{1}{c}{\shortstack{5$\times$ Energy\\(MJ)}}\\\midrule
+HBM-only 8+0, TP16, HBM weights & 11,354 & 9.11 & 198,411 & 91.99\\
+H$^3$ 8+8, TP16, HBM weights & 4,543 & 7.19 & 28,279 & 37.62\\
+H$^3$ 8+8, TP16, HBF weights & 4,538 & 9.54 & 27,036 & 48.17\\
+H$^3$ 8+8, 2$\times$TP8, HBF weights & 4,204 & 10.31 & 24,385 & 52.06\\
+H$^3$ 8+8, 2$\times$TP8, Split & 4,433 & 7.79 & 25,661 & 40.89\\
+Shared-site 6+2, TP16, Split & 4,981 & 7.69 & 39,019 & 40.28\\\bottomrule
+\end{tabularx}
+\par\vspace{.1cm}
+{\footnotesize Split: selected/hot experts in HBM, remaining experts in HBF; other weights remain in HBM.}
+\takeaway{The fastest point is not the lowest-energy point, and the gap grows under the 5$\times$ long-context trace.}
+\src{Fig.\ 6; Table 6. Shared-site 2+6 and 4+4 are not plotted; full eight rows are Backup PDF 20}
+\end{frame}
+
+\begin{frame}[t]{Q3: What Improves, and What Does It Cost?}
+
+\footnotesize\setlength{\parskip}{0pt}
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.25cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{4.05cm}@{}}\toprule
+\textbf{Comparison} & \textbf{1$\times$ trace} & \textbf{5$\times$ trace} & \textbf{Interpretation}\\\midrule
+\textbf{Extra HBF capacity}\par 8+0 $\rightarrow$ H$^3$ 8+8\par TP16, HBM weights
+& Time $-59.99\%$\par Energy $\approx -21.08\%$
+& $7.02\times$ faster\par Energy $-59.10\%$
+& Long contexts make added device capacity much more valuable.\\\midrule
+\textbf{One replica vs.\ two}\par H$^3$, HBF weights\par TP16 $\rightarrow$ 2$\times$TP8
+& 4,538 $\rightarrow$ 4,204 s\par 9.54 $\rightarrow$ 10.31 MJ\par time $-7.36\%$, energy $+8.07\%$
+& 27,036 $\rightarrow$ 24,385 s\par 48.17 $\rightarrow$ 52.06 MJ\par time $-9.81\%$, energy $+8.08\%$
+& More replica-level concurrency improves completion time but increases modeled energy.\\\midrule
+\textbf{All-HBF vs.\ Split}\par H$^3$ 8+8, 2$\times$TP8
+& HBF 4,204 s / 10.31 MJ\par Split 4,433 s / 7.79 MJ
+& HBF 24,385 s / 52.06 MJ\par Split 25,661 s / 40.89 MJ
+& 1$\times$: energy $-24.50\%$, time $+5.44\%$.\par 5$\times$: 4.97\% sooner, energy $+27.31\%$.\\\midrule
+\textbf{Shared-site ratio}
+& 6+2 is best among tested shared-site configurations.
+& 4+4: 33,459 s / 41.97 MJ\par 6+2: 39,019 s / 40.28 MJ
+& 4+4 is 14.25\% faster.\par 6+2 uses 4.01\% less energy.\\\bottomrule
+\end{tabularx}
+\vspace{-6pt}
+\takeaway{5$\times$ fastest: H$^3$ 8+8, 2$\times$TP8, HBF weights, 24,385 s / 52.06 MJ.\quad 5$\times$ lowest energy: H$^3$ 8+8, TP16, HBM weights, 28,279 s / 37.62 MJ.\quad Fastest $\neq$ lowest energy.}
+\src{Table 6}
 \end{frame}
 
 \begin{frame}[t]{Where Do the Gains Come From, and What Did the Paper Prove?}
 
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}\small
+\begin{column}{.46\textwidth}\small
 More device capacity \arr larger batches\\
-\arr weight reuse $\uparrow$ \arr weight-read energy $\downarrow$\\[.14cm]
+\arr weight reuse $\uparrow$ \arr weight-read energy $\downarrow$
+\par\vspace{.2cm}
 More KV retained \arr prefix reuse $\uparrow$\\
-\arr reload / repeated prefill $\downarrow$\\[.14cm]
-\textbf{HBF itself is not lower-energy memory.}\\
-Read: HBM 3.4 vs. HBF 6.8 pJ/bit.
+\arr fewer reloads / repeated prefills
+\par\vspace{.22cm}
+\textbf{HBF itself is not lower-energy memory.}\\[.08cm]
+HBM read = 3.4 pJ/bit\\
+HBF read = 6.8 pJ/bit
 \end{column}
 \begin{column}{.50\textwidth}\small
 \begin{tabular}{@{}lrr@{}}\toprule
@@ -300,18 +391,16 @@ KV/index reads&$-13.16$&$-0.61$\\
 Avoided prefill&+20.25&0\\
 Other&+1.74&+4.58\\\midrule
 Net (\%)&\textbf{24.06}&\textbf{59.10}\\\bottomrule
-\end{tabular}\\\scriptsize H$^3$ 8+8; component rounding may differ from net.
+\end{tabular}\\[.08cm]
+\scriptsize H$^3$ 8+8; component rounding may differ from net.
 \end{column}
 \end{columns}
-\vspace{.16cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.32\textwidth}\begin{block}{1. Capacity matters}\small Expand the on-device working set for long-context throughput.\end{block}\end{column}
-\begin{column}{.32\textwidth}\begin{block}{2. Policy matters}\small Placement and buffered admission control churn and write wear.\end{block}\end{column}
-\begin{column}{.32\textwidth}\begin{block}{3. Co-design matters}\small Co-design HBF with the scheduler rather than treat it as passive overflow.\end{block}\end{column}
-\end{columns}
-\small\textbf{Simulation-based results, not production HBF hardware measurements.}
-
-\src{Table 7; Table 1; reported net values retained}
+\vfill
+\takeaway{Capacity creates the opportunity; placement and scheduling determine whether it becomes throughput and energy savings.}
+\par\vspace{.1cm}
+{\small Simulation-based characterization, not production HBF hardware measurement.}
+\par\vspace{.14cm}
+{\fontsize{7}{8}\selectfont\color{Muted}Source: Characterizing High Bandwidth Flash for LLM Serving, Table 7; Table 1; reported net values retained.\par}
 \end{frame}
 
 \appendix
@@ -389,29 +478,33 @@ Under HBM pressure, demote eligible KV before index.
 \src{sparse-attention and index-first placement descriptions}
 \end{frame}
 
-\begin{frame}[t]{TP / EP / DPA: A Four-GPU Example}
+\begin{frame}[t]{What Does the Paper Specify About TP / EP / DPA?}
 
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.47\textwidth}
-\head{DPA: attention home ranks}
-\begin{tabular}{ll}\toprule GPU0&Request A + KV$_A$\\GPU1&Request B + KV$_B$\\GPU2&Request C + KV$_C$\\GPU3&Request D + KV$_D$\\\bottomrule\end{tabular}
-\par\vspace{.12cm}\head{TP: shard one tensor computation}
-The same large tensor computation runs in shards across multiple GPUs.
+\begin{column}{.49\textwidth}
+\head{Paper specifies}
+\begin{itemize}
+\item DPA rank owns requests + KV
+\item Full MLA QKVO + indexer per attention rank
+\item Combined rank batches enter FFN/MoE
+\item Configured TP/EP layout
+\item LPLB expert balancing
+\item TP16/EP16 = one 16-GPU replica
+\item 2$\times$TP8/EP8 = two 8-GPU replicas
+\end{itemize}
 \end{column}
-\begin{column}{.50\textwidth}
-\head{EP: illustrative expert ownership}
-GPU0: E0, E1\quad GPU1: E2, E3\\
-GPU2: E4, E5\quad GPU3: E6, E7\\[.2cm]
-Request A finishes attention on GPU0.\\
-Router selects \textbf{E1 + E5}:\\[.12cm]
-E1: local on GPU0.\\
-E5: send token activation to GPU2.\\
-Return / combine expert outputs before the next attention layer.
+\begin{column}{.49\textwidth}
+\head{Paper does not specify}
+\begin{itemize}
+\item Exact expert tensor shard mapping
+\item Exact per-expert TP rank ownership
+\item Exact collective primitive for every step
+\item That every expert is necessarily 8-way or 16-way tensor-sharded
+\end{itemize}
 \end{column}
 \end{columns}
-\takeaway{Request/KV has an attention home rank; token activations temporarily move to the GPUs holding selected experts.}
-
-\src{parallelism description; illustrative 4-GPU example, not an evaluated configuration}
+\takeaway{Treat TP/EP here as a performance-model abstraction unless the paper explicitly specifies the physical mapping.}
+\src{parallelism modeling}
 \end{frame}
 
 \begin{frame}[t]{Does the Paper Dynamically Swap Experts?}
