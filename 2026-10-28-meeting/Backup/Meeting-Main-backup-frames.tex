@@ -1,0 +1,584 @@
+% Meeting-Main backup frames. Not used by the 10-minute review.
+% Native frames keep their original wording. PDF frames are pages of the reference decks.
+
+\bnav{1/38}{\bnext{mm_hx_maxflow_02}\bsep \bret{main_hx_how}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_maxflow_01]{Max-Flow Graph Abstraction}
+
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.46\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.08cm}
+        \item Each compute node becomes \(c^{\mathrm{in}}\rightarrow c^{\mathrm{out}}\).
+        \item The coordinator becomes the source and the sink.
+        \item An edge capacity is how many tokens may cross it per second.
+        \item Max flow from source to sink is the serving throughput of this placement.
+      \end{itemize}}
+      \vspace{.08cm}\takeaway{The graph is an accounting device for one fixed placement.}
+    \end{column}
+    \begin{column}{.52\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_02_Max_Flow_Graph_Abstraction.png}{5.15cm}{Figure 2}
+      {\centering\hint{Fig.~2. Capacities are tokens/s.}\par}
+    \end{column}
+  \end{columns}
+  \src{Sec.~4.3, Fig.~2. PDF p.~4.}
+\end{frame}
+
+\bnav{2/38}{\bprev{mm_hx_maxflow_01}\bsep \bret{main_hx_how}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_maxflow_02]{Why Max Flow Represents Serving Throughput}
+
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item One unit of flow is one token that can pass a node or a link in one second.
+    \item Conservation forces tokens into \(c^{\mathrm{in}}\) to leave through \(c^{\mathrm{out}}\).
+    \item Helix computes the source--sink max flow with preflow-push. That value is the placement's max serving throughput.
+    \item The model is a steady token rate. It does not output prompt latency, decode latency, or a percentile.
+    \item A later early-stop bound is the sum of node compute rates, divided by the number of layers.
+  \end{itemize}
+  \vspace{.08cm}\takeaway{Max flow answers ``how many tokens/s can this placement carry?'' It is not a latency model.}
+  \src{Sec.~4.3 and the early-stop remark in Sec.~4.5.}
+\end{frame}
+
+\bnav{3/38}{\bret{main_hx_why}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_compute_01]{Modeling Compute Capacity}
+
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.04cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{NODE EDGE}{\(c^{\mathrm{in}}\rightarrow c^{\mathrm{out}}\)}{Capacity is the minimum of profiled compute throughput and the node's network throughput.}
+      \vspace{.04cm}
+      \stepcard{PROFILING}{Once per node}{Helix measures throughput rather than using the datasheet TFLOP/s from Table 3.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{LAYER COUNT}{\(T_j\) tokens/s}{\(T_j\) is the profiled rate when that node holds \(j\) layers. It becomes the MILP compute limit.}
+      \vspace{.04cm}
+      \stepcard{NOT A GPU}{Source and sink}{The coordinator injects tokens and collects tokens. It is not given a compute edge.}
+    \end{column}
+  \end{columns}
+  \vspace{.04cm}\takeaway{Compute capacity is a profiled token rate, and it already takes the node's network limit into account.}
+  \src{Sec.~4.3. \(T_j\) is defined with Constraint~3 in Sec.~4.4.}
+\end{frame}
+
+\bnav{4/38}{\bret{main_hx_why}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_network_01]{Modeling Network Capacity}
+
+  \smalllabel{Helix / Formulation}\par
+  \vspace{.08cm}
+  {\footnotesize A link is valid only in one of three cases:}\par
+  \vspace{.08cm}
+  \begin{enumerate}\footnotesize
+    \setlength{\itemsep}{.10cm}
+    \item Coordinator \(\rightarrow\) a node that holds the first layer. Payload is a token (Fig.~2 uses 4 bytes).
+    \item A node that holds the last layer \(\rightarrow\) coordinator. Payload is again a token.
+    \item Node \(i\rightarrow\) node \(j\) when \(j\) holds the layers needed immediately after \(i\). Payload is an activation (Fig.~2 uses 16 KB).
+  \end{enumerate}
+  \vspace{.08cm}
+  \[
+    \text{capacity (tokens/s)}=\frac{\text{profiled average bandwidth}}{\text{bytes per token or activation}}.
+  \]
+  {\footnotesize The formula is the paper's rule. The byte sizes above are the Fig.~2 annotations, not universal constants.}\par
+  \vspace{.12cm}\takeaway{Activations cost far more tokens of budget than the final output token, so wide-area links saturate first.}
+  \src{Sec.~4.3. Bandwidth is a one-time average, not a runtime measurement.}
+\end{frame}
+
+\bnav{5/38}{\bnext{mm_hx_milp_02}\bsep \bret{main_hx_how}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_milp_01]{MILP Variables and Objective}
+
+  \smalllabel{Helix / MILP}\par
+  \vspace{.06cm}
+  {\centering\footnotesize
+  \begin{tabular}{lll}\toprule
+    Symbol & Role & Meaning\\\midrule
+    \(s_i\) & integer & first layer on node \(i\)\\
+    \(b_{ij}\) & binary & node \(i\) holds exactly \(j\) layers\\
+    \(f_{i,j}\) & real & flow from \(i\) to \(j\), in tokens/s\\
+    \(d_{i,j}\) & binary & whether link \((i,j)\) is valid\\
+    \(\mathit{cond}\) & binary & auxiliaries that linearize overlap\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.08cm}
+  {\footnotesize \(e_i=s_i+\sum_j j\,b_{ij}\). Node \(i\) holds the half-open range \([s_i,e_i)\). \(k\) is the most layers that fit on that GPU.}\par
+  \vspace{.06cm}
+  \[
+    \max \sum_i f_{\mathrm{source},i}
+  \]
+  \vspace{.08cm}\takeaway{The objective maximizes coordinator outflow. Table 5 groups the variable counts as linear in \(|C|\) or \(|E|\).}
+  \src{Sec.~4.4, Tables 5--6. Notation here is compacted from the paper.}
+\end{frame}
+
+\bnav{6/38}{\bprev{mm_hx_milp_01}\bsep \bnext{mm_hx_milp_03}\bsep \bret{main_hx_how}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_milp_02]{Placement and Memory Constraints}
+
+  \smalllabel{Helix / MILP}\par
+  \vspace{.10cm}
+  \[
+    \sum_{j=1}^{k} b_{ij}=1,
+    \qquad 0\le s_i<L,
+    \qquad e_i\le L.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.07cm}
+    \item Exactly one layer-count is chosen. The range must lie inside the model's \(L\) layers.
+    \item Memory enters as \(k\), the maximum number of layers the GPU can hold. Table 6 has no KV-byte variable.
+    \item If \(s_j<e_i<e_j\), traffic from \(i\) runs only layers \([e_i,e_j)\) on \(j\). The paper calls this partial inference.
+    \item The solver may be run with partial inference disabled. Then a link is valid only when \(e_i=s_j\).
+  \end{itemize}
+  \vspace{.12cm}\takeaway{GPU memory limits how many layers are placed. KV capacity is enforced later, at schedule time.}
+  \src{Sec.~4.4, Constraint~1, and the partial-inference remark.}
+\end{frame}
+
+\bnav{7/38}{\bprev{mm_hx_milp_02}\bsep \bret{main_hx_how}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_milp_03]{Flow and Compute Constraints}
+
+  \smalllabel{Helix / MILP}\par
+  \vspace{.12cm}
+  {\footnotesize\textbf{Constraint 2: conservation at node \(i\).}}\par
+  \[
+    \sum_u f_{u,i}=\sum_v f_{i,v}.
+  \]
+  {\footnotesize\textbf{Constraint 3: profiled inference throughput.}}\par
+  \[
+    \sum_u f_{u,i}\le \sum_{j=1}^{k} b_{ij}\,T_j.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.04cm}
+    \item \(T_j\) is a profiled constant: tokens per second when this node holds \(j\) layers.
+    \item The binaries \(b_{ij}\) pick exactly one of those profiled rates.
+    \item Flow is still also limited by the network edges on the next slide.
+  \end{itemize}
+  \vspace{.02cm}\takeaway{A node cannot be assigned more token flow than the profiled rate for the layer count it actually holds.}
+  \src{Sec.~4.4, Constraints 2--3. Sums skip node \(i\) itself, as stated in the paper.}
+\end{frame}
+
+\bnav{8/38}{\bret{main_hx_q2}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_netcon_01]{Connectivity and Network Constraints}
+
+  \smalllabel{Helix / MILP}\par
+  \vspace{.06cm}
+  {\footnotesize\textbf{Constraint 4, compacted.} A coordinator link into \(i\) exists only if \(i\) holds the first layer:}\par
+  \[
+    s_i\le L\,(1-d_{\mathrm{source},i}).
+    \qquad
+    L\,d_{i,\mathrm{sink}}\le e_i.
+  \]
+  {\footnotesize Between compute nodes, \(d_{ij}=1\) only if \(s_j\le e_i<e_j\). Two auxiliary binaries linearize that test, and \(d_{ij}\le 0.5\,\mathit{cond}^{1}+0.5\,\mathit{cond}^{2}\).}\par
+  \vspace{.06cm}
+  {\footnotesize\textbf{Constraint 5: transmission throughput.}}\par
+  \[
+    f_{ij}\le d_{ij}\,S_{ij}.
+  \]
+  {\footnotesize \(S_{ij}\) is the profiled token rate of that link, from Sec.~4.3. Invalid links carry zero flow.}\par
+  \vspace{.10cm}\takeaway{Routing variables cannot use a hop that the layer ranges do not justify.}
+  \src{Sec.~4.4, Constraints 4--5. The two-auxiliary form is the paper's linearization.}
+\end{frame}
+
+\bnav{9/38}{\bret{main_hx_how}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_iwrr_01]{Converting Max-Flow Weights into Scheduling}
+
+  \smalllabel{Helix / Runtime}\par
+  \vspace{.02cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{IWRR}{Interleaved weighted round-robin}{Each vertex has a scheduler. A neighbor's weight is the max-flow value on that outgoing edge.}
+      \vspace{.01cm}
+      \stepcard{WHY INTERLEAVE}{Avoid bursts}{Frequency follows the weight, but choices are interleaved so one heavy edge is not drained in a burst.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{THE WALK}{Coordinator, then each node}{Pick stage 1 from the coordinator. Pick stage 2 from that node's scheduler. Stop when the path is complete.}
+      \vspace{.01cm}
+      \stepcard{MASK}{Before the walk}{Nodes over the KV high-water mark are removed from the candidate list. This avoids scheduling onto a full KV cache.}
+    \end{column}
+  \end{columns}
+  \takeaway{The MILP decides the rates. IWRR is the online rule that realizes those rates.}
+  \src{Sec.~5.1. IWRR follows Tabatabaee et al.\ as cited by the paper.}
+\end{frame}
+
+\bnav{10/38}{\bret{main_hx_how}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_pipe_01]{Pipeline Scheduling Example}
+
+  \smalllabel{Helix / Runtime}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.46\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.07cm}
+        \item Vertices are compute nodes. An edge exists only if the MILP placement made it valid.
+        \item The number on an edge is flow in the max-flow solution, not link capacity.
+        \item The figure's two example pipelines are \(1\rightarrow 5\rightarrow 9\) and \(2\rightarrow 6\rightarrow 8\).
+        \item Those paths can share the cluster. They are not two frozen replicas.
+      \end{itemize}}
+      \vspace{.12cm}\takeaway{Read the integers as scheduled token rates, then read the paths as two requests.}
+    \end{column}
+    \begin{column}{.52\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_04_Per_Request_Pipeline_Scheduling.png}{4.85cm}{Figure 4}
+    \end{column}
+  \end{columns}
+  \src{Sec.~5.1, Fig.~4. PDF p.~8.}
+\end{frame}
+
+\bnav{11/38}{\bret{main_hx_q1}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_hetero_01]{High GPU-Heterogeneity Results}
+
+  \smalllabel{Helix / Results}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.09cm}
+        \item Simulator, LLaMA 70B, 42 nodes, 7 types. V100, T4, and \(2\times\)T4 cannot form a pipeline alone.
+        \item SP drops those machines. SP+ adds a mixed pipeline that uses them.
+        \item Vs.\ Swarm / SP / SP+, offline throughput is \(1.37\times\), \(2.91\times\), \(2.24\times\).
+        \item Online: \(1.48\times\), \(3.29\times\), \(2.54\times\). Prompt latency changes by \(-17\%\), \(-1\%\), \(-7\%\).
+        \item Helix's decode latency is slightly higher: baselines leave slow GPUs idle.
+      \end{itemize}}
+      \vspace{.10cm}\takeaway{The abstract's \(3.3\times\) is the \(3.29\times\) online gain versus SP, rounded.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_08_High_GPU_Heterogeneity_Results.png}{4.70cm}{Figure 8}
+    \end{column}
+  \end{columns}
+  \src{Sec.~6.5, Fig.~8. PDF p.~10. Not a prototype measurement.}
+\end{frame}
+
+\bnav{12/38}{\bnext{mm_hx_milpabl_02}\bsep \bret{main_hx_q3}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_milpabl_01]{MILP Optimization Ablation}
+
+  \smalllabel{Helix / Ablation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.46\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.09cm}
+        \item Offline LLaMA 70B. 24-node is the geo setup; 42-node is the high-heterogeneity setup.
+        \item Degree-12 pruning drops 50\% and 72\% of the links, and 36\% and 46\% of the problem size.
+        \item With pruning, decode throughput is 16\% and 2\% higher. The paper attributes this to an easier search under a time limit.
+        \item Warm start finds the same placement, in 43\% and 8\% less wall time.
+      \end{itemize}}
+    \end{column}
+    \begin{column}{.52\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_11_MILP_Optimization_Ablation.png}{3.15cm}{Figure 11}
+      {\centering\scriptsize
+      \begin{tabular}{lcc}\toprule
+        & With pruning & Without\\\midrule
+        24-node & 876 var, 1122 cstr & 1376 var, 1848 cstr\\
+        42-node & 2144 var, 2772 cstr & 4004 var, 5502 cstr\\\bottomrule
+      \end{tabular}\par}
+    \end{column}
+  \end{columns}
+  \vspace{.10cm}\takeaway{Pruning changes the search problem. It is not a proof that the deleted links were useless.}
+  \src{Sec.~6.8, Fig.~11, Table 8. PDF p.~12. Speedups vary by instance, as the paper notes.}
+\end{frame}
+
+\bnav{13/38}{\bprev{mm_hx_milpabl_01}\bsep \bret{main_hx_q3}\bsep \bidx}
+\begin{frame}[t,label=mm_hx_milpabl_02]{Solver Time and Solution Quality}
+
+  \smalllabel{Helix / Ablation}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.07cm}
+        \item Instance: LLaMA 30B on 4 L4s and 6 T4s. This is smaller than the 24- and 42-node runs.
+        \item The best feasible placement reaches the optimum in under 5 minutes.
+        \item Certifying that optimum takes more than an hour of branch-and-bound.
+        \item The red dotted line is that cluster's optimal throughput. The upper bound tightens as cuts are added.
+      \end{itemize}}
+      \vspace{.12cm}\takeaway{Early stop is reasonable here. Fig.~12 does not certify the 42-node plan.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Helix/Helix_Figure_12_MILP_Solution_Quality.png}{4.85cm}{Figure 12}
+    \end{column}
+  \end{columns}
+  \src{Sec.~6.9, Fig.~12. PDF p.~13.}
+\end{frame}
+
+\begin{frame}[plain,label=mm_hx_eval_01]
+\backupcanvas{26}{\backuppdfHelix}{14/38}{\bret{main_hx_q1}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_hx_work_01]
+\backupcanvas{27}{\backuppdfHelix}{15/38}{\bret{main_hx_q1}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_hx_single_01]
+\backupcanvas{28}{\backuppdfHelix}{16/38}{\bret{main_hx_q1}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_hx_geo_01]
+\backupcanvas{29}{\backuppdfHelix}{17/38}{\bret{main_hx_q2}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_hx_place_01]
+\backupcanvas{31}{\backuppdfHelix}{18/38}{\bret{main_hx_q3}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_hx_scheddeep_01]
+\backupcanvas{32}{\backuppdfHelix}{19/38}{\bret{main_hx_q3}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_ts_kern_01]
+\backupcanvas{6}{\backuppdfTessera}{20/38}{\bret{main_ts_why}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_ts_phase_01]
+\backupcanvas{7}{\backuppdfTessera}{21/38}{\bret{main_ts_why}\bsep \bidx}
+\end{frame}
+
+\bnav{22/38}{\bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_ptx_01]{PTX Instrumentation and Address Ranges}
+
+  \smalllabel{Tessera / Analyzer}\par
+  \vspace{.08cm}
+  \begin{enumerate}\footnotesize
+    \setlength{\itemsep}{.07cm}
+    \item Add an instrumentation buffer to the kernel parameters and load it with \texttt{ld.param}.
+    \item Around each \texttt{ld.global} / \texttt{st.global}, emit \texttt{atom.global.min} and \texttt{atom.global.max} so threads agree on one range.
+    \item After the launch, align each instruction's \([\min,\max]\) interval with buffer base addresses. The opcode says read or write.
+    \item Recompile the patched PTX with \texttt{ptxas}. The probe engine is built on NEUTRINO.
+  \end{enumerate}
+  \vspace{.06cm}
+  {\footnotesize If a kernel touches a global that is not a launch argument, the base address is unknown. Tessera then refuses to disaggregate that kernel. The paper cites a study that this pattern is absent in PyTorch and vLLM, and present in one Rodinia kernel.}\par
+  \vspace{.05cm}\takeaway{The analyzer records touched address ranges. It does not reconstruct a kernel's arithmetic.}
+  \src{Sec.~III-A and Sec.~IV. Listing 1 is the paper's instrumentation sketch.}
+\end{frame}
+
+\bnav{23/38}{\bnext{mm_ts_raw_02}\bsep \bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_raw_01]{Extracting RAW Dependencies}
+
+  \smalllabel{Tessera / Analyzer}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item Execution order is preserved, so only Read-After-Write edges can change the result. WAR and WAW are not the edges Tessera schedules.
+    \item A registry stores the last writer of each buffer. A later reader adds an edge from that writer, annotated with the measured byte size.
+    \item Asynchronous copies are nodes too. Their source, destination, and size come from the API.
+    \item One CUDA graph gets one dependency graph. Dynamic shapes become several graphs, not one graph with a runtime branch.
+    \item Frameworks without CUDA Graph can record a trace and replay it under stream capture. That tool is preprocessing, not the online scheduler.
+  \end{itemize}
+  \vspace{.12cm}\takeaway{The graph is a static RAW graph per captured execution, plus the byte size of each edge.}
+  \src{Sec.~III-A. ``DDG'' is the paper's term for this graph.}
+\end{frame}
+
+\bnav{24/38}{\bprev{mm_ts_raw_01}\bsep \bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_raw_02]{Cross-Iteration Dependencies and KV State}
+
+  \smalllabel{Tessera / Analyzer}\par
+  \vspace{.10cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item The default graph is intra-iteration. KV cache is written in one iteration and read in a later one.
+    \item The analyzer flags those buffers by profiling more than one iteration.
+    \item At runtime each GPU keeps a replica. Only the delta is copied, asynchronously.
+    \item Two NCCL communicators separate this background copy from the latency-critical cut-edge transfers. Dependency traffic gets the higher class.
+    \item The paper says delta replication is under 0.1\% of latency, citing prior prefill/decode work rather than a new Tessera measurement.
+  \end{itemize}
+  \vspace{.12cm}\takeaway{KV state is replicated and updated in the background. It is not a cut edge on the per-iteration critical path.}
+  \src{Sec.~III-A and Sec.~IV. The 0.1\% figure is attributed to prior work [9], [10].}
+\end{frame}
+
+\bnav{25/38}{\bnext{mm_ts_plan_02}\bsep \bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_plan_01]{Offline Throughput-Oriented MILP}
+
+  \smalllabel{Tessera / Planner}\par
+  \vspace{.08cm}
+  \[
+    \sum_{g\in G} x_{k,g}=1,
+    \qquad
+    T_g=\sum_{k\in K} t_{k,g}\,x_{k,g},
+    \qquad
+    W_g=\max(T_g,M_g),
+    \qquad
+    \min \max_{g\in G} W_g.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.10cm}
+    \item \(T_g\) is compute time on GPU \(g\). \(M_g\), on the next slide, is communication time into \(g\).
+    \item \(W_g\) is the slower of the two. Steady-state throughput is then one request per \(\max_g W_g\).
+    \item This is the offline objective. It is the wrong objective when too few requests are in flight to hide transfers.
+    \item Gurobi solves it offline. A reported case, GPT-oss 20B on A100+L40s, has about 500 kernels and finishes one graph in about 20 ms.
+  \end{itemize}
+  \vspace{.10cm}\takeaway{The MILP balances GPUs by minimizing the slowest stage. It does not maximize a sum of kernel speeds.}
+  \src{Sec.~III-B. The 20 ms figure is for \(|G|=2\), \(|K|\approx 500\); all patterns take about 5 s.}
+\end{frame}
+
+\bnav{26/38}{\bprev{mm_ts_plan_01}\bsep \bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_plan_02]{Communication and Load-Balancing Constraints}
+
+  \smalllabel{Tessera / Planner}\par
+  \vspace{.06cm}
+  \[
+    c^{u,g}_{ij}=\ell_{u,g}+\frac{d_{ij}}{bw_{u,g}},
+    \qquad
+    M_g=\sum_{(i,j)\in E}\sum_{u\in G\setminus\{g\}} c^{u,g}_{ij}\,y^{u,g}_{ij}.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.10cm}
+    \item \(y^{u,g}_{ij}=x_{i,u}x_{j,g}\) is 1 when the producer is on \(u\) and the consumer is on \(g\). The product is linearized with the standard Boolean replacement.
+    \item Load balance is not a separate variance constraint. Minimizing \(\max_g W_g\) already penalizes the busiest GPU.
+    \item Per-GPU memory capacity is absent. At initialization every GPU receives a full copy of the weights.
+    \item Offline, once the policy is fixed, unused weight buffers can be reclaimed. The paper does not report that reclamation in the evaluation tables.
+  \end{itemize}
+  \vspace{.10cm}\takeaway{Communication is bytes over profiled bandwidth, plus a base latency. Memory is a runtime caveat, not a constraint.}
+  \src{Sec.~III-B and Sec.~IV. Linearization cites Nemhauser and Wolsey.}
+\end{frame}
+
+\bnav{27/38}{\bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_lat_01]{Online Latency-Oriented Scheduling}
+
+  \smalllabel{Tessera / Planner}\par
+  \vspace{.08cm}
+  {\footnotesize Under low load the pipeline cannot hide transfers. The objective adds kernel time and cut-edge transfer time:}\par
+  \[
+    \min \sum_{k,g} t_{k,g}x_{k,g}
+    +\sum_{(i,j)}\sum_{u}\sum_{g\neq u} c^{u,g}_{ij}\,y^{u,g}_{ij}.
+  \]
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.09cm}
+    \item There is no \(\max(T,M)\) here. Overlap is not assumed.
+    \item The same Gurobi solve is offline. Workers only look up the stored policy.
+    \item If communication is expensive, this objective keeps dependent kernels on the same GPU. Fig.~11 shows that behavior at 25 Gb/s.
+  \end{itemize}
+  \vspace{.10cm}\takeaway{Latency mode shortens one request's critical path. It is not the throughput MILP with a different label.}
+  \src{Sec.~III-B. The sum is the paper's low-load decomposition, compacted for the slide.}
+\end{frame}
+
+\bnav{28/38}{\bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_worker_01]{GPU Worker Execution}
+
+  \smalllabel{Tessera / Execution}\par
+  \vspace{.02cm}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.48\textwidth}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.09cm}
+        \item Fig.~5 is GPU B from the six-kernel example. Compute and communication use different streams.
+        \item \(R_{ij}\) receives kernel \(i\)'s output for kernel \(j\). \(S_{ij}\) sends it. CUDA events order the two streams.
+        \item Receives are posted before the consumer kernel. Sends are posted after the producer if the edge is cut.
+        \item Sends and receives are GPU-side kernels via NCCL's GPUDirect Async (IBGDA), so the CPU is not on the critical path.
+      \end{itemize}}
+      \vspace{.10cm}\takeaway{A worker runs its own kernels and the cut-edge messages. It does not run the whole model.}
+    \end{column}
+    \begin{column}{.50\textwidth}
+      \figureplaceholder{Tessera/Tessera_Figure_05_GPU_Worker_Execution.png}{4.15cm}{Figure 5}
+    \end{column}
+  \end{columns}
+  \src{Sec.~III-C, Fig.~5. PDF p.~6.}
+\end{frame}
+
+\bnav{29/38}{\bnext{mm_ts_mon_02}\bsep \bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_mon_01]{Online Monitor Signals}
+
+  \smalllabel{Tessera / Runtime}\par
+  \vspace{.04cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.01cm}
+    \item The monitor records per-request latency, communication time, and per-kernel-group latency.
+    \item A kernel group is the run of kernels between two consecutive communication operations. Individual kernels are not timed online.
+    \item \(\bar L_{\mathrm{req}}\) is average end-to-end request latency. \(\bar L_{\mathrm{exec}}\) sums compute and communication and excludes queueing.
+    \item The pressure signal is the ratio \(\bar L_{\mathrm{req}}/\bar L_{\mathrm{exec}}\).
+    \item A low ratio means little queueing, so the latency policy is preferred. A high ratio means queueing dominates, so the throughput policy is preferred.
+  \end{itemize}
+  \vspace{.02cm}\takeaway{The switch looks at queueing pressure, not at a hand-named GPU counter.}
+  \src{Sec.~III-D. Kernel group is the paper's definition.}
+\end{frame}
+
+\bnav{30/38}{\bprev{mm_ts_mon_01}\bsep \bret{main_ts_how}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_mon_02]{Policy Switching and Sensitivity Parameters}
+
+  \smalllabel{Tessera / Runtime}\par
+  \vspace{.02cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      \stepcard{WINDOW \(W\)}{How often to decide}{The ratio is computed at window boundaries. The chosen defaults are \(W=300\) ms and \(\beta=1.5\).}
+      \stepcard{THRESHOLD \(\beta\)}{When queueing wins}{Crossing \(\beta\) selects the throughput policy. Staying below it selects the latency policy.}
+    \end{column}
+    \begin{column}{.49\textwidth}
+      \stepcard{SWITCH COST}{About 30 ms}{Workers synchronize on an iteration boundary. The 30 ms is the paper's reported stall, not a bound.}
+      \stepcard{WHERE IT WAS TUNED}{One trace}{GPT-oss 20B, 360 s of the Azure Conversation trace. Fig.~10 is the sensitivity plot.}
+    \end{column}
+  \end{columns}
+  \takeaway{\(W\) and \(\beta\) are the only two knobs the paper names. Aggressive and lazy settings both increase latency.}
+  \src{Sec.~III-D and Sec.~V-D. Sensitivity measurements are in Fig.~10 of the paper.}
+\end{frame}
+
+\bnav{31/38}{\bret{main_ts_q3}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_net_01]{Network Bandwidth and MILP Analysis}
+
+  \smalllabel{Tessera / Drill-down}\par
+  \vspace{.02cm}
+  \figureplaceholder{Tessera/Tessera_Figure_11_Network_Bandwidth_and_MILP.png}{2.05cm}{Figure 11}
+  {\centering\hint{Fig.~11. (a) GPT-oss 20B, A100+L40s. (b) Gurobi time vs.\ kernels per graph.}\par}
+  \vspace{.02cm}
+  {\footnotesize\textbf{(a)} Throughput at 200 / 100 / 50 / 25 Gb/s: 2641 / 2610 / 2550 / 2490 tokens/s. The 25 Gb/s drop is under 6\%. Normalized latency: 1.00 / 1.03 / 1.08 / 1.15, still below the homogeneous A100 line at 1.18.}\par
+  \vspace{.02cm}
+  {\footnotesize\textbf{(b)} Text, 2 GPUs: 0.07 s at 200 kernels and 0.43 s at 1000 kernels. A DeepSeek-V3 671B forward graph of about 1500 kernels solves within 1 s. That is a solver stress test, not a serving result. Time grows with the number of GPU types; repeated layers are solved once.}\par
+  \vspace{.08cm}\takeaway{At 25 Gb/s the offline pipeline still hides most of the extra delay. The latency policy moves work off the slow cut.}
+  \src{Sec.~V-D, Fig.~11. PDF p.~10. Do not read panel (b) as an end-to-end DeepSeek result.}
+\end{frame}
+
+\bnav{32/38}{\bret{main_ts_q1}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_cost_01]{Cost Efficiency of Heterogeneous Pairing}
+
+  \smalllabel{Tessera / Results}\par
+  \vspace{.06cm}
+  {\footnotesize\textbf{Table III.} Perf/\$: mean throughput over the five workloads, divided by rental cost, then normalized to the left GPU alone. A pair pays for both GPUs.}\par
+  \vspace{.05cm}
+  {\centering\footnotesize
+  \begin{tabular}{lccc}\toprule
+    System & A100+L40s & H100+RTX Pro 6000 & B200+H100\\\midrule
+    Homogeneous left & 1.00 & 1.00 & 1.00\\
+    Homogeneous right & 1.18 & 2.01 & 0.78\\
+    PD disaggregation & 0.87 & 1.00 & 0.70\\
+    AF disaggregation & 1.02 & 1.07 & 0.74\\
+    Tessera & 1.21 & 1.64 & 1.01\\\bottomrule
+  \end{tabular}\par}
+  \vspace{.06cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.08cm}
+    \item Vs.\ PD: \(1.5\times\) cost efficiency on average, up to \(1.6\times\). Vs.\ AF: \(1.4\times\) on average, up to \(1.5\times\).
+    \item On H100+RTX Pro 6000, Tessera is \(1.64\times\) the Perf/\$ of H100 alone and \(2.3\times\) its throughput, above two H100s, at price \(2.9+1.2\) versus \(2\times 2.9\).
+  \end{itemize}
+  \vspace{.10cm}\takeaway{The pair can beat a single expensive GPU on Perf/\$. The prices are Table I's relative rentals, not a new quote.}
+  \src{Sec.~V-B, Table III. The \(2.3\times\) sentence is the cost-efficiency paragraph, not the PD maximum.}
+\end{frame}
+
+\bnav{33/38}{\bret{main_ts_q1}\bsep \bidx}
+\begin{frame}[t,label=mm_ts_gen_01]{Generality Across Model Families}
+
+  \smalllabel{Tessera / Results}\par
+  \vspace{.06cm}
+  {\centering\footnotesize
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.3cm}*{2}{>{\raggedright\arraybackslash}X}@{}}\toprule
+    What was run & Models & What it does not show\\\midrule
+    Offline pairs & Llama-3 8B, GPT-oss 20B, Qwen2.5-VL 7B, Mamba-Codestral 7B, SD 3.5 & PD or AF is inapplicable on some families\\
+    Online SLO & GPT-oss 20B only & Latency for SSM, MLLM, or diffusion\\
+    Cluster, offline & GPT-oss 20B and Qwen-3 235B & The single-pair Fig.~6 suite\\
+    Solver stress test & DeepSeek-V3 671B, one forward graph & End-to-end serving\\\bottomrule
+  \end{tabularx}\par}
+  \vspace{.08cm}
+  \begin{itemize}\footnotesize
+    \setlength{\itemsep}{.09cm}
+    \item AF needs an attention block, so Mamba and diffusion are out. PD needs a prefill/decode split, so diffusion is out.
+    \item The motivation profiles say ``Mamba 7B''; the evaluated SSM is Mamba-Codestral 7B. Do not merge the two names.
+  \end{itemize}
+  \vspace{.12cm}\takeaway{``Four families'' means the offline pair study. Online evidence is one LLM.}
+  \src{Sec.~II-B, Sec.~V-A--V-D. DeepSeek-V3 is the solver paragraph in Sec.~V-D.}
+\end{frame}
+
+\begin{frame}[plain,label=mm_ts_backend_01]
+\backupcanvas{25}{\backuppdfTessera}{34/38}{\bret{main_ts_q3}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_ts_eval_01]
+\backupcanvas{26}{\backuppdfTessera}{35/38}{\bret{main_ts_q1}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_ts_off_01]
+\backupcanvas{27}{\backuppdfTessera}{36/38}{\bret{main_ts_q1}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_ts_on_01]
+\backupcanvas{28}{\backuppdfTessera}{37/38}{\bret{main_ts_q2}\bsep \bidx}
+\end{frame}
+
+\begin{frame}[plain,label=mm_ts_pipe_01]
+\backupcanvas{30}{\backuppdfTessera}{38/38}{\bret{main_ts_q3}\bsep \bidx}
+\end{frame}
+

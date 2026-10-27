@@ -8,7 +8,7 @@ Meeting 日期是 **2026-10-28（Wednesday）**。正式報告規劃 **30 分鐘
 | Helix + Tessera | 10 + 10 min planned | Main deck。講稿仍是原來的口述時間，約 17.2 分鐘，沒有改切成 10 分鐘 |
 | Additional HBF papers | Extra 10 min | Separate decks kept. Not counted in the 30 minutes |
 
-`2026-10-28-Meeting-Main.tex` 是 **13 張 main slides** 加上 25 頁 appendix，PDF 共 **38 頁**。口述預算是 **17.5 分鐘**（封面 0.3 + Helix／Tessera 17.2）。10 分鐘 Review 另計，不加進這 17.5 分鐘。兩份若接連報告，合計約 27.5 分鐘，仍比 30 分鐘少約 2.5 分鐘；沒有為了補時間加長內容。頁腳 `Main n/13` 才算 Main 的正式報告。
+`2026-10-28-Meeting-Main.tex` 是 **13 張 main slides** 加上 Backup Topics 與 38 張詳細頁，PDF 共 **52 頁**。口述預算是 **17.5 分鐘**（封面 0.3 + Helix／Tessera 17.2）。10 分鐘 Review 另計，不加進這 17.5 分鐘。兩份若接連報告，合計約 27.5 分鐘，仍比 30 分鐘少約 2.5 分鐘；沒有為了補時間加長內容。頁腳 `Main n/13` 才算 Main 的正式報告。詳細頁不計入這 13 頁。
 
 `2026-10-28-Helix.tex` 與 `2026-10-28-Tessera.tex` 仍是完整 reference / Q&A backup，各 **38 頁**。
 
@@ -20,7 +20,7 @@ ThunderServe 事實來源是 `../2026-10-21-meeting/MLSys25_Thunderserve.pdf`。
 
 | 用途 | 簡報 | 講稿 | 頁數 |
 |---|---|---|---|
-| Main deck | `2026-10-28-Meeting-Main.tex` | `Meeting-Main_scripts.md` | 13 main + 25 backup，共 38 頁 |
+| Main deck | `2026-10-28-Meeting-Main.tex` | `Meeting-Main_scripts.md` | 13 main + Backup Topics + 38 詳細頁，共 52 頁。頁碼 `Main n/13` |
 | 10 分鐘 Review | `2026-10-28-10min-Review.tex` | `2026-10-28-10min-Review_scripts.md` | 正式 12 頁，頁碼 `n/12`。第 13 頁起是 Q&A backup |
 
 - Main PDF：`output/pdf/2026-10-28-Meeting-Main.pdf`
@@ -29,6 +29,7 @@ ThunderServe 事實來源是 `../2026-10-21-meeting/MLSys25_Thunderserve.pdf`。
 - Review Overleaf：`output/overleaf/10min-Review.zip`
 - Main 頁腳 `Main n/13`；Review 頁腳是自己的 `n/12`。第 02 頁是 28 Oct 的報告時間軸。
 - 講稿 `## 第 XX 頁` 對齊 PDF 實際頁碼。
+- Main 的 Backup Topics 在 PDF 第 14 頁，詳細頁是第 15–52 頁。主題對照在 `Backup/Meeting-Main-backup-map.md`。檢查連結：`python3 scripts/verify_meeting_main_links.py`。這份檔案和 10 分鐘 Review 的 `Backup/backup-*.tex` 分開，不要互相覆寫。
 
 ```bash
 pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-Meeting-Main.tex
