@@ -1,6 +1,6 @@
 # Tessera 中文講稿
 
-這是獨立簡報，對應 `2026-10-27-Tessera.tex`。投影片頁腳與下方講稿頁碼完全一致。
+這是獨立簡報，對應 `2026-10-28-Tessera.tex`。投影片頁腳與下方講稿頁碼完全一致。
 
 依據為本地 `Arxiv26_Tessera.pdf`，標題為 *Tessera: Unlocking Heterogeneous GPUs through Kernel-Granularity Disaggregation*，Hu 等人，arXiv:2604.10180v2，2026-07-09。以下「PDF 第幾頁」指這份論文的檔案頁碼。系統名稱只用 Tessera。可直接口述正文；公式若經過整理，會在該頁註明。
 

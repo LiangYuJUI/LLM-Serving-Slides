@@ -1,6 +1,6 @@
 # Helix 中文講稿
 
-這是獨立簡報，對應 `2026-10-27-Helix.tex`。投影片頁腳與下方講稿頁碼完全一致。
+這是獨立簡報，對應 `2026-10-28-Helix.tex`。投影片頁腳與下方講稿頁碼完全一致。
 
 依據為本地 `ASPLOS25_Helix.pdf`，標題為 *Helix: Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow*，Mei 等人，ASPLOS 2025。以下「PDF 第幾頁」指這份論文的檔案頁碼。可直接口述正文；「來源」與「備註」供準備時查閱。公式若經過整理，會在該頁註明，不把它說成逐字抄錄。
 

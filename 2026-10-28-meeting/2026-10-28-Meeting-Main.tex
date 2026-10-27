@@ -1,4 +1,4 @@
-% Standalone Helix: 27 Oct 2026 Research Meeting
+% Standalone Helix: 28 Oct 2026 Research Meeting
 % Visual style follows the 21 Oct 2026 light Madrid decks.
 % Facts are taken from the local ASPLOS '25 PDF only.
 % Compile with pdfLaTeX from this directory. Keep Helix/ beside this file.
@@ -98,27 +98,33 @@
   \includegraphics[width=\linewidth,height=#2,keepaspectratio]{#1}\par
   \endgroup}
 \newif\ifbackup
-\setbeamertemplate{footline}{\leavevmode\hbox{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm]{footline}\hfill\ifbackup Backup\quad PDF \insertframenumber\else Main \insertframenumber/13\fi\end{beamercolorbox}}}
-\title{Heterogeneous Model Serving at Different Granularities: Helix and Tessera}
+\setbeamertemplate{footline}{\leavevmode\hbox{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm]{footline}\hfill\ifbackup Backup\quad PDF \insertframenumber\else Main \insertframenumber/17\fi\end{beamercolorbox}}}
+\title{Heterogeneous Model Serving at Different Granularities}
 \author{Yu-Jui Liang}
-\date{27 Oct 2026}
+\date{28 Oct 2026}
+\subject{Research meeting, 28 Oct 2026}
 \begin{document}
 \begin{frame}[plain]
 
-\vspace{.48cm}
-\smalllabel{Research meeting}\par\vspace{.32cm}
-{\LARGE\bfseries Heterogeneous Model Serving\\[.14cm]at Different Granularities:\\[.14cm]Helix and Tessera\par}
-\vspace{.32cm}{\large\color{Muted}Helix (ASPLOS 2025) + Tessera\par}
-\vspace{.28cm}\textbf{Yu-Jui Liang}\par
-\vspace{.06cm}Advisor: Hsiang-Yun Cheng\par
-\vspace{.06cm}National Taiwan University \quad | \quad Academia Sinica\par
-\vspace{.06cm}27 Oct 2026\par
+\vspace{.28cm}
+\smalllabel{Research meeting}\par\vspace{.18cm}
+{\LARGE\bfseries Heterogeneous Model Serving\\[.12cm]at Different Granularities\par}
+\vspace{.18cm}{\large\color{Muted}ThunderServe summary, then Helix and Tessera\par}
+\vspace{.12cm}{\footnotesize\color{Muted}Completed in this deck: ThunderServe (4 min) + Helix + Tessera.\\
+Hetis, and ThunderServe vs.\ Hetis, are not included.\par}
+\vspace{.16cm}\textbf{Yu-Jui Liang}\par
+\vspace{.04cm}Advisor: Hsiang-Yun Cheng\par
+\vspace{.04cm}National Taiwan University \quad | \quad Academia Sinica\par
+\vspace{.04cm}28 Oct 2026\par
 \vfill
-{\scriptsize\color{Muted}Helix: Yixuan Mei et al., ASPLOS 2025\\
+{\scriptsize\color{Muted}ThunderServe: Youhe Jiang et al., MLSys 2025\\
+Helix: Yixuan Mei et al., ASPLOS 2025\\
 Tessera: Tiancheng Hu et al., arXiv:2604.10180v2}\par
-\vspace{.08cm}{\color{Accent}\rule{\textwidth}{.7pt}}
+\vspace{.06cm}{\color{Accent}\rule{\textwidth}{.7pt}}
 
 \end{frame}
+
+\input{ThunderServe/ThunderServe-summary-frames.tex}
 
 \begin{frame}[t]{Put the Two Papers on One Map}
 

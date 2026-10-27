@@ -1,10 +1,27 @@
-# 2026-10-27 Meeting Slides Production Spec
+# 2026-10-28 Meeting Slides Production Spec
+
+## 目前議程與完成狀態
+
+Meeting 日期是 **2026-10-28（Wednesday）**。正式報告規劃 **30 分鐘**，另外保留約 **10 分鐘 HBF 備用報告**。備用報告不計入 30 分鐘。
+
+| Section | Time | Status |
+|---|---|---|
+| ThunderServe summary | 4 min | **Done.** `ThunderServe/ThunderServe-summary-frames.tex` 的 4 個 frames，接在 Main 封面之後。講稿見 `ThunderServe_scripts.md`，並對齊 Main PDF 第 02–05 頁。 |
+| Hetis summary | 4 min | **Not implemented.** 沒有空白 placeholder。 |
+| ThunderServe vs. Hetis | 2 min | **Not implemented.** 沒有空白 placeholder。 |
+| Helix | 10 min planned | 既有 main slides 保留。講稿仍是原來的口述時間，沒有改切成 10 分鐘。 |
+| Tessera | 10 min planned | 同上。Helix + Tessera 既有 main 講稿合計約 17.2 分鐘。 |
+| Additional HBF papers | Extra 10 min | 獨立的 `2026-10-28-HBF.tex` 與 `2026-10-28-Characterizing-HBF.tex` 保留，不放進 Main deck 的正式時間。 |
+
+目前 Main deck 可報告的正式內容是封面 0.3 分鐘 + ThunderServe 4 分鐘 + 既有 Helix／Tessera 17.2 分鐘，合計 **21.5 分鐘**，17 張 main slides。Appendix 與 HBF 都不計入。不要把這份 PDF 說成 30 分鐘已經完成。
+
+以下各節保留 Helix／Tessera reference deck 與原先 combined deck 的製作規格。路徑已改到 `2026-10-28-meeting/`。其中「15–20 分鐘、約 13 張」描述的是 ThunderServe 加入之前的 Helix／Tessera 主體，不是這次 30 分鐘議程的完成狀態。
 
 ## 0. 文件目的
 
-本文件是 `2026-10-27-meeting/` 的實作規格。Helix 與 Tessera 各有一份完整 reference deck；**2026-10-27 meeting 真正要報告的是另一份精簡 combined deck**。
+本文件是 `2026-10-28-meeting/` 的實作規格。Helix 與 Tessera 各有一份完整 reference deck；meeting main deck 目前在該主體之前加上 ThunderServe 的 4 分鐘摘要。
 
-- 目標 meeting 日期：2026-10-27
+- 目標 meeting 日期：2026-10-28
 - 規格建立時基準 commit：`0b7c2f5f9490c614e0ed351b72832801b4297101`
 - 參考 meeting：`2026-10-21-meeting/`
 - 第一輪先完成 LaTeX／Beamer 主線；**不要先製作 Marp 版本**。
@@ -13,8 +30,8 @@
 
 | 角色 | 檔案 | 頁數 | 用途 |
 |---|---|---|---|
-| Meeting main deck | `2026-10-27-Meeting-Main.tex`、`Meeting-Main_scripts.md` | 約 13–14 張 main slides，另加 appendix | **15–20 分鐘正式報告**。故事是 Summary → Why → Method → Experiments as research questions → Conclusion。 |
-| Full reference decks | `2026-10-27-Helix.tex`、`2026-10-27-Tessera.tex` 與對應 `_scripts.md` | 各 36–40 頁（目前各 38 頁） | Paper-reading reference 與 Q&A backup。保留，不要刪除或為了報告時間大幅改寫。 |
+| Meeting main deck | `2026-10-28-Meeting-Main.tex`、`Meeting-Main_scripts.md`、`ThunderServe/ThunderServe-summary-frames.tex` | 17 張 main slides，另加 appendix | 目前完成 21.5 分鐘。ThunderServe 在封面之後；Helix／Tessera 主體保留。 |
+| Full reference decks | `2026-10-28-Helix.tex`、`2026-10-28-Tessera.tex` 與對應 `_scripts.md` | 各 36–40 頁（目前各 38 頁） | Paper-reading reference 與 Q&A backup。保留，不要刪除或為了報告時間大幅改寫。 |
 
 後面第 3、5、6 節的 36–40 頁結構只適用於 **full reference decks**。不要再把「每篇 36–40 頁」當成正式 meeting deck 的要求，也不要把 reference deck 當成下次報告版本。
 
@@ -26,8 +43,8 @@
 
 以下本地 PDF 是論文內容、公式、數據、實驗設定、版本與頁碼的唯一事實來源：
 
-- `2026-10-27-meeting/ASPLOS25_Helix.pdf`
-- `2026-10-27-meeting/Arxiv26_Tessera.pdf`
+- `2026-10-28-meeting/ASPLOS25_Helix.pdf`
+- `2026-10-28-meeting/Arxiv26_Tessera.pdf`
 
 規則：
 
@@ -40,13 +57,13 @@
 
 Helix：
 
-- 目錄：`2026-10-27-meeting/Helix/`
+- 目錄：`2026-10-28-meeting/Helix/`
 - 現有 Figure 1–12，共 12 張 PNG。
 - 使用目錄中**實際存在的檔名**。`Helix/README.txt` 的表格仍提到 `_with_caption.png`，但目前實際檔名沒有該 suffix；不要照 README 猜檔名。
 
 Tessera：
 
-- 目錄：`2026-10-27-meeting/Tessera/`
+- 目錄：`2026-10-28-meeting/Tessera/`
 - 現有 Figure 1–11，共 11 張 PNG。
 - `Tessera_Figures_600dpi.zip` 是素材封裝，不應直接被 LaTeX 引用。
 
@@ -81,36 +98,36 @@ Tessera：
 
 ## 2. 必須交付的檔案
 
-所有主要成果放在 `2026-10-27-meeting/`：
+所有主要成果放在 `2026-10-28-meeting/`：
 
 ### 2.1 Helix
 
-- `2026-10-27-meeting/2026-10-27-Helix.tex`
-- `2026-10-27-meeting/Helix_scripts.md`
-- `2026-10-27-meeting/output/pdf/2026-10-27-Helix.pdf`
-- `2026-10-27-meeting/output/overleaf/Helix.zip`
+- `2026-10-28-meeting/2026-10-28-Helix.tex`
+- `2026-10-28-meeting/Helix_scripts.md`
+- `2026-10-28-meeting/output/pdf/2026-10-28-Helix.pdf`
+- `2026-10-28-meeting/output/overleaf/Helix.zip`
 
 ### 2.2 Tessera
 
-- `2026-10-27-meeting/2026-10-27-Tessera.tex`
-- `2026-10-27-meeting/Tessera_scripts.md`
-- `2026-10-27-meeting/output/pdf/2026-10-27-Tessera.pdf`
-- `2026-10-27-meeting/output/overleaf/Tessera.zip`
+- `2026-10-28-meeting/2026-10-28-Tessera.tex`
+- `2026-10-28-meeting/Tessera_scripts.md`
+- `2026-10-28-meeting/output/pdf/2026-10-28-Tessera.pdf`
+- `2026-10-28-meeting/output/overleaf/Tessera.zip`
 
 ### 2.3 Meeting main deck
 
 15–20 分鐘正式報告，不取代 2.1 與 2.2：
 
-- `2026-10-27-meeting/2026-10-27-Meeting-Main.tex`
-- `2026-10-27-meeting/Meeting-Main_scripts.md`
-- `2026-10-27-meeting/output/pdf/2026-10-27-Meeting-Main.pdf`
-- `2026-10-27-meeting/output/overleaf/Meeting-Main.zip`
+- `2026-10-28-meeting/2026-10-28-Meeting-Main.tex`
+- `2026-10-28-meeting/Meeting-Main_scripts.md`
+- `2026-10-28-meeting/output/pdf/2026-10-28-Meeting-Main.pdf`
+- `2026-10-28-meeting/output/overleaf/Meeting-Main.zip`
 
 Main story 約 13–14 張。Appendix 用 `\appendix` 接在最後一張正式 slide 之後，不計入 15–20 分鐘。講稿頁碼對齊編譯後 PDF，含 appendix。
 
 ### 2.4 建議附加檔
 
-- `2026-10-27-meeting/README.md`
+- `2026-10-28-meeting/README.md`
   - 列出兩份簡報、講稿、來源 PDF、figure 資料夾、輸出檔與編譯方式。
   - 記錄最終頁數與最後驗證日期。
 
@@ -145,7 +162,7 @@ Main story 約 13–14 張。Appendix 用 `\appendix` 接在最後一張正式 s
 ### 3.2 視覺與排版
 
 - 16:9、10pt、Light Madrid，維持 10/21 meeting 的識別風格。
-- Title slide 保持簡潔：論文標題、副標、Yu-Jui Liang、Advisor: Hsiang-Yun Cheng、National Taiwan University、27 Oct 2026。
+- Title slide 保持簡潔：論文標題、副標、Yu-Jui Liang、Advisor: Hsiang-Yun Cheng、National Taiwan University、28 Oct 2026。
 - 每頁以一個主要問題或結論為核心；標題最好直接表達該頁 takeaway。
 - 一張主要論文圖通常搭配 2–4 個重點與一個 takeaway；不要把圖當背景裝飾。
 - 優先保留圖的完整比例。寬圖採上圖下文，窄圖採左文右圖；必要時一頁放兩張，但兩張都必須可讀。
@@ -174,7 +191,7 @@ Main story 約 13–14 張。Appendix 用 `\appendix` 接在最後一張正式 s
 ```markdown
 # Helix 中文講稿
 
-這是獨立簡報，對應 `2026-10-27-Helix.tex`。投影片頁腳與下方講稿頁碼完全一致。
+這是獨立簡報，對應 `2026-10-28-Helix.tex`。投影片頁腳與下方講稿頁碼完全一致。
 ```
 
 Tessera 依相同格式替換名稱與檔名。
@@ -376,7 +393,7 @@ Helix 與 Tessera 的結尾各放一頁 project-level comparison；可依該篇�
 ### Phase A — Audit and source map
 
 1. 執行 `git status`，確認不覆蓋未提交工作。
-2. 列出 `2026-10-27-meeting/` 的實際檔案。
+2. 列出 `2026-10-28-meeting/` 的實際檔案。
 3. 讀取兩份本地 PDF，建立每篇的 source map：
    - section / subsection
    - PDF page
@@ -408,13 +425,13 @@ Helix 與 Tessera 的結尾各放一頁 project-level comparison；可依該篇�
 
 ### Phase E — Build and visual QA
 
-在 `2026-10-27-meeting/` 下執行：
+在 `2026-10-28-meeting/` 下執行：
 
 ```bash
-pdflatex -interaction=nonstopmode -halt-on-error 2026-10-27-Helix.tex
-pdflatex -interaction=nonstopmode -halt-on-error 2026-10-27-Helix.tex
-pdflatex -interaction=nonstopmode -halt-on-error 2026-10-27-Tessera.tex
-pdflatex -interaction=nonstopmode -halt-on-error 2026-10-27-Tessera.tex
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-Helix.tex
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-Helix.tex
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-Tessera.tex
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-Tessera.tex
 ```
 
 或使用等價的 `latexmk -pdf`，但最終必須能由 pdfLaTeX 乾淨重建。
@@ -422,8 +439,8 @@ pdflatex -interaction=nonstopmode -halt-on-error 2026-10-27-Tessera.tex
 檢查：
 
 ```bash
-pdfinfo 2026-10-27-Helix.pdf
-pdfinfo 2026-10-27-Tessera.pdf
+pdfinfo 2026-10-28-Helix.pdf
+pdfinfo 2026-10-28-Tessera.pdf
 grep -E "Undefined control sequence|LaTeX Error|Overfull|Underfull|not found|multiply defined" *.log
 ```
 
@@ -439,8 +456,8 @@ grep -E "Undefined control sequence|LaTeX Error|Overfull|Underfull|not found|mul
 
 ```bash
 mkdir -p .render/helix .render/tessera
-pdftoppm -png -r 120 2026-10-27-Helix.pdf .render/helix/slide
-pdftoppm -png -r 120 2026-10-27-Tessera.pdf .render/tessera/slide
+pdftoppm -png -r 120 2026-10-28-Helix.pdf .render/helix/slide
+pdftoppm -png -r 120 2026-10-28-Tessera.pdf .render/tessera/slide
 ```
 
 必須修正所有 missing figures、不可接受的 overfull boxes、文字截斷、錯誤 crop、圖太小與明顯失衡的空白。
@@ -458,8 +475,8 @@ pdftoppm -png -r 120 2026-10-27-Tessera.pdf .render/tessera/slide
 ### Phase G — Packaging
 
 1. 複製最終 PDF 到：
-   - `output/pdf/2026-10-27-Helix.pdf`
-   - `output/pdf/2026-10-27-Tessera.pdf`
+   - `output/pdf/2026-10-28-Helix.pdf`
+   - `output/pdf/2026-10-28-Tessera.pdf`
 2. 建立 Overleaf zip：
    - zip 根目錄放 `main.tex`
    - 只包含實際使用的 figure assets
@@ -475,7 +492,7 @@ pdftoppm -png -r 120 2026-10-27-Tessera.pdf .render/tessera/slide
 只有以下全部成立才算完成：
 
 - [ ] Helix 與 Tessera 各有一份獨立 reference `.tex`，且沒有被 meeting main deck 覆蓋。
-- [ ] `2026-10-27-Meeting-Main.tex` 是 15–20 分鐘報告：約 13–14 張 main slides，appendix 另計。
+- [ ] `2026-10-28-Meeting-Main.tex` 保留 Helix／Tessera 主體，並在封面後加入已完成的 ThunderServe 4 頁。Hetis 與比較頁尚未實作。Appendix 另計，不計入正式時間。
 - [ ] Meeting main 的講稿頁碼與 PDF 一致，實驗頁先回答「這個實驗要證明什麼」。
 - [ ] 兩份 deck 都能在乾淨環境以 pdfLaTeX 編譯兩次。
 - [ ] 沒有 missing figure、Undefined control sequence 或 fatal LaTeX error。
@@ -496,9 +513,9 @@ pdftoppm -png -r 120 2026-10-27-Tessera.pdf .render/tessera/slide
 ## 11. Cursor 啟動 Prompt
 
 ```text
-你現在位於 LLM-Serving-Slides repo 根目錄。先完整閱讀 `2026-10-27-meeting-spec.md`，再執行 `git status` 並檢查目前 HEAD，確認工作建立在 commit `0b7c2f5f9490c614e0ed351b72832801b4297101` 或其後續版本。不要只產生大綱，直接完成 spec 中所有必要交付物。
+你現在位於 LLM-Serving-Slides repo 根目錄。先完整閱讀 `2026-10-28-meeting-spec.md`，再執行 `git status` 並檢查目前 HEAD，確認工作建立在 commit `0b7c2f5f9490c614e0ed351b72832801b4297101` 或其後續版本。不要只產生大綱，直接完成 spec 中所有必要交付物。
 
-以 `2026-10-21-meeting/2026-10-21-Hetis.tex`、`2026-10-21-meeting/2026-10-21-ThunderServe.tex` 與兩份 `_scripts.md` 作為版型和講稿格式參考；以 `2026-10-27-meeting/ASPLOS25_Helix.pdf`、`2026-10-27-meeting/Arxiv26_Tessera.pdf` 作為事實來源；使用 `2026-10-27-meeting/Helix/`、`2026-10-27-meeting/Tessera/` 中現有圖片的實際檔名。
+以 `2026-10-21-meeting/2026-10-21-Hetis.tex`、`2026-10-21-meeting/2026-10-21-ThunderServe.tex` 與兩份 `_scripts.md` 作為版型和講稿格式參考；以 `2026-10-28-meeting/ASPLOS25_Helix.pdf`、`2026-10-28-meeting/Arxiv26_Tessera.pdf` 作為事實來源；使用 `2026-10-28-meeting/Helix/`、`2026-10-28-meeting/Tessera/` 中現有圖片的實際檔名。
 
 依 spec 先完成 source map，再建立兩份獨立 Beamer deck、兩份繁體中文逐頁講稿、編譯 PDF 與 Overleaf zip。每完成一份 deck，就立即編譯兩次，檢查 missing figures、Undefined control sequence、Overfull box、頁碼／講稿對齊，並渲染所有頁面做視覺抽查。不得臆造數字，不得混用不同論文版本的結果；任何不確定敘述都回到本地 PDF 查證。第一輪不要製作 Marp。
 

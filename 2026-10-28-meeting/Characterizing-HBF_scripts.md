@@ -1,6 +1,6 @@
 # Characterizing High Bandwidth Flash for LLM Serving｜繁體中文講稿
 
-主報告共 13 頁，目標約 16 至 18 分鐘。第 14 至 21 頁是 Backup，主要留給問答使用，不計入正式報告時間。以下頁碼對應 `2026-10-27-Characterizing-HBF.pdf`。
+主報告共 13 頁，目標約 16 至 18 分鐘。第 14 至 21 頁是 Backup，主要留給問答使用，不計入正式報告時間。以下頁碼對應 `2026-10-28-Characterizing-HBF.pdf`。
 
 ## 第 01 頁｜Characterizing High Bandwidth Flash for LLM Serving
 

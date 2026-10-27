@@ -1,0 +1,11 @@
+Copied from 2026-10-21-meeting/ThunderServe/ without re-rendering.
+Originals remain in that directory.
+
+ThunderServe_Fig01.png  Paper Figure 1. Prefill and decode prices, input 512 / output 16, 3090 Ti vs A40.
+ThunderServe_Fig03.png  Paper Figure 3. Workflow of the scheduling algorithm.
+ThunderServe_Fig09.png  Paper Figure 9. Throughput scaled by ThunderServe.
+
+Fact source: 2026-10-21-meeting/MLSys25_Thunderserve.pdf
+(arXiv:2502.09334v2, MLSys 2025).
+
+Figure 11 is not used. The rescheduling times on the summary come from Table 4.
