@@ -4,7 +4,7 @@ Meeting 日期是 **2026-10-28（Wednesday）**。正式報告規劃 **30 分鐘
 
 | Section | Planned | Status |
 |---|---|---|
-| ThunderServe + Hetis + comparison | 10 min | Done. 獨立 PDF，封面 + 時間軸 + 9 頁 + Thank you，共 12 頁 |
+| ThunderServe + Hetis + comparison | 10 min | Done. 獨立 PDF。正式 12 頁；第 13 頁起為 Q&A backup |
 | Helix + Tessera | 10 + 10 min planned | Main deck。講稿仍是原來的口述時間，約 17.2 分鐘，沒有改切成 10 分鐘 |
 | Additional HBF papers | Extra 10 min | Separate decks kept. Not counted in the 30 minutes |
 
@@ -21,10 +21,10 @@ ThunderServe 事實來源是 `../2026-10-21-meeting/MLSys25_Thunderserve.pdf`。
 | 用途 | 簡報 | 講稿 | 頁數 |
 |---|---|---|---|
 | Main deck | `2026-10-28-Meeting-Main.tex` | `Meeting-Main_scripts.md` | 13 main + 25 backup，共 38 頁 |
-| 10 分鐘 Review | `2026-10-28-10min-Review.tex` | `2026-10-28-10min-Review_scripts.md` | 封面 + 時間軸 + 9 頁 + Thank you，共 12 頁。頁碼 `n/12` |
+| 10 分鐘 Review | `2026-10-28-10min-Review.tex` | `2026-10-28-10min-Review_scripts.md` | 正式 12 頁，頁碼 `n/12`。第 13 頁起是 Q&A backup |
 
 - Main PDF：`output/pdf/2026-10-28-Meeting-Main.pdf`
-- Review PDF：`output/pdf/2026-10-28-10min-Review.pdf`。這是獨立編譯的簡報，不是從 Main PDF 裁頁。
+- Review PDF：`output/pdf/2026-10-28-10min-Review.pdf`。正式 12 頁的頁腳是 `n/12`；第 13 頁是 Backup Topics，其後 27 頁是 10/21 投影片。連結對照見 `Backup/backup-map.md`。
 - Main Overleaf：`output/overleaf/Meeting-Main.zip`
 - Review Overleaf：`output/overleaf/10min-Review.zip`
 - Main 頁腳 `Main n/13`；Review 頁腳是自己的 `n/12`。第 02 頁是 28 Oct 的報告時間軸。

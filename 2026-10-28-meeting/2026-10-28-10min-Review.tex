@@ -14,6 +14,7 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
 \usepackage{hyperref}
+\hypersetup{pdfborder={0 0 0}}
 
 \usetheme{Madrid}
 \usecolortheme{default}
@@ -46,11 +47,14 @@
 \setbeamertemplate{blocks}[rounded][shadow=false]
 \setbeamertemplate{itemize items}[circle]
 \setbeamertemplate{itemize subitem}[circle]
+% Formal slides stay n/12. Appendix frames continue the counter so
+% hyperlink destinations stay unique; their footline is suppressed.
 \setbeamertemplate{footline}{%
+  \ifnum\value{framenumber}>\insertmainframenumber\else
   \leavevmode\hbox{%
     \begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm plus 1fil]{footline}%
-      \hfill\insertframenumber\,/\,\inserttotalframenumber
-    \end{beamercolorbox}}}
+      \hfill\insertframenumber\,/\,\insertmainframenumber
+    \end{beamercolorbox}}\fi}
 \setbeamertemplate{frametitle}{%
   \nointerlineskip
   \begin{beamercolorbox}[wd=\paperwidth,ht=.72cm,dp=.16cm,leftskip=.55cm,rightskip=.40cm]{frametitle}%
@@ -90,6 +94,37 @@
   }\par\endgroup}
 
 \newcommand{\src}[1]{\vspace{0.12cm}\hint{Source: #1}}
+
+\newcommand{\qlink}[2]{\hyperlink{#1}{\textcolor{AccentBlue}{#2}}}
+\IfFileExists{../2026-10-21-meeting/output/pdf/2026-10-21-ThunderServe.pdf}{%
+  \newcommand{\backuppdfTS}{../2026-10-21-meeting/output/pdf/2026-10-21-ThunderServe.pdf}%
+  \newcommand{\backuppdfHetis}{../2026-10-21-meeting/output/pdf/2026-10-21-Hetis.pdf}%
+}{%
+  \newcommand{\backuppdfTS}{Backup/source/2026-10-21-ThunderServe.pdf}%
+  \newcommand{\backuppdfHetis}{Backup/source/2026-10-21-Hetis.pdf}%
+}
+\newcommand{\bsep}{\,\textcolor{Divider}{|}\,}
+\newcommand{\bprev}[1]{\qlink{#1}{Previous}}
+\newcommand{\bnext}[1]{\qlink{#1}{Next}}
+\newcommand{\bret}[1]{\qlink{#1}{Return to Review}}
+\newcommand{\bidx}{\qlink{backup_index}{Backup Topics}}
+% #1 source page, #2 pdf, #3 backup number, #4 right-hand navigation
+\newcommand{\backupcanvas}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=center,inner sep=0pt,outer sep=0pt] at (current page.center) {%
+      \includegraphics[page=#1,width=\paperwidth,height=\paperheight]{#2}%
+    };
+    \fill[Paper] (current page.south west) rectangle ([yshift=0.50cm]current page.south east);
+    \node[anchor=west,inner sep=0pt,font=\scriptsize,text=Muted] at ([xshift=0.45cm,yshift=0.24cm]current page.south west) {Backup #3};
+    \node[anchor=east,inner sep=0pt,font=\scriptsize] at ([xshift=-0.40cm,yshift=0.24cm]current page.south east) {#4};
+  \end{tikzpicture}}
+\makeatletter
+\newcommand{\startbackup}{%
+  \beamer@inappendixtrue
+  \immediate\write\@auxout{\string\@writefile{nav}%
+    {\noexpand\headcommand{\noexpand\gdef\noexpand\insertmainframenumber{\the\c@framenumber}}}}%
+}
+\makeatother
 
 
 \newcommand{\mainfig}[2]{%
@@ -138,7 +173,14 @@ Hetis: Zizhao Mo et al., SC 2025}\par
 \input{Hetis/Hetis-summary-frames.tex}
 \input{Comparison/ThunderServe-Hetis-comparison.tex}
 
-\begin{frame}
+{\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,leftskip=.60cm,rightskip=.60cm]{footline}%
+      \usebeamerfont{footline}%
+      \hfill\qlink{backup_index}{\footnotesize Backup topics}\hfill
+      \llap{\insertframenumber\,/\,\insertmainframenumber}%
+    \end{beamercolorbox}}}
+\begin{frame}[label=main_thanks]
 \vfill
 \begin{center}
 {\large\bfseries\color{Accent}10-MINUTE PAPER REVIEW\par}
@@ -152,5 +194,9 @@ Hetis: Zizhao Mo et al., SC 2025}\par
 {\Large\color{Muted}28 Oct 2026\par}
 \end{center}
 \vfill
-\end{frame}
+\end{frame}}
+
+\startbackup
+\input{Backup/backup-index.tex}
+\input{Backup/backup-frames.tex}
 \end{document}

@@ -1,7 +1,7 @@
 % One comparison frame. The diagrams are conceptual, not paper figures.
 % Facts checked against the local ThunderServe and Hetis PDFs.
 
-\begin{frame}[t]{ThunderServe vs.\ Hetis: Different Granularities of GPU Specialization}
+\begin{frame}[t,label=main_compare]{ThunderServe vs.\ Hetis: Different Granularities of GPU Specialization}
 \vspace{.02cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
@@ -13,7 +13,7 @@
 ]
 \node[box] (pre) {Prefill\\group};
 \node[box, right=9mm of pre] (dec) {Decode\\group};
-\draw[-{Stealth}, thick, Accent] (pre) -- node[above, font=\footnotesize, text=Ink] {KV cache} (dec);
+\draw[-{Stealth}, thick, Accent] (pre) -- node[above, font=\footnotesize, text=Ink] {\qlink{backup_ts_kv_01}{KV cache}} (dec);
 \end{tikzpicture}\\[1.5mm]
 {\footnotesize deployment-level groups\par}}
 \end{column}
@@ -36,13 +36,13 @@
 \begin{tabularx}{\textwidth}{@{}>{\bfseries}p{2.15cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
 \toprule
  & \textbf{ThunderServe} & \textbf{Hetis}\\\midrule
-Objective & Cost-efficient serving under workload and network limits & Less compute imbalance and better memory use\\
+Objective & Cost-efficient serving under workload and network limits & Less compute imbalance and better \qlink{backup_hetis_results_01}{memory use}\\
 Granularity & Prefill / decode phases & Dense modules / attention heads\\
 Weights & Each phase replica hosts weights; TP/PP allowed & Primaries hold the model. Attention workers do not\\
 Communication & KV cache between prefill and decode replicas & Current-token Q/K/V and outputs for offloaded heads\\
 Scheduling & Grouping, phase, TP/PP, routing, lightweight rescheduling & Primary selection, online head dispatch, KV migration\\\bottomrule
 \end{tabularx}\par}
 \vspace{.06cm}
-\takeaway{ThunderServe optimizes phase-level deployment; Hetis optimizes module-aware execution and head-level attention placement.}
+\takeaway{ThunderServe optimizes \qlink{backup_ts_phase_01}{phase-level} deployment; Hetis optimizes module-aware execution and \qlink{backup_hetis_headwise_01}{head-level} attention placement.}
 \src{Diagrams are conceptual, not paper figures. Do not rank the papers by peak throughput: hardware, workloads, and baselines differ.}
 \end{frame}

@@ -2,7 +2,7 @@
 % Figures are copies of 2026-10-21-meeting/ThunderServe/. See SOURCE.txt.
 % Facts checked against 2026-10-21-meeting/MLSys25_Thunderserve.pdf.
 
-\begin{frame}[t]{Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling}
+\begin{frame}[t,label=main_ts_why]{Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.50\textwidth}
 \mainfig{ThunderServe/ThunderServe_Fig01.png}{4.05cm}
@@ -10,8 +10,8 @@
 \begin{column}{.48\textwidth}
 {\normalsize\textbf{Observation}}
 \begin{itemize}\setlength{\itemsep}{.06cm}\footnotesize
-\item Prefill: compute-intensive.
-\item Decode: memory-bandwidth-intensive.
+\item \qlink{backup_ts_phase_01}{Prefill}: compute-intensive.
+\item \qlink{backup_ts_phase_01}{Decode}: memory-bandwidth-intensive.
 \end{itemize}
 \vspace{.08cm}
 {\footnotesize A40: 149.7 FP16 TFLOPS. 3090 Ti: 1008 GB/s. Table~1.}
@@ -19,8 +19,8 @@
 {\normalsize\textbf{Challenge}}
 \begin{itemize}\setlength{\itemsep}{.06cm}\footnotesize
 \item Heterogeneous GPU resources.
-\item Limited and heterogeneous network bandwidth.
-\item KV cache transfer overhead.
+\item Limited and heterogeneous \qlink{backup_ts_phase_01}{network bandwidth}.
+\item \qlink{backup_ts_kv_01}{KV cache transfer} overhead.
 \end{itemize}
 \vspace{.10cm}
 {\footnotesize\textbf{Research question}\par}
@@ -32,26 +32,26 @@
 \src{ThunderServe Sec.~1, Fig.~1, Table~1. Prices in the figure are per request.}
 \end{frame}
 
-\begin{frame}[t]{Joint Optimization of GPU Placement, Parallelism, and Routing}
+\begin{frame}[t,label=main_ts_joint]{Joint Optimization of GPU Placement, Parallelism, and Routing}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.60\textwidth}
 \mainfig{ThunderServe/ThunderServe_Fig03.png}{5.05cm}
 \end{column}
 \begin{column}{.38\textwidth}
-\smalllabel{Upper-level --- Tabu search}\par
+{\scriptsize\bfseries\color{Accent}UPPER-LEVEL --- \qlink{backup_ts_tabu_01}{TABU SEARCH}}\par
 \begin{itemize}\setlength{\itemsep}{.10cm}\normalsize
-\item GPU group construction.
+\item \qlink{backup_ts_tabu_01}{GPU group construction}.
 \item Prefill / decode phase designation.
 \end{itemize}
 \vspace{.14cm}
 \smalllabel{Lower-level --- configuration}\par
 \begin{itemize}\setlength{\itemsep}{.10cm}\normalsize
-\item TP / PP configuration.
-\item Prefill / decode request routing.
-\item Network-aware KV cache transfer.
+\item \qlink{backup_ts_parallel_01}{TP / PP configuration}.
+\item Prefill / decode \qlink{backup_ts_kv_01}{request routing}.
+\item Network-aware \qlink{backup_ts_kv_01}{KV cache transfer}.
 \end{itemize}
 \vspace{.14cm}
-{\footnotesize Additional mechanisms: KV cache compression and lightweight rescheduling.}
+{\footnotesize Additional mechanisms: \qlink{backup_ts_compression_01}{KV cache compression} and \qlink{backup_ts_rescheduling_01}{lightweight rescheduling}.}
 \end{column}
 \end{columns}
 \vspace{.12cm}
@@ -59,20 +59,20 @@
 \src{ThunderServe Sec.~3.2--3.4, Fig.~3.}
 \end{frame}
 
-\begin{frame}[t]{Does Phase-Aware Scheduling Improve Serving Efficiency?}
+\begin{frame}[t,label=main_ts_results]{Does Phase-Aware Scheduling Improve Serving Efficiency?}
 {\footnotesize\textbf{Question:} Does workload-aware phase placement raise end-to-end throughput?\par}
 \vspace{.04cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.46\textwidth}
 \smalllabel{Experiment 1 --- Table 3}\par
-{\footnotesize\textbf{Workload-aware deployment}\par}
+{\footnotesize\textbf{\qlink{backup_ts_results_01}{Workload-aware deployment}}\par}
 \vspace{.04cm}
 {\footnotesize Coding: \textbf{8 prefill / 4 decode}\par}
 {\footnotesize Conversation: \textbf{4 prefill / 8 decode}\par}
 \vspace{.04cm}
 {\footnotesize LLaMA-30B, same 32-GPU cloud pool. Coding has longer prompts; conversation has longer outputs.\par}
 \vspace{.08cm}
-\smalllabel{Experiment 2 --- Figure 9}\par
+{\scriptsize\bfseries\color{Accent}EXPERIMENT 2 --- \qlink{backup_ts_results_01}{FIGURE 9}}\par
 \vspace{.02cm}
 {\footnotesize\renewcommand{\arraystretch}{1.08}
 \begin{tabular}{@{}lcc@{}}\toprule
@@ -91,11 +91,11 @@ DistServe: homogeneous 8$\times$A100, similar price. Not the same machines.\par}
 \end{column}
 \end{columns}
 \vspace{.04cm}
-\takeaway{Workload-aware placement improves overall serving throughput under heterogeneous resource constraints.}
+\takeaway{Workload-aware placement improves overall serving \qlink{backup_ts_results_01}{throughput} under heterogeneous resource constraints.}
 \src{ThunderServe Sec.~5.1--5.3, Fig.~9, Table~3. Relative throughput is ThunderServe over each baseline.}
 \end{frame}
 
-\begin{frame}[t]{Phase-Aware Deployment Improves Cost Efficiency}
+\begin{frame}[t,label=main_ts_close]{Phase-Aware Deployment Improves Cost Efficiency}
 \vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.32\textwidth}
@@ -105,12 +105,12 @@ DistServe: homogeneous 8$\times$A100, similar price. Not the same machines.\par}
 \stepcard{2. PERFORMANCE}{1.7$\times$ average, up to 2.1$\times$}{Overall throughput claim in the paper. Not one bar of Figure~9.}
 \end{column}
 \begin{column}{.32\textwidth}
-\stepcard{3. DYNAMIC ADAPTATION}{Full 157 s, lightweight 13 s}{Table~4 overall time. The gap includes model reload, not search time alone.}
+\stepcard{3. DYNAMIC ADAPTATION}{Full 157 s, \qlink{backup_ts_rescheduling_01}{lightweight} 13 s}{Table~4 overall time. The gap includes model reload, not search time alone.}
 \end{column}
 \end{columns}
 \vspace{.16cm}
 {\footnotesize Table~4 breakdown. Full: rescheduling 54($\pm$5)\,s $+$ reload 103($\pm$10)\,s $=$ 157($\pm$13)\,s.
-Lightweight: rescheduling 13($\pm$2)\,s $+$ reload 0\,s $=$ 13($\pm$2)\,s.\par}
+\qlink{backup_ts_rescheduling_01}{Lightweight}: rescheduling 13($\pm$2)\,s $+$ reload 0\,s $=$ 13($\pm$2)\,s.\par}
 \vspace{.12cm}
 \takeaway{ThunderServe demonstrates that heterogeneous GPU serving benefits from jointly optimizing inference phases, hardware allocation, and communication.}
 \vspace{.10cm}

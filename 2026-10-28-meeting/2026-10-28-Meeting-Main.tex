@@ -54,21 +54,21 @@
     \end{beamercolorbox}}}
 \setbeamertemplate{frametitle}{%
   \nointerlineskip
-  \begin{beamercolorbox}[wd=\paperwidth,sep=.16cm,leftskip=.39cm,rightskip=.24cm]{frametitle}%
-    \raggedright\usebeamerfont{frametitle}\strut\insertframetitle\strut\par
+  \begin{beamercolorbox}[wd=\paperwidth,ht=.72cm,dp=.16cm,leftskip=.55cm,rightskip=.40cm]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle
   \end{beamercolorbox}}
 
 \newcommand{\smalllabel}[1]{{\scriptsize\bfseries\color{Accent}\MakeUppercase{#1}}}
-\newcommand{\hint}[1]{{\scriptsize\color{Muted}#1}}
+\newcommand{\hint}[1]{{\footnotesize\color{Muted}#1}}
 \newcommand{\takeaway}[1]{%
-  \begin{beamercolorbox}[rounded=true,sep=0.12cm,wd=\linewidth]{block title}%
+  \begin{beamercolorbox}[rounded=true,sep=0.15cm,wd=\linewidth]{block title}%
     {\small\bfseries #1}
   \end{beamercolorbox}}
 \newcommand{\stepcard}[3]{%
-  \begin{beamercolorbox}[rounded=true,sep=0.10cm,wd=\linewidth]{block body}%
-    {\scriptsize\bfseries\color{Accent}#1}\par\vspace{.4mm}
-    {\footnotesize\bfseries #2}\par\vspace{.4mm}
-    {\scriptsize\color{Muted}#3}%
+  \begin{beamercolorbox}[rounded=true,sep=0.16cm,wd=\linewidth]{block body}%
+    {\footnotesize\bfseries\color{Accent}#1}\par\vspace{.8mm}
+    {\normalsize\bfseries #2}\par\vspace{.8mm}
+    {\footnotesize\color{Muted}#3}%
   \end{beamercolorbox}}
 
 \newcommand{\figureplaceholder}[3]{%
@@ -90,7 +90,7 @@
     }%
   }\par\endgroup}
 
-\newcommand{\src}[1]{\vspace{0.05cm}\hint{Source: #1}}
+\newcommand{\src}[1]{\vspace{0.12cm}\hint{Source: #1}}
 
 
 \newcommand{\mainfig}[2]{%
@@ -110,12 +110,12 @@
 \smalllabel{Research meeting}\par\vspace{.32cm}
 {\LARGE\bfseries Heterogeneous Model Serving\\[.14cm]at Different Granularities:\\[.14cm]Helix and Tessera\par}
 \vspace{.32cm}{\large\color{Muted}Helix (ASPLOS 2025) + Tessera\par}
-\vspace{.28cm}\textbf{Yu-Jui Liang}\par
-\vspace{.06cm}Advisor: Hsiang-Yun Cheng\par
-\vspace{.06cm}National Taiwan University \quad | \quad Academia Sinica\par
-\vspace{.06cm}28 Oct 2026\par
+\vspace{.26cm}{\Large\textbf{Yu-Jui Liang}\par}
+\vspace{.10cm}{\large Advisor: Hsiang-Yun Cheng\par}
+\vspace{.08cm}{\large National Taiwan University \quad | \quad Academia Sinica\par}
+\vspace{.08cm}{\large 28 Oct 2026\par}
 \vfill
-{\scriptsize\color{Muted}Helix: Yixuan Mei et al., ASPLOS 2025\\
+{\footnotesize\color{Muted}Helix: Yixuan Mei et al., ASPLOS 2025\\
 Tessera: Tiancheng Hu et al., arXiv:2604.10180v2}\par
 \vspace{.08cm}{\color{Accent}\rule{\textwidth}{.7pt}}
 
@@ -124,7 +124,7 @@ Tessera: Tiancheng Hu et al., arXiv:2604.10180v2}\par
 \begin{frame}[t]{Put the Two Papers on One Map}
 
 \small
-\renewcommand{\arraystretch}{1.28}
+\renewcommand{\arraystretch}{1.55}
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.55cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}\toprule
  & \textbf{Helix} & \textbf{Tessera}\\\midrule
 Heterogeneity & GPU capability + network topology & Kernel-specific GPU preference\\
@@ -133,7 +133,7 @@ Main bottleneck & Compute + network capacity & Compute/memory characteristics + 
 Offline planning & MILP placement & Analyzer + DDG + MILP\\
 Runtime & Request path scheduling & Stored policy selection / switching\\\bottomrule
 \end{tabularx}
-\vspace{.28cm}
+\vspace{.42cm}
 \takeaway{Helix asks where layers should be placed and how requests should flow. Tessera asks which GPU should execute each kernel.}
 \vspace{.10cm}
 {\small These are different optimization dimensions, not a coarse-to-fine ranking.\par}
@@ -145,19 +145,19 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 
 {\small Helix jointly optimizes model-layer placement and request routing for heterogeneous, potentially geo-distributed GPU clusters.\par}
 \vspace{.06cm}
-\mainfig{Helix/Helix_Figure_01_Model_Placement_Examples.png}{2.78cm}
+\mainfig{Helix/Helix_Figure_01_Model_Placement_Examples.png}{2.52cm}
 \vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
 {\small\textbf{Because}}
-\begin{itemize}\footnotesize\setlength{\itemsep}{.05cm}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.09cm}
 \item GPU types, compute, and memory differ.
 \item Clusters may also sit in different regions, so link bandwidth differs. That is geo-distribution, not another word for heterogeneity.
 \end{itemize}
 \end{column}
 \begin{column}{.50\textwidth}
 {\small\textbf{Therefore}}
-\begin{itemize}\footnotesize\setlength{\itemsep}{.05cm}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.09cm}
 \item A FLOP-proportional cut only balances compute.
 \item If every activation still crosses a slow link, the network becomes the bottleneck.
 \end{itemize}
@@ -178,7 +178,7 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \end{column}
 \begin{column}{.42\textwidth}
 {\small\textbf{Offline planning}}
-\begin{enumerate}\footnotesize\setlength{\itemsep}{.06cm}
+\begin{enumerate}\footnotesize\setlength{\itemsep}{.10cm}
 \item Profile GPU compute, memory, and links.
 \item MILP chooses the layer placement.
 \item Represent that placement as a flow graph.
@@ -186,12 +186,12 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \end{enumerate}
 \vspace{.08cm}
 {\small\textbf{Online runtime}}
-\begin{enumerate}\footnotesize\setcounter{enumi}{4}\setlength{\itemsep}{.06cm}
+\begin{enumerate}\footnotesize\setcounter{enumi}{4}\setlength{\itemsep}{.10cm}
 \item Assign each request one pipeline.
 \item Later decode tokens reuse that pipeline.
 \end{enumerate}
 \end{column}\end{columns}
-\vspace{.06cm}\takeaway{Max-flow is a throughput model, not a latency model. The MILP is not rerun per request.}
+\vspace{.12cm}\takeaway{Max-flow is a throughput model, not a latency model. The MILP is not rerun per request.}
 \src{Helix Sec.~4.3--5, Fig.~3. Offline/online here mean when the optimization runs.}
 
 \end{frame}
@@ -212,7 +212,7 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \vspace{.10cm}
 {\footnotesize Vs.\ Swarm, decode throughput is about $2\times$. Latency is not always lower.}
 \end{column}\end{columns}
-\vspace{.04cm}\takeaway{The prototype gains throughput. The objective does not guarantee a latency win.}
+\vspace{.10cm}\takeaway{The prototype gains throughput. The objective does not guarantee a latency win.}
 \src{Helix Sec.~6.2--6.3, Fig.~6. Simulation columns check the simulator. Workload $\neq$ planner timing.}
 \end{frame}
 
@@ -222,12 +222,12 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \vspace{.04cm}
 \mainfig{Helix/Helix_Figure_07_Geo_Distributed_Cluster_Results.png}{3.15cm}
 \vspace{.04cm}
-\begin{itemize}\footnotesize\setlength{\itemsep}{.05cm}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.09cm}
 \item \textbf{Simulator, not prototype.} Same GPUs, three clusters, about 100\,Mb/s and 50\,ms between clusters.
 \item LLaMA 30B vs.\ Swarm: about $2.3$--$2.4\times$ decode throughput in both offline and online workloads.
 \item Those 30B \textbf{online} latency reductions vs.\ Swarm are 66\% prompt and 24\% decode.
 \end{itemize}
-\vspace{.02cm}\takeaway{When the network is the bottleneck, joint placement and routing matter much more.}
+\vspace{.08cm}\takeaway{When the network is the bottleneck, joint placement and routing matter much more.}
 \src{Helix Sec.~6.2, 6.4, Fig.~7. Do not read these latency drops as prototype results.}
 
 \end{frame}
@@ -251,7 +251,7 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \vspace{.02cm}
 \includegraphics[width=\linewidth]{Helix/Helix_Figure_10_Request_Scheduling_Comparison.png}
 \end{column}\end{columns}
-\vspace{.06cm}\takeaway{Placement builds the resource graph. Scheduling is what actually uses that capacity.}
+\vspace{.12cm}\takeaway{Placement builds the resource graph. Scheduling is what actually uses that capacity.}
 \src{Helix Sec.~6.6--6.7, Figs.~9--10. Geo-distributed bars are simulator results.}
 
 \end{frame}
@@ -273,7 +273,7 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \vspace{.12cm}
 {\footnotesize Points below the dashed line prefer L40s. The 45\%/57\% figures count kernels, not execution time.}
 \end{column}\end{columns}
-\vspace{.04cm}\takeaway{A phase label is not a hardware preference.}
+\vspace{.10cm}\takeaway{A phase label is not a hardware preference.}
 \src{Tessera Sec.~II-C, Fig.~3. X-axis: kernel duration on A100. Y-axis: L40s/A100 time.}
 \end{frame}
 
@@ -295,7 +295,7 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \vspace{.08cm}
 {\footnotesize\textbf{Latency policy:} at low load, shorten one request's compute plus the transfers that cannot be hidden.}
 \end{column}\end{columns}
-\vspace{.06cm}\takeaway{Analysis and MILP stay offline. Runtime only executes or switches stored policies.}
+\vspace{.12cm}\takeaway{Analysis and MILP stay offline. Runtime only executes or switches stored policies.}
 \src{Tessera Sec.~III, Fig.~4. RAW = Read After Write. The latency objective sums kernel and cut-edge costs.}
 
 \end{frame}
@@ -307,11 +307,11 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \mainfig{Tessera/Tessera_Figure_06_Offline_Throughput.png}{3.15cm}
 \vspace{.04cm}
 {\footnotesize Five offline workloads, three GPU pairs. PD = prefill/decode. AF = attention/FFN.}
-\begin{itemize}\footnotesize\setlength{\itemsep}{.04cm}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.08cm}
 \item Vs.\ PD: $1.5\times$ average, up to $2.3\times$ throughput.
 \item Vs.\ AF: $1.35\times$ average, up to $1.7\times$ throughput.
 \end{itemize}
-\vspace{.02cm}\takeaway{Kernel-level scheduling turns the motivation into end-to-end throughput gains.}
+\vspace{.08cm}\takeaway{Kernel-level scheduling turns the motivation into end-to-end throughput gains.}
 \src{Tessera Sec.~V-A--B, Fig.~6. Tokens/s; SD axis is images/min. Red X: baseline inapplicable.}
 
 \end{frame}
@@ -332,7 +332,7 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \vspace{.12cm}
 {\footnotesize Offline throughput and this SLO capacity are different regimes.}
 \end{column}\end{columns}
-\vspace{.04cm}\takeaway{The gain is not only saturated throughput. Stored policies also help online.}
+\vspace{.10cm}\takeaway{The gain is not only saturated throughput. Stored policies also help online.}
 \src{Tessera Sec.~V-B, Fig.~7. Normalized latency = end-to-end time / output tokens.}
 \end{frame}
 
@@ -343,11 +343,11 @@ Runtime & Request path scheduling & Stored policy selection / switching\\\bottom
 \mainfig{Tessera/Tessera_Figure_09_Pipeline_Effectiveness.png}{3.35cm}
 \vspace{.04cm}
 {\footnotesize\textbf{GPT-oss 20B, offline.} No pipeline 1443; pipeline 2123; pipeline + priority \textbf{2641 tokens/s}.}
-\begin{itemize}\footnotesize\setlength{\itemsep}{.04cm}
+\begin{itemize}\footnotesize\setlength{\itemsep}{.08cm}
 \item Zero-communication reference: 2734 tokens/s. $2641/2734 \approx 96.6\%$.
 \item Later requests use a lower CUDA stream priority, so their transfers do not all line up.
 \end{itemize}
-\vspace{.02cm}\takeaway{Placement alone is not enough. Overlap is a necessary runtime mechanism.}
+\vspace{.08cm}\takeaway{Placement alone is not enough. Overlap is a necessary runtime mechanism.}
 \src{Tessera Sec.~III-C, V-D, Fig.~9. The reference assumes zero communication cost. GPU pair not named here.}
 
 \end{frame}
@@ -394,20 +394,20 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
 \end{frame}
 \begin{frame}[t]{Modeling Compute Capacity}
   \smalllabel{Helix / Formulation}\par
-  \vspace{.12cm}
+  \vspace{.04cm}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{.49\textwidth}
       \stepcard{NODE EDGE}{\(c^{\mathrm{in}}\rightarrow c^{\mathrm{out}}\)}{Capacity is the minimum of profiled compute throughput and the node's network throughput.}
-      \vspace{.14cm}
+      \vspace{.04cm}
       \stepcard{PROFILING}{Once per node}{Helix measures throughput rather than using the datasheet TFLOP/s from Table 3.}
     \end{column}
     \begin{column}{.49\textwidth}
       \stepcard{LAYER COUNT}{\(T_j\) tokens/s}{\(T_j\) is the profiled rate when that node holds \(j\) layers. It becomes the MILP compute limit.}
-      \vspace{.14cm}
+      \vspace{.04cm}
       \stepcard{NOT A GPU}{Source and sink}{The coordinator injects tokens and collects tokens. It is not given a compute edge.}
     \end{column}
   \end{columns}
-  \vspace{.16cm}\takeaway{Compute capacity is a profiled token rate, and it already takes the node's network limit into account.}
+  \vspace{.04cm}\takeaway{Compute capacity is a profiled token rate, and it already takes the node's network limit into account.}
   \src{Sec.~4.3. \(T_j\) is defined with Constraint~3 in Sec.~4.4.}
 \end{frame}
 \begin{frame}[t]{Modeling Network Capacity}
@@ -416,7 +416,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
   {\footnotesize A link is valid only in one of three cases:}\par
   \vspace{.08cm}
   \begin{enumerate}\footnotesize
-    \setlength{\itemsep}{.06cm}
+    \setlength{\itemsep}{.10cm}
     \item Coordinator \(\rightarrow\) a node that holds the first layer. Payload is a token (Fig.~2 uses 4 bytes).
     \item A node that holds the last layer \(\rightarrow\) coordinator. Payload is again a token.
     \item Node \(i\rightarrow\) node \(j\) when \(j\) holds the layers needed immediately after \(i\). Payload is an activation (Fig.~2 uses 16 KB).
@@ -426,7 +426,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     \text{capacity (tokens/s)}=\frac{\text{profiled average bandwidth}}{\text{bytes per token or activation}}.
   \]
   {\footnotesize The formula is the paper's rule. The byte sizes above are the Fig.~2 annotations, not universal constants.}\par
-  \vspace{.06cm}\takeaway{Activations cost far more tokens of budget than the final output token, so wide-area links saturate first.}
+  \vspace{.12cm}\takeaway{Activations cost far more tokens of budget than the final output token, so wide-area links saturate first.}
   \src{Sec.~4.3. Bandwidth is a one-time average, not a runtime measurement.}
 \end{frame}
 \begin{frame}[t]{Why Max Flow Represents Serving Throughput}
@@ -461,7 +461,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
   \[
     \max \sum_i f_{\mathrm{source},i}
   \]
-  \vspace{.02cm}\takeaway{The objective maximizes coordinator outflow. Table 5 groups the variable counts as linear in \(|C|\) or \(|E|\).}
+  \vspace{.08cm}\takeaway{The objective maximizes coordinator outflow. Table 5 groups the variable counts as linear in \(|C|\) or \(|E|\).}
   \src{Sec.~4.4, Tables 5--6. Notation here is compacted from the paper.}
 \end{frame}
 \begin{frame}[t]{Placement and Memory Constraints}
@@ -479,7 +479,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     \item If \(s_j<e_i<e_j\), traffic from \(i\) runs only layers \([e_i,e_j)\) on \(j\). The paper calls this partial inference.
     \item The solver may be run with partial inference disabled. Then a link is valid only when \(e_i=s_j\).
   \end{itemize}
-  \vspace{.06cm}\takeaway{GPU memory limits how many layers are placed. KV capacity is enforced later, at schedule time.}
+  \vspace{.12cm}\takeaway{GPU memory limits how many layers are placed. KV capacity is enforced later, at schedule time.}
   \src{Sec.~4.4, Constraint~1, and the partial-inference remark.}
 \end{frame}
 \begin{frame}[t]{Flow and Compute Constraints}
@@ -494,12 +494,12 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     \sum_u f_{u,i}\le \sum_{j=1}^{k} b_{ij}\,T_j.
   \]
   \begin{itemize}\footnotesize
-    \setlength{\itemsep}{.06cm}
+    \setlength{\itemsep}{.04cm}
     \item \(T_j\) is a profiled constant: tokens per second when this node holds \(j\) layers.
     \item The binaries \(b_{ij}\) pick exactly one of those profiled rates.
     \item Flow is still also limited by the network edges on the next slide.
   \end{itemize}
-  \vspace{.04cm}\takeaway{A node cannot be assigned more token flow than the profiled rate for the layer count it actually holds.}
+  \vspace{.02cm}\takeaway{A node cannot be assigned more token flow than the profiled rate for the layer count it actually holds.}
   \src{Sec.~4.4, Constraints 2--3. Sums skip node \(i\) itself, as stated in the paper.}
 \end{frame}
 \begin{frame}[t]{Connectivity and Network Constraints}
@@ -518,25 +518,25 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     f_{ij}\le d_{ij}\,S_{ij}.
   \]
   {\footnotesize \(S_{ij}\) is the profiled token rate of that link, from Sec.~4.3. Invalid links carry zero flow.}\par
-  \vspace{.04cm}\takeaway{Routing variables cannot use a hop that the layer ranges do not justify.}
+  \vspace{.10cm}\takeaway{Routing variables cannot use a hop that the layer ranges do not justify.}
   \src{Sec.~4.4, Constraints 4--5. The two-auxiliary form is the paper's linearization.}
 \end{frame}
 \begin{frame}[t]{Converting Max-Flow Weights into Scheduling}
   \smalllabel{Helix / Runtime}\par
-  \vspace{.10cm}
+  \vspace{.02cm}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{.49\textwidth}
       \stepcard{IWRR}{Interleaved weighted round-robin}{Each vertex has a scheduler. A neighbor's weight is the max-flow value on that outgoing edge.}
-      \vspace{.12cm}
+      \vspace{.01cm}
       \stepcard{WHY INTERLEAVE}{Avoid bursts}{Frequency follows the weight, but choices are interleaved so one heavy edge is not drained in a burst.}
     \end{column}
     \begin{column}{.49\textwidth}
       \stepcard{THE WALK}{Coordinator, then each node}{Pick stage 1 from the coordinator. Pick stage 2 from that node's scheduler. Stop when the path is complete.}
-      \vspace{.12cm}
+      \vspace{.01cm}
       \stepcard{MASK}{Before the walk}{Nodes over the KV high-water mark are removed from the candidate list. This avoids scheduling onto a full KV cache.}
     \end{column}
   \end{columns}
-  \vspace{.14cm}\takeaway{The MILP decides the rates. IWRR is the online rule that realizes those rates.}
+  \takeaway{The MILP decides the rates. IWRR is the online rule that realizes those rates.}
   \src{Sec.~5.1. IWRR follows Tabatabaee et al.\ as cited by the paper.}
 \end{frame}
 \begin{frame}[t]{Pipeline Scheduling Example}
@@ -550,7 +550,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
         \item The figure's two example pipelines are \(1\rightarrow 5\rightarrow 9\) and \(2\rightarrow 6\rightarrow 8\).
         \item Those paths can share the cluster. They are not two frozen replicas.
       \end{itemize}}
-      \vspace{.06cm}\takeaway{Read the integers as scheduled token rates, then read the paths as two requests.}
+      \vspace{.12cm}\takeaway{Read the integers as scheduled token rates, then read the paths as two requests.}
     \end{column}
     \begin{column}{.52\textwidth}
       \figureplaceholder{Helix/Helix_Figure_04_Per_Request_Pipeline_Scheduling.png}{4.85cm}{Figure 4}
@@ -563,14 +563,14 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
   \vspace{.02cm}
   \begin{columns}[c,onlytextwidth]
     \begin{column}{.48\textwidth}
-      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.09cm}
         \item Simulator, LLaMA 70B, 42 nodes, 7 types. V100, T4, and \(2\times\)T4 cannot form a pipeline alone.
         \item SP drops those machines. SP+ adds a mixed pipeline that uses them.
         \item Vs.\ Swarm / SP / SP+, offline throughput is \(1.37\times\), \(2.91\times\), \(2.24\times\).
         \item Online: \(1.48\times\), \(3.29\times\), \(2.54\times\). Prompt latency changes by \(-17\%\), \(-1\%\), \(-7\%\).
         \item Helix's decode latency is slightly higher: baselines leave slow GPUs idle.
       \end{itemize}}
-      \vspace{.04cm}\takeaway{The abstract's \(3.3\times\) is the \(3.29\times\) online gain versus SP, rounded.}
+      \vspace{.10cm}\takeaway{The abstract's \(3.3\times\) is the \(3.29\times\) online gain versus SP, rounded.}
     \end{column}
     \begin{column}{.50\textwidth}
       \figureplaceholder{Helix/Helix_Figure_08_High_GPU_Heterogeneity_Results.png}{4.70cm}{Figure 8}
@@ -583,7 +583,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
   \vspace{.02cm}
   \begin{columns}[c,onlytextwidth]
     \begin{column}{.46\textwidth}
-      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.09cm}
         \item Offline LLaMA 70B. 24-node is the geo setup; 42-node is the high-heterogeneity setup.
         \item Degree-12 pruning drops 50\% and 72\% of the links, and 36\% and 46\% of the problem size.
         \item With pruning, decode throughput is 16\% and 2\% higher. The paper attributes this to an easier search under a time limit.
@@ -600,7 +600,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
       \end{tabular}\par}
     \end{column}
   \end{columns}
-  \vspace{.04cm}\takeaway{Pruning changes the search problem. It is not a proof that the deleted links were useless.}
+  \vspace{.10cm}\takeaway{Pruning changes the search problem. It is not a proof that the deleted links were useless.}
   \src{Sec.~6.8, Fig.~11, Table 8. PDF p.~12. Speedups vary by instance, as the paper notes.}
 \end{frame}
 \begin{frame}[t]{Solver Time and Solution Quality}
@@ -614,7 +614,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
         \item Certifying that optimum takes more than an hour of branch-and-bound.
         \item The red dotted line is that cluster's optimal throughput. The upper bound tightens as cuts are added.
       \end{itemize}}
-      \vspace{.06cm}\takeaway{Early stop is reasonable here. Fig.~12 does not certify the 42-node plan.}
+      \vspace{.12cm}\takeaway{Early stop is reasonable here. Fig.~12 does not certify the 42-node plan.}
     \end{column}
     \begin{column}{.50\textwidth}
       \figureplaceholder{Helix/Helix_Figure_12_MILP_Solution_Quality.png}{4.85cm}{Figure 12}
@@ -648,7 +648,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     \item One CUDA graph gets one dependency graph. Dynamic shapes become several graphs, not one graph with a runtime branch.
     \item Frameworks without CUDA Graph can record a trace and replay it under stream capture. That tool is preprocessing, not the online scheduler.
   \end{itemize}
-  \vspace{.06cm}\takeaway{The graph is a static RAW graph per captured execution, plus the byte size of each edge.}
+  \vspace{.12cm}\takeaway{The graph is a static RAW graph per captured execution, plus the byte size of each edge.}
   \src{Sec.~III-A. ``DDG'' is the paper's term for this graph.}
 \end{frame}
 \begin{frame}[t]{Cross-Iteration Dependencies and KV State}
@@ -662,7 +662,7 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     \item Two NCCL communicators separate this background copy from the latency-critical cut-edge transfers. Dependency traffic gets the higher class.
     \item The paper says delta replication is under 0.1\% of latency, citing prior prefill/decode work rather than a new Tessera measurement.
   \end{itemize}
-  \vspace{.06cm}\takeaway{KV state is replicated and updated in the background. It is not a cut edge on the per-iteration critical path.}
+  \vspace{.12cm}\takeaway{KV state is replicated and updated in the background. It is not a cut edge on the per-iteration critical path.}
   \src{Sec.~III-A and Sec.~IV. The 0.1\% figure is attributed to prior work [9], [10].}
 \end{frame}
 \begin{frame}[t]{Offline Throughput-Oriented MILP}
@@ -678,13 +678,13 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     \min \max_{g\in G} W_g.
   \]
   \begin{itemize}\footnotesize
-    \setlength{\itemsep}{.06cm}
+    \setlength{\itemsep}{.10cm}
     \item \(T_g\) is compute time on GPU \(g\). \(M_g\), on the next slide, is communication time into \(g\).
     \item \(W_g\) is the slower of the two. Steady-state throughput is then one request per \(\max_g W_g\).
     \item This is the offline objective. It is the wrong objective when too few requests are in flight to hide transfers.
     \item Gurobi solves it offline. A reported case, GPT-oss 20B on A100+L40s, has about 500 kernels and finishes one graph in about 20 ms.
   \end{itemize}
-  \vspace{.04cm}\takeaway{The MILP balances GPUs by minimizing the slowest stage. It does not maximize a sum of kernel speeds.}
+  \vspace{.10cm}\takeaway{The MILP balances GPUs by minimizing the slowest stage. It does not maximize a sum of kernel speeds.}
   \src{Sec.~III-B. The 20 ms figure is for \(|G|=2\), \(|K|\approx 500\); all patterns take about 5 s.}
 \end{frame}
 \begin{frame}[t]{Communication and Load-Balancing Constraints}
@@ -696,13 +696,13 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     M_g=\sum_{(i,j)\in E}\sum_{u\in G\setminus\{g\}} c^{u,g}_{ij}\,y^{u,g}_{ij}.
   \]
   \begin{itemize}\footnotesize
-    \setlength{\itemsep}{.06cm}
+    \setlength{\itemsep}{.10cm}
     \item \(y^{u,g}_{ij}=x_{i,u}x_{j,g}\) is 1 when the producer is on \(u\) and the consumer is on \(g\). The product is linearized with the standard Boolean replacement.
     \item Load balance is not a separate variance constraint. Minimizing \(\max_g W_g\) already penalizes the busiest GPU.
     \item Per-GPU memory capacity is absent. At initialization every GPU receives a full copy of the weights.
     \item Offline, once the policy is fixed, unused weight buffers can be reclaimed. The paper does not report that reclamation in the evaluation tables.
   \end{itemize}
-  \vspace{.04cm}\takeaway{Communication is bytes over profiled bandwidth, plus a base latency. Memory is a runtime caveat, not a constraint.}
+  \vspace{.10cm}\takeaway{Communication is bytes over profiled bandwidth, plus a base latency. Memory is a runtime caveat, not a constraint.}
   \src{Sec.~III-B and Sec.~IV. Linearization cites Nemhauser and Wolsey.}
 \end{frame}
 \begin{frame}[t]{Online Latency-Oriented Scheduling}
@@ -714,12 +714,12 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
     +\sum_{(i,j)}\sum_{u}\sum_{g\neq u} c^{u,g}_{ij}\,y^{u,g}_{ij}.
   \]
   \begin{itemize}\footnotesize
-    \setlength{\itemsep}{.05cm}
+    \setlength{\itemsep}{.09cm}
     \item There is no \(\max(T,M)\) here. Overlap is not assumed.
     \item The same Gurobi solve is offline. Workers only look up the stored policy.
     \item If communication is expensive, this objective keeps dependent kernels on the same GPU. Fig.~11 shows that behavior at 25 Gb/s.
   \end{itemize}
-  \vspace{.04cm}\takeaway{Latency mode shortens one request's critical path. It is not the throughput MILP with a different label.}
+  \vspace{.10cm}\takeaway{Latency mode shortens one request's critical path. It is not the throughput MILP with a different label.}
   \src{Sec.~III-B. The sum is the paper's low-load decomposition, compacted for the slide.}
 \end{frame}
 \begin{frame}[t]{GPU Worker Execution}
@@ -727,13 +727,13 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
   \vspace{.02cm}
   \begin{columns}[c,onlytextwidth]
     \begin{column}{.48\textwidth}
-      {\footnotesize\begin{itemize}\setlength{\itemsep}{.05cm}
+      {\footnotesize\begin{itemize}\setlength{\itemsep}{.09cm}
         \item Fig.~5 is GPU B from the six-kernel example. Compute and communication use different streams.
         \item \(R_{ij}\) receives kernel \(i\)'s output for kernel \(j\). \(S_{ij}\) sends it. CUDA events order the two streams.
         \item Receives are posted before the consumer kernel. Sends are posted after the producer if the edge is cut.
         \item Sends and receives are GPU-side kernels via NCCL's GPUDirect Async (IBGDA), so the CPU is not on the critical path.
       \end{itemize}}
-      \vspace{.04cm}\takeaway{A worker runs its own kernels and the cut-edge messages. It does not run the whole model.}
+      \vspace{.10cm}\takeaway{A worker runs its own kernels and the cut-edge messages. It does not run the whole model.}
     \end{column}
     \begin{column}{.50\textwidth}
       \figureplaceholder{Tessera/Tessera_Figure_05_GPU_Worker_Execution.png}{4.15cm}{Figure 5}
@@ -743,46 +743,44 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
 \end{frame}
 \begin{frame}[t]{Online Monitor Signals}
   \smalllabel{Tessera / Runtime}\par
-  \vspace{.10cm}
+  \vspace{.04cm}
   \begin{itemize}\footnotesize
-    \setlength{\itemsep}{.08cm}
+    \setlength{\itemsep}{.01cm}
     \item The monitor records per-request latency, communication time, and per-kernel-group latency.
     \item A kernel group is the run of kernels between two consecutive communication operations. Individual kernels are not timed online.
     \item \(\bar L_{\mathrm{req}}\) is average end-to-end request latency. \(\bar L_{\mathrm{exec}}\) sums compute and communication and excludes queueing.
     \item The pressure signal is the ratio \(\bar L_{\mathrm{req}}/\bar L_{\mathrm{exec}}\).
     \item A low ratio means little queueing, so the latency policy is preferred. A high ratio means queueing dominates, so the throughput policy is preferred.
   \end{itemize}
-  \vspace{.06cm}\takeaway{The switch looks at queueing pressure, not at a hand-named GPU counter.}
+  \vspace{.02cm}\takeaway{The switch looks at queueing pressure, not at a hand-named GPU counter.}
   \src{Sec.~III-D. Kernel group is the paper's definition.}
 \end{frame}
 \begin{frame}[t]{Policy Switching and Sensitivity Parameters}
   \smalllabel{Tessera / Runtime}\par
-  \vspace{.10cm}
+  \vspace{.02cm}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{.49\textwidth}
       \stepcard{WINDOW \(W\)}{How often to decide}{The ratio is computed at window boundaries. The chosen defaults are \(W=300\) ms and \(\beta=1.5\).}
-      \vspace{.12cm}
       \stepcard{THRESHOLD \(\beta\)}{When queueing wins}{Crossing \(\beta\) selects the throughput policy. Staying below it selects the latency policy.}
     \end{column}
     \begin{column}{.49\textwidth}
       \stepcard{SWITCH COST}{About 30 ms}{Workers synchronize on an iteration boundary. The 30 ms is the paper's reported stall, not a bound.}
-      \vspace{.12cm}
       \stepcard{WHERE IT WAS TUNED}{One trace}{GPT-oss 20B, 360 s of the Azure Conversation trace. Fig.~10 is the sensitivity plot.}
     \end{column}
   \end{columns}
-  \vspace{.14cm}\takeaway{\(W\) and \(\beta\) are the only two knobs the paper names. Aggressive and lazy settings both increase latency.}
+  \takeaway{\(W\) and \(\beta\) are the only two knobs the paper names. Aggressive and lazy settings both increase latency.}
   \src{Sec.~III-D and Sec.~V-D. Sensitivity measurements are in Fig.~10 of the paper.}
 \end{frame}
 \begin{frame}[t]{Network Bandwidth and MILP Analysis}
   \smalllabel{Tessera / Drill-down}\par
   \vspace{.02cm}
-  \figureplaceholder{Tessera/Tessera_Figure_11_Network_Bandwidth_and_MILP.png}{2.15cm}{Figure 11}
+  \figureplaceholder{Tessera/Tessera_Figure_11_Network_Bandwidth_and_MILP.png}{2.05cm}{Figure 11}
   {\centering\hint{Fig.~11. (a) GPT-oss 20B, A100+L40s. (b) Gurobi time vs.\ kernels per graph.}\par}
   \vspace{.02cm}
   {\footnotesize\textbf{(a)} Throughput at 200 / 100 / 50 / 25 Gb/s: 2641 / 2610 / 2550 / 2490 tokens/s. The 25 Gb/s drop is under 6\%. Normalized latency: 1.00 / 1.03 / 1.08 / 1.15, still below the homogeneous A100 line at 1.18.}\par
   \vspace{.02cm}
   {\footnotesize\textbf{(b)} Text, 2 GPUs: 0.07 s at 200 kernels and 0.43 s at 1000 kernels. A DeepSeek-V3 671B forward graph of about 1500 kernels solves within 1 s. That is a solver stress test, not a serving result. Time grows with the number of GPU types; repeated layers are solved once.}\par
-  \vspace{.02cm}\takeaway{At 25 Gb/s the offline pipeline still hides most of the extra delay. The latency policy moves work off the slow cut.}
+  \vspace{.08cm}\takeaway{At 25 Gb/s the offline pipeline still hides most of the extra delay. The latency policy moves work off the slow cut.}
   \src{Sec.~V-D, Fig.~11. PDF p.~10. Do not read panel (b) as an end-to-end DeepSeek result.}
 \end{frame}
 \begin{frame}[t]{Cost Efficiency of Heterogeneous Pairing}
@@ -801,11 +799,11 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
   \end{tabular}\par}
   \vspace{.06cm}
   \begin{itemize}\footnotesize
-    \setlength{\itemsep}{.04cm}
+    \setlength{\itemsep}{.08cm}
     \item Vs.\ PD: \(1.5\times\) cost efficiency on average, up to \(1.6\times\). Vs.\ AF: \(1.4\times\) on average, up to \(1.5\times\).
     \item On H100+RTX Pro 6000, Tessera is \(1.64\times\) the Perf/\$ of H100 alone and \(2.3\times\) its throughput, above two H100s, at price \(2.9+1.2\) versus \(2\times 2.9\).
   \end{itemize}
-  \vspace{.04cm}\takeaway{The pair can beat a single expensive GPU on Perf/\$. The prices are Table I's relative rentals, not a new quote.}
+  \vspace{.10cm}\takeaway{The pair can beat a single expensive GPU on Perf/\$. The prices are Table I's relative rentals, not a new quote.}
   \src{Sec.~V-B, Table III. The \(2.3\times\) sentence is the cost-efficiency paragraph, not the PD maximum.}
 \end{frame}
 \begin{frame}[t]{Generality Across Model Families}
@@ -821,11 +819,11 @@ Finer granularity can expose hardware opportunities, but adds dependency trackin
   \end{tabularx}\par}
   \vspace{.08cm}
   \begin{itemize}\footnotesize
-    \setlength{\itemsep}{.05cm}
+    \setlength{\itemsep}{.09cm}
     \item AF needs an attention block, so Mamba and diffusion are out. PD needs a prefill/decode split, so diffusion is out.
     \item The motivation profiles say ``Mamba 7B''; the evaluated SSM is Mamba-Codestral 7B. Do not merge the two names.
   \end{itemize}
-  \vspace{.06cm}\takeaway{``Four families'' means the offline pair study. Online evidence is one LLM.}
+  \vspace{.12cm}\takeaway{``Four families'' means the offline pair study. Online evidence is one LLM.}
   \src{Sec.~II-B, Sec.~V-A--V-D. DeepSeek-V3 is the solver paragraph in Sec.~V-D.}
 \end{frame}
 \end{document}

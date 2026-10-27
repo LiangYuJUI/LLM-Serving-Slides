@@ -1,0 +1,59 @@
+% First appendix frame. Not counted in the formal n/12 footer.
+\begin{frame}[t,label=backup_index]{Backup Topics}
+  \smalllabel{Q\&A / 21 Oct decks}\par
+  \vspace{.12cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.49\textwidth}
+      {\scriptsize\bfseries\color{Accent}THUNDERSERVE}\par
+      \vspace{.10cm}
+      {\footnotesize\qlink{backup_ts_phase_01}{\textbf{Phase and network}}\hfill{\scriptsize\color{Muted}2 slides}\par}
+      {\scriptsize\color{Muted}GPU phase characteristics and network heterogeneity.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_ts_tabu_01}{\textbf{Hierarchical scheduling}}\hfill{\scriptsize\color{Muted}2 slides}\par}
+      {\scriptsize\color{Muted}Two-level search and Tabu Search operations.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_ts_parallel_01}{\textbf{TP / PP configuration}}\hfill{\scriptsize\color{Muted}1 slide}\par}
+      {\scriptsize\color{Muted}Parallel configuration for each GPU group.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_ts_kv_01}{\textbf{Routing and KV transfer}}\hfill{\scriptsize\color{Muted}4 slides}\par}
+      {\scriptsize\color{Muted}Replica routing, KV cost, and network-aware placement.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_ts_rescheduling_01}{\textbf{Lightweight rescheduling}}\hfill{\scriptsize\color{Muted}1 slide}\par}
+      {\scriptsize\color{Muted}Phase flip and routing update without a full search.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_ts_compression_01}{\textbf{KV cache compression}}\hfill{\scriptsize\color{Muted}1 slide}\par}
+      {\scriptsize\color{Muted}4-bit KV for communication only.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_ts_results_01}{\textbf{Throughput and deployment}}\hfill{\scriptsize\color{Muted}2 slides}\par}
+      {\scriptsize\color{Muted}End-to-end throughput and Table 3 plans.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_ts_simulation_01}{\textbf{Simulator accuracy}}\hfill{\scriptsize\color{Muted}1 slide}\par}
+      {\scriptsize\color{Muted}Simulator and alpha-beta communication model.}\par
+    \end{column}
+    \begin{column}{.49\textwidth}
+      {\scriptsize\bfseries\color{Accent}HETIS}\par
+      \vspace{.10cm}
+      {\footnotesize\qlink{backup_hetis_motivation_01}{\textbf{Motivation}}\hfill{\scriptsize\color{Muted}2 slides}\par}
+      {\scriptsize\color{Muted}KV underutilization and module-dependent GPU gaps.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_hetis_workers_01}{\textbf{Workers and architecture}}\hfill{\scriptsize\color{Muted}2 slides}\par}
+      {\scriptsize\color{Muted}Primary workers, attention workers, and the system.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_hetis_headwise_01}{\textbf{Head-wise attention}}\hfill{\scriptsize\color{Muted}3 slides}\par}
+      {\scriptsize\color{Muted}Head split, dynamic allocation, and GQA constraints.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_hetis_migration_01}{\textbf{Dispatch and migration}}\hfill{\scriptsize\color{Muted}3 slides}\par}
+      {\scriptsize\color{Muted}Re-dispatching, head-level KV, and live migration.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_hetis_results_01}{\textbf{Llama-70B results}}\hfill{\scriptsize\color{Muted}2 slides}\par}
+      {\scriptsize\color{Muted}End-to-end results and usable KV cache capacity.}\par
+      \vspace{.07cm}
+      {\footnotesize\qlink{backup_hetis_hbf_01}{\textbf{HBM / HBF implications}}\hfill{\scriptsize\color{Muted}1 slide}\par}
+      {\scriptsize\color{Muted}Follow-up questions for memory co-design. Not a result.}\par
+      \vspace{.22cm}
+      {\footnotesize\qlink{main_thanks}{Return to Review}\par}
+      \vspace{.08cm}
+      {\scriptsize\color{Muted}These pages support questions. They are outside the 10-minute talk, and the formal footer stays \(n/12\).}
+    \end{column}
+  \end{columns}
+\end{frame}

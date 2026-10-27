@@ -1,6 +1,6 @@
 # 10 分鐘 Paper Review 中文講稿
 
-對應 `2026-10-28-10min-Review.tex` 與獨立的 12 頁 PDF。第 01 頁是封面，第 02 頁是今天的時間軸，第 03–11 頁是 10 分鐘內容，合計 600 秒，第 12 頁是 Thank you。頁腳是這份 PDF 自己的 `n/12`，不是 Main deck 的頁碼。
+對應 `2026-10-28-10min-Review.tex`。正式報告仍是 12 頁：第 01 頁封面，第 02 頁時間軸，第 03–11 頁是 10 分鐘內容，合計 600 秒，第 12 頁 Thank you。這 12 頁的頁腳維持 `n/12`。第 13 頁起是 Q&A backup，不計入口述時間；關鍵字可點進 10/21 的詳細頁，再從頁尾回到這份報告。
 
 ThunderServe 事實只依 `2026-10-21-meeting/MLSys25_Thunderserve.pdf`。Hetis 事實只依 `2026-10-21-meeting/SC25_Hetis.pdf`。
 

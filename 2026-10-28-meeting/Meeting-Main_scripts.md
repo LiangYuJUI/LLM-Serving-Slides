@@ -16,11 +16,9 @@
 
 預計時間：0.8 分鐘。
 
-先用這張表定位兩篇。Helix 面對的是不同 GPU 能力加上不同網路連線，決定 model layers 放在哪裡，以及 request 沿哪條 pipeline 執行。Tessera 則觀察，同一模型裡不同 kernel 偏好的 GPU 可能不同，所以決定每個 kernel 的執行位置。
+先用這張表定位兩篇。Helix 面對的是不同 GPU 能力加上不同網路連線，決定 model layers 放在哪裡，簡單來說就是去切 model layer 然後決定 request 沿哪條 pipeline 執行。Tessera 是觀察，同一模型裡不同 kernel 偏好的 GPU 可能不同，所以決定每個 kernel 的執行位置。
 
 兩篇都先做較昂貴的離線規劃，但 runtime 的決策不一樣：Helix 是替新 request 選路；Tessera 是執行既有 kernel policy，並依負載切換 policy。表裡 MILP 是混合整數線性規劃，DDG 是資料相依圖，後面只講它們在系統中負責什麼。
-
-今天不把這兩篇排成誰比誰更細就更好。它們選擇的最佳化維度不同，我們真正要比較的是：每個切分單位看見了什麼瓶頸，又付出了什麼代價。
 
 來源：Helix Sec. 4–5，PDF pp. 5–8；Tessera Sec. III，PDF pp. 4–7。比較表為自己的整理。
 
@@ -28,13 +26,9 @@
 
 預計時間：1.4 分鐘。
 
-Helix 一句話的重點，是一起規劃 layer placement 和 request routing。作者的起點是，雲端能取得的 GPU 不一定同型號，compute 和 memory capacity 都不同，還可能分散在不同 region。
+Helix 的重點是一起規劃 layer placement 和 request routing。作者的起點是，雲端能取得的 GPU 不一定同型號，compute 和 memory capacity 都不同，還可能分散在不同 region。所以有 heterogeneous 和 geo-distributed 也就是 data center 地理位置不同的因素
 
-這裡先區分兩個詞：heterogeneous 指硬體能力不同；geo-distributed 指地理位置不同，進一步帶來頻寬、延遲和拓樸差異。異質 GPU 可以在同一機房，兩者不是同義詞。
-
-一個直覺是依 FLOPS 分配工作。FLOPS 是 Floating Point Operations Per Second，表示理論浮點運算吞吐能力；算力越強的 GPU，就分到較多模型工作。但 Figure 1 要指出，這只是 compute-proportional 的直覺。從左至右看，均勻分層會讓慢 GPU 限制整條 pipeline；即使改成算力平衡，若每個 activation 還是要跨越慢連線，瓶頸只是從 GPU 轉移到 network。
-
-所以作者提出的問題不是如何把 layer 平均切好，而是如何讓整個系統真正送出最多 token。圖中的 network-aware 配置分散慢連線上的工作，說明 placement 和 routing 必須放在同一個資源模型裡考慮。
+圖a在說的是兩個 data center 之間的傳輸頻寬很低，但 data center 內部可以有很高的頻寬，圖b是在說如果 layer均分給每種不同 gpu 的話 有可能會造成單位時間利用率低，利用率低的 gpu 就會變成 pipeline 瓶頸，圖c是在說如果瓶頸也有可能發升在頻寬不夠，造成 gpu 已經算傳了，但資料還在傳，圖d是在說一個 gpu 可以很彈性的調整負責的 layer 和 pipeline 中的位置，盡量不要認任何一張 gpu 變成瓶頸
 
 來源：Helix Sec. 1、4.2，Figure 1，PDF pp. 1–2、4–5。Figure 1 是動機示例，不是大型實驗測量。
 
@@ -42,13 +36,11 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 預計時間：1.7 分鐘。
 
-方法的輸入，是模型、GPU compute／memory profile，以及網路連線的 profile。第一階段在 serving 之前規劃：MILP 選擇每個節點存哪些連續 layers，並透過 flow formulation 評估這個 placement 的可行吞吐量。
+這頁介紹 Helix 的整體流程，輸入是模型、GPU 的算力與記憶體容量，以及網路連線的 profile。Helix 用 flow graph 表示 GPU 和網路的容量限制，並在 serving 開始前，透過 MILP 一起搜尋每個 node 要存哪些連續 layers，以及流量如何分配，讓整體吞吐量最大。
 
-為什麼可以用 max-flow？先把 placement 固定。每個 GPU 的處理能力和每條連線的傳輸能力都換成 tokens per second，變成 graph 上的 edge capacity。從 source 到 sink 能維持多少 flow，就近似代表這個配置能持續處理多少 token。這是一個資源容量模型，不會直接預測單筆 request 的 latency。
+Placement 決定後，max-flow 的總流量代表這個配置在容量模型下能達到的最大吞吐量，單位是 tokens per second；各條邊的流量則作為 scheduler 的分流權重，用來替新 request 選擇 pipeline。因此，即使每張 GPU 存的 layers 固定了，requests 仍然可以走不同的可行路徑。這個模型估算的是吞吐量，不會直接預測單筆 request 的 latency。
 
-右側六步是概念上的資料流，不是說 MILP 完全不看 graph、等選完才考慮網路。MILP 本身就是利用 flow 約束搜尋 placement；固定配置後的 max-flow 則提供 runtime 可遵循的流量權重。
-
-線上收到 request，scheduler 根據這些權重選一條完整 pipeline，後續 decode tokens 沿用相同 pipeline。因此不是每來一筆 request 都重算 MILP。這頁的 offline／online 指最佳化發生的時間；下一頁會用相同詞描述 workload，那是另一個分類。
+Online 收到每筆新 request 時，scheduler 會根據流量權重，為它選擇一條完整 pipeline，後續 decode tokens 沿用相同路徑。不同 requests 可以走不同的 pipelines，同時利用多條路徑提高整體吞吐量。這些 pipelines 也可以共用 GPU 或網路連線，分流權重會反映共用資源的容量限制。因此，每筆 request 只走一條 pipeline，但整個系統可以同時使用多條，也不需要每來一筆 request 就重算 MILP。這頁的 offline／online 指事前規劃與線上執行；下一頁會用相同詞描述 workload，那是另一個分類。
 
 來源：Helix Sec. 4.3–4.4、5.1，Figure 3，PDF pp. 5–8。Max-flow 是 throughput model，不是 latency model。
 
@@ -213,7 +205,6 @@ Tessera 的論證是：phase 和 block 裡仍有不同硬體偏好的 kernel，�
 我的整理是，粒度變細可能看見更多硬體機會，但也增加 dependency tracking、communication、optimization complexity 和 runtime coordination。所以接下來的研究問題不是無限制地往更細切，而是：在什麼硬體與負載條件下，新增收益還能大於通信及協調成本？這可作為之後討論 GPU、HBM、HBF 或 architecture co-design 的問題，但今天兩篇並沒有證明任何 HBF 結論。正式報告到這裡結束，後面只用於追問。
 
 來源：Helix Sec. 4–6、Tessera Sec. III、V；ThunderServe／Hetis 的定位依 2026-10-21 完整 reference decks。比較與最後問題是報告者統整，並非四篇在共同環境下的 performance ranking。
-
 
 ---
 
