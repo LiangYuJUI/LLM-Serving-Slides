@@ -29,26 +29,32 @@
 \newcommand{\src}[1]{\par\vfill{\fontsize{7}{8}\selectfont\color{Muted}Source: Characterizing High Bandwidth Flash for LLM Serving, #1.}\par}
 \newcommand{\fig}[2]{\par{\centering\includegraphics[width=\linewidth,height=#2,keepaspectratio]{CharacterizingHBFforLLMServing/slides/Fig#1.png}\par}}
 \newcommand{\head}[1]{\par{\color{Accent}\bfseries #1}\par\smallskip}
+\newcommand{\smalllabel}[1]{{\scriptsize\bfseries\color{Accent}\MakeUppercase{#1}}}
 \newcommand{\arr}{\,$\rightarrow$\,}
 \renewcommand{\arraystretch}{1.15}
+\title[Characterizing HBF]{Characterizing High Bandwidth Flash for LLM Serving}
+\author{Yu-Jui Liang}
+\date{28 Oct 2026}
 \subject{Research meeting, 28 Oct 2026}
 \begin{document}
-\begin{frame}[t]{Characterizing High Bandwidth Flash for LLM Serving}
-
-\par\vspace{.12cm}
-{\Large\color{Accent}When does additional flash capacity\\actually improve LLM serving?\par}
-\vspace{.3cm}
-Zack Yu et al.\quad arXiv:2609.39131v2, 5 Oct 2026\par
-\vspace{.35cm}
-\textbf{Yu-Jui Liang}\\[.08cm]
-Advisor: Hsiang-Yun Cheng\\[.08cm]
-National Taiwan University | Academia Sinica\\[.08cm]
-28 Oct 2026
-\vspace{.25cm}
-\takeaway{HBF helps high-throughput serving mainly by expanding usable device memory, with memory architecture, placement, and scheduling co-designed.}
-
-\src{paper summary; supplied research brief}
-\end{frame}
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+\vspace*{.45cm}
+\smalllabel{Research meeting / paper summary}\par\vspace{.3cm}
+{\LARGE\bfseries Characterizing High Bandwidth Flash\\[.1cm]
+for LLM Serving\par}\vspace{.14cm}
+{\large\bfseries When does additional flash capacity actually improve LLM serving?\par}\vspace{.28cm}
+{\large\color{Accent}HBF helps high-throughput serving mainly by expanding usable device memory,\\
+with memory architecture, placement, and scheduling co-designed.\par}
+\vspace{.45cm}
+{\bfseries Yu-Jui Liang}\par
+{\small\color{Muted}Advisor: Hsiang-Yun Cheng}\par
+{\small\color{Muted}National Taiwan University \quad | \quad Academia Sinica \quad | \quad 28 Oct 2026}\par
+\vfill
+{\scriptsize\color{Muted}Zack Yu et al.\par
+arXiv:2609.39131v2, 5 Oct 2026}\par\vspace{.08cm}
+{\color{Accent}\rule{\textwidth}{.7pt}}
+\end{frame}}
 
 \begin{frame}[t]{Why Does Agentic Serving Need More Device Memory?}
 

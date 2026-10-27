@@ -1,6 +1,6 @@
 # HBF 中文講稿
 
-對應 `2026-10-28-HBF.tex`，共 9 頁（8 頁主報告 + 1 頁來源整理）。目標約 9 分鐘；每頁時間含指圖與停頓，實際仍需口頭試講。正文可直接口述，來源與準備筆記不念。
+對應 `2026-10-28-HBF_Sucks.tex`，共 9 頁（8 頁主報告 + 1 頁來源整理）。目標約 9 分鐘；每頁時間含指圖與停頓，實際仍需口頭試講。正文可直接口述，來源與準備筆記不念。
 
 來源：使用者需求中的 quantitative facts，以及補取的 [arXiv:2608.11668v4](https://arxiv.org/abs/2608.11668v4)，本地保存為 `Arxiv26_HBF_v4.pdf`。原有 `CharacterizingHBFforLLMServing/` 六圖與這版 paper 不一致，沒有混用；本 deck 使用 `CharacterizationOfHBFforKVCentricLLMServing/` 的 Figure 1、3、4、10、11、12，Table 8 以 native LaTeX 重建。以下頁碼指論文 PDF 檔案頁碼。
 

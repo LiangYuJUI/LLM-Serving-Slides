@@ -1,20 +1,20 @@
 # ThunderServe 四分鐘摘要講稿
 
-對應 `2026-10-28-Meeting-Main.pdf` 第 02–05 頁，也就是 `ThunderServe/ThunderServe-summary-frames.tex` 的四個 frames。頁碼是整份 Main PDF 的頁碼。時間 50 + 65 + 80 + 45 秒，合計 240 秒。指圖包含在時間內。
+對應獨立簡報 `2026-10-28-10min-Review.pdf` 第 03–06 頁，也就是 `ThunderServe/ThunderServe-summary-frames.tex` 的四個 frames。頁碼是這份 12 頁 Review 自己的頁碼，不是 Main deck。時間 50 + 65 + 80 + 45 秒，合計 240 秒。指圖包含在時間內。
 
 事實只依 `2026-10-21-meeting/MLSys25_Thunderserve.pdf`（arXiv:2502.09334v2）。下面用「論文觀察」「作者方法」「實驗結果」「報告者整理」分開，沒有標成實驗結果的句子不要念成論文已經證明的結論。
 
-## 第 02 頁｜Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling
+## 第 03 頁｜Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling
 
 預計時間：50 秒。
 
 論文觀察是，prefill 比較吃算力，decode 比較吃記憶體頻寬。Table 1 裡，A40 的 FP16 是 149.7 TFLOPS，3090 Ti 是 71 TFLOPS；頻寬反過來，3090 Ti 有 1008 GB/s，A40 是 696 GB/s。所以兩個 phase 合適的 GPU 可能不同。Figure 1 用一筆 request 的價格來看，input 512、output 16：prefill 在 A40 比較便宜，decode 在 3090 Ti 比較便宜。
 
-作者要處理的困難是，雲端 GPU 的種類和數量都有限，網路頻寬也不高，而且每對 GPU 不一樣。Phase 拆開之後，還得把 KV cache 從 prefill replica 傳到 decode replica。報告者整理是：只看 FLOPS 或 bandwidth 來分 GPU 並不夠，因為中間多了這段傳輸。這頁先停在研究問題，怎麼一起決定 GPU 怎麼分、phase 放在哪、通訊怎麼走，先不講演算法。
+不過雲端能用的 GPU 種類和數量都有限，網路也不快，而且每對 GPU 之間的頻寬不一樣。Prefill 和 decode 分開之後，KV cache 還要從 prefill group 傳到 decode group，所以不能只看算力或頻寬來分 GPU。真正要一起決定的是：GPU 怎麼分、phase 放在哪，以及這段傳輸怎麼走。
 
 論文出處：Sec. 1，Figure 1，Table 1。Figure 1 是單筆 request 的價格，不是整個 cluster 的 throughput。
 
-## 第 03 頁｜Joint Optimization of GPU Placement, Parallelism, and Routing
+## 第 04 頁｜Joint Optimization of GPU Placement, Parallelism, and Routing
 
 預計時間：65 秒。
 
@@ -24,7 +24,7 @@
 
 論文出處：Sec. 3.2–3.4，Figure 3。壓縮和 lightweight rescheduling 是作者的機制，效果留到後面的實驗頁，不在這張流程圖裡。
 
-## 第 04 頁｜Does Phase-Aware Scheduling Improve Serving Efficiency?
+## 第 05 頁｜Does Phase-Aware Scheduling Improve Serving Efficiency?
 
 預計時間：80 秒。
 
@@ -38,7 +38,7 @@
 
 論文出處：Sec. 5.1–5.3，Figure 9，Table 3。正文寫的就是 HexGen 的 1.5／1.3 倍，以及 DistServe 的 1.5／2.1 倍。
 
-## 第 05 頁｜Phase-Aware Deployment Improves Cost Efficiency
+## 第 06 頁｜Phase-Aware Deployment Improves Cost Efficiency
 
 預計時間：45 秒。
 

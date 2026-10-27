@@ -1,0 +1,156 @@
+% Standalone 10-minute review. Not part of 2026-10-28-Meeting-Main.tex.
+% Page numbers are 1/N of this deck only.
+% Compile with pdfLaTeX from this directory.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\graphicspath{{./}{figures/}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{hyperref}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{Ink}{HTML}{243748}
+\definecolor{Muted}{HTML}{667B8B}
+\definecolor{Accent}{HTML}{347E74}
+\definecolor{AccentBlue}{HTML}{507DAD}
+\definecolor{SoftMint}{HTML}{E6F4EE}
+\definecolor{SoftBlue}{HTML}{E9F2F9}
+\definecolor{SoftLilac}{HTML}{F1EEF8}
+\definecolor{Paper}{HTML}{FBFCFE}
+\definecolor{Divider}{HTML}{D8E4EB}
+
+\setbeamercolor{background canvas}{bg=Paper}
+\setbeamercolor{normal text}{fg=Ink}
+\setbeamercolor{structure}{fg=Accent}
+\setbeamercolor{frametitle}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{title}{fg=Ink}
+\setbeamercolor{subtitle}{fg=Muted}
+\setbeamercolor{block title}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block body}{fg=Ink,bg=white}
+\setbeamercolor{item}{fg=Accent}
+\setbeamercolor{caption name}{fg=Muted}
+\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamerfont{footline}{size=\tiny}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.60cm plus 1fil]{footline}%
+      \hfill\insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}}}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=.72cm,dp=.16cm,leftskip=.55cm,rightskip=.40cm]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle
+  \end{beamercolorbox}}
+
+\newcommand{\smalllabel}[1]{{\scriptsize\bfseries\color{Accent}\MakeUppercase{#1}}}
+\newcommand{\hint}[1]{{\footnotesize\color{Muted}#1}}
+\newcommand{\takeaway}[1]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.16cm,wd=\linewidth]{block title}%
+    {\normalsize\bfseries #1}
+  \end{beamercolorbox}}
+\newcommand{\stepcard}[3]{%
+  \begin{beamercolorbox}[rounded=true,sep=0.16cm,wd=\linewidth]{block body}%
+    {\footnotesize\bfseries\color{Accent}#1}\par\vspace{1.1mm}
+    {\large\bfseries #2}\par\vspace{1.1mm}
+    {\footnotesize\color{Muted}#3}%
+  \end{beamercolorbox}}
+
+\newcommand{\figureplaceholder}[3]{%
+  \begingroup\centering
+  \IfFileExists{#1}{%
+    \includegraphics[width=.98\linewidth,height=#2,keepaspectratio]{#1}%
+  }{%
+    \IfFileExists{figures/#1}{%
+      \includegraphics[width=.98\linewidth,height=#2,keepaspectratio]{figures/#1}%
+    }{%
+      \begin{tikzpicture}
+        \node[draw=AccentBlue!55,dashed,line width=.7pt,rounded corners=4pt,
+              fill=SoftBlue!60,minimum height=#2,minimum width=.95\linewidth,
+              text width=.85\linewidth,align=center,inner sep=2mm] {
+           {\color{AccentBlue}\bfseries FIGURE PLACEHOLDER}\\[2.2mm]
+           {\color{Ink}\small #3}\\[1.5mm]
+           {\color{Muted}\scriptsize\ttfamily\detokenize{#1}}};
+      \end{tikzpicture}%
+    }%
+  }\par\endgroup}
+
+\newcommand{\src}[1]{\vspace{0.12cm}\hint{Source: #1}}
+
+
+\newcommand{\mainfig}[2]{%
+  \begingroup\centering
+  \includegraphics[width=\linewidth,height=#2,keepaspectratio]{#1}\par
+  \endgroup}
+
+\title{10-minute Paper Review: ThunderServe and Hetis}
+\author{Yu-Jui Liang}
+\date{28 Oct 2026}
+\subject{10-minute paper review, 28 Oct 2026}
+\begin{document}
+\begin{frame}
+\vspace{.22cm}
+{\large\bfseries\color{Accent}10-MINUTE PAPER REVIEW\par}\vspace{.26cm}
+{\LARGE\bfseries Heterogeneous Model Serving\\[.16cm]at Different Granularities\par}
+\vspace{.20cm}{\LARGE\color{Muted}ThunderServe and Hetis\par}
+\vspace{.26cm}{\Large\textbf{Yu-Jui Liang}\par}
+\vspace{.10cm}{\large Advisor: Hsiang-Yun Cheng\par}
+\vspace{.08cm}{\large National Taiwan University \quad | \quad Academia Sinica\par}
+\vspace{.08cm}{\large 28 Oct 2026\par}
+\vfill
+{\footnotesize\color{Muted}ThunderServe: Youhe Jiang et al., MLSys 2025\\
+Hetis: Zizhao Mo et al., SC 2025}\par
+\vspace{.08cm}{\color{Accent}\rule{\textwidth}{.7pt}}
+\end{frame}
+
+\begin{frame}{Presentation Roadmap}
+  \smalllabel{28 Oct / Plan}\par
+  \vspace{.38cm}
+  \begin{enumerate}
+    \setlength{\itemsep}{.48cm}
+    \item \textbf{\large ThunderServe + Hetis}\par
+      {\normalsize\color{Muted}10 minutes. Review and comparison of last week's papers. This deck.}
+    \item \textbf{\large Helix}\par
+      {\normalsize\color{Muted}10 minutes. Concise report on a new paper.}
+    \item \textbf{\large Tessera}\par
+      {\normalsize\color{Muted}10 minutes. Concise report on a new paper.}
+    \item \textbf{\large Two HBF papers}\par
+      {\normalsize\color{Muted}Extra 10 minutes. Backup, not counted in the formal 30 minutes.}
+  \end{enumerate}
+  \vspace{.36cm}\hint{Formal report: three blocks, 30 minutes. This deck is the first block.}
+\end{frame}
+
+\input{ThunderServe/ThunderServe-summary-frames.tex}
+\input{Hetis/Hetis-summary-frames.tex}
+\input{Comparison/ThunderServe-Hetis-comparison.tex}
+
+\begin{frame}
+\vfill
+\begin{center}
+{\large\bfseries\color{Accent}10-MINUTE PAPER REVIEW\par}
+\vspace{.72cm}
+{\fontsize{34}{40}\selectfont\bfseries Thank you\par}
+\vspace{.42cm}
+{\LARGE\color{Muted}ThunderServe and Hetis\par}
+\vspace{.62cm}
+{\Large\textbf{Yu-Jui Liang}\par}
+\vspace{.18cm}
+{\Large\color{Muted}28 Oct 2026\par}
+\end{center}
+\vfill
+\end{frame}
+\end{document}

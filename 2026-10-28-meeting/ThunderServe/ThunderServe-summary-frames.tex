@@ -5,29 +5,29 @@
 \begin{frame}[t]{Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.50\textwidth}
-\mainfig{ThunderServe/ThunderServe_Fig01.png}{3.85cm}
+\mainfig{ThunderServe/ThunderServe_Fig01.png}{4.05cm}
 \end{column}
 \begin{column}{.48\textwidth}
-{\footnotesize\textbf{Observation}}
-\begin{itemize}\setlength{\itemsep}{.04cm}\footnotesize
+{\normalsize\textbf{Observation}}
+\begin{itemize}\setlength{\itemsep}{.06cm}\footnotesize
 \item Prefill: compute-intensive.
 \item Decode: memory-bandwidth-intensive.
 \end{itemize}
-\vspace{.06cm}
-{\scriptsize A40: 149.7 FP16 TFLOPS. 3090 Ti: 1008 GB/s. Table~1.}
+\vspace{.08cm}
+{\footnotesize A40: 149.7 FP16 TFLOPS. 3090 Ti: 1008 GB/s. Table~1.}
 \vspace{.12cm}
-{\footnotesize\textbf{Challenge}}
-\begin{itemize}\setlength{\itemsep}{.04cm}\footnotesize
+{\normalsize\textbf{Challenge}}
+\begin{itemize}\setlength{\itemsep}{.06cm}\footnotesize
 \item Heterogeneous GPU resources.
 \item Limited and heterogeneous network bandwidth.
 \item KV cache transfer overhead.
 \end{itemize}
-\vspace{.08cm}
+\vspace{.10cm}
 {\footnotesize\textbf{Research question}\par}
 {\footnotesize How to jointly optimize GPU allocation, phase placement, and communication?\par}
 \end{column}
 \end{columns}
-\vspace{.08cm}
+\vspace{.10cm}
 \takeaway{The better GPU can differ by phase. KV transfer makes a FLOPS-only or bandwidth-only split insufficient.}
 \src{ThunderServe Sec.~1, Fig.~1, Table~1. Prices in the figure are per request.}
 \end{frame}
@@ -35,33 +35,33 @@
 \begin{frame}[t]{Joint Optimization of GPU Placement, Parallelism, and Routing}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.60\textwidth}
-\mainfig{ThunderServe/ThunderServe_Fig03.png}{4.70cm}
+\mainfig{ThunderServe/ThunderServe_Fig03.png}{5.05cm}
 \end{column}
 \begin{column}{.38\textwidth}
 \smalllabel{Upper-level --- Tabu search}\par
-\begin{itemize}\setlength{\itemsep}{.04cm}\footnotesize
+\begin{itemize}\setlength{\itemsep}{.10cm}\normalsize
 \item GPU group construction.
 \item Prefill / decode phase designation.
 \end{itemize}
-\vspace{.08cm}
+\vspace{.14cm}
 \smalllabel{Lower-level --- configuration}\par
-\begin{itemize}\setlength{\itemsep}{.04cm}\footnotesize
+\begin{itemize}\setlength{\itemsep}{.10cm}\normalsize
 \item TP / PP configuration.
 \item Prefill / decode request routing.
 \item Network-aware KV cache transfer.
 \end{itemize}
-\vspace{.08cm}
-{\scriptsize Additional mechanisms: KV cache compression and lightweight rescheduling.}
+\vspace{.14cm}
+{\footnotesize Additional mechanisms: KV cache compression and lightweight rescheduling.}
 \end{column}
 \end{columns}
-\vspace{.04cm}
+\vspace{.12cm}
 \takeaway{Upper level assigns groups and phases. Lower level sets parallelism and routing. Together they score one deployment plan.}
 \src{ThunderServe Sec.~3.2--3.4, Fig.~3.}
 \end{frame}
 
 \begin{frame}[t]{Does Phase-Aware Scheduling Improve Serving Efficiency?}
-{\scriptsize\textbf{Question:} Does workload-aware phase placement raise end-to-end throughput?\par}
-\vspace{.06cm}
+{\footnotesize\textbf{Question:} Does workload-aware phase placement raise end-to-end throughput?\par}
+\vspace{.04cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.46\textwidth}
 \smalllabel{Experiment 1 --- Table 3}\par
@@ -69,28 +69,28 @@
 \vspace{.04cm}
 {\footnotesize Coding: \textbf{8 prefill / 4 decode}\par}
 {\footnotesize Conversation: \textbf{4 prefill / 8 decode}\par}
-\vspace{.06cm}
-{\scriptsize LLaMA-30B, same 32-GPU cloud pool. Coding has longer prompts; conversation has longer outputs.\par}
-\vspace{.10cm}
-\smalllabel{Experiment 2 --- Figure 9}\par
 \vspace{.04cm}
-{\scriptsize\renewcommand{\arraystretch}{1.08}
+{\footnotesize LLaMA-30B, same 32-GPU cloud pool. Coding has longer prompts; conversation has longer outputs.\par}
+\vspace{.08cm}
+\smalllabel{Experiment 2 --- Figure 9}\par
+\vspace{.02cm}
+{\footnotesize\renewcommand{\arraystretch}{1.08}
 \begin{tabular}{@{}lcc@{}}\toprule
  & \textbf{Coding} & \textbf{Conv.}\\\midrule
 vs.\ HexGen & $1.5\times$ & $1.3\times$\\
 vs.\ DistServe & $1.5\times$ & $2.1\times$\\\bottomrule
 \end{tabular}\par}
-\vspace{.05cm}
-{\scriptsize HexGen: heterogeneous cloud GPUs.\par
+\vspace{.06cm}
+{\footnotesize HexGen: heterogeneous cloud GPUs.\par
 DistServe: homogeneous 8$\times$A100, similar price. Not the same machines.\par}
 \end{column}
 \begin{column}{.52\textwidth}
-\mainfig{ThunderServe/ThunderServe_Fig09.png}{3.35cm}
+\mainfig{ThunderServe/ThunderServe_Fig09.png}{3.20cm}
 \vspace{.06cm}
-{\scriptsize vLLM, the fourth group, is also in-house. HexGen and DistServe are different hardware setups.\par}
+{\footnotesize vLLM, the fourth group, is also in-house. HexGen and DistServe are different hardware setups.\par}
 \end{column}
 \end{columns}
-\vspace{.08cm}
+\vspace{.04cm}
 \takeaway{Workload-aware placement improves overall serving throughput under heterogeneous resource constraints.}
 \src{ThunderServe Sec.~5.1--5.3, Fig.~9, Table~3. Relative throughput is ThunderServe over each baseline.}
 \end{frame}
@@ -109,11 +109,11 @@ DistServe: homogeneous 8$\times$A100, similar price. Not the same machines.\par}
 \end{column}
 \end{columns}
 \vspace{.16cm}
-{\scriptsize Table~4 breakdown. Full: rescheduling 54($\pm$5)\,s $+$ reload 103($\pm$10)\,s $=$ 157($\pm$13)\,s.
+{\footnotesize Table~4 breakdown. Full: rescheduling 54($\pm$5)\,s $+$ reload 103($\pm$10)\,s $=$ 157($\pm$13)\,s.
 Lightweight: rescheduling 13($\pm$2)\,s $+$ reload 0\,s $=$ 13($\pm$2)\,s.\par}
 \vspace{.12cm}
 \takeaway{ThunderServe demonstrates that heterogeneous GPU serving benefits from jointly optimizing inference phases, hardware allocation, and communication.}
-\vspace{.08cm}
+\vspace{.10cm}
 {\footnotesize ThunderServe focuses on phase-level resource allocation; finer-grained workload partitioning is another possible direction.\par}
 \src{Abstract and Sec.~6 for the 1.7$\times$/2.1$\times$ claim. Sec.~5.4 and Table~4 for rescheduling time.}
 \end{frame}

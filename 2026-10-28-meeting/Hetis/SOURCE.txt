@@ -1,0 +1,39 @@
+Copies of existing extracts in 2026-10-21-meeting/Hetis/.
+Originals were not moved, deleted, or re-rendered.
+Fact source: 2026-10-21-meeting/SC25_Hetis.pdf
+(Hetis, SC 2025; arXiv:2509.08309).
+
+Hetis_Fig02.png
+  Paper Figure 2. Decode MLP and Attention time of one Llama-70B layer.
+  Original: 2026-10-21-meeting/Hetis/SC25_Hetis_Figure_02_p04.png
+  Used on Main PDF page 6.
+
+Hetis_Fig03.png
+  Paper Figure 3. System architecture of Hetis.
+  Original: 2026-10-21-meeting/Hetis/SC25_Hetis_Figure_03_p04.png
+  Used on Main PDF page 7.
+
+Hetis_Fig04.png
+  Paper Figure 4. Hierarchical search for primary-worker parallelism.
+  Original: 2026-10-21-meeting/Hetis/SC25_Hetis_Figure_04_p05.png
+  Copied for Q&A. Not placed on the 10-minute review, so the deck stays 22 main + 25 backup.
+
+Hetis_Fig06.png
+  Paper Figure 6. Head-wise dynamic Attention example.
+  Original: 2026-10-21-meeting/Hetis/SC25_Hetis_Figure_06_p06.png
+  Copied for Q&A. Not placed on the 10-minute review.
+
+Hetis_Fig10.png
+  Paper Figure 10. Normalized end-to-end latency vs. request rate, Llama-70B.
+  Original: 2026-10-21-meeting/Hetis/SC25_Hetis_Figure_10_p09.png
+  Used on Main PDF page 8. Y-axis is latency, not throughput.
+
+Hetis_Fig11.png
+  Paper Figure 11. Maximum available KV cache space.
+  Original: 2026-10-21-meeting/Hetis/SC25_Hetis_Figure_11_p10.png
+  Used on Main PDF page 8.
+
+Hetis_Fig14.png
+  Paper Figure 14. Dynamic cache and head usage under changing request rate.
+  Original: 2026-10-21-meeting/Hetis/SC25_Hetis_Figure_14_p10.png
+  Copied for Q&A. Not placed on the 10-minute review.

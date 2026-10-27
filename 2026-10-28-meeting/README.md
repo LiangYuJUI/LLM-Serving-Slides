@@ -1,39 +1,40 @@
 # 2026-10-28 Meeting
 
-Meeting 日期是 **2026-10-28（Wednesday）**。正式報告規劃 **30 分鐘**，另外保留約 **10 分鐘 HBF 備用**。目前 Main deck 只完成其中一部分。
+Meeting 日期是 **2026-10-28（Wednesday）**。正式報告規劃 **30 分鐘**，另外保留約 **10 分鐘 HBF 備用**。10 分鐘 Paper Review 是一份獨立簡報，不在 Main PDF 裡。
 
 | Section | Planned | Status |
 |---|---|---|
-| ThunderServe summary | 4 min | Done. Four frames in `ThunderServe/ThunderServe-summary-frames.tex` |
-| Hetis summary | 4 min | Not implemented. No placeholder slides |
-| ThunderServe vs. Hetis | 2 min | Not implemented. No placeholder slides |
-| Helix + Tessera | 10 + 10 min planned | Existing main slides kept. Speaker notes still total about 17.2 min and were not recut |
+| ThunderServe + Hetis + comparison | 10 min | Done. 獨立 PDF，封面 + 時間軸 + 9 頁 + Thank you，共 12 頁 |
+| Helix + Tessera | 10 + 10 min planned | Main deck。講稿仍是原來的口述時間，約 17.2 分鐘，沒有改切成 10 分鐘 |
 | Additional HBF papers | Extra 10 min | Separate decks kept. Not counted in the 30 minutes |
 
-`2026-10-28-Meeting-Main.tex` 目前是 **17 張 main slides**（封面 + ThunderServe 4 張 + 既有 Helix／Tessera）加上 appendix。已完成內容的口述預算是 **21.5 分鐘**。頁腳 `Main n/17` 才算正式報告；`Backup PDF n` 與獨立 HBF deck 都不計入。
+`2026-10-28-Meeting-Main.tex` 是 **13 張 main slides** 加上 25 頁 appendix，PDF 共 **38 頁**。口述預算是 **17.5 分鐘**（封面 0.3 + Helix／Tessera 17.2）。10 分鐘 Review 另計，不加進這 17.5 分鐘。兩份若接連報告，合計約 27.5 分鐘，仍比 30 分鐘少約 2.5 分鐘；沒有為了補時間加長內容。頁腳 `Main n/13` 才算 Main 的正式報告。
 
 `2026-10-28-Helix.tex` 與 `2026-10-28-Tessera.tex` 仍是完整 reference / Q&A backup，各 **38 頁**。
 
-ThunderServe 事實來源是 `../2026-10-21-meeting/MLSys25_Thunderserve.pdf`。投影片用的 Figure 1、3、9 是該目錄 `ThunderServe/` 原圖的複本，見 `ThunderServe/SOURCE.txt`。Helix／Tessera／HBF 仍用本目錄的本地論文與圖檔。視覺沿用 2026-10-21 meeting 的 Light Madrid 風格。
+ThunderServe 事實來源是 `../2026-10-21-meeting/MLSys25_Thunderserve.pdf`。Hetis 事實來源是 `../2026-10-21-meeting/SC25_Hetis.pdf`。兩份圖都是 2026-10-21 目錄原圖的複本，見 `ThunderServe/SOURCE.txt` 與 `Hetis/SOURCE.txt`。比較頁的流程是 Conceptual comparison，不是論文原圖。Helix／Tessera／HBF 仍用本目錄的本地論文與圖檔。視覺沿用 2026-10-21 meeting 的 Light Madrid 風格。
 
-ThunderServe summary 驗證日期：2026-10-27。Helix／Tessera 前一輪驗證日期仍是 2026-10-22。
+10 分鐘 Review 驗證日期：2026-10-27。Helix／Tessera 前一輪驗證日期仍是 2026-10-22。
 
 ## 正式報告
 
 | 用途 | 簡報 | 講稿 | 頁數 |
 |---|---|---|---|
-| 目前完成的 main deck | `2026-10-28-Meeting-Main.tex` | `Meeting-Main_scripts.md` | 17 main + appendix，共 42 頁 |
-| ThunderServe 四頁講稿 | 同上，`\input` | `ThunderServe_scripts.md` | Main PDF 第 02–05 頁 |
+| Main deck | `2026-10-28-Meeting-Main.tex` | `Meeting-Main_scripts.md` | 13 main + 25 backup，共 38 頁 |
+| 10 分鐘 Review | `2026-10-28-10min-Review.tex` | `2026-10-28-10min-Review_scripts.md` | 封面 + 時間軸 + 9 頁 + Thank you，共 12 頁。頁碼 `n/12` |
 
-- PDF：`output/pdf/2026-10-28-Meeting-Main.pdf`
-- 四頁預覽：`output/pdf/2026-10-28-ThunderServe-Summary.pdf`
-- Overleaf：`output/overleaf/Meeting-Main.zip`（根目錄 `main.tex`，含 `ThunderServe/`）
-- 頁腳 `Main n/17` 是正式報告；`Backup PDF n` 不計入報告時間。
+- Main PDF：`output/pdf/2026-10-28-Meeting-Main.pdf`
+- Review PDF：`output/pdf/2026-10-28-10min-Review.pdf`。這是獨立編譯的簡報，不是從 Main PDF 裁頁。
+- Main Overleaf：`output/overleaf/Meeting-Main.zip`
+- Review Overleaf：`output/overleaf/10min-Review.zip`
+- Main 頁腳 `Main n/13`；Review 頁腳是自己的 `n/12`。第 02 頁是 28 Oct 的報告時間軸。
 - 講稿 `## 第 XX 頁` 對齊 PDF 實際頁碼。
 
 ```bash
 pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-Meeting-Main.tex
 pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-Meeting-Main.tex
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-10min-Review.tex
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-10min-Review.tex
 ```
 
 ## 完整 reference decks
@@ -73,14 +74,14 @@ Overleaf zip 的根目錄是 `main.tex`，並只附上該簡報實際用到的 P
 本目錄沒有 Marp 或 HTML。正式 meeting 用上面的 Meeting-Main，不另做第二套版型。
 
 
-## HBF：2026-10-28 短篇 paper summary
+## HBF Sucks：2026-10-28 短篇 paper summary
 
-新增獨立 **9 頁** HBF 簡報（8 頁主報告 + 結論後的 1 頁來源整理），目標口述約 9 分鐘；不沿用 Helix/Tessera 的 38 頁結構。HBF figure refresh 驗證日期：2026-10-23。
+新增獨立 **9 頁** HBF Sucks 簡報（8 頁主報告 + 結論後的 1 頁來源整理），目標口述約 9 分鐘；不沿用 Helix/Tessera 的 38 頁結構。HBF figure refresh 驗證日期：2026-10-23。
 
-- LaTeX：`2026-10-28-HBF.tex`
-- 繁體中文講稿：`HBF_scripts.md`
-- PDF：`output/pdf/2026-10-28-HBF.pdf`
-- Overleaf：`output/overleaf/HBF.zip`（根目錄 `main.tex`）
+- LaTeX：`2026-10-28-HBF_Sucks.tex`
+- 繁體中文講稿：`HBF_Sucks_scripts.md`
+- PDF：`output/pdf/2026-10-28-HBF_Sucks.pdf`
+- Overleaf：`output/overleaf/HBF_Sucks.zip`（根目錄 `main.tex`）
 - 原文：`Arxiv26_HBF_v4.pdf`，取自 https://arxiv.org/pdf/2608.11668v4
 - 使用素材：`CharacterizationOfHBFforKVCentricLLMServing/`，原文 Figure 3（動機）、1（架構）、4（C1）、10 + 11（C3）、12（結論）的完整擷取圖
 - Table 8（C2）使用 native LaTeX table，保留 write/read ratio、reads/write、prefix hit rate 三列
@@ -89,9 +90,9 @@ Overleaf zip 的根目錄是 `main.tex`，並只附上該簡報實際用到的 P
 既有 `CharacterizingHBFforLLMServing/` 六張圖均已逐張檢視，但其內容與目標 paper v4 的 Figure 1–6 不同，故全部保留原檔但未納入簡報。
 
 ```bash
-pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-HBF.tex
-pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-HBF.tex
-pdfinfo 2026-10-28-HBF.pdf
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-HBF_Sucks.tex
+pdflatex -interaction=nonstopmode -halt-on-error 2026-10-28-HBF_Sucks.tex
+pdfinfo 2026-10-28-HBF_Sucks.pdf
 ```
 
 ## Characterizing High Bandwidth Flash for LLM Serving
@@ -106,7 +107,7 @@ pdfinfo 2026-10-28-HBF.pdf
 - 圖片來源：`CharacterizingHBFforLLMServing/`；與另一篇 *HBF Sucks?*（arXiv:2608.11668v4）及其素材完全分開。
 - 投影片實際引用：`CharacterizingHBFforLLMServing/slides/Fig01.png` 至 `Fig05.png`。`slides/Fig06.png` 與原始 `CharacterizingHBFforLLMServing_Fig06.png` 仍留在 repo，供 reference 或未來 Q&A；主報告改以 Table 6 的六個 Figure 6 數據點呈現，TeX 不再引用 Fig06。原始六張圖映射正確，保留原檔；衍生圖只裁去下方圖說，保留座標、面板標籤及圖例，不拉伸。
 - 原圖解析度依序：1026×784、1018×876、1022×1564、1022×801、1022×805、2122×1142。裁切圖高度依序為 550、560、1300、540、540、965 px，寬度不變；裁切框左上角均為 (0,0)。
-- 標題頁算 Main 1/13；結論為 Main 13/13；`\appendix` 之後顯示 Backup PDF 14–21。
+- 封面是 plain title page，不顯示頁碼；第 2–13 頁顯示 Main n/13，結論為 Main 13/13；`\appendix` 之後顯示 Backup PDF 14–21。
 - Q3 拆成三頁：第 10 頁是每一層 DPA attention 再到 TP/EP MoE 的流程；第 11 頁是 Figure 6 六個點的數字表；第 12 頁是 improvement trade-off。第 13 頁收能量機制與結論。TP 只寫成 simulator 的 tensor-parallel computation / communication abstraction，不宣稱論文未給出的 per-expert tensor-to-rank mapping。
 - 數據限制：能耗不含靜態／背景功率；壽命為假設下估計；Table 7 的淨值保留提供的原數字，分項四捨五入後可能與淨值差 0.01 百分點。
 

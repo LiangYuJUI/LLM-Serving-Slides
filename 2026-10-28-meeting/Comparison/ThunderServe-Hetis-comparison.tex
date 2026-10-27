@@ -1,0 +1,48 @@
+% One comparison frame. The diagrams are conceptual, not paper figures.
+% Facts checked against the local ThunderServe and Hetis PDFs.
+
+\begin{frame}[t]{ThunderServe vs.\ Hetis: Different Granularities of GPU Specialization}
+\vspace{.02cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+{\centering
+{\footnotesize\bfseries ThunderServe}\\[1.5mm]
+\begin{tikzpicture}[
+  every node/.style={font=\footnotesize, align=center, inner sep=2.5pt},
+  box/.style={draw=Accent, rounded corners=2pt, fill=SoftMint, minimum height=9mm, text width=20mm}
+]
+\node[box] (pre) {Prefill\\group};
+\node[box, right=9mm of pre] (dec) {Decode\\group};
+\draw[-{Stealth}, thick, Accent] (pre) -- node[above, font=\footnotesize, text=Ink] {KV cache} (dec);
+\end{tikzpicture}\\[1.5mm]
+{\footnotesize deployment-level groups\par}}
+\end{column}
+\begin{column}{.48\textwidth}
+{\centering
+{\footnotesize\bfseries Hetis}\\[1.5mm]
+\begin{tikzpicture}[
+  every node/.style={font=\footnotesize, align=center, inner sep=2.5pt},
+  box/.style={draw=AccentBlue, rounded corners=2pt, fill=SoftBlue, minimum height=9mm, text width=22mm}
+]
+\node[box] (pri) {Primary\\workers};
+\node[box, right=11mm of pri] (att) {Attention\\workers};
+\draw[{Stealth}-{Stealth}, thick, AccentBlue] (pri) -- (att);
+\end{tikzpicture}\\[1.5mm]
+{\footnotesize head-level decode attention\par}}
+\end{column}
+\end{columns}
+\vspace{.06cm}
+{\scriptsize\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{2.15cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+ & \textbf{ThunderServe} & \textbf{Hetis}\\\midrule
+Objective & Cost-efficient serving under workload and network limits & Less compute imbalance and better memory use\\
+Granularity & Prefill / decode phases & Dense modules / attention heads\\
+Weights & Each phase replica hosts weights; TP/PP allowed & Primaries hold the model. Attention workers do not\\
+Communication & KV cache between prefill and decode replicas & Current-token Q/K/V and outputs for offloaded heads\\
+Scheduling & Grouping, phase, TP/PP, routing, lightweight rescheduling & Primary selection, online head dispatch, KV migration\\\bottomrule
+\end{tabularx}\par}
+\vspace{.06cm}
+\takeaway{ThunderServe optimizes phase-level deployment; Hetis optimizes module-aware execution and head-level attention placement.}
+\src{Diagrams are conceptual, not paper figures. Do not rank the papers by peak throughput: hardware, workloads, and baselines differ.}
+\end{frame}

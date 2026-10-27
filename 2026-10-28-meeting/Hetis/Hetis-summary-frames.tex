@@ -1,0 +1,95 @@
+% Hetis 4-minute summary. Input from 2026-10-28-Meeting-Main.tex.
+% Figures are copies of 2026-10-21-meeting/Hetis/. See SOURCE.txt.
+% Facts checked against 2026-10-21-meeting/SC25_Hetis.pdf.
+
+\begin{frame}[t]{Hetis: Why Static Parallelism Wastes GPU Resources}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.56\textwidth}
+\mainfig{Hetis/Hetis_Fig02.png}{4.55cm}
+\end{column}
+\begin{column}{.42\textwidth}
+{\normalsize\textbf{Why one parallelism for every module?}}
+\begin{itemize}\setlength{\itemsep}{.12cm}\footnotesize
+\item MLP and decode attention do not show the same GPU gap.
+\item A low-end GPU can drag dense computation.
+\item A static split can also leave KV-cache space idle.
+\end{itemize}
+\vspace{.14cm}
+{\footnotesize Fig.~2 is one Llama-70B decode layer, sequence length 1000. Not end-to-end latency, and not a bandwidth chart.}
+\vspace{.12cm}
+{\footnotesize The paper asks for module-aware, fine-grained, dynamic parallelism.}
+\end{column}
+\end{columns}
+\vspace{.14cm}
+\takeaway{GPU performance heterogeneity is module-dependent; static model partitioning cannot efficiently balance both computation and memory.}
+\src{Hetis Sec.~2.2--2.4, Figs.~1--2. Text: P100 lags A100 by up to $40.4\times$ on average in decode MLP.}
+\end{frame}
+
+\begin{frame}[t]{Hetis: Selective Primary Workers and Dynamic Head-wise Attention}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.46\textwidth}
+\mainfig{Hetis/Hetis_Fig03.png}{4.55cm}
+\end{column}
+\begin{column}{.52\textwidth}
+{\footnotesize
+\textbf{\color{Accent}PRIMARY WORKERS}\par
+Parallelizer searches dense-compute plus communication cost. They jointly hold the model with TP/PP, and DP when needed. They run prefill, decode dense modules, and heads that stay local.\par
+\vspace{.01cm}
+\textbf{\color{Accent}ATTENTION WORKERS}\par
+GPUs that add little to dense compute. They run some decode attention and its KV cache, without a second full copy of the weights. Default exclusion threshold $\Delta=0.05$. Selection is cost, not a FLOPS or bandwidth ranking.\par
+\vspace{.01cm}
+\textbf{\color{Accent}PER-LAYER DECODE TRAFFIC}\par
+Primary computes QKV. For an offloaded head it sends that token's Q/K/V; the worker attends with its stored KV cache and returns the output. Full history is not resent each step. GQA keeps a query group with its KV heads.\par}
+\end{column}
+\end{columns}
+\vspace{.00cm}
+\takeaway{Hetis concentrates dense computation on suitable GPUs while dynamically distributing decode attention at head granularity.}
+\src{Hetis Sec.~3--5, Fig.~3. Fig.~3 also names Profiler, Dispatcher, and Hauler.}
+\end{frame}
+
+\begin{frame}[t]{Hetis: Does Head-wise Parallelism Improve Serving Performance?}
+{\footnotesize\textbf{Setup:} 4$\times$A100-80GB, 4$\times$3090, 4$\times$P100 on four hosts, 100\,Gbps between hosts. Llama-13B, OPT-30B, Llama-70B. Baselines: Splitwise, Hexgen. Workloads: ShareGPT, HumanEval, LongBench.}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.60\textwidth}
+\smalllabel{Q1 --- end-to-end serving}\par
+{\footnotesize Fig.~10 y-axis is latency (s/token), not throughput.\par}
+\vspace{.02cm}
+\mainfig{Hetis/Hetis_Fig10.png}{2.70cm}
+\end{column}
+\begin{column}{.38\textwidth}
+{\footnotesize Up to $2.25\times$ throughput vs.\ Splitwise, and $1.33\times$ vs.\ Hexgen. Maxima across settings, not averages.}
+\vspace{.02cm}
+{\footnotesize On this Llama-70B run, A100 and 3090 were primaries and P100s were attention workers. A search result, not a ranking.}
+\vspace{.02cm}
+\smalllabel{Q2 --- KV cache}\par
+\mainfig{Hetis/Hetis_Fig11.png}{1.75cm}
+{\footnotesize Up to $1.87\times$ available KV cache versus the tested baselines.}
+\end{column}
+\end{columns}
+\takeaway{Fine-grained attention placement improves serving capacity by reducing compute imbalance and KV cache underutilization.}
+\src{Hetis Sec.~7.1--7.3, Figs.~8--13. The $1.49\times$ figure is decode-attention module latency, not end-to-end latency.}
+\end{frame}
+
+\begin{frame}[t]{Hetis: Main Contributions and Takeaways}
+\vspace{.10cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.32\textwidth}
+\stepcard{1}{Module-aware workers}{Assign GPUs by what each module costs, not by one static split of the whole model.}
+\end{column}
+\begin{column}{.32\textwidth}
+\stepcard{2}{Head-level attention}{Offload decode attention by heads. Unselected heads stay on the primary.}
+\end{column}
+\begin{column}{.32\textwidth}
+\stepcard{3}{Online adaptation}{Dispatcher reallocates heads. Hauler migrates KV cache at head granularity.}
+\end{column}
+\end{columns}
+\vspace{.28cm}
+{\normalsize\textbf{Implementation: vLLM extension.}\par}
+\vspace{.08cm}
+{\footnotesize Head-level KV-cache blocks, custom CUDA kernels, NCCL peer-to-peer, and reuse of PagedAttention. Base framework, not a Hetis repository: \url{https://github.com/vllm-project/vllm}\par}
+\vspace{.12cm}
+{\footnotesize End-to-end results use the real GPU cluster. Sec.~7.4 adds a large-scale simulation of parallelizer search cost.\par}
+\vspace{.18cm}
+\takeaway{Hetis improves heterogeneous GPU utilization through module-aware, fine-grained, and dynamic parallelism.}
+\src{Hetis Sec.~6 and Sec.~9 for the system; Sec.~7.1--7.2 for the cluster results; Sec.~7.4 for the search simulation.}
+\end{frame}

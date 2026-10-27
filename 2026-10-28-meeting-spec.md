@@ -6,20 +6,18 @@ Meeting 日期是 **2026-10-28（Wednesday）**。正式報告規劃 **30 分鐘
 
 | Section | Time | Status |
 |---|---|---|
-| ThunderServe summary | 4 min | **Done.** `ThunderServe/ThunderServe-summary-frames.tex` 的 4 個 frames，接在 Main 封面之後。講稿見 `ThunderServe_scripts.md`，並對齊 Main PDF 第 02–05 頁。 |
-| Hetis summary | 4 min | **Not implemented.** 沒有空白 placeholder。 |
-| ThunderServe vs. Hetis | 2 min | **Not implemented.** 沒有空白 placeholder。 |
+| ThunderServe + Hetis + comparison | 10 min | **Done.** 獨立 `2026-10-28-10min-Review.tex`，12 頁（封面、時間軸、9 頁內容、Thank you）。不在 Main PDF。 |
 | Helix | 10 min planned | 既有 main slides 保留。講稿仍是原來的口述時間，沒有改切成 10 分鐘。 |
 | Tessera | 10 min planned | 同上。Helix + Tessera 既有 main 講稿合計約 17.2 分鐘。 |
-| Additional HBF papers | Extra 10 min | 獨立的 `2026-10-28-HBF.tex` 與 `2026-10-28-Characterizing-HBF.tex` 保留，不放進 Main deck 的正式時間。 |
+| Additional HBF papers | Extra 10 min | 獨立的 `2026-10-28-HBF_Sucks.tex` 與 `2026-10-28-Characterizing-HBF.tex` 保留，不放進 Main deck 的正式時間。 |
 
-目前 Main deck 可報告的正式內容是封面 0.3 分鐘 + ThunderServe 4 分鐘 + 既有 Helix／Tessera 17.2 分鐘，合計 **21.5 分鐘**，17 張 main slides。Appendix 與 HBF 都不計入。不要把這份 PDF 說成 30 分鐘已經完成。
+10 分鐘 Paper Review 是獨立的 12 頁 PDF，頁碼 `n/12`。第 02 頁是 28 Oct 建議時間軸：三段各 10 分鐘（ThunderServe＋Hetis、Helix、Tessera），另加不計入 30 分鐘的兩篇 HBF。Main deck 只剩 Helix／Tessera：13 張 main slides 加 25 頁 backup，共 38 頁，口述 **17.5 分鐘**。兩份接連報告約 27.5 分鐘，仍比 30 分鐘少約 2.5 分鐘；沒有為了補時間加長內容。Appendix 與 HBF 都不計入。
 
 以下各節保留 Helix／Tessera reference deck 與原先 combined deck 的製作規格。路徑已改到 `2026-10-28-meeting/`。其中「15–20 分鐘、約 13 張」描述的是 ThunderServe 加入之前的 Helix／Tessera 主體，不是這次 30 分鐘議程的完成狀態。
 
 ## 0. 文件目的
 
-本文件是 `2026-10-28-meeting/` 的實作規格。Helix 與 Tessera 各有一份完整 reference deck；meeting main deck 目前在該主體之前加上 ThunderServe 的 4 分鐘摘要。
+本文件是 `2026-10-28-meeting/` 的實作規格。Helix 與 Tessera 各有一份完整 reference deck。Meeting main deck 是 Helix／Tessera。ThunderServe 與 Hetis 的 10 分鐘 Review 是另一份簡報。
 
 - 目標 meeting 日期：2026-10-28
 - 規格建立時基準 commit：`0b7c2f5f9490c614e0ed351b72832801b4297101`
@@ -30,7 +28,8 @@ Meeting 日期是 **2026-10-28（Wednesday）**。正式報告規劃 **30 分鐘
 
 | 角色 | 檔案 | 頁數 | 用途 |
 |---|---|---|---|
-| Meeting main deck | `2026-10-28-Meeting-Main.tex`、`Meeting-Main_scripts.md`、`ThunderServe/ThunderServe-summary-frames.tex` | 17 張 main slides，另加 appendix | 目前完成 21.5 分鐘。ThunderServe 在封面之後；Helix／Tessera 主體保留。 |
+| Meeting main deck | `2026-10-28-Meeting-Main.tex`、`Meeting-Main_scripts.md` | 13 張 main slides，另加 25 頁 appendix | Helix／Tessera，17.5 分鐘。不含 10 分鐘 Review。 |
+| 10-minute review | `2026-10-28-10min-Review.tex`、`2026-10-28-10min-Review_scripts.md`、`ThunderServe/`、`Hetis/`、`Comparison/` | 12 頁 | 封面 + 時間軸 + ThunderServe 4 + Hetis 4 + 比較 1 + Thank you。頁碼 `n/12`。 |
 | Full reference decks | `2026-10-28-Helix.tex`、`2026-10-28-Tessera.tex` 與對應 `_scripts.md` | 各 36–40 頁（目前各 38 頁） | Paper-reading reference 與 Q&A backup。保留，不要刪除或為了報告時間大幅改寫。 |
 
 後面第 3、5、6 節的 36–40 頁結構只適用於 **full reference decks**。不要再把「每篇 36–40 頁」當成正式 meeting deck 的要求，也不要把 reference deck 當成下次報告版本。

@@ -1,64 +1,18 @@
 # Meeting Main 中文講稿
 
-對應 `2026-10-28-Meeting-Main.tex` 與最終 42 頁 PDF。第 01–17 頁為目前已完成的正式報告，預算合計 **21.5 分鐘**（封面 0.3 + ThunderServe 4.0 + 既有 Helix／Tessera 17.2）。第 18–42 頁為 25 頁 Q&A backup，不計入報告時間。頁腳 `Main n/17` 與 `Backup PDF n` 均對應 PDF 實際頁碼。
+對應 `2026-10-28-Meeting-Main.tex` 與最終 38 頁 PDF。第 01–13 頁為正式報告，預算合計 **17.5 分鐘**（封面 0.3 + Helix／Tessera 17.2）。第 14–38 頁為 25 頁 Q&A backup，不計入報告時間。頁腳 `Main n/13` 與 `Backup PDF n` 均對應 PDF 實際頁碼。ThunderServe 與 Hetis 的 10 分鐘 Review 是獨立 PDF，不在這份簡報裡。
 
-會議規劃是 30 分鐘正式報告，另加額外 HBF 備用。Hetis summary（4 分鐘）和 ThunderServe vs. Hetis（2 分鐘）尚未做，因此沒有計入 21.5 分鐘，appendix 和獨立 HBF deck 也沒有計入。既有 Helix／Tessera 講稿維持原來的口述時間，沒有改切成各 10 分鐘。
-
-時間包含看圖與轉場，是排練目標而非實測語速。ThunderServe 事實只依 `2026-10-21-meeting/MLSys25_Thunderserve.pdf`；Helix／Tessera 事實只依同目錄本地 PDF。來源頁碼均指 PDF page index（從 1 起算），不是會議論文印刷頁碼。
+時間包含看圖與轉場，是排練目標而非實測語速。Helix／Tessera 事實只依同目錄本地 PDF。來源頁碼均指 PDF page index（從 1 起算），不是會議論文印刷頁碼。
 
 ## 第 01 頁｜Title
 
 預計時間：0.3 分鐘。
 
-今天先用四分鐘回顧 ThunderServe，接著才是已經準備好的 Helix 和 Tessera。Hetis，以及 ThunderServe 和 Hetis 的比較，這份簡報還沒有放進來。HBF 是額外備用，不在這十七頁正式報告裡。
+今天用 Helix 和 Tessera 回答一個共同問題：面對不同能力的 GPU，系統應該以什麼單位安排工作？我會先說每篇的核心主張，再看作者如何用實驗建立這個主張。ThunderServe 和 Hetis 在另一份十分鐘簡報，不在這一份裡。
 
-來源：報告者整理的會議範圍。ThunderServe 為 MLSys 2025；Helix 為 ASPLOS 2025；Tessera 為 arXiv:2604.10180v2。
+來源：兩篇本地 PDF 首頁；本頁標題為報告者整理。
 
-## 第 02 頁｜Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling
-
-預計時間：50 秒。
-
-論文觀察是，prefill 比較吃算力，decode 比較吃記憶體頻寬。Table 1 裡，A40 的 FP16 是 149.7 TFLOPS，3090 Ti 是 71 TFLOPS；頻寬反過來，3090 Ti 有 1008 GB/s，A40 是 696 GB/s。所以兩個 phase 合適的 GPU 可能不同。Figure 1 用一筆 request 的價格來看，input 512、output 16：prefill 在 A40 比較便宜，decode 在 3090 Ti 比較便宜。
-
-作者要處理的困難是，雲端 GPU 的種類和數量都有限，網路頻寬也不高，而且每對 GPU 不一樣。Phase 拆開之後，還得把 KV cache 從 prefill replica 傳到 decode replica。報告者整理是：只看 FLOPS 或 bandwidth 來分 GPU 並不夠，因為中間多了這段傳輸。這頁先停在研究問題，怎麼一起決定 GPU 怎麼分、phase 放在哪、通訊怎麼走，先不講演算法。
-
-論文出處：Sec. 1，Figure 1，Table 1。Figure 1 是單筆 request 的價格，不是整個 cluster 的 throughput。
-
-## 第 03 頁｜Joint Optimization of GPU Placement, Parallelism, and Routing
-
-預計時間：65 秒。
-
-作者方法是把部署收成兩層，Figure 3 就是這個流程。上層用 Tabu Search，先把異質 GPU 組成 group，每一組負責一個 model replica，再指定這組做 prefill 還是 decode。下層接著決定每組的 TP 和 PP，以及 prefill replica 和 decode replica 之間 request 怎麼送。這個 routing 要看網路，因為 KV cache 得傳得過去。
-
-兩層是一起評估同一個 deployment plan：下層算出這個分組和 phase 的表現，再交回上層繼續搜。不是先隨便分完組，才事後補平行設定。另外兩個機制這裡只點名，KV cache compression 用來縮小傳輸量，lightweight rescheduling 用來在負載或可用 GPU 改變時調整 phase 和 routing。這頁不講 Tabu Search 的 neighbor operators，也不寫線性規劃。
-
-論文出處：Sec. 3.2–3.4，Figure 3。壓縮和 lightweight rescheduling 是作者的機制，效果留到後面的實驗頁，不在這張流程圖裡。
-
-## 第 04 頁｜Does Phase-Aware Scheduling Improve Serving Efficiency?
-
-預計時間：80 秒。
-
-這頁的研究問題是，依照 workload 調整 phase placement，能不能提高 end-to-end throughput。
-
-實驗設定要用 LLaMA-30B，workload 是 Azure 的 coding 和 conversation。論文觀察到 coding 的 prompt 較長、輸出較短，conversation 則相反。比較對象的機器並不相同。HexGen 和 ThunderServe 在同一組異質雲端 GPU 上比，一共 32 張，包含 A6000、A5000、A40 和 3090 Ti。DistServe 是價格接近的同質環境，8 張 A100，不能說成同一套硬體。
-
-實驗結果分兩層看。Table 3 是排程找出的部署：coding 用 8 個 prefill replicas 和 4 個 decode replicas，conversation 用 4 個 prefill 和 8 個 decode。這表示 replica 比例會跟著 input、output 的長短調整。Figure 9 再把 throughput 用 ThunderServe 正規化。相對 HexGen，coding 是 1.5 倍、conversation 是 1.3 倍；相對 DistServe，coding 是 1.5 倍、conversation 是 2.1 倍。圖上的 vLLM 也是 in-house，不要跟 HexGen 那組混在一起。
-
-它證明的是，在異質資源限制下，workload-aware 的 phase placement 可以提升整體 throughput。沒有證明兩種 baseline 是在同一批 GPU 上被比較。
-
-論文出處：Sec. 5.1–5.3，Figure 9，Table 3。正文寫的就是 HexGen 的 1.5／1.3 倍，以及 DistServe 的 1.5／2.1 倍。
-
-## 第 05 頁｜Phase-Aware Deployment Improves Cost Efficiency
-
-預計時間：45 秒。
-
-三點收束。第一是作者方法：GPU grouping、phase designation、TP/PP 和 request routing 放在同一個 deployment plan。第二是論文整體的實驗結果，平均 1.7 倍、最高 2.1 倍的 throughput。這句在摘要，不要把它說成 Figure 9 的某一根 bar。第三是 Table 4 的時間。Full rescheduling 總共 157 秒，裡面是重新搜尋再加上重新載入模型；lightweight rescheduling 是 13 秒，而且 reload 是 0。兩者的差距包含有沒有付出模型載入，不只是搜尋本身變快。
-
-報告者整理是，異質 GPU serving 的效益來自同時考慮 inference phase、硬體分配和通訊。ThunderServe 停在 phase 這個粒度；更細的 workload partitioning 是另一個方向，今天先接到這裡。
-
-論文出處：摘要與 Sec. 6 的 1.7 倍／2.1 倍；Sec. 5.4 與 Table 4 的 157 秒和 13 秒。Table 4 的細項是 full 54(±5) 秒加 reload 103(±10) 秒，lightweight 13(±2) 秒加 reload 0 秒。
-
-## 第 06 頁｜Put the Two Papers on One Map
+## 第 02 頁｜Put the Two Papers on One Map
 
 預計時間：0.8 分鐘。
 
@@ -70,7 +24,7 @@
 
 來源：Helix Sec. 4–5，PDF pp. 5–8；Tessera Sec. III，PDF pp. 4–7。比較表為自己的整理。
 
-## 第 07 頁｜Helix: What Problem Is It Solving?
+## 第 03 頁｜Helix: What Problem Is It Solving?
 
 預計時間：1.4 分鐘。
 
@@ -84,7 +38,7 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 來源：Helix Sec. 1、4.2，Figure 1，PDF pp. 1–2、4–5。Figure 1 是動機示例，不是大型實驗測量。
 
-## 第 08 頁｜Helix: How Does It Work?
+## 第 04 頁｜Helix: How Does It Work?
 
 預計時間：1.7 分鐘。
 
@@ -98,7 +52,7 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 來源：Helix Sec. 4.3–4.4、5.1，Figure 3，PDF pp. 5–8。Max-flow 是 throughput model，不是 latency model。
 
-## 第 09 頁｜Q1: Does Helix Improve End-to-End Serving on Real Hardware?
+## 第 05 頁｜Q1: Does Helix Improve End-to-End Serving on Real Hardware?
 
 預計時間：1.4 分鐘。
 
@@ -118,7 +72,7 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 來源：Helix Sec. 6.1–6.3，Figure 6，PDF pp. 8–11。倍率順序為 offline、online。
 
-## 第 10 頁｜Q2: Does Network-Aware Placement Matter under Slow Inter-Cluster Links?
+## 第 06 頁｜Q2: Does Network-Aware Placement Matter under Slow Inter-Cluster Links?
 
 預計時間：1.4 分鐘。
 
@@ -138,7 +92,7 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 來源：Helix Sec. 6.2、6.4，Figure 7，PDF pp. 8、10–11。原文給 2.41×、2.33×；主稿不強行指派每個倍率的 workload 順序。
 
-## 第 11 頁｜Q3: Where Do the Gains Come From: Placement or Scheduling?
+## 第 07 頁｜Q3: Where Do the Gains Come From: Placement or Scheduling?
 
 預計時間：1.5 分鐘。
 
@@ -158,7 +112,7 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 來源：Helix Sec. 6.6–6.7，Figures 9–10，PDF pp. 11–12。Geo 對 shortest queue 的額外比較是 +19%，未納入主頁範圍。
 
-## 第 12 頁｜Tessera: Why Is Phase-Level Disaggregation Too Coarse?
+## 第 08 頁｜Tessera: Why Is Phase-Level Disaggregation Too Coarse?
 
 預計時間：1.5 分鐘。
 
@@ -172,7 +126,7 @@ Helix 一句話的重點，是一起規劃 layer placement 和 request routing�
 
 來源：Tessera Sec. II-C，Figure 3，PDF pp. 3–4。該圖的模型為 GPT-oss 20B，硬體比較為 A100 與 L40s。
 
-## 第 13 頁｜Tessera: How Does It Work?
+## 第 09 頁｜Tessera: How Does It Work?
 
 預計時間：1.7 分鐘。
 
@@ -186,7 +140,7 @@ Tessera 的輸入是 kernel execution pattern、資料相依關係、各 GPU 的
 
 來源：Tessera Sec. III-A–D，Figure 4，PDF pp. 4–7。Throughput 與 latency policy 都由 offline planner 求解。
 
-## 第 14 頁｜Q1: Does Kernel-Level Disaggregation Outperform Phase/Block-Level Methods?
+## 第 10 頁｜Q1: Does Kernel-Level Disaggregation Outperform Phase/Block-Level Methods?
 
 預計時間：1.4 分鐘。
 
@@ -206,7 +160,7 @@ Tessera 的輸入是 kernel execution pattern、資料相依關係、各 GPU 的
 
 來源：Tessera Sec. V-A–B，Figure 6，PDF pp. 7–8。五個模型：Llama-3 8B、GPT-oss 20B、Qwen2.5-VL 7B、Mamba-Codestral 7B、Stable Diffusion 3.5。
 
-## 第 15 頁｜Q2: Can Tessera Sustain More Requests under the Same Latency SLO?
+## 第 11 頁｜Q2: Can Tessera Sustain More Requests under the Same Latency SLO?
 
 預計時間：1.4 分鐘。
 
@@ -226,7 +180,7 @@ Tessera 的輸入是 kernel execution pattern、資料相依關係、各 GPU 的
 
 來源：Tessera Sec. V-B，Figure 7，PDF p. 9。1.3× SLO request-rate 比較對象為 best baseline。
 
-## 第 16 頁｜Q3: Does Communication Overhead Cancel the Benefit of Kernel Splitting?
+## 第 12 頁｜Q3: Does Communication Overhead Cancel the Benefit of Kernel Splitting?
 
 預計時間：1.2 分鐘。
 
@@ -246,7 +200,7 @@ Tessera 的輸入是 kernel execution pattern、資料相依關係、各 GPU 的
 
 來源：Tessera Sec. III-C、V-D，Figure 9，PDF pp. 6、9–10。96.6% = 2641/2734，屬直接計算。
 
-## 第 17 頁｜What Do Helix and Tessera Teach Us about Heterogeneous Serving?
+## 第 13 頁｜What Do Helix and Tessera Teach Us about Heterogeneous Serving?
 
 預計時間：1.8 分鐘。
 
@@ -263,9 +217,9 @@ Tessera 的論證是：phase 和 block 裡仍有不同硬體偏好的 kernel，�
 
 ---
 
-以下為 Appendix / Q&A。按追問選頁，不連續口述，不計入 21.5 分鐘。
+以下為 Appendix / Q&A。按追問選頁，不連續口述，不計入 17.5 分鐘。
 
-## 第 18 頁｜Max-Flow Graph Abstraction
+## 第 14 頁｜Max-Flow Graph Abstraction
 
 用途：Q&A backup；沿用 Helix reference deck 第 10 頁素材，講稿為本次重寫。
 
@@ -273,7 +227,7 @@ Tessera 的論證是：phase 和 block 裡仍有不同硬體偏好的 kernel，�
 
 來源：Helix Sec. 4.3，Figure 2，PDF pp. 4–5。
 
-## 第 19 頁｜Modeling Compute Capacity
+## 第 15 頁｜Modeling Compute Capacity
 
 用途：Q&A backup；沿用 Helix reference deck 第 11 頁素材，講稿為本次重寫。
 
@@ -281,7 +235,7 @@ Compute capacity 來自 profiling，不直接採用 datasheet FLOPS。節點的�
 
 來源：Helix Sec. 4.3–4.4，PDF pp. 5–6。
 
-## 第 20 頁｜Modeling Network Capacity
+## 第 16 頁｜Modeling Network Capacity
 
 用途：Q&A backup；沿用 Helix reference deck 第 12 頁素材，講稿為本次重寫。
 
@@ -289,7 +243,7 @@ Network capacity 把 bandwidth 除以每個 token 對應的 payload bytes，單�
 
 來源：Helix Sec. 4.3、Figure 2，PDF pp. 4–5。
 
-## 第 21 頁｜Why Max Flow Represents Serving Throughput
+## 第 17 頁｜Why Max Flow Represents Serving Throughput
 
 用途：Q&A backup；沿用 Helix reference deck 第 13 頁素材，講稿為本次重寫。
 
@@ -297,7 +251,7 @@ Max-flow 能代表吞吐量，是因為每一單位 flow 都要依序消耗 comp
 
 來源：Helix Sec. 4.3、4.5，PDF pp. 5、7。
 
-## 第 22 頁｜MILP Variables and Objective
+## 第 18 頁｜MILP Variables and Objective
 
 用途：Q&A backup；沿用 Helix reference deck 第 15 頁素材，講稿為本次重寫。
 
@@ -305,7 +259,7 @@ Max-flow 能代表吞吐量，是因為每一單位 flow 都要依序消耗 comp
 
 來源：Helix Sec. 4.4，Tables 5–6，PDF pp. 5–6。
 
-## 第 23 頁｜Placement and Memory Constraints
+## 第 19 頁｜Placement and Memory Constraints
 
 用途：Q&A backup；沿用 Helix reference deck 第 16 頁素材，講稿為本次重寫。
 
@@ -313,7 +267,7 @@ Placement constraint 先保證 layer range 在模型範圍內，並且只選一�
 
 來源：Helix Sec. 4.4、5.1，PDF pp. 6–8。
 
-## 第 24 頁｜Flow and Compute Constraints
+## 第 20 頁｜Flow and Compute Constraints
 
 用途：Q&A backup；沿用 Helix reference deck 第 17 頁素材，講稿為本次重寫。
 
@@ -321,7 +275,7 @@ Placement constraint 先保證 layer range 在模型範圍內，並且只選一�
 
 來源：Helix Sec. 4.4，Constraints 2–3，PDF p. 6。
 
-## 第 25 頁｜Connectivity and Network Constraints
+## 第 21 頁｜Connectivity and Network Constraints
 
 用途：Q&A backup；沿用 Helix reference deck 第 18 頁素材，講稿為本次重寫。
 
@@ -329,7 +283,7 @@ Connectivity constraint 先檢查語意是否合法：只有持有第一層的�
 
 來源：Helix Sec. 4.4，Constraints 4–5，PDF p. 6。
 
-## 第 26 頁｜Converting Max-Flow Weights into Scheduling
+## 第 22 頁｜Converting Max-Flow Weights into Scheduling
 
 用途：Q&A backup；沿用 Helix reference deck 第 22 頁素材，講稿為本次重寫。
 
@@ -337,7 +291,7 @@ IWRR 是 Interleaved Weighted Round-Robin。對每個頂點，鄰居的權重來
 
 來源：Helix Sec. 5.1，PDF pp. 7–8。
 
-## 第 27 頁｜Pipeline Scheduling Example
+## 第 23 頁｜Pipeline Scheduling Example
 
 用途：Q&A backup；沿用 Helix reference deck 第 23 頁素材，講稿為本次重寫。
 
@@ -345,7 +299,7 @@ Figure 4 的兩個示例 pipeline 是 1→5→9 和 2→6→8。Edge 上的數�
 
 來源：Helix Sec. 5.1，Figure 4，PDF pp. 7–8。
 
-## 第 28 頁｜High GPU-Heterogeneity Results
+## 第 24 頁｜High GPU-Heterogeneity Results
 
 用途：Q&A backup；沿用 Helix reference deck 第 30 頁素材，講稿為本次重寫。
 
@@ -353,7 +307,7 @@ Question：GPU 類型更多時能否延續效果？Setup 是 42 nodes、7 種節
 
 來源：Helix Sec. 6.5，Figure 8，PDF pp. 10–11。
 
-## 第 29 頁｜MILP Optimization Ablation
+## 第 25 頁｜MILP Optimization Ablation
 
 用途：Q&A backup；沿用 Helix reference deck 第 33 頁素材，講稿為本次重寫。
 
@@ -361,7 +315,7 @@ Question：Pruning 和 warm start 是否讓有限求解時間更有效？Setup �
 
 來源：Helix Sec. 6.8，Figure 11、Table 8，PDF p. 12。
 
-## 第 30 頁｜Solver Time and Solution Quality
+## 第 26 頁｜Solver Time and Solution Quality
 
 用途：Q&A backup；沿用 Helix reference deck 第 34 頁素材，講稿為本次重寫。
 
@@ -369,7 +323,7 @@ Question：找到好解與證明最佳，需要同樣久嗎？Setup 是較小的
 
 來源：Helix Sec. 6.9，Figure 12，PDF p. 13。
 
-## 第 31 頁｜PTX Instrumentation and Address Ranges
+## 第 27 頁｜PTX Instrumentation and Address Ranges
 
 用途：Q&A backup；沿用 Tessera reference deck 第 12 頁素材，講稿為本次重寫。
 
@@ -377,7 +331,7 @@ Question：找到好解與證明最佳，需要同樣久嗎？Setup 是較小的
 
 來源：Tessera Sec. III-A、IV，Listing 1，PDF pp. 4–5、7。
 
-## 第 32 頁｜Extracting RAW Dependencies
+## 第 28 頁｜Extracting RAW Dependencies
 
 用途：Q&A backup；沿用 Tessera reference deck 第 13 頁素材，講稿為本次重寫。
 
@@ -385,7 +339,7 @@ RAW edge 來自 buffer 最後一次寫入者與後續 reader。Analyzer 按原 e
 
 來源：Tessera Sec. III-A，PDF pp. 4–5。
 
-## 第 33 頁｜Cross-Iteration Dependencies and KV State
+## 第 29 頁｜Cross-Iteration Dependencies and KV State
 
 用途：Q&A backup；沿用 Tessera reference deck 第 14 頁素材，講稿為本次重寫。
 
@@ -393,7 +347,7 @@ RAW edge 來自 buffer 最後一次寫入者與後續 reader。Analyzer 按原 e
 
 來源：Tessera Sec. III-A、IV，PDF pp. 5、7；0.1% 引用原文 [9]、[10]。
 
-## 第 34 頁｜Offline Throughput-Oriented MILP
+## 第 30 頁｜Offline Throughput-Oriented MILP
 
 用途：Q&A backup；沿用 Tessera reference deck 第 16 頁素材，講稿為本次重寫。
 
@@ -401,7 +355,7 @@ RAW edge 來自 buffer 最後一次寫入者與後續 reader。Analyzer 按原 e
 
 來源：Tessera Sec. III-B，Table II，PDF pp. 5–6。
 
-## 第 35 頁｜Communication and Load-Balancing Constraints
+## 第 31 頁｜Communication and Load-Balancing Constraints
 
 用途：Q&A backup；沿用 Tessera reference deck 第 17 頁素材，講稿為本次重寫。
 
@@ -409,7 +363,7 @@ RAW edge 來自 buffer 最後一次寫入者與後續 reader。Analyzer 按原 e
 
 來源：Tessera Sec. III-B、IV，PDF pp. 5、7。
 
-## 第 36 頁｜Online Latency-Oriented Scheduling
+## 第 32 頁｜Online Latency-Oriented Scheduling
 
 用途：Q&A backup；沿用 Tessera reference deck 第 18 頁素材，講稿為本次重寫。
 
@@ -417,7 +371,7 @@ Low load 沒有其他 requests 幫忙隱藏 transfer，所以 objective 改成 k
 
 來源：Tessera Sec. III-B，PDF pp. 5–6；頻寬敏感度見 Fig. 11、PDF p. 10。
 
-## 第 37 頁｜GPU Worker Execution
+## 第 33 頁｜GPU Worker Execution
 
 用途：Q&A backup；沿用 Tessera reference deck 第 20 頁素材，講稿為本次重寫。
 
@@ -425,7 +379,7 @@ Worker 根據 policy 只執行自己負責的 kernels。在 consumer 前安排 r
 
 來源：Tessera Sec. III-C、IV，Figure 5，PDF pp. 6–7。
 
-## 第 38 頁｜Online Monitor Signals
+## 第 34 頁｜Online Monitor Signals
 
 用途：Q&A backup；沿用 Tessera reference deck 第 22 頁素材，講稿為本次重寫。
 
@@ -433,7 +387,7 @@ Monitor 不是在線上重新量每顆 kernel。它量 request latency、communi
 
 來源：Tessera Sec. III-D，PDF pp. 6–7。
 
-## 第 39 頁｜Policy Switching and Sensitivity Parameters
+## 第 35 頁｜Policy Switching and Sensitivity Parameters
 
 用途：Q&A backup；沿用 Tessera reference deck 第 23 頁素材，講稿為本次重寫。
 
@@ -441,7 +395,7 @@ Monitor 不是在線上重新量每顆 kernel。它量 request latency、communi
 
 來源：Tessera Sec. III-D、V-D，Figure 10，PDF pp. 7、10。
 
-## 第 40 頁｜Network Bandwidth and MILP Analysis
+## 第 36 頁｜Network Bandwidth and MILP Analysis
 
 用途：Q&A backup；沿用 Tessera reference deck 第 32 頁素材，講稿為本次重寫。
 
@@ -449,7 +403,7 @@ Monitor 不是在線上重新量每顆 kernel。它量 request latency、communi
 
 來源：Tessera Sec. V-D，Figure 11，PDF p. 10。
 
-## 第 41 頁｜Cost Efficiency of Heterogeneous Pairing
+## 第 37 頁｜Cost Efficiency of Heterogeneous Pairing
 
 用途：Q&A backup；沿用 Tessera reference deck 第 33 頁素材，講稿為本次重寫。
 
@@ -457,7 +411,7 @@ Question：效能提高是否值得多付一張 GPU 的成本？Table III 用五
 
 來源：Tessera Sec. V-B，Table III，PDF p. 9；價格見 Table I，PDF p. 3。
 
-## 第 42 頁｜Generality Across Model Families
+## 第 38 頁｜Generality Across Model Families
 
 用途：Q&A backup；沿用 Tessera reference deck 第 34 頁素材，講稿為本次重寫。
 
