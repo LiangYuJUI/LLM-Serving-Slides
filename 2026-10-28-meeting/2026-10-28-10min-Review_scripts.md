@@ -20,7 +20,7 @@ ThunderServe 事實只依 `2026-10-21-meeting/MLSys25_Thunderserve.pdf`。Hetis 
 
 來源：報告者整理的會議時間，不是論文結論。
 
-## 第 03 頁｜Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling
+## 第 03 頁｜ThunderServe: Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling
 
 預計時間：50 秒。
 
@@ -34,7 +34,7 @@ ThunderServe 事實只依 `2026-10-21-meeting/MLSys25_Thunderserve.pdf`。Hetis 
 
 預計時間：65 秒。
 
-作者方法是把 GPU Placement 收成兩層，Figure 3 就是這個流程。上層用 Tabu Search，先把異質 GPU 組成 group，每一組負責一個 model replica，再指定這組做 prefill 還是 decode。下層接著決定每組的 TP 和 PP，以及 prefill replica 和 decode replica 之間 request 怎麼送。這個 routing 要看網路，因為 KV cache 得傳得過去。
+作者方法是把 GPU Placement 收成兩層，Figure 3 就是這個流程。上層用 Tabu Search，先把 heterogeneous GPU 組成 group，再指定這組做 prefill 還是 decode。下層接著決定每組的 TP 和 PP，以及 prefill group 和 decode group 之間 request 怎麼送。這個 routing 要看網路，因為 KV cache 得傳得過去。
 
 兩層是一起評估同一個 deployment plan：下層算出這個分組和 phase 的表現，再交回上層繼續搜。不是先隨便分完組，才事後補平行設定。另外兩個機制這裡只點名，KV cache compression 用來縮小傳輸量，lightweight rescheduling 用來在負載或可用 GPU 改變時調整 phase 和 routing。這頁不講 Tabu Search 的 neighbor operators，也不寫線性規劃。
 
@@ -44,31 +44,35 @@ ThunderServe 事實只依 `2026-10-21-meeting/MLSys25_Thunderserve.pdf`。Hetis 
 
 預計時間：80 秒。
 
-這頁的研究問題是，依照 workload 調整 phase placement，能不能提高 end-to-end throughput。
+接著看實驗：依照 workload 調整 prefill 和 decode 的部署，能不能提高整體吞吐量？作者使用 LLaMA-30B，測試 Azure 的 coding 和 conversation 兩種 workload。Coding 的 prompt 較長、輸出較短，conversation 則相反，因此兩者對 prefill 和 decode 的資源需求也不同。
 
-實驗設定要用 LLaMA-30B，workload 是 Azure 的 coding 和 conversation。論文觀察到 coding 的 prompt 較長、輸出較短，conversation 則相反。比較對象的機器並不相同。HexGen 和 ThunderServe 在同一組異質雲端 GPU 上比，一共 32 張，包含 A6000、A5000、A40 和 3090 Ti。DistServe 是價格接近的同質環境，8 張 A100，不能說成同一套硬體。
+ThunderServe 和 HexGen 使用同一組 32 張異質雲端 GPU，包含 A6000、A5000、A40 和 3090 Ti。另一個比較對象 DistServe，則使用價格接近的 8 張 A100；圖中的 vLLM 也部署在 in-house 環境。因此，這裡同時包含相同異質硬體上的方法比較，以及相近成本下不同硬體配置的比較。
 
-實驗結果分兩層看。Table 3 是排程找出的部署：coding 用 8 個 prefill replicas 和 4 個 decode replicas，conversation 用 4 個 prefill 和 8 個 decode。這表示 replica 比例會跟著 input、output 的長短調整。Figure 9 再把 throughput 用 ThunderServe 正規化。相對 HexGen，coding 是 1.5 倍、conversation 是 1.3 倍；相對 DistServe，coding 是 1.5 倍、conversation 是 2.1 倍。圖上的 vLLM 也是 in-house，不要跟 HexGen 那組混在一起。
+Table 3 顯示，排程找出的部署會隨 workload 改變。Coding 配置了 8 個 prefill replicas 和 4 個 decode replicas；conversation 則是 4 個 prefill 和 8 個 decode。也就是說，prompt 較長時，多分配資源給 prefill；輸出較長時，則增加 decode 的 replicas。
 
-它證明的是，在異質資源限制下，workload-aware 的 phase placement 可以提升整體 throughput。沒有證明兩種 baseline 是在同一批 GPU 上被比較。
+Figure 9 以 ThunderServe 的吞吐量作為正規化基準。相對 HexGen，ThunderServe 在 coding 和 conversation 分別達到 1.5 倍和 1.3 倍吞吐量；相對 DistServe，則分別是 1.5 倍和 2.1 倍。這些結果支持了它的設計方向：根據 workload 的需求調整 phase placement，能更有效地利用異質 GPU，提高 end-to-end throughput。
 
-論文出處：Sec. 5.1–5.3，Figure 9，Table 3。正文寫的就是 HexGen 的 1.5／1.3 倍，以及 DistServe 的 1.5／2.1 倍。
+論文出處：Sec. 5.1–5.3，Figure 9，Table 3。
 
 ## 第 06 頁｜Phase-Aware Deployment Improves Cost Efficiency
 
 預計時間：45 秒。
 
-三點收束。第一是作者方法：GPU grouping、phase designation、TP/PP 和 request routing 放在同一個 deployment plan。第二是論文整體的實驗結果，平均 1.7 倍、最高 2.1 倍的 throughput。這句在摘要，不要把它說成 Figure 9 的某一根 bar。第三是 Table 4 的時間。Full rescheduling 總共 157 秒，裡面是重新搜尋再加上重新載入模型；lightweight rescheduling 是 13 秒，而且 reload 是 0。兩者的差距包含有沒有付出模型載入，不只是搜尋本身變快。
+ThunderServe 的核心，是把 GPU grouping、prefill 和 decode 的角色分配、TP/PP，以及 request routing 放進同一個 deployment plan，一起考慮計算與通訊成本。論文摘要將整體實驗結果總結為平均 1.7 倍、最高 2.1 倍的吞吐量提升。
 
-報告者整理是，異質 GPU serving 的效益來自同時考慮 inference phase、硬體分配和通訊。ThunderServe 停在 phase 這個粒度；更細的 workload partitioning 是另一個方向，今天先接到這裡。
+這篇的重點是，異質 GPU 的效益需要透過 phase 分工、硬體分配和通訊規劃一起發揮。接下來的 Hetis 則把工作切得更細，進一步看不同 module 和 attention heads 如何分配到 GPU 上。
 
-論文出處：摘要與 Sec. 6 的 1.7 倍／2.1 倍；Sec. 5.4 與 Table 4 的 157 秒和 13 秒。Table 4 的細項是 full 54(±5) 秒加 reload 103(±10) 秒，lightweight 13(±2) 秒加 reload 0 秒。
+論文出處：摘要與 Sec. 6 的 1.7 倍／2.1 倍。
 
 ## 第 07 頁｜Hetis: Why Static Parallelism Wastes GPU Resources
 
 預計時間：45 秒。
 
-Hetis 問的是，異質 GPU 能不能用同一套 model parallelism 跑所有 module。論文觀察主要看 Figure 2。那是 Llama-70B 單層 decode 的 MLP 和 Attention 執行時間，每筆 sequence length 是 1000，不是整個模型的 end-to-end latency，也不是記憶體頻寬的比較。MLP 上低階 GPU 落後很多，正文說 P100 在 decode MLP 平均最多落後 A100 約 40.4 倍；Attention 的差距小得多。所以低階 GPU 很容易拖住 dense computation。固定切分還會讓 KV cache 空間不平均。Figure 1 的例子是，3090 的 cache 用完時，A100 還有不少空間空著。因此作者要的是看 module、切得更細、而且可以動態調整的 parallelism。這頁只建立問題，不是說 Primary 一定是頻寬最高的 GPU。
+接下來看 Hetis。它觀察到，同一張 GPU 在不同 module 上的表現差距並不一樣，因此，用同一套 model parallelism 分配所有工作，可能無法充分利用異質 GPU。
+
+Figure 2 比較 Llama-70B 單層 decode 的 MLP 和 Attention 執行時間，sequence length 設為 1000。在 MLP 上，P100 和 A100 的執行時間差距很大，論文報告最高約 40.4 倍；但在 Attention 上，差距就小得多。這表示，對 dense computation 幫助有限的 GPU，仍可能適合分擔 attention 工作。
+
+固定切分也會造成 KV cache 空間使用不平均。Figure 1 的例子中，3090 的 cache 已經用完，A100 卻還有空間。因此 Hetis 希望依照 module 的特性分配工作，再動態調整 attention 的切分，同時改善計算和記憶體的利用率。
 
 論文出處：Sec. 2.2–2.4，Figure 1–2。
 
@@ -76,50 +80,58 @@ Hetis 問的是，異質 GPU 能不能用同一套 model parallelism 跑所有 m
 
 預計時間：90 秒。
 
-作者把 GPU 分成兩種角色，選擇標準是模型執行成本，不是 FLOPS 或頻寬排名。Primary 由 Parallelizer 依 dense computation 的成本和通訊成本搜出來。它們用 TP、PP，必要時再用 DP，一起放完整模型的參數，負責 prefill、decode 的 dense modules，以及沒有被 offload 的 attention heads。Attention worker 通常是對 dense 計算幫助不大的 GPU，主要做一部分 decode attention 和對應的 KV cache，不必再存一份完整權重。預設的排除門檻是，拿掉這張 GPU 之後，dense cost 增加不超過 Δ = 0.05。
+Hetis 把 GPU 分成 Primary 和 Attention worker 兩種角色。Parallelizer 根據 dense computation 和通訊成本，搜尋適合擔任 Primary 的 GPU。Primary 透過 TP、PP，必要時搭配 DP，承載模型參數，負責 prefill、decode 的 dense modules，以及留在本地的 attention heads。
 
-Decode 時，Primary 先算 QKV projection。如果某些 heads 分給遠端 worker，Primary 只送這些 heads 當前 token 的 Q、K、V。Attention worker 用自己留下的歷史 KV cache 算 attention，把 output 送回 Primary，Primary 再做 output projection 和 MLP。這段通訊會在不同 layer 重複，但平常的 decode 不用每一步重傳整段歷史 KV cache。沒被 offload 的 heads 留在 Primary 本地算。GQA 還要維持 query head 和它對應的 KV head 群組。
+對 dense 計算幫助較小的 GPU，則可以擔任 Attention worker，負責部分 decode attention 和對應的 KV cache，不需要再存一份完整模型權重。搜尋時，預設以 Δ = 0.05 為門檻：如果移除某張 GPU 後，dense cost 增加不超過 5%，就可以考慮把它移出 Primary 集合。因此，角色分配取決於整體執行成本。
 
-Figure 3 把系統收成四個組件。Parallelizer 決定 worker 和 TP/PP，Profiler 預測計算與通訊成本，Dispatcher 在線上分配 heads，Hauler 做 head 等級的 KV cache 管理和搬移。Figure 4 和 Figure 6 這次不放上主投影片，留著回答搜尋流程和 head 切分的細節。
+Decode 時，Primary 先計算 QKV projection，再把分配給遠端 heads 的當前 token Q、K、V 傳給 Attention worker。Worker 搭配本地保存的歷史 KV cache 計算 attention，將結果傳回 Primary，接著完成 output projection 和 MLP。這個過程會在不同 layers 重複，歷史 KV cache 則留在 worker 上，避免每一步都重新傳送。其餘 heads 由 Primary 本地計算；對 GQA，分配時也會維持 query heads 與對應 KV head 的群組關係。
 
-論文出處：Sec. 3–5，Figure 3。Δ = 0.05 在 Sec. 4.1。GQA 的群組比例在 Sec. 5.1。
+Figure 3 呈現了這套分工背後的四個組件。Profiler 提供計算和通訊成本預測，Parallelizer 決定 worker 角色與 TP/PP 配置，Dispatcher 在線上分配 attention heads，Hauler 則負責 head 等級的 KV cache 管理與搬移，讓 head 分配能隨執行狀況調整。
+
+論文出處：Sec. 3–5，Figure 3。Δ = 0.05 在 Sec. 4.1；GQA 群組關係在 Sec. 5.1。
 
 ## 第 09 頁｜Hetis: Does Head-wise Parallelism Improve Serving Performance?
 
 預計時間：65 秒。
 
-這頁只回答兩個問題：這樣的配置能不能提高 end-to-end throughput，以及可用的 KV cache 空間有沒有變大。
+接著看這樣的分工，能不能提高服務容量。作者使用四台主機，共有 4 張 A100-80GB、4 張 3090 和 4 張 P100，主機間以 100 Gbps 連接。實驗涵蓋 Llama-13B、OPT-30B 和 Llama-70B，使用 ShareGPT、HumanEval 和 LongBench，比較對象是 Splitwise 和 Hexgen。
 
-實驗是四台主機，4 張 A100-80GB、4 張 3090、4 張 P100，主機之間 100 Gbps。模型是 Llama-13B、OPT-30B 和 Llama-70B。Baseline 是 Splitwise 和 Hexgen。Workload 是 ShareGPT、HumanEval 和 LongBench。Figure 10 是 Llama-70B 的 normalized end-to-end latency 對 request rate，縱軸是延遲，單位 s/token，不要把它念成 throughput。論文是看系統能撐到多高的 request rate，再把這個讀成 throughput。實驗結果的最高值是相對 Splitwise 2.25 倍、相對 Hexgen 1.33 倍。這是不同設定下的最高改善，不是所有 workload 的平均。在這個 Llama-70B 實驗裡，搜尋把 A100 和 3090 留成 Primary，P100 做 Attention worker。那是該次搜尋的結果，不是一般規則。
+Figure 10 顯示 Llama-70B 在不同 request rate 下的 normalized end-to-end latency，縱軸單位是 s/token。隨著 request rate 增加，可以觀察各方法的延遲如何上升，以及系統能承受多少請求。在論文測試的設定中，Hetis 的吞吐量相對 Splitwise 最高達到 2.25 倍，相對 Hexgen 最高達到 1.33 倍。在這組 Llama-70B 部署裡，搜尋選出 A100 和 3090 作為 Primary，P100 則擔任 Attention worker。
 
-Figure 11 是最大可用 KV cache。相對測試過的 baselines，最高約 1.87 倍。另外，1.49 倍是 Section 7.3 裡 decode attention module 的 latency，不是整段 end-to-end latency 都改善 1.49 倍。報告者的整理是，較細的 attention 放置同時減少計算不平衡和 KV cache 沒用完的情況，所以服務容量提高。
+Figure 11 進一步顯示，Hetis 的最大可用 KV cache 相對測試過的 baselines，最高達到約 1.87 倍。作者也在 module 層級的分析中，報告 decode attention 最高 1.49 倍的加速。這些結果顯示，細分 attention 工作除了改善計算分配，也能利用原本閒置的 KV cache 空間，讓系統承接更多請求。
 
-論文出處：Sec. 7.1–7.3，Figure 8–13。2.25 倍和 1.33 倍在 Sec. 7.2；1.87 倍對應 Figure 11；1.49 倍在 Sec. 7.3。
+論文出處：Sec. 7.1–7.3，Figure 8–13。吞吐量最高改善見 Sec. 7.2；KV cache 容量見 Figure 11；decode attention 加速見 Sec. 7.3。
 
 ## 第 10 頁｜Hetis: Main Contributions and Takeaways
 
 預計時間：40 秒。
 
-三個貢獻可以收在一起。第一是依 module 的成本指派 worker。第二是 decode attention 按 head 動態平行，沒被分出去的 head 留在 Primary。第三是線上的 head dispatch，以及 head 等級的 KV cache migration。實作上，作者把 Hetis 做成 vLLM 的擴充，不是只靠 GPU simulator。裡面有 head-level 的 KV cache、用來讀寫 cache 的 CUDA kernels、NCCL 的 peer-to-peer，並重用 PagedAttention。投影片上的 GitHub 是 vLLM 專案本身，不是 Hetis 的官方 repository。主要的 end-to-end serving 結果來自真實 GPU cluster。Section 7.4 另外用大規模模擬看 Parallelizer 的搜尋成本，不要把它說成主要的服務實驗。
+Hetis 的核心，是根據不同 module 的執行成本分配 GPU 角色，讓 Primary 負責 dense computation，再把部分 decode attention heads 分配給其他 workers。搭配線上的 head dispatch 和 head 等級的 KV cache migration，系統就能動態調整計算與記憶體負載。
 
-論文出處：Sec. 6 的實作，Sec. 7.1–7.2 的 cluster 結果，Sec. 7.4 的搜尋模擬，Sec. 9 的結論。vLLM 連結是 https://github.com/vllm-project/vllm。
+作者把 Hetis 實作成 vLLM 的擴充，加入 head-level KV cache 管理、cache 讀寫的 CUDA kernels，以及 NCCL peer-to-peer 通訊，並沿用 PagedAttention。主要的 end-to-end serving 結果來自真實 GPU cluster；另外再透過大規模模擬，評估 Parallelizer 的搜尋成本。
+
+因此，這篇展示的是：除了依 prefill 和 decode 分工，還可以進一步依 module 和 attention head 的需求，發揮不同 GPU 的能力。
+
+論文出處：Sec. 6、7.1–7.2、7.4、9。投影片中的連結指向底層框架 [vLLM](https://github.com/vllm-project/vllm)。
 
 ## 第 11 頁｜ThunderServe vs. Hetis: Different Granularities of GPU Specialization
 
 預計時間：120 秒。
 
-這兩篇都在異質 GPU 上做專門化，但切的單位不一樣，所以不是粗細的排名。ThunderServe 是部署層的資源分配。它先把 GPU 分成 prefill group 和 decode group，中間傳 KV cache，再決定 TP/PP 和 request routing。Hetis 是 module 和 head 的工作分配。Primary workers 一起放模型權重；Attention workers 不必再存一份完整模型，decode 時只處理被分出去的 heads。
+把這兩篇放在一起看，它們都希望讓不同 GPU 承擔適合自己的工作，但切分的單位不同。ThunderServe 從 prefill 和 decode 的需求差異出發，在部署層一起決定 GPU grouping、phase designation、TP/PP 和 request routing。它的重點是，整個 cluster 應該分配多少資源給各個 phase，以及 requests 如何在這些資源之間流動。
 
-通訊也不一樣。ThunderServe 要在 prefill 和 decode replica 之間搬 KV cache。Hetis 在 decode 的每一層，只為被 offload 的 heads 送當前 token 的 Q、K、V 和 attention output，歷史 KV cache 留在 worker 上。兩邊都會看計算、記憶體和通訊成本，但 lightweight rescheduling 是在改 phase 和 routing，online head dispatching 是在改 heads 怎麼分，不是同一個機制。
+Hetis 則進一步觀察同一個 phase 裡的 module 差異。Dense computation 和 decode attention 對 GPU 的需求不同，因此它讓 Primary workers 承載模型參數並處理 dense modules，再把部分 attention heads 交給 Attention workers。這些 workers 保存自己負責的 KV cache，專門處理被分配到的 attention 工作。
 
-實驗上的最高 throughput 倍數不能直接拿來比誰比較好，因為硬體、workload 和 baseline 都不同。報告者的整理是，ThunderServe 最佳化 phase-level deployment，Hetis 最佳化 module-aware 的執行和 head-level attention placement。這句話收束這份十分鐘回顧。Helix 和 Tessera 在另一份主簡報，不在這份 PDF 裡。
+切分方式也決定了通訊的內容。ThunderServe 在 prefill 和 decode replicas 之間搬移 KV cache，讓 decode 接續處理 prompt。Hetis 則在 decode 的每一層，為 offload 的 heads 傳送當前 token 的 Q、K、V，再收回 attention output；歷史 KV cache 平常留在 worker 上，當 head 分配改變時，再進行對應的 cache migration。
 
-論文出處：比較表是報告者整理，不是兩篇的共同實驗。ThunderServe 依據 Sec. 3 與 Table 3–4；Hetis 依據 Sec. 3–5 與 Sec. 7。上方流程是 Conceptual comparison，不是論文原圖。
+兩者調整資源的方式也不同。ThunderServe 的 lightweight rescheduling 調整 phase 和 routing；Hetis 的 online head dispatching 則調整 heads 的分配。前者處理 phase 層級的資源需求，後者處理 module 和 head 層級的計算與記憶體負載。
+
+由於兩篇實驗使用的硬體、workload 和 baselines 不同，各自報告的最高吞吐量改善倍數，無法直接作為彼此的效能排名。更值得比較的是它們的設計選擇：ThunderServe 最佳化 phase-level deployment，Hetis 則透過 module-aware 的執行與 head-level attention placement，利用更細的工作分工來改善異質 GPU 的使用效率。
+
+論文出處：跨論文比較依據 ThunderServe Sec. 3、Table 3，以及 Hetis Sec. 3–5、7。比較表與上方概念流程為本報告整理。
 
 ## 第 12 頁｜Thank you
 
 預計時間：約 10 秒。不計入 10 分鐘。
 
-以上是 ThunderServe 和 Hetis 的十分鐘回顧。兩篇處理的粒度不同，這裡先停下來。
-
-來源：報告者整理的收束，不是論文結論。
+以上是 ThunderServe 和 Hetis 的回顧。從 phase 到 module 和 attention head，兩篇展示了利用異質 GPU 的不同分工方式。謝謝大家。

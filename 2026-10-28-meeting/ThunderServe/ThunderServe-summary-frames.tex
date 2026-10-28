@@ -2,7 +2,8 @@
 % Figures are copies of 2026-10-21-meeting/ThunderServe/. See SOURCE.txt.
 % Facts checked against 2026-10-21-meeting/MLSys25_Thunderserve.pdf.
 
-\begin{frame}[t,label=main_ts_why]{Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling}
+\begin{frame}[t,label=main_ts_why]
+\frametitle{\fontsize{11}{13}\selectfont ThunderServe: Why Heterogeneous GPU Serving Needs Phase-Aware Scheduling}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.50\textwidth}
 \mainfig{ThunderServe/ThunderServe_Fig01.png}{4.05cm}
@@ -50,8 +51,6 @@
 \item Prefill / decode \qlink{backup_ts_kv_01}{request routing}.
 \item Network-aware \qlink{backup_ts_kv_01}{KV cache transfer}.
 \end{itemize}
-\vspace{.14cm}
-{\footnotesize Additional mechanisms: \qlink{backup_ts_compression_01}{KV cache compression} and \qlink{backup_ts_rescheduling_01}{lightweight rescheduling}.}
 \end{column}
 \end{columns}
 \vspace{.12cm}
@@ -98,22 +97,17 @@ DistServe: homogeneous 8$\times$A100, similar price. Not the same machines.\par}
 \begin{frame}[t,label=main_ts_close]{Phase-Aware Deployment Improves Cost Efficiency}
 \vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.32\textwidth}
+\begin{column}{.49\textwidth}
 \stepcard{1. JOINT OPTIMIZATION}{One deployment plan}{GPU grouping, phase designation, TP/PP, and request routing.}
 \end{column}
-\begin{column}{.32\textwidth}
+\begin{column}{.49\textwidth}
 \stepcard{2. PERFORMANCE}{1.7$\times$ average, up to 2.1$\times$}{Overall throughput claim in the paper. Not one bar of Figure~9.}
 \end{column}
-\begin{column}{.32\textwidth}
-\stepcard{3. DYNAMIC ADAPTATION}{Full 157 s, \qlink{backup_ts_rescheduling_01}{lightweight} 13 s}{Table~4 overall time. The gap includes model reload, not search time alone.}
-\end{column}
+
 \end{columns}
-\vspace{.16cm}
-{\footnotesize Table~4 breakdown. Full: rescheduling 54($\pm$5)\,s $+$ reload 103($\pm$10)\,s $=$ 157($\pm$13)\,s.
-\qlink{backup_ts_rescheduling_01}{Lightweight}: rescheduling 13($\pm$2)\,s $+$ reload 0\,s $=$ 13($\pm$2)\,s.\par}
 \vspace{.12cm}
 \takeaway{ThunderServe demonstrates that heterogeneous GPU serving benefits from jointly optimizing inference phases, hardware allocation, and communication.}
 \vspace{.10cm}
 {\footnotesize ThunderServe focuses on phase-level resource allocation; finer-grained workload partitioning is another possible direction.\par}
-\src{Abstract and Sec.~6 for the 1.7$\times$/2.1$\times$ claim. Sec.~5.4 and Table~4 for rescheduling time.}
+\src{Abstract and Sec.~6 for the 1.7$\times$/2.1$\times$ claim.}
 \end{frame}

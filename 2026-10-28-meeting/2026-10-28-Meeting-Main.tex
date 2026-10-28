@@ -331,16 +331,17 @@ Runtime & \qlink{mm_hx_iwrr_01}{Request path scheduling} & Stored policy selecti
 \item \textbf{Runtime:} \qlink{mm_ts_worker_01}{workers} run assigned kernels and transfers. The \qlink{mm_ts_mon_01}{monitor} selects a stored policy.
 \end{enumerate}
 \vspace{.10cm}
-{\footnotesize\textbf{Throughput policy:} balance compute and communication when requests can overlap.}
+{\footnotesize\textbf{Throughput policy:} balance compute and communication when requests can overlap.\par}
 \vspace{.08cm}
-{\footnotesize\textbf{Latency policy:} at low load, shorten one request's compute plus the transfers that cannot be hidden.}
+{\footnotesize\textbf{Latency policy:} at low load, shorten one request's compute plus the transfers that cannot be hidden.\par}
 \end{column}\end{columns}
 \vspace{.12cm}\takeaway{Analysis and \qlink{mm_ts_plan_01}{MILP} stay offline. Runtime only executes or switches stored policies.}
 \src{Tessera Sec.~III, Fig.~4. RAW = Read After Write. The latency objective sums kernel and cut-edge costs.}
 
 \end{frame}
 
-\begin{frame}[t,label=main_ts_q1]{Q1: Does Kernel-Level Disaggregation Outperform Phase/Block-Level Methods?}
+\begin{frame}[t,label=main_ts_q1]
+\frametitle[Q1: Does Kernel-Level Disaggregation Outperform Phase/Block-Level Methods?]{\fontsize{11}{13}\selectfont Q1: Does Kernel-Level Disaggregation Outperform Phase/Block-Level Methods?}
 
 {\footnotesize\textbf{Question:} Does scheduling at kernel granularity raise end-to-end throughput, or only individual kernel speed?\par}
 \vspace{.04cm}

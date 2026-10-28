@@ -48,13 +48,16 @@ Online 收到每筆新 request 時，scheduler 會根據流量權重，為它選
 
 預計時間：1.4 分鐘。
 
-前面介紹了 Helix 的數學模型，這頁要看它真正做成 server 之後，能不能帶來 end-to-end 的收益。作者在同一個 region 裡，用 4 個 A100、8 個 L4 和 12 個 T4 組成異質 cluster，節點間設成 10 Gb/s，測試 LLaMA 30B 和 70B。這個設定讓瓶頸主要落在 GPU。在相同 cluster 和模型下，比較 Helix、separate pipelines，也就是 SP，以及實作在同一系統內的 Swarm 方法。
+前面介紹了 Helix 的數學模型，這頁要看它真正做成 server 之後，能不能帶來 end-to-end 的收益。作者在同一個 region 裡，用 4 個 A100、8 個 L4 和 12 個 T4 組成的 heterogeneous cluster，節點間設成 10 Gb/s，測試 LLaMA 30B 和 70B。這個設定讓瓶頸主要落在 GPU。在相同 cluster 和模型下，比較 Helix、separate pipelines，也就是 SP，以及實作在同一系統內的 Swarm 方法。
 
-這裡的 offline 和 online 是兩種 workload，和前一頁的事前規劃、線上執行不同。Offline 持續供給 requests，讓系統接近滿載，觀察 decode tokens/s。Online 則依 Azure Conversation trace 的到達形狀送入 requests，並把平均到達率縮到叢集尖峰吞吐的 75%，避免突發流量造成記憶體不足，同時觀察吞吐量和 prompt、decode latency。圖的上排是 throughput，下排是 online latency；每個小圖都放了真實 prototype 和 simulation 的結果，用來檢查模擬器是否接近實際系統。
+上排四張圖都是測量整個 Cluster 的 Decode Throughput
 
-結果可以先抓一個重點：相對 Swarm，Helix 在兩個模型、兩種 workload 下，都有大約兩倍的吞吐量。細看 30B，offline 和 online 分別是 2.14 和 2.07 倍；70B 則是 1.94 和 2.00 倍。這表示前面的容量規劃，確實能轉成真實硬體上的吞吐收益。
+這裡的 offline 和 online 是兩種 workload，和前一頁的事前規劃、線上執行不同。Offline 持續供給 requests，讓系統接近滿載。Online 每單位時間發送的 request 數量不固定，有時候多有時候少
+可以注意到 上排的 Helix 和 SP 很接近。原因是 LLaMA-30B 比較小，A100、L4、T4 各類 GPU 的節點數量都足以組成獨立的完整 Model Pipeline。
 
-不過，吞吐量提高不代表每筆 request 都更快。像 70B 相對 Swarm 的 decode latency 反而高了 16%；和 SP 比較時，也有因為利用較慢 GPU，讓平均 latency 較高的情況。所以這頁支持的是整體吞吐量的改善，latency 還是要分情境看。
+Figure 6 的箱型圖中，箱子下緣和上緣代表第 25 和 75 百分位，紅線是中位數（50%），上下鬚端則是第 5 和 95 百分位。
+
+也就是說，這個 serving 框架不見得可以得到比較好的 request latency 但可以確定 throughput
 
 來源：Helix Sec. 6.1–6.3，Figure 6，PDF pp. 8–11。倍率順序為 offline、online。
 
@@ -78,9 +81,11 @@ Online 收到每筆新 request 時，scheduler 會根據流量權重，為它選
 
 前面看到 Helix 的整體效果，這頁要進一步問，收益來自 layer placement 比較好，還是 request scheduling 比較好？作者做了兩組控制變因實驗，都使用 LLaMA 70B 的 offline serving，涵蓋 single cluster 和 geo-distributed setting，其中跨區環境使用 simulator。
 
-左邊先固定所有方法都用 Helix scheduler，只更換 Helix、Petals 或 Swarm 的 placement。這樣比較的是，在相同 scheduler 下，不同 layer 配置能提供多少吞吐量。相對 Petals 和 Swarm，Helix placement 在單一 cluster 分別達到 1.23 和 2.10 倍吞吐量，在跨區環境則是 1.49 和 2.38 倍。旁邊的拓樸圖用來說明，哪些位置出現資源未充分使用或網路壅塞。
+左邊先固定所有方法都用 Helix scheduler，只更換 Helix、Petals 或 Swarm 的 placement。Petals 也是另一個 previous work，這樣比較的是，在相同 scheduler 下，不同 layer 配置能提供多少吞吐量。相對 Petals 和 Swarm，Helix placement 在單一 cluster 分別達到 1.23 和 2.10 倍吞吐量，在跨區環境則是 1.49 和 2.38 倍。旁邊的拓樸圖用來說明，哪些位置出現資源未充分使用或網路壅塞。
 
-右邊反過來固定 Helix placement，只更換 scheduler，觀察同一套 layer 配置如何受到分流方式影響。相對 Swarm 和 random scheduler，Helix 在單一 cluster 的吞吐量分別提高 30% 和 29%，在跨區環境則提高 22% 和 15%。兩邊的長條圖都是 decode tokens/s，越高越好。
+node 中的數字是 layer 數量
+
+右邊反過來固定 Helix placement，只更換 scheduler，sq是 shortest queue，選擇 Queue 最短的 GPU，觀察同一套 layer 配置如何受到分流方式影響。相對 Swarm 和 random scheduler，Helix 在單一 cluster 的吞吐量分別提高 30% 和 29%，在跨區環境則提高 22% 和 15%。兩邊的長條圖都是 decode tokens/s，越高越好。
 
 這頁的重點是，固定另一個元件後，placement 和 scheduler 的差距都還存在。較好的 placement 決定各張 GPU 放哪些 layers，建立可用的執行路徑；scheduler 再把 requests 分配到這些路徑，讓負載配合 GPU 和連線的容量。不過，左右兩組實驗的比較基準不同，倍率不能直接相乘當成總收益；左邊的 Petals 也只提供 placement，並不是比較完整的 end-to-end server。
 
@@ -90,7 +95,13 @@ Online 收到每筆新 request 時，scheduler 會根據流量權重，為它選
 
 預計時間：1.5 分鐘。
 
-接下來 Tessera 問的是另一個問題：如果同一段模型工作裡面，不同 kernel 偏好的 GPU 就不一樣，把整個 phase 當單位會不會太粗？Kernel 是一次 GPU 上執行的運算工作，例如某個矩陣運算或 attention kernel；它不等於一整層。
+接下來 Tessera 問的是：同一個 phase 裡，不同 CUDA kernel 適合的 GPU 可能不同，把整個 phase 放在同一種 GPU 上會不會太粗？這裡的 kernel 是一次 kernel launch 啟動的 GPU 計算程式，例如矩陣運算或 attention kernel。一個 model layer 通常會執行多個 kernels，所以 Tessera 是用比一整個 layer 更細的粒度來分配工作。
+
+FFN（Feed-Forward Network，前饋神經網路） 是 Transformer Layer 中，除了 Attention 之外的另一個主要運算模組，也常稱為 MLP（Multi-Layer Perceptron）。
+
+這裡的 Block 指的是 Attention Block、FFN Block 這類模型運算模組
+
+如果比較純計算能力，L40S 在不少指標上比 A100 強；但如果比較記憶體頻寬、容量及大型模型 Serving，A100 通常更有優勢。
 
 作者先做 profiling。Figure 3 的橫軸是這顆 kernel 在 A100 上的執行時間，單位是微秒；縱軸是 L40s 時間除以 A100 時間。高於 1 表示 A100 較快，低於 1 表示 L40s 較快。左右兩組分別標成 prefill／decode，以及 attention／FFN。論文正文另外用 cublasGEMV 和 FlashAttention 解釋記憶體頻寬與運算強度的差別，但那不是這張圖的橫軸。
 
@@ -195,6 +206,7 @@ Tessera 的論證是：phase 和 block 裡仍有不同硬體偏好的 kernel，�
 頁尾的 Backup Topics 進第 14 頁。表上的 Layers、request pipeline、GPU kernels 是藍色連結，分別開到 MILP placement、pipeline scheduling，以及 kernel preference。
 
 ## 第 14 頁｜Backup Topics
+
 用途：Q&A 目錄，不計入 17.5 分鐘。
 
 這頁把後面的詳細頁分成 Helix 與 Tessera。每個項目連到該主題的第一張。正式頁上的藍色字也連到同一批入口。頁尾 Return to Main 回到第 13 頁。
@@ -306,6 +318,7 @@ Question：找到好解與證明最佳，需要同樣久嗎？Setup 是較小的
 來源：Helix Sec. 6.9，Figure 12，PDF p. 13。
 
 ## 第 28 頁｜Evaluation Methodology
+
 用途：Q&A。Helix 完整版第 26 頁。正式第 05、06 頁的 Prototype 與 Simulator 連到這裡。
 
 如果被問實驗是真機還是模擬，用這頁分開 prototype 與 simulator 的硬體和網路設定。不要把跨區模擬的數字說成 prototype。
@@ -313,6 +326,7 @@ Question：找到好解與證明最佳，需要同樣久嗎？Setup 是較小的
 來源：Helix 完整簡報第 26 頁，Evaluation Methodology。
 
 ## 第 29 頁｜Workload Characteristics
+
 用途：Q&A。Helix 完整版第 27 頁。正式第 05 頁的 Offline workload 與 Online workload 連到這裡。
 
 Offline 是持續供給 request，讀飽和 decode throughput。Online 依 Azure Conversation 的到達形狀送 request。這和正式第 04 頁的 offline／online（何時跑最佳化）不是同一組詞。
@@ -320,6 +334,7 @@ Offline 是持續供給 request，讀飽和 decode throughput。Online 依 Azure
 來源：Helix 完整簡報第 27 頁，Workload Characteristics。
 
 ## 第 30 頁｜Single-Cluster Results
+
 用途：Q&A。Helix 完整版第 28 頁。正式第 05 頁的 throughput 連到這裡。
 
 這是 Figure 6 的完整頁：同一 region、10 Gb/s、prototype 與 simulation 並列。相對 Swarm 的 decode throughput 約 2 倍，latency 不是每一格都下降。
@@ -327,6 +342,7 @@ Offline 是持續供給 request，讀飽和 decode throughput。Online 依 Azure
 來源：Helix Sec. 6.2–6.3，Figure 6。完整簡報第 28 頁。
 
 ## 第 31 頁｜Geo-Distributed Results
+
 用途：Q&A。Helix 完整版第 29 頁。正式第 03 頁的 geo-distributed 與第 06 頁的 clusters 連到這裡。
 
 同一組 GPU 分成三個 cluster，跨區約 100 Mb/s。這是 simulator，不是 prototype。30B 相對 Swarm 的 decode throughput 約 2.3–2.4 倍。
@@ -334,6 +350,7 @@ Offline 是持續供給 request，讀飽和 decode throughput。Online 依 Azure
 來源：Helix Sec. 6.2、6.4，Figure 7。完整簡報第 29 頁。
 
 ## 第 32 頁｜Model Placement Deep Dive
+
 用途：Q&A。Helix 完整版第 31 頁。正式第 07 頁的 Placement ablation 連到這裡。
 
 Scheduler 固定為 Helix，只換 placement。Offline LLaMA 70B。Single 相對 Petals／Swarm 為 1.23×／2.10×，Geo 為 1.49×／2.38×。
@@ -341,6 +358,7 @@ Scheduler 固定為 Helix，只換 placement。Offline LLaMA 70B。Single 相對
 來源：Helix Sec. 6.6，Figure 9。完整簡報第 31 頁。
 
 ## 第 33 頁｜Request Scheduling Deep Dive
+
 用途：Q&A。Helix 完整版第 32 頁。正式第 07 頁的 Scheduling ablation 連到這裡。
 
 Placement 固定為 Helix，只換 scheduler。Single 相對 Swarm／random 為 +30%／+29%，Geo 為 +22%／+15%。
@@ -348,6 +366,7 @@ Placement 固定為 Helix，只換 scheduler。Single 相對 Swarm／random 為 
 來源：Helix Sec. 6.7，Figure 10。完整簡報第 32 頁。
 
 ## 第 34 頁｜Different Kernels Prefer Different GPUs
+
 用途：Q&A。Tessera 完整版第 6 頁。正式第 02、08、13 頁的 kernel 關鍵字連到這裡。
 
 A100 與 L40s 的 kernel profiling。約 45% prefill kernels、57% decode kernels 在 L40s 較快。這是 kernel 數量占比，不是總時間占比。
@@ -355,6 +374,7 @@ A100 與 L40s 的 kernel profiling。約 45% prefill kernels、57% decode kernel
 來源：Tessera Sec. II-C，Figure 3。完整簡報第 6 頁。
 
 ## 第 35 頁｜Phase Labels Hide Kernel-Level Variation
+
 用途：Q&A。Tessera 完整版第 7 頁。正式第 08 頁的 phase label 連到這裡。
 
 同一張偏好圖再按 attention／FFN 看。Block 名稱不能決定 GPU。
@@ -458,6 +478,7 @@ Question：效能提高是否值得多付一張 GPU 的成本？Table III 用五
 來源：Tessera Sec. V-A–D，Figures 6–8、11，PDF pp. 7–10。
 
 ## 第 48 頁｜Communication Backends and Interconnects
+
 用途：Q&A。Tessera 完整版第 25 頁。
 
 評估用的 communication backend 是 NCCL，cut-edge 傳送使用 GPU-initiated IBGDA。這頁補實作，不取代第 45 頁的頻寬數字。
@@ -465,6 +486,7 @@ Question：效能提高是否值得多付一張 GPU 的成本？Table III 用五
 來源：Tessera 完整簡報第 25 頁。
 
 ## 第 49 頁｜Evaluation Methodology
+
 用途：Q&A。Tessera 完整版第 26 頁。正式第 10 頁的 PD／AF，以及第 11 頁的 Poisson，連到這裡。
 
 這頁列模型、offline data 與 baseline 定義。PD 是 prefill/decode，AF 是 attention/FFN。
@@ -472,6 +494,7 @@ Question：效能提高是否值得多付一張 GPU 的成本？Table III 用五
 來源：Tessera 完整簡報第 26 頁，Evaluation Methodology。
 
 ## 第 50 頁｜Offline Throughput
+
 用途：Q&A。Tessera 完整版第 27 頁。正式第 10 頁的 offline 連到這裡。
 
 Figure 6：三組 GPU pair。對 PD 平均 1.5×、最高 2.3×；對 AF 平均 1.35×、最高 1.7×。Diffusion 用 images/min，不能和 tokens/s 相加。
@@ -479,6 +502,7 @@ Figure 6：三組 GPU pair。對 PD 平均 1.5×、最高 2.3×；對 AF 平均 
 來源：Tessera Sec. V-A–B，Figure 6。完整簡報第 27 頁。
 
 ## 第 51 頁｜Online Latency under a Token SLO
+
 用途：Q&A。Tessera 完整版第 28 頁。正式第 11 頁的 latency 連到這裡。
 
 GPT-oss 20B，Poisson arrivals。相同 50 ms/token SLO 下，request rate 最高約為最佳 baseline 的 1.3 倍。
@@ -486,9 +510,9 @@ GPT-oss 20B，Poisson arrivals。相同 50 ms/token SLO 下，request rate 最�
 來源：Tessera Sec. V-B，Figure 7。完整簡報第 28 頁。
 
 ## 第 52 頁｜Pipeline Effectiveness
+
 用途：Q&A。Tessera 完整版第 30 頁。正式第 12 頁的 pipelining 連到這裡。
 
 GPT-oss 20B offline。No pipeline 1443，pipeline 2123，pipeline + priority 2641 tokens/s。零通訊參考是 2734，2641/2734 約 96.6%。
 
 來源：Tessera Sec. III-C、V-D，Figure 9。完整簡報第 30 頁。
-
