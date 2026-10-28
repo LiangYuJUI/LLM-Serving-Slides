@@ -2,7 +2,7 @@
 
 這是獨立簡報，對應 `2026-10-21-Hetis.tex`。投影片頁腳是 1/39 到 39/39，講稿標題用同一套頁碼，不和 ThunderServe 相加。第 01–02 頁是開場，第 03–36 頁是 Hetis 正文，第 37–38 頁是和 ThunderServe 的對照與後續問題，第 39 頁是 Q&A。
 
-依據為本地 `SC25_Hetis.pdf`，標題為 *Hetis: Serving LLMs in Heterogeneous GPU Clusters with Fine-grained and Dynamic Parallelism*，首頁標示 arXiv:2509.08309v1，2025-09-10，SC ’25。以下「論文第幾頁」若出現，指 PDF 實際頁碼，不是投影片頁碼。每頁正文可直接口述；「來源」與「備註」供準備時查閱，不必念出。公式頁有為了說明而做的符號及單位整理，已與原文逐字公式區分。
+依據為本地 `SC25_Hetis.pdf`，標題為 _Hetis: Serving LLMs in Heterogeneous GPU Clusters with Fine-grained and Dynamic Parallelism_，首頁標示 arXiv:2509.08309v1，2025-09-10，SC ’25。以下「論文第幾頁」若出現，指 PDF 實際頁碼，不是投影片頁碼。每頁正文可直接口述；「來源」與「備註」供準備時查閱，不必念出。公式頁有為了說明而做的符號及單位整理，已與原文逐字公式區分。
 
 ## 第 01 頁｜Title
 
@@ -27,7 +27,6 @@
 所以這裡的問題不是叢集完全沒有記憶體，而是現有配置讓一部分記憶體用不上。Hetis 想把 dense computation 的配置，和 decode attention、KV cache 的配置拆開決定。
 
 來源：Section 2.3、Figure 1。
-
 
 ## 第 04 頁｜Measured GPU Gaps and a Partition Example
 
@@ -121,7 +120,6 @@ Hetis 選的是 head-wise。各個 head 原本就分別計算 attention，只要
 
 來源：Section 4.2、Figure 5。
 
-
 ## 第 11 頁｜Head-wise Attention as Printed
 
 論文把 head-wise attention 寫成 Eq. (2)。一個 request 的輸出，是各 GPU 上那段 heads 的 result 依序 concat 起來。
@@ -184,7 +182,7 @@ Context 越長，每一步 attention 要讀取和計算的歷史 K、V 通常也
 
 中間的公式是 \(\rho_i(t)=\gamma_i d_i(t)+\beta_i\)，結果 rho 是 Primary 與 Attention worker i 之間的預估通訊時間。d 是這一步需要傳送的 Q、新產生的 K、V，以及回傳 attention output 的資料量；gamma 是每單位傳輸量的時間成本，beta 是固定通訊成本，兩者都由離線 profiling 決定。因此 gamma 不是直接拿網路標示的 Gbps 數值來代入。
 
-右邊的 \(d_i(t)=(2+2/r)h_i(t)\) 是用向量數表示這份傳輸量，其中 \(r=H_Q/H_{KV}\)，代表每個 KV head 對應幾個 query heads。MHA 的 r 等於一；GQA 則讓多個 query heads 共用一組 K、V。第一個 2 是傳出去的 Q 和傳回來的 attention output，各有 h 個向量；第二個 2 是新 K 和新 V，但因為共用 KV，各只有 h 除以 r 個向量，所以這項要除以 r。
+右邊的 \(d*i(t)=(2+2/r)h_i(t)\) 是用向量數表示這份傳輸量，其中 \(r=H_Q/H*{KV}\)，代表每個 KV head 對應幾個 query heads。MHA 的 r 等於一；GQA 則讓多個 query heads 共用一組 K、V。第一個 2 是傳出去的 Q 和傳回來的 attention output，各有 h 個向量；第二個 2 是新 K 和新 V，但因為共用 KV，各只有 h 除以 r 個向量，所以這項要除以 r。
 
 用一個教學示例來算：如果 h 等於 8、r 等於 4，就是 8 個 Q、8 個 output、2 個新 K 和 2 個新 V，合計 \(d=8+8+2+2=20\) 個向量，不是 20 Bytes。要換成實際 bytes，還要乘上 head dimension 和每個元素的位元組數；gamma 的單位也必須和 d 的單位一致。這裡計算的是每一步的新向量與結果，沒有把已經留在 worker 上的完整歷史 KV cache 每次重傳。
 
@@ -210,7 +208,7 @@ g_i 是原本的 cache 量；l_j 是 request j 當下的 context length。新增
 
 Eq. (5) 對所有正在服務的 requests，也就是 S(t)，要求同一個 request 在 stage 內各 GPU 分到的 heads 加總為 0 或 H。H 是模型的 query-head 總數；0 是沒有分配，H 是完整分配。這個限制本身沒有交代 admission 或 rejection 的具體流程。
 
-Eq. (6) 對 stage 裡的每張 GPU，把 S(t) 中的 query-head 數乘 context length 後加總，限制在 r 乘 M_i(t) 除以 2 以下。這裡 \(r=H_Q/H_{KV}\) 是 GQA 的共享比例；用教學示例來說，r 等於 4，代表每四個 query heads 共用一組 Key、Value，所以這四個 heads 只需要儲存一個 KV head 的歷史資料。把原式兩邊乘上 \(2/r\) 來理解，左邊除以 r 是考慮 KV 共用，乘以 2 是因為 Key 和 Value 都要儲存，目的就是讓每張 GPU 上所有 requests 的 KV cache 總量不超過可用容量 M_i(t)。論文稱 M_i(t) 為 available cache capacity，但沒有在這裡完整交代實體單位，以及 available 與既有 cache 占用之間的換算。
+Eq. (6) 對 stage 裡的每張 GPU，把 S(t) 中的 query-head 數乘 context length 後加總，限制在 r 乘 M*i(t) 除以 2 以下。這裡 \(r=H_Q/H*{KV}\) 是 GQA 的共享比例；用教學示例來說，r 等於 4，代表每四個 query heads 共用一組 Key、Value，所以這四個 heads 只需要儲存一個 KV head 的歷史資料。把原式兩邊乘上 \(2/r\) 來理解，左邊除以 r 是考慮 KV 共用，乘以 2 是因為 Key 和 Value 都要儲存，目的就是讓每張 GPU 上所有 requests 的 KV cache 總量不超過可用容量 M_i(t)。論文稱 M_i(t) 為 available cache capacity，但沒有在這裡完整交代實體單位，以及 available 與既有 cache 占用之間的換算。
 
 Eq. (7a) 讓各 GPU 中最大的 f_i 最小，x 向量收集這張 GPU 對新 requests 的 head 分配。Eq. (7b) 原樣把既有 g_i 加上新 requests 的 x 乘 l，右端是 r M_i 除以 2；Eq. (7c) 則對每個新 request 強制總和為 H，和 Eq. (5) 允許 0 的寫法不同。J(t) 作為集合與求和上限的混用也保留，沒有悄悄改成集合大小。
 
@@ -220,9 +218,9 @@ Eq. (7a) 讓各 GPU 中最大的 f_i 最小，x 向量收集這張 GPU 對新 re
 
 ## 第 18 頁｜Closed Forms of Attention Time
 
-這兩個 \(f_i(\vec{x}_i(t))\) 是預測 GPU i 在加入新 requests 的 head allocation 後，執行一次 decode attention 所需的時間；遠端 worker 的預估還包含傳輸成本。Min-Max optimization 就是比較各 GPU 的這個時間，讓最慢的一張盡量快。這兩式是 Section 5.2.2 在 Eq. (7) 後直接給出的公式，沒有獨立編號，不是我們自行推導的新公式。
+這兩個 \(f_i(\vec{x}\_i(t))\) 是預測 GPU i 在加入新 requests 的 head allocation 後，執行一次 decode attention 所需的時間；遠端 worker 的預估還包含傳輸成本。Min-Max optimization 就是比較各 GPU 的這個時間，讓最慢的一張盡量快。這兩式是 Section 5.2.2 在 Eq. (7) 後直接給出的公式，沒有獨立編號，不是我們自行推導的新公式。
 
-先看變數：\(h_i(t)\) 是 GPU 原本負責的 query heads 總數，\(g_i(t)\) 是原本儲存的 KV cache 量。\(x_i^j(t)\) 是新 request j 分配給 GPU i 的 query-head 數，\(\vec{x}_i(t)\) 則收集這張 GPU 對所有新 requests 的分配。\(J(t)\) 是當前新到達的 requests，\(\ell_j(t)\) 是 request j 的 context length，也就是投影片原式的 l_j(t)。\(r=H_Q/H_{KV}\) 是 GQA ratio，例如 r 等於 4，就代表四個 query heads 共用一組 K、V。
+先看變數：\(h*i(t)\) 是 GPU 原本負責的 query heads 總數，\(g_i(t)\) 是原本儲存的 KV cache 量。\(x_i^j(t)\) 是新 request j 分配給 GPU i 的 query-head 數，\(\vec{x}\_i(t)\) 則收集這張 GPU 對所有新 requests 的分配。\(J(t)\) 是當前新到達的 requests，\(\ell_j(t)\) 是 request j 的 context length，也就是投影片原式的 l_j(t)。\(r=H_Q/H*{KV}\) 是 GQA ratio，例如 r 等於 4，就代表四個 query heads 共用一組 K、V。
 
 係數方面，\(a_i,b_i,c_i\) 是 GPU profiling 得到的 attention computation cost 係數：a 對應 head 數的成本，b 對應 cache 量的成本，c 是固定項。\(\gamma_i\) 是每單位傳輸量的時間成本，\(\beta_i\) 是通訊模型的固定延遲；這些係數要和模型使用的資料量單位一致。
 
@@ -489,3 +487,5 @@ Hetis 的核心貢獻可以整理成三個部分。第一，Primary parallelism 
 以上是 Hetis。第 37–38 頁把 ThunderServe 放進來，是為了對照 phase 和 head 兩種切法，不是兩篇的聯合實驗。投影片上留的討論方向是 GPU heterogeneity、KV cache，以及 HBM／HBF。
 
 可以接著問：對我們預計研究的硬體而言，瓶頸比較接近 phase placement，還是 attention 與 KV cache 的細粒度配置；以及容量、頻寬和每一步讀取成本，哪些要先用實測建成模型。
+
+tp pp dp
