@@ -153,3 +153,14 @@ Overleaf：建立專案並上傳 `output/overleaf/Helix.zip`，入口為 `main.t
 - 新增局部 `.gitignore`，只涵蓋 LaTeX 中間檔。既有 9 個根目錄中間檔已確認並刪除，沒有已追蹤中間檔需要取消追蹤。
 - `validate.py` 新增實際 PDF 藍色大區塊、56 頁來源、5 個關鍵主張頁、導覽連結次數及中間檔殘留檢查。Discussion Index 本來就無論文來源。
 - 重新 build 後，中間檔仍為零。開始任務時已存在的未追蹤根目錄 PDF 保留原樣，不納入本次 commit。
+
+## 方法論文字釐清（2026-11-02）
+
+本次僅修改 PDF 3、4、5、6、34，其餘 52 頁與前版逐頁 rendered pixels 相同。
+
+- M03：Placement / Capacity / Flow 三項，明確說明 placement 與 flow 共同最佳化，保留 throughput objective、capacity constraint 及 latency 限制。
+- M04：Figure 3 搭配 offline planning、online scheduling、pipeline execution、decode reuse；IWRR 使用 optimized flow weights，同一 request 沿用 pipeline 與 KV，不逐 request / token 重跑 MILP。
+- M05 / M06：區分固定 placement 的 `MaxFlow(G(Psi))` throughput model 與 joint MILP，維持原順序及限制式。
+- PDF 34：Petals / Swarm / SP heuristics 提供 warm-start candidates，Gurobi 繼續搜尋，不保證初始方案最優。Pruning、warm start、early stopping 分開說明。
+
+PDF 與 ZIP 獨立編譯驗證通過，仍為 57 頁、224 個內部連結及 12 張來源圖片；第 3–7、34 頁已視覺檢查，來源、頁碼與雙向導覽保留，無 LaTeX 中間檔殘留。詳見 [最新 QA 紀錄](output/qa/REVIEW.md)。

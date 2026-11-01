@@ -123,10 +123,9 @@ National Taiwan University / Academia Sinica
 
 \begin{frame}[c,label=M03]{What Does Helix Optimize?}
 \vspace*{\fill}
-\point{1. Placement $\Psi$}{Offline MILP chooses contiguous layer ranges for each node.}
-\point{2. Capacity $c_{uv}$}{Profiles and placement define the valid graph and its limits.}
-\point{3. Flow $f_{uv}$}{Max flow allocates token rates subject to those capacities.}
-\point{4. Pipeline $P_r$}{Online IWRR selects one valid path for a new request.}
+\point{Placement $\Psi$}{Joint MILP chooses contiguous layer ranges for GPU nodes under memory constraints.}
+\point{Capacity $c_{uv}(\Psi)$}{GPU profiling, network bandwidth, and placement determine valid graph edges and capacity limits.}
+\point{Flow $f_{uv}$}{MILP jointly optimizes flow allocation with placement to maximize aggregate serving throughput.}
 \[
   \max_{\Psi,f}\;\sum_i f_{\mathrm{source},i}
   \qquad \text{subject to}\quad 0\le f_{uv}\le c_{uv}(\Psi)
@@ -142,10 +141,10 @@ National Taiwan University / Academia Sinica
 
 \vspace{.12cm}
 \begin{tabularx}{\textwidth}{@{}lX@{}}
-\textbf{Offline} & Profile GPUs / links $\to$ MILP placement and flow $\to$ load weights.\\[.12cm]
-\textbf{Online selection} & Request arrives $\to$ estimate KV use / mask nodes $\to$ IWRR selects a pipeline.\\[.12cm]
-\textbf{Execution} & Workers run assigned layers with local KV $\to$ transfer activations $\to$ last worker returns output token.\\[.12cm]
-\textbf{Decode loop} & Coordinator starts the next token on the same pipeline and its existing KV cache.\\
+\textbf{Offline planning} & Profile GPU / network resources, jointly solve placement and flow, and load model weights.\\[.12cm]
+\textbf{Online scheduling} & On arrival, the coordinator checks estimated KV capacity and uses optimized flow weights in IWRR to select one valid pipeline.\\[.12cm]
+\textbf{Pipeline execution} & Workers execute assigned layers in order, forward activations, and return the output token to the coordinator.\\[.12cm]
+\textbf{Decode reuse} & Later tokens reuse the request's pipeline and local KV caches. MILP is not rerun per request or token.\\
 \end{tabularx}
 \slidenote{Secs.~4--5, Fig.~3; lifecycle synthesis}{\nav{B18}{Runtime Details} \nav{B22}{KV Cache} }
 \end{frame}
@@ -158,14 +157,17 @@ National Taiwan University / Academia Sinica
 \point{Source and sink}{The coordinator injects and collects tokens.}
 \point{Conservation}{Flow enters and leaves each compute node at the same rate.}
 \end{column}\begin{column}{.62\textwidth}\flowpanels
-\end{column}\end{columns}\par\medskip{\small The maximum steady flow estimates the throughput of a fixed placement.}\par
+\end{column}\end{columns}
+\par\smallskip{\small For fixed $\Psi$, $F(\Psi)=\operatorname{MaxFlow}(G(\Psi))$ models steady-state throughput.\\
+The next slide jointly optimizes placement and flow.}\par
 \slidenote{Sec.~4.3, Fig.~2}{\nav{B12}{Worked Cost Model} }
 \end{frame}
 
 \begin{frame}[c,label=M06]{How Does MILP Decide Placement?}
 \vspace*{\fill}
 \point{Inputs}{Layer count, available memory, profiled GPU rates and link bandwidths.}
-\point{Decisions}{$s_i$: start layer; $b_{ij}$: layer count; $d_{ij}$: valid hop; $f_{ij}$: flow.}
+\point{Joint decisions}{$s_i$, $b_{ij}$: layer range; $d_{ij}$: valid transition; $f_{ij}$: flow.}
+{\small MILP searches placement and flow jointly, without enumerating placements and separately solving max flow for each.}\par
 \[
  e_i=s_i+\sum_j j b_{ij},\qquad
  \max\sum_i f_{\mathrm{source},i}
@@ -638,7 +640,8 @@ An active edge requires $s_j\le e_i<e_j$. With no partial inference, require $e_
 \begin{frame}[c,label=B17]{Making the MILP Practical}
 \vspace*{\fill}
 \point{Pruning}{Drop slow network connections. Evaluation uses average degree 12. This restricts the search space.}
-\point{Warm start}{Seed Gurobi with Petals, Swarm, and separate-pipeline placements.}
+\point{Warm start}{Petals, Swarm, and separate-pipeline heuristics supply initial placement candidates. Gurobi uses these starts to search for improved feasible solutions; the initial plans need not be optimal.}
+{\small The paper does not give a separate complete mathematical formulation for generating every heuristic initial placement.}\par\medskip
 \point{Early stopping}{Stop near the analytic compute upper bound, or after 10 minutes without improvement. Maximum search budget: 4 hours on a 14-core CPU.}
 \point{Why not relax to LP?}{Rounding start layers or layer counts can invalidate edges and radically change feasible flow.}
 \point{Scaling beyond the evaluation}{The paper suggests partitioning hundreds of nodes into smaller clusters; it does not evaluate that approach.}

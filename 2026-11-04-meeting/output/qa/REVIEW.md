@@ -1,3 +1,34 @@
+# Helix methodology refinement — 2026-11-02
+
+Baseline: `a259b15ddcf440fbf57023ec08bf3c8fdf87f8d5` (fetched origin/main before editing).
+Only PDF pages 3, 4, 5, 6 and 34 change. All other 52 pages, including M07, are pixel-identical to the baseline PDF.
+
+## Scientific content and scope
+
+Checked the local original paper, especially Secs. 4.4–4.6, Figure 3, and Secs. 6.2, 6.8–6.9.
+
+- M03 now has only Placement, Capacity and Flow. Placement and flow are joint MILP decisions; GPU profiling, network bandwidth and the chosen placement determine edge validity and capacities. The objective and capacity inequality remain unchanged and prominent. The latency / percentile caveat remains. Pipeline and IWRR details are removed from this page.
+- M04 retains Figure 3 and uses Offline planning, Online scheduling, Pipeline execution and Decode reuse. It states that the coordinator checks estimated KV capacity, uses optimized flow weights in IWRR, selects one valid pipeline, and reuses that pipeline and local KV caches. MILP is not rerun per request or token.
+- M05 retains node splitting, compute/network capacities, source/sink, conservation and both Figure 2 viewports. It adds F(Psi) = MaxFlow(G(Psi)) for a fixed placement, with a short transition to joint optimization on M06.
+- M06 explicitly describes joint placement / flow search, not an outer placement-enumeration loop followed by independent max-flow solves. Existing objective, memory, connectivity, compute/network constraints and the global-optimality limitation remain.
+- B17 / PDF 34 identifies Petals, Swarm and separate-pipeline heuristics as warm-start candidates. Gurobi searches for improved feasible solutions; initial plans need not be optimal. The paper does not supply a separate complete mathematical formulation for every heuristic initializer. Network pruning, warm starting and early stopping remain distinct, with the ten-minute no-improvement stop and four-hour budget unchanged.
+
+No slides added, deleted or reordered. No experiment values, source images or existing displayed equations changed. All source strings, backup buttons and page numbers remain. No takeaway panels were reintroduced. Figure dimensions and existing column/table layouts are preserved; flexible space accommodates the text changes.
+
+## Build, navigation and visual QA
+
+- `scripts/build.py`: local pdfLaTeX twice and independently extracted Overleaf ZIP twice passed. No final-log warnings, undefined references, missing figures or overfull boxes.
+- All 57 local and standalone ZIP pages have identical text, rendered pixel digests and hyperlink targets. The ZIP contains the exact current source, 12 caption-free figures and README.
+- `scripts/validate.py` passed: 57 pages, 224 actual internal PDF annotations, all expected destinations and multiplicities, 12 image pixel hashes, 56 source-bearing pages, text bounds, footer clearance, critical claims and no large blue takeaway panels.
+- Compared every page against the baseline: all 224 link target/page pairs and all visible source lines are unchanged. The only rendered differences are PDF 3, 4, 5, 6 and 34.
+- Rendered all 57 pages and refreshed both montages. Visually inspected PDF 3–7 and 34 at 2x resolution. Equations, labels, figure content, sources and navigation are complete and legible, with no footer overlap or clipping.
+- Existing cleanup checks passed: no LaTeX intermediate files anywhere under the meeting directory. Build intermediates were automatically removed by the existing temporary-directory workflow. Explicit review PNGs are outside the repository in `/tmp/helix-methodology-pages`.
+- The pre-existing untracked root PDF remains untouched and excluded from this commit.
+
+The following record documents the previous visual-cleanup revision.
+
+---
+
 # Helix visual cleanup validation — 2026-11-01
 
 Baseline: `03622aea94186a9c1a36f4fa33624392b678c5cc`.
