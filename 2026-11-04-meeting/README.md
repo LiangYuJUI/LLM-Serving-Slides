@@ -16,6 +16,7 @@
 
 - [ASPLOS25_Helix.pdf](ASPLOS25_Helix.pdf)：原論文。
 - [Helix/](Helix/)：原有 Figure 1–12 PNG 與來源說明。
+- [Helix/Without-Caption/](Helix/Without-Caption/)：新加入的 Figure 1–12 無外部 caption PNG。**目前 37 頁 PDF 尚未改用新圖片**；待下一次 Main/Backup 重構時同步替換。
 - `output/overleaf/Helix.zip`：完整版 Overleaf 套件。
 
 ## 舊版頁碼對照
