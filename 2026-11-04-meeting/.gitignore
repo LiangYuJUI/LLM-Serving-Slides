@@ -1,0 +1,19 @@
+# LaTeX intermediates only; PDFs, figures and ZIP deliverables remain visible.
+*.aux
+*.log
+*.out
+*.nav
+*.snm
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.vrb
+*.lof
+*.lot
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.xdv
+*.dvi

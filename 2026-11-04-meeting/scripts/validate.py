@@ -5,6 +5,8 @@ import argparse
 import hashlib
 import json
 import re
+import tempfile
+from collections import Counter
 import pymupdf as fitz
 from PIL import Image, ImageDraw
 
@@ -13,8 +15,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--render-dir', type=Path, default=ROOT / 'output/qa/pages')
+    parser.add_argument('--render-dir', type=Path, help='Optional persistent page renders; defaults to an automatically cleaned temporary directory')
     args = parser.parse_args()
+    with tempfile.TemporaryDirectory(prefix="helix-render-") as tmp:
+        validate(args.render_dir or Path(tmp))
+
+
+def validate(render_dir):
     text = (ROOT / '2026-11-04-Helix.tex').read_text()
     frames = re.findall(r'\\begin\{frame\}\[c,label=([^]]+)\]\{([^\n]+?)\}(.*?)\\end\{frame\}', text, re.S)
     doc = fitz.open(ROOT / 'output/pdf/2026-11-04-Helix.pdf')
@@ -26,6 +33,16 @@ def main():
     links = []
     for i, (label, title, body) in enumerate(frames):
         actual = doc[i].get_links()
+        if label != 'INDEX':
+            assert 'Source: Helix,' in doc[i].get_text(), (label, 'missing source')
+        # Retain the blue title and small illustrative layer diagram, but no
+        # wide SoftBlue panel in the body (the former takeaway treatment).
+        for drawing in doc[i].get_drawings():
+            fill = drawing.get('fill')
+            rect = drawing['rect']
+            softblue = (233/255, 242/255, 249/255)
+            if fill and len(fill) == 3 and max(abs(a-b) for a,b in zip(fill, softblue)) < .005:
+                assert rect.y0 < 30 or rect.width < 150, (label, 'blue body panel')
         for link in actual:
             target = link.get('nameddest')
             assert target in destinations, (i + 1, link)
@@ -40,8 +57,11 @@ def main():
             assert back[0].startswith('M')
             requested += back + ['INDEX']
         requested += ['INDEX']  # persistent footer
+        section_start = max(p for p in (1, 16, 17, 21, 35, 42, 56) if p <= i + 1)
+        requested += [f'Navigation{section_start}']
+        assert Counter(l.get('nameddest') for l in actual) == Counter(requested), (label, 'link multiplicity')
         for target in requested:
-            assert any(l.get('nameddest') == target and l['page'] == expected[target] for l in actual), (label, target)
+            assert any(l.get('nameddest') == target and l['page'] == (expected[target] if target in expected else section_start - 1) for l in actual), (label, target)
         # Text clipping / footer clearance. Footline is below y=244 pt.
         for block in doc[i].get_text('dict')['blocks']:
             for line in block.get('lines', []):
@@ -51,6 +71,22 @@ def main():
                     assert r.y0 >= 0 and r.y1 <= doc[i].rect.height, (i + 1, span)
                     if r.y0 < 242:
                         assert r.y1 < 243, (i + 1, 'content touches footer', span)
+    assert r'\takeaway' not in text
+    required_claims = {
+        3: ['throughput', 'latency', 'percentiles'],
+        6: ['Pruning', 'timed solving', 'global optimality'],
+        10: ['70B vs. SP', '1.86', '1.69', 'offline', 'online', 'higher average latency'],
+        11: ['Simulated 30B vs. Swarm', 'Online', '66%', '24%'],
+        12: ['42-node simulation', '70B', '3.29', 'online', 'vs. SP', 'latency is slightly higher'],
+    }
+    for page, claims in required_claims.items():
+        content = ' '.join(doc[page-1].get_text().split())
+        for claim in claims:
+            assert claim in content, (page, 'missing claim', claim)
+    patterns = [line.strip() for line in (ROOT / '.gitignore').read_text().splitlines()
+                if line.startswith('*.')]
+    intermediates = sorted(str(p.relative_to(ROOT)) for pattern in patterns for p in ROOT.rglob(pattern))
+    assert not intermediates, ('LaTeX intermediates remain', intermediates)
     files = sorted((ROOT / 'Helix/Without-Caption').glob('*.png'))
     assert len(files) == 12
     hashes = {}
@@ -71,19 +107,21 @@ def main():
     assert not any(ord(c)<32 and c not in '\n\r' for c in text), 'Unexpected control character'
     qa = ROOT / 'output/qa'
     qa.mkdir(exist_ok=True)
-    args.render_dir.mkdir(parents=True, exist_ok=True)
+    render_dir.mkdir(parents=True, exist_ok=True)
     for i, page in enumerate(doc):
-        page.get_pixmap(matrix=fitz.Matrix(2, 2)).save(args.render_dir / f'page-{i+1:02}.png')
+        page.get_pixmap(matrix=fitz.Matrix(2, 2)).save(render_dir / f'page-{i+1:02}.png')
     for start, stop, name in [(0, 15, 'main-montage'), (15, len(doc), 'backup-montage')]:
         canvas = Image.new('RGB', (1600, ((stop-start+3)//4)*250), '#d6d6d6')
         for j, i in enumerate(range(start, stop)):
-            im = Image.open(args.render_dir / f'page-{i+1:02}.png')
+            im = Image.open(render_dir / f'page-{i+1:02}.png')
             im.thumbnail((396, 223))
             xy = ((j % 4)*400, (j // 4)*250)
             canvas.paste(im, xy)
             ImageDraw.Draw(canvas).text((xy[0]+6, xy[1]+227), f'PDF {i+1}', fill='black')
         canvas.save(qa / f'{name}.jpg', quality=92)
     report = {
+        'latex_intermediates_remaining': intermediates, 'blue_takeaway_panels': 0,
+        'source_pages_checked': 56, 'critical_claim_pages_checked': list(required_claims),
         'pdf_pages': len(doc), 'main_pages': 15, 'discussion_pages_including_index': 42,
         'internal_links_checked': len(links), 'caption_free_figures_matched_by_pixel_hash': len(used),
         'figures': occurrences, 'links': links,

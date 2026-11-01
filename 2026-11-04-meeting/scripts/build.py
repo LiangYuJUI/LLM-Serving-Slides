@@ -57,11 +57,10 @@ def main():
             assert a.get_pixmap().digest == b.get_pixmap().digest
             assert [(x.get('nameddest'), x.get('page')) for x in a.get_links()] == [
                 (x.get('nameddest'), x.get('page')) for x in b.get_links()]
-        qa = output / 'qa'
-        qa.mkdir(exist_ok=True)
-        shutil.copy2(temp / 'local' / (SOURCE.stem + '.log'), qa / 'build.log')
-        shutil.copy2(temp / 'local' / (SOURCE.stem + '.fls'), qa / 'build.fls')
-        print(f'PASS: local 2 passes; extracted ZIP 2 passes; {len(local)} identical rendered pages.')
+        pages = len(local)
+        local.close()
+        remote.close()
+        print(f'PASS: local 2 passes; extracted ZIP 2 passes; {pages} identical rendered pages.')
 
 
 if __name__ == '__main__':

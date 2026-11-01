@@ -119,13 +119,7 @@ Main 的 Details 按鈕進入相關技術頁。每張 Backup 的 **Back to Main*
 
 ## 編譯與 ZIP 驗證
 
-需要 TeX Live（含 Beamer、TikZ、Latin Modern）及 `pdflatex`。一般手動編譯：
-
-```bash
-cd 2026-11-04-meeting
-pdflatex -interaction=nonstopmode -halt-on-error -output-directory=output/pdf 2026-11-04-Helix.tex
-pdflatex -interaction=nonstopmode -halt-on-error -output-directory=output/pdf 2026-11-04-Helix.tex
-```
+需要 TeX Live（含 Beamer、TikZ、Latin Modern）及 `pdflatex`。請使用以下 build 腳本，避免直接編譯在專案目錄留下中間檔。
 
 可重複執行的完整 build / QA（在本目錄）：
 
@@ -133,7 +127,7 @@ pdflatex -interaction=nonstopmode -halt-on-error -output-directory=output/pdf 20
 python3 -m venv /tmp/helix-qa-env
 /tmp/helix-qa-env/bin/pip install pymupdf pillow
 /tmp/helix-qa-env/bin/python scripts/build.py
-/tmp/helix-qa-env/bin/python scripts/validate.py --render-dir /tmp/helix-rendered-pages
+/tmp/helix-qa-env/bin/python scripts/validate.py
 ```
 
 `build.py` 編譯兩次、更新 PDF 與 ZIP，再將 ZIP 解壓到獨立暫存目錄編譯兩次，逐頁比較文字、rendered pixels 與連結目標。`validate.py` 檢查所有 named destinations、內部連結目的頁、文字邊界、圖像像素雜湊，再 render 全部頁面及 montage。自動檢查不能取代人工視覺檢查。
@@ -147,4 +141,15 @@ Overleaf：建立專案並上傳 `output/overleaf/Helix.zip`，入口為 `main.t
 - **224 個實際 PDF 內部連結**全部解析，Main / Backup / Index 目的頁皆正確。
 - **12 / 12 圖片**以 PDF embedded pixels 對照來源 PNG 的雜湊確認，不只核對檔名。
 - 未發現內容裁切、公式或 navigation 與 footline 重疊。Figure 2 的 viewport 是明確記錄的例外，完整來源仍可查看。
-- [視覺檢查與圖片放大對照](output/qa/REVIEW.md)、[機器檢查紀錄](output/qa/validation.json)、[Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)。暫存 log、單頁 render 不納入版本控制。
+- [視覺檢查與圖片放大對照](output/qa/REVIEW.md)、[機器檢查紀錄](output/qa/validation.json)、[Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)。編譯 log / recorder 僅存在於自動清除的暫存目錄；單頁 render 預設也在暫存目錄，只有明確指定 `--render-dir` 才保留。
+
+## Takeaway 清理與乾淨編譯（2026-11-01）
+
+- 移除所有大型 Takeaway 背景與舊 `\takeaway` macro。`\slidenote` 現在只有來源和導覽兩個參數；Backup 保留 `\src`、`\back`。
+- M03 的 latency objective 限制、M05 的 steady-flow 意義、M06 的 global-optimum 限制、M10 與 M12 的 throughput / latency trade-off 改為正文。M11 的 30B、online、simulation、vs. Swarm 條件完整保留。M07 / M08 的 interleaving 和 KV admission 整合進原有條目。
+- Backup 的獨有補充（變數規模、KV admission、pruned trace、simulated 30B online 比較、3.29× 四捨五入及 solver 證據限制等）改為普通正文。重複摘要移除。
+- 圖片放大：PDF 7 / 10 / 12 / 22。PDF 2 / 4 / 5 / 11 / 13 / 14 的圖已受頁寬限制，保留尺寸並重新平衡垂直位置。所有圖像像素、公式與實驗數值保持不變。
+- `build.py` 不再複製 `.log` / `.fls` 到 QA。成功與失敗均由 `TemporaryDirectory` 清理中間檔；失敗仍輸出必要錯誤摘要。
+- 新增局部 `.gitignore`，只涵蓋 LaTeX 中間檔。既有 9 個根目錄中間檔已確認並刪除，沒有已追蹤中間檔需要取消追蹤。
+- `validate.py` 新增實際 PDF 藍色大區塊、56 頁來源、5 個關鍵主張頁、導覽連結次數及中間檔殘留檢查。Discussion Index 本來就無論文來源。
+- 重新 build 後，中間檔仍為零。開始任務時已存在的未追蹤根目錄 PDF 保留原樣，不納入本次 commit。
