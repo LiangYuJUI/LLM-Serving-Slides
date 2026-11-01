@@ -1,0 +1,1811 @@
+{
+  "pdf_pages": 57,
+  "main_pages": 15,
+  "discussion_pages_including_index": 42,
+  "internal_links_checked": 224,
+  "caption_free_figures_matched_by_pixel_hash": 12,
+  "figures": [
+    {
+      "page": 2,
+      "file": "Helix_Figure_01_Model_Placement_Examples.png",
+      "bbox": [
+        12.781000137329102,
+        53.73927307128906,
+        440.7710266113281,
+        115.59799194335938
+      ]
+    },
+    {
+      "page": 4,
+      "file": "Helix_Figure_03_System_Overview.png",
+      "bbox": [
+        13.39799976348877,
+        28.99359130859375,
+        440.1559143066406,
+        125.36799621582031
+      ]
+    },
+    {
+      "page": 5,
+      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "bbox": [
+        175.41004943847656,
+        29.029647827148438,
+        440.7684326171875,
+        225.687255859375
+      ]
+    },
+    {
+      "page": 5,
+      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "bbox": [
+        175.41004943847656,
+        7.89910888671875,
+        440.7684326171875,
+        204.5567169189453
+      ]
+    },
+    {
+      "page": 7,
+      "file": "Helix_Figure_04_Per_Request_Pipeline_Scheduling.png",
+      "bbox": [
+        67.84500122070312,
+        46.56842803955078,
+        385.69281005859375,
+        148.60699462890625
+      ]
+    },
+    {
+      "page": 10,
+      "file": "Helix_Figure_06_Single_Cluster_Results.png",
+      "bbox": [
+        43.138999938964844,
+        48.071998596191406,
+        410.4254150390625,
+        174.21600341796875
+      ]
+    },
+    {
+      "page": 11,
+      "file": "Helix_Figure_07_Geo_Distributed_Cluster_Results.png",
+      "bbox": [
+        12.760000228881836,
+        47.39167785644531,
+        440.78338623046875,
+        113.63699340820312
+      ]
+    },
+    {
+      "page": 12,
+      "file": "Helix_Figure_08_High_GPU_Heterogeneity_Results.png",
+      "bbox": [
+        84.44999694824219,
+        48.32201385498047,
+        369.09332275390625,
+        173.04400634765625
+      ]
+    },
+    {
+      "page": 13,
+      "file": "Helix_Figure_09_Model_Placement_Comparison.png",
+      "bbox": [
+        12.781999588012695,
+        50.47056579589844,
+        440.772705078125,
+        131.82000732421875
+      ]
+    },
+    {
+      "page": 14,
+      "file": "Helix_Figure_10_Request_Scheduling_Comparison.png",
+      "bbox": [
+        12.78600025177002,
+        47.522315979003906,
+        440.74530029296875,
+        140.08399963378906
+      ]
+    },
+    {
+      "page": 19,
+      "file": "Helix_Figure_01_Model_Placement_Examples.png",
+      "bbox": [
+        12.781000137329102,
+        49.07228088378906,
+        440.7710266113281,
+        110.93099975585938
+      ]
+    },
+    {
+      "page": 20,
+      "file": "Helix_Figure_01_Model_Placement_Examples.png",
+      "bbox": [
+        12.781000137329102,
+        39.013275146484375,
+        440.7710266113281,
+        100.87199401855469
+      ]
+    },
+    {
+      "page": 22,
+      "file": "Helix_Figure_03_System_Overview.png",
+      "bbox": [
+        38.500999450683594,
+        32.196205139160156,
+        415.0545654296875,
+        117.23300170898438
+      ]
+    },
+    {
+      "page": 24,
+      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "bbox": [
+        231.01095581054688,
+        38.275238037109375,
+        427.989013671875,
+        184.25604248046875
+      ]
+    },
+    {
+      "page": 28,
+      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "bbox": [
+        226.77210998535156,
+        30.791290283203125,
+        440.7734375,
+        189.38809204101562
+      ]
+    },
+    {
+      "page": 28,
+      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "bbox": [
+        226.77210998535156,
+        17.172088623046875,
+        440.7734375,
+        175.76889038085938
+      ]
+    },
+    {
+      "page": 38,
+      "file": "Helix_Figure_04_Per_Request_Pipeline_Scheduling.png",
+      "bbox": [
+        218.21694946289062,
+        81.85687255859375,
+        440.79486083984375,
+        153.31097412109375
+      ]
+    },
+    {
+      "page": 44,
+      "file": "Helix_Figure_05_Azure_Conversation_Statistics.png",
+      "bbox": [
+        226.7851104736328,
+        82.13370513916016,
+        440.7712707519531,
+        153.04098510742188
+      ]
+    },
+    {
+      "page": 45,
+      "file": "Helix_Figure_06_Single_Cluster_Results.png",
+      "bbox": [
+        28.707000732421875,
+        48.278594970703125,
+        424.8576965332031,
+        184.33599853515625
+      ]
+    },
+    {
+      "page": 47,
+      "file": "Helix_Figure_07_Geo_Distributed_Cluster_Results.png",
+      "bbox": [
+        12.760000228881836,
+        48.902679443359375,
+        440.78338623046875,
+        115.14799499511719
+      ]
+    },
+    {
+      "page": 49,
+      "file": "Helix_Figure_08_High_GPU_Heterogeneity_Results.png",
+      "bbox": [
+        226.7801055908203,
+        73.08303833007812,
+        440.786376953125,
+        166.85403442382812
+      ]
+    },
+    {
+      "page": 50,
+      "file": "Helix_Figure_09_Model_Placement_Comparison.png",
+      "bbox": [
+        12.781999588012695,
+        55.31355285644531,
+        440.772705078125,
+        136.66299438476562
+      ]
+    },
+    {
+      "page": 52,
+      "file": "Helix_Figure_10_Request_Scheduling_Comparison.png",
+      "bbox": [
+        12.78600025177002,
+        50.831321716308594,
+        440.74530029296875,
+        143.39300537109375
+      ]
+    },
+    {
+      "page": 54,
+      "file": "Helix_Figure_11_MILP_Optimization_Ablation.png",
+      "bbox": [
+        218.220947265625,
+        41.43214416503906,
+        440.7672119140625,
+        129.69094848632812
+      ]
+    },
+    {
+      "page": 55,
+      "file": "Helix_Figure_12_MILP_Solution_Quality.png",
+      "bbox": [
+        226.77410888671875,
+        75.27327728271484,
+        440.7977294921875,
+        161.73797607421875
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_page": 1,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 1,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 1,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 2,
+      "destination": "B03",
+      "to_page": 19
+    },
+    {
+      "from_page": 2,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 2,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 3,
+      "destination": "B07",
+      "to_page": 23
+    },
+    {
+      "from_page": 3,
+      "destination": "B13",
+      "to_page": 29
+    },
+    {
+      "from_page": 3,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 3,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 4,
+      "destination": "B18",
+      "to_page": 35
+    },
+    {
+      "from_page": 4,
+      "destination": "B22",
+      "to_page": 39
+    },
+    {
+      "from_page": 4,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 4,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 5,
+      "destination": "B12",
+      "to_page": 28
+    },
+    {
+      "from_page": 5,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 5,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 6,
+      "destination": "B13",
+      "to_page": 29
+    },
+    {
+      "from_page": 6,
+      "destination": "B17",
+      "to_page": 34
+    },
+    {
+      "from_page": 6,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 6,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 7,
+      "destination": "B20",
+      "to_page": 37
+    },
+    {
+      "from_page": 7,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 7,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 8,
+      "destination": "PARTIAL",
+      "to_page": 40
+    },
+    {
+      "from_page": 8,
+      "destination": "B22",
+      "to_page": 39
+    },
+    {
+      "from_page": 8,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 8,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 9,
+      "destination": "B24",
+      "to_page": 42
+    },
+    {
+      "from_page": 9,
+      "destination": "B25",
+      "to_page": 44
+    },
+    {
+      "from_page": 9,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 9,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 10,
+      "destination": "B26",
+      "to_page": 46
+    },
+    {
+      "from_page": 10,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 10,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 11,
+      "destination": "B27",
+      "to_page": 48
+    },
+    {
+      "from_page": 11,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 11,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 12,
+      "destination": "B28",
+      "to_page": 49
+    },
+    {
+      "from_page": 12,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 12,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 13,
+      "destination": "B29",
+      "to_page": 51
+    },
+    {
+      "from_page": 13,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 13,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 14,
+      "destination": "B30",
+      "to_page": 53
+    },
+    {
+      "from_page": 14,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 14,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 15,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 15,
+      "destination": "FUTURE",
+      "to_page": 57
+    },
+    {
+      "from_page": 15,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 15,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 16,
+      "destination": "B01",
+      "to_page": 17
+    },
+    {
+      "from_page": 16,
+      "destination": "B07",
+      "to_page": 23
+    },
+    {
+      "from_page": 16,
+      "destination": "B18",
+      "to_page": 35
+    },
+    {
+      "from_page": 16,
+      "destination": "B24",
+      "to_page": 42
+    },
+    {
+      "from_page": 16,
+      "destination": "B33",
+      "to_page": 56
+    },
+    {
+      "from_page": 16,
+      "destination": "M15",
+      "to_page": 15
+    },
+    {
+      "from_page": 16,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 16,
+      "destination": "Navigation16",
+      "to_page": 16
+    },
+    {
+      "from_page": 16,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 17,
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 17,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 17,
+      "destination": "Navigation17",
+      "to_page": 17
+    },
+    {
+      "from_page": 17,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 18,
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 18,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 18,
+      "destination": "Navigation17",
+      "to_page": 17
+    },
+    {
+      "from_page": 18,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 19,
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 19,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 19,
+      "destination": "Navigation17",
+      "to_page": 17
+    },
+    {
+      "from_page": 19,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 20,
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 20,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 20,
+      "destination": "Navigation17",
+      "to_page": 17
+    },
+    {
+      "from_page": 20,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 21,
+      "destination": "M03",
+      "to_page": 3
+    },
+    {
+      "from_page": 21,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 21,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 21,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 22,
+      "destination": "M04",
+      "to_page": 4
+    },
+    {
+      "from_page": 22,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 22,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 22,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 23,
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 23,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 23,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 23,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 24,
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 24,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 24,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 24,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 25,
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 25,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 25,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 25,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 26,
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 26,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 26,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 26,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 27,
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 27,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 27,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 27,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 28,
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 28,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 28,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 28,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 29,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 29,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 29,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 29,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 30,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 30,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 30,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 30,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 31,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 31,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 31,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 31,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 32,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 32,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 32,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 32,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 33,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 33,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 33,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 33,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 34,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 34,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 34,
+      "destination": "Navigation21",
+      "to_page": 21
+    },
+    {
+      "from_page": 34,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 35,
+      "destination": "M04",
+      "to_page": 4
+    },
+    {
+      "from_page": 35,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 35,
+      "destination": "Navigation35",
+      "to_page": 35
+    },
+    {
+      "from_page": 35,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 36,
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 36,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 36,
+      "destination": "Navigation35",
+      "to_page": 35
+    },
+    {
+      "from_page": 36,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 37,
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 37,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 37,
+      "destination": "Navigation35",
+      "to_page": 35
+    },
+    {
+      "from_page": 37,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 38,
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 38,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 38,
+      "destination": "Navigation35",
+      "to_page": 35
+    },
+    {
+      "from_page": 38,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 39,
+      "destination": "M08",
+      "to_page": 8
+    },
+    {
+      "from_page": 39,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 39,
+      "destination": "Navigation35",
+      "to_page": 35
+    },
+    {
+      "from_page": 39,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 40,
+      "destination": "M08",
+      "to_page": 8
+    },
+    {
+      "from_page": 40,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 40,
+      "destination": "Navigation35",
+      "to_page": 35
+    },
+    {
+      "from_page": 40,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 41,
+      "destination": "M09",
+      "to_page": 9
+    },
+    {
+      "from_page": 41,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 41,
+      "destination": "Navigation35",
+      "to_page": 35
+    },
+    {
+      "from_page": 41,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 42,
+      "destination": "M09",
+      "to_page": 9
+    },
+    {
+      "from_page": 42,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 42,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 42,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 43,
+      "destination": "M09",
+      "to_page": 9
+    },
+    {
+      "from_page": 43,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 43,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 43,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 44,
+      "destination": "M09",
+      "to_page": 9
+    },
+    {
+      "from_page": 44,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 44,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 44,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 45,
+      "destination": "M10",
+      "to_page": 10
+    },
+    {
+      "from_page": 45,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 45,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 45,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 46,
+      "destination": "M10",
+      "to_page": 10
+    },
+    {
+      "from_page": 46,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 46,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 46,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 47,
+      "destination": "M11",
+      "to_page": 11
+    },
+    {
+      "from_page": 47,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 47,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 47,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 48,
+      "destination": "M11",
+      "to_page": 11
+    },
+    {
+      "from_page": 48,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 48,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 48,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 49,
+      "destination": "M12",
+      "to_page": 12
+    },
+    {
+      "from_page": 49,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 49,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 49,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 50,
+      "destination": "M13",
+      "to_page": 13
+    },
+    {
+      "from_page": 50,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 50,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 50,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 51,
+      "destination": "M13",
+      "to_page": 13
+    },
+    {
+      "from_page": 51,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 51,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 51,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 52,
+      "destination": "M14",
+      "to_page": 14
+    },
+    {
+      "from_page": 52,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 52,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 52,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 53,
+      "destination": "M14",
+      "to_page": 14
+    },
+    {
+      "from_page": 53,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 53,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 53,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 54,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 54,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 54,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 54,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 55,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 55,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 55,
+      "destination": "Navigation42",
+      "to_page": 42
+    },
+    {
+      "from_page": 55,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 56,
+      "destination": "M15",
+      "to_page": 15
+    },
+    {
+      "from_page": 56,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 56,
+      "destination": "Navigation56",
+      "to_page": 56
+    },
+    {
+      "from_page": 56,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 57,
+      "destination": "M15",
+      "to_page": 15
+    },
+    {
+      "from_page": 57,
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 57,
+      "destination": "Navigation56",
+      "to_page": 56
+    },
+    {
+      "from_page": 57,
+      "destination": "INDEX",
+      "to_page": 16
+    }
+  ],
+  "frames": [
+    {
+      "page": 1,
+      "label": "M01",
+      "title": "Helix",
+      "back_to_main": []
+    },
+    {
+      "page": 2,
+      "label": "M02",
+      "title": "Why Do We Need Helix?",
+      "back_to_main": []
+    },
+    {
+      "page": 3,
+      "label": "M03",
+      "title": "What Does Helix Optimize?",
+      "back_to_main": []
+    },
+    {
+      "page": 4,
+      "label": "M04",
+      "title": "How Does One Request Run?",
+      "back_to_main": []
+    },
+    {
+      "page": 5,
+      "label": "M05",
+      "title": "How Does Max Flow Model Serving?",
+      "back_to_main": []
+    },
+    {
+      "page": 6,
+      "label": "M06",
+      "title": "How Does MILP Decide Placement?",
+      "back_to_main": []
+    },
+    {
+      "page": 7,
+      "label": "M07",
+      "title": "How Does Runtime Scheduling Work?",
+      "back_to_main": []
+    },
+    {
+      "page": 8,
+      "label": "M08",
+      "title": "How Are Weights and KV Cache Managed?",
+      "back_to_main": []
+    },
+    {
+      "page": 9,
+      "label": "M09",
+      "title": "How Is Helix Evaluated?",
+      "back_to_main": []
+    },
+    {
+      "page": 10,
+      "label": "M10",
+      "title": "Does Helix Improve Single-Cluster Serving?",
+      "back_to_main": []
+    },
+    {
+      "page": 11,
+      "label": "M11",
+      "title": "Does Helix Work Across Regions?",
+      "back_to_main": []
+    },
+    {
+      "page": 12,
+      "label": "M12",
+      "title": "What Happens with More GPU Types?",
+      "back_to_main": []
+    },
+    {
+      "page": 13,
+      "label": "M13",
+      "title": "Where Do the Gains Come From: Placement?",
+      "back_to_main": []
+    },
+    {
+      "page": 14,
+      "label": "M14",
+      "title": "Where Do the Gains Come From: Scheduling?",
+      "back_to_main": []
+    },
+    {
+      "page": 15,
+      "label": "M15",
+      "title": "Conclusion \\& Discussion",
+      "back_to_main": []
+    },
+    {
+      "page": 16,
+      "label": "INDEX",
+      "title": "Discussion Index",
+      "back_to_main": [
+        "M15"
+      ]
+    },
+    {
+      "page": 17,
+      "label": "B01",
+      "title": "Why Heterogeneous and Geo-Distributed Serving?",
+      "back_to_main": [
+        "M02"
+      ]
+    },
+    {
+      "page": 18,
+      "label": "B02",
+      "title": "Parallelism Across Nodes and GPUs",
+      "back_to_main": [
+        "M02"
+      ]
+    },
+    {
+      "page": 19,
+      "label": "B03",
+      "title": "Uniform Model Placement Is Sub-Optimal",
+      "back_to_main": [
+        "M02"
+      ]
+    },
+    {
+      "page": 20,
+      "label": "B04",
+      "title": "Network-Unaware Routing Creates Congestion",
+      "back_to_main": [
+        "M02"
+      ]
+    },
+    {
+      "page": 21,
+      "label": "B05",
+      "title": "Helix Design Requirements",
+      "back_to_main": [
+        "M03"
+      ]
+    },
+    {
+      "page": 22,
+      "label": "B06",
+      "title": "Helix System Overview",
+      "back_to_main": [
+        "M04"
+      ]
+    },
+    {
+      "page": 23,
+      "label": "B07",
+      "title": "From Model Placement to a Flow Network",
+      "back_to_main": [
+        "M05"
+      ]
+    },
+    {
+      "page": 24,
+      "label": "B08",
+      "title": "Max-Flow Graph Abstraction",
+      "back_to_main": [
+        "M05"
+      ]
+    },
+    {
+      "page": 25,
+      "label": "B09",
+      "title": "Modeling Compute Capacity",
+      "back_to_main": [
+        "M05"
+      ]
+    },
+    {
+      "page": 26,
+      "label": "B10",
+      "title": "Modeling Network Capacity",
+      "back_to_main": [
+        "M05"
+      ]
+    },
+    {
+      "page": 27,
+      "label": "B11",
+      "title": "Why Max Flow Represents Serving Throughput",
+      "back_to_main": [
+        "M05"
+      ]
+    },
+    {
+      "page": 28,
+      "label": "B12",
+      "title": "Worked Three-Node Example",
+      "back_to_main": [
+        "M05"
+      ]
+    },
+    {
+      "page": 29,
+      "label": "B13",
+      "title": "MILP Variables and Objective",
+      "back_to_main": [
+        "M06"
+      ]
+    },
+    {
+      "page": 30,
+      "label": "B14",
+      "title": "Placement and Memory Constraints",
+      "back_to_main": [
+        "M06"
+      ]
+    },
+    {
+      "page": 31,
+      "label": "B15",
+      "title": "Flow and Compute Constraints",
+      "back_to_main": [
+        "M06"
+      ]
+    },
+    {
+      "page": 32,
+      "label": "B16",
+      "title": "Connectivity and Network Constraints",
+      "back_to_main": [
+        "M06"
+      ]
+    },
+    {
+      "page": 33,
+      "label": "LINEAR",
+      "title": "Full Connectivity Linearization",
+      "back_to_main": [
+        "M06"
+      ]
+    },
+    {
+      "page": 34,
+      "label": "B17",
+      "title": "Making the MILP Practical",
+      "back_to_main": [
+        "M06"
+      ]
+    },
+    {
+      "page": 35,
+      "label": "B18",
+      "title": "Runtime Components and Control Flow",
+      "back_to_main": [
+        "M04"
+      ]
+    },
+    {
+      "page": 36,
+      "label": "B19",
+      "title": "Per-Request Pipelines",
+      "back_to_main": [
+        "M07"
+      ]
+    },
+    {
+      "page": 37,
+      "label": "B20",
+      "title": "Converting Max-Flow Weights into Scheduling",
+      "back_to_main": [
+        "M07"
+      ]
+    },
+    {
+      "page": 38,
+      "label": "B21",
+      "title": "Pipeline Scheduling Example",
+      "back_to_main": [
+        "M07"
+      ]
+    },
+    {
+      "page": 39,
+      "label": "B22",
+      "title": "KV-Cache Masking and Backpressure",
+      "back_to_main": [
+        "M08"
+      ]
+    },
+    {
+      "page": 40,
+      "label": "PARTIAL",
+      "title": "Partial Inference and Request-Specific KV",
+      "back_to_main": [
+        "M08"
+      ]
+    },
+    {
+      "page": 41,
+      "label": "B23",
+      "title": "Implementation and Prototype",
+      "back_to_main": [
+        "M09"
+      ]
+    },
+    {
+      "page": 42,
+      "label": "B24",
+      "title": "Evaluation Methodology",
+      "back_to_main": [
+        "M09"
+      ]
+    },
+    {
+      "page": 43,
+      "label": "SETUP",
+      "title": "Hardware, Baselines, and Normalization",
+      "back_to_main": [
+        "M09"
+      ]
+    },
+    {
+      "page": 44,
+      "label": "B25",
+      "title": "Workload Characteristics",
+      "back_to_main": [
+        "M09"
+      ]
+    },
+    {
+      "page": 45,
+      "label": "FIG6",
+      "title": "Complete Figure 6: Single-Cluster Results",
+      "back_to_main": [
+        "M10"
+      ]
+    },
+    {
+      "page": 46,
+      "label": "B26",
+      "title": "Single-Cluster Results",
+      "back_to_main": [
+        "M10"
+      ]
+    },
+    {
+      "page": 47,
+      "label": "FIG7",
+      "title": "Complete Figure 7: Geo-Distributed Results",
+      "back_to_main": [
+        "M11"
+      ]
+    },
+    {
+      "page": 48,
+      "label": "B27",
+      "title": "Geo-Distributed Results",
+      "back_to_main": [
+        "M11"
+      ]
+    },
+    {
+      "page": 49,
+      "label": "B28",
+      "title": "High GPU-Heterogeneity Results",
+      "back_to_main": [
+        "M12"
+      ]
+    },
+    {
+      "page": 50,
+      "label": "FIG9",
+      "title": "Complete Figure 9: Model Placement Deep Dive",
+      "back_to_main": [
+        "M13"
+      ]
+    },
+    {
+      "page": 51,
+      "label": "B29",
+      "title": "Model Placement Deep Dive",
+      "back_to_main": [
+        "M13"
+      ]
+    },
+    {
+      "page": 52,
+      "label": "FIG10",
+      "title": "Complete Figure 10: Request Scheduling Deep Dive",
+      "back_to_main": [
+        "M14"
+      ]
+    },
+    {
+      "page": 53,
+      "label": "B30",
+      "title": "Request Scheduling Deep Dive",
+      "back_to_main": [
+        "M14"
+      ]
+    },
+    {
+      "page": 54,
+      "label": "B31",
+      "title": "MILP Optimization Ablation",
+      "back_to_main": [
+        "M06"
+      ]
+    },
+    {
+      "page": 55,
+      "label": "B32",
+      "title": "Solver Time and Solution Quality",
+      "back_to_main": [
+        "M06"
+      ]
+    },
+    {
+      "page": 56,
+      "label": "B33",
+      "title": "Limitations and Threats to Validity",
+      "back_to_main": [
+        "M15"
+      ]
+    },
+    {
+      "page": 57,
+      "label": "FUTURE",
+      "title": "Research Directions and Applicability",
+      "back_to_main": [
+        "M15"
+      ]
+    }
+  ],
+  "rendered_pages": 57,
+  "manual_visual_review": "Required separately; montage generation is not visual proof."
+}

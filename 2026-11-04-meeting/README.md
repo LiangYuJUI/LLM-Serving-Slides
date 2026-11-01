@@ -1,38 +1,150 @@
-# 2026-11-04 Meeting — Helix
+# 2026-11-04 Research Meeting — Helix
 
-本目錄只整理 Helix 的報告資料。日期已更新為 2026-11-04；前次會議原檔保留作歷史紀錄，本目錄可獨立使用。
+新版採 **15 頁 Main + 42 頁 Discussion / Backup（含 1 頁索引），共 57 頁**。主動報告約 15–20 分鐘，整場含問答約 30–40 分鐘；這是整體規劃，不是逐頁計時。所有 Main 在前，Backup 在後，不交錯。
 
-## 簡報與講稿
+- [PDF](output/pdf/2026-11-04-Helix.pdf)
+- [Beamer source](2026-11-04-Helix.tex)
+- [Overleaf ZIP](output/overleaf/Helix.zip)
+- [原論文](ASPLOS25_Helix.pdf)
 
-| 用途 | LaTeX | PDF | 講稿 |
+不依賴逐字講稿。[Helix_scripts.md](Helix_scripts.md) 保留舊版 37 頁內容作歷史參考，**不對應新版頁碼**。
+
+## Main 頁碼與 Backup 對應
+
+頁碼為實際 PDF 頁碼，與頁腳一致。M13 / M14 分開呈現 placement / scheduling ablation，讓兩張完整圖各有一頁。
+
+| Main / PDF | 主題 | 對應 Backup PDF 頁 |
+|---|---|---|
+| M01 / 1 | Helix | 16（索引） |
+| M02 / 2 | Why Do We Need Helix? | 17, 18, 19, 20 |
+| M03 / 3 | What Does Helix Optimize? | 21 |
+| M04 / 4 | How Does One Request Run? | 22, 35 |
+| M05 / 5 | How Does Max Flow Model Serving? | 23, 24, 25, 26, 27, 28 |
+| M06 / 6 | How Does MILP Decide Placement? | 29, 30, 31, 32, 33, 34, 54, 55 |
+| M07 / 7 | How Does Runtime Scheduling Work? | 36, 37, 38 |
+| M08 / 8 | How Are Weights and KV Cache Managed? | 39, 40 |
+| M09 / 9 | How Is Helix Evaluated? | 41, 42, 43, 44 |
+| M10 / 10 | Does Helix Improve Single-Cluster Serving? | 45, 46 |
+| M11 / 11 | Does Helix Work Across Regions? | 47, 48 |
+| M12 / 12 | What Happens with More GPU Types? | 49 |
+| M13 / 13 | Where Do the Gains Come From: Placement? | 50, 51 |
+| M14 / 14 | Where Do the Gains Come From: Scheduling? | 52, 53 |
+| M15 / 15 | Conclusion & Discussion | 16, 56, 57 |
+
+## Backup 分組
+
+| 區塊 | PDF 頁 | 內容 | 返回 Main |
 |---|---|---|---|
-| Helix 報告 | [2026-11-04-Helix.tex](2026-11-04-Helix.tex) | [37 頁 PDF](output/pdf/2026-11-04-Helix.pdf) | [Helix_scripts.md](Helix_scripts.md) |
+| Discussion Index | 16 | A–E 入口 | M15 |
+| A — Background and Motivation | 17–20 | GPU 規格、TP / PP / DP、Petals / Swarm、Fig. 1 | M02 |
+| B — Max Flow and MILP | 21–34 | 設計分工、架構、graph、cost model、全部主要 MILP constraints、solver | M03–M06 |
+| C — Runtime and Implementation | 35–41 | lifecycle、per-request pipeline、IWRR、KV masking、partial inference、vLLM / simulator | M04、M07–M09 |
+| D — Experimental Evidence | 42–55 | 設定、workload、完整 Figures 6–12、數據表、ablation、solver quality | M06、M09–M14 |
+| E — Limitations and Discussion | 56–57 | static placement、KV estimation、latency、simulation scope、研究方向 | M15 |
 
-本目錄保留單一 37 頁 Helix 簡報。此版本移除原來的跨論文比較頁，並清理 roadmap 與結尾的跨論文文字。Helix 實驗本身使用的 baselines 保留，才能正確解讀實驗。
+### 完整 Backup 頁碼
 
-講稿頁碼對齊 PDF。這次以搬整、抽頁為主，沒有擴寫新的研究內容，也尚未重新設定下週口述時間。
+| PDF | Named destination | 主題 | Back to Main |
+|---|---|---|---|
+| 16 | `INDEX` | Discussion Index | M15 |
+| 17 | `B01` | Why Heterogeneous and Geo-Distributed Serving? | M02 |
+| 18 | `B02` | Parallelism Across Nodes and GPUs | M02 |
+| 19 | `B03` | Uniform Model Placement Is Sub-Optimal | M02 |
+| 20 | `B04` | Network-Unaware Routing Creates Congestion | M02 |
+| 21 | `B05` | Helix Design Requirements | M03 |
+| 22 | `B06` | Helix System Overview | M04 |
+| 23 | `B07` | From Model Placement to a Flow Network | M05 |
+| 24 | `B08` | Max-Flow Graph Abstraction | M05 |
+| 25 | `B09` | Modeling Compute Capacity | M05 |
+| 26 | `B10` | Modeling Network Capacity | M05 |
+| 27 | `B11` | Why Max Flow Represents Serving Throughput | M05 |
+| 28 | `B12` | Worked Three-Node Example | M05 |
+| 29 | `B13` | MILP Variables and Objective | M06 |
+| 30 | `B14` | Placement and Memory Constraints | M06 |
+| 31 | `B15` | Flow and Compute Constraints | M06 |
+| 32 | `B16` | Connectivity and Network Constraints | M06 |
+| 33 | `LINEAR` | Full Connectivity Linearization | M06 |
+| 34 | `B17` | Making the MILP Practical | M06 |
+| 35 | `B18` | Runtime Components and Control Flow | M04 |
+| 36 | `B19` | Per-Request Pipelines | M07 |
+| 37 | `B20` | Converting Max-Flow Weights into Scheduling | M07 |
+| 38 | `B21` | Pipeline Scheduling Example | M07 |
+| 39 | `B22` | KV-Cache Masking and Backpressure | M08 |
+| 40 | `PARTIAL` | Partial Inference and Request-Specific KV | M08 |
+| 41 | `B23` | Implementation and Prototype | M09 |
+| 42 | `B24` | Evaluation Methodology | M09 |
+| 43 | `SETUP` | Hardware, Baselines, and Normalization | M09 |
+| 44 | `B25` | Workload Characteristics | M09 |
+| 45 | `FIG6` | Complete Figure 6: Single-Cluster Results | M10 |
+| 46 | `B26` | Single-Cluster Results | M10 |
+| 47 | `FIG7` | Complete Figure 7: Geo-Distributed Results | M11 |
+| 48 | `B27` | Geo-Distributed Results | M11 |
+| 49 | `B28` | High GPU-Heterogeneity Results | M12 |
+| 50 | `FIG9` | Complete Figure 9: Model Placement Deep Dive | M13 |
+| 51 | `B29` | Model Placement Deep Dive | M13 |
+| 52 | `FIG10` | Complete Figure 10: Request Scheduling Deep Dive | M14 |
+| 53 | `B30` | Request Scheduling Deep Dive | M14 |
+| 54 | `B31` | MILP Optimization Ablation | M06 |
+| 55 | `B32` | Solver Time and Solution Quality | M06 |
+| 56 | `B33` | Limitations and Threats to Validity | M15 |
+| 57 | `FUTURE` | Research Directions and Applicability | M15 |
 
-## 原文與素材
+## 導覽方式
 
-- [ASPLOS25_Helix.pdf](ASPLOS25_Helix.pdf)：原論文。
-- [Helix/](Helix/)：原有 Figure 1–12 PNG 與來源說明。
-- [Helix/Without-Caption/](Helix/Without-Caption/)：新加入的 Figure 1–12 無外部 caption PNG。**目前 37 頁 PDF 尚未改用新圖片**；待下一次 Main/Backup 重構時同步替換。
-- `output/overleaf/Helix.zip`：完整版 Overleaf 套件。
+Main 的 Details 按鈕進入相關技術頁。每張 Backup 的 **Back to Main** 返回對應主題，不返回封面。每頁頁腳都有 **Discussion index**，索引再跳到 A–E。
 
-## 舊版頁碼對照
+使用穩定的 Beamer `frame[label=...]` destinations。PDF 檢查逐一驗證實際 annotation 的目的頁，並核對所有來源按鈕及每頁回程連結，不只搜尋 LaTeX `hyperlink`。
 
-| 新版 | 原始來源 |
-|---|---|
-| 完整版 1–34 | 10/28 Helix 完整版 1–34 |
-| 完整版 35–37 | 10/28 Helix 完整版 36–38 |
+## 圖片與版面
 
-## 編譯
+所有 12 張 Figure 均直接引用 `Helix/Without-Caption/`。`Helix/` 中原始 12 張 PNG 全數保留且未修改。沒有 fallback 到舊圖，也沒有重新加入 `\caption{...}` 或外部長 caption。
 
-在本目錄執行：
+- 大幅放大 Main 的 Figures 1–4、6–10；縮小邊界，讓寬圖使用頁面寬度，讓圖、簡短解讀、來源與導覽共同使用頁面高度。
+- M05（PDF 5）及 cost example（PDF 28）用 `graphicx` 的兩個 viewport 顯示 Figure 2 的實體拓撲及 flow graph，略去圖內長段說明。沒有重製或改寫 PNG；所有節點、capacity、layer table、payload labels 均保留。PDF 24 仍提供完整 Figure 2。
+- 其他圖不裁切、不拆分、不拉伸；保留素材自帶的 subfigure labels 和 legends。若 caption-free 素材沒有底排標籤，圖旁文字明列 subplot 順序與意義。
+- Backup 圖片與數值表分頁，避免把大圖壓回小圖。短內容採垂直平衡，較完整的公式與表格保持可讀。
+- 原始圖內的 subfigure 說明是來源像素的一部分；未在圖下重複貼上外部 caption。
+
+## 科學依據與解讀條件
+
+主要依據為本地 `ASPLOS25_Helix.pdf`。各頁附 section / figure 來源。新 lifecycle 是原文流程的整理，partial inference 圖與 bandwidth 計算標明 illustrative，研究延伸標明 interpretation。
+
+- Placement / edge capacity / optimized flow / request pipeline 分開描述。Max flow 的 objective 是 throughput，不是所有 latency metrics。
+- 3.29× 限定為 42-node simulation、LLaMA-2 70B、online decode throughput、相對 SP。
+- Fig. 6 包含 24-node prototype 與 simulator 對照；Fig. 7 / 8 為 simulation。
+- Fig. 9 固定 Helix scheduler；Fig. 10 固定 Helix placement。Petals 僅為 placement baseline。
+- Pruning、10 分鐘停滯停止與 4 小時預算，不等於所有部署都已證明 global optimum。
+- Fig. 11 正文的「43% / 8% less time」與圖中 1600→1120 / 3100→2877 不完全一致。PDF 54 同時保留正文說法並明列：速度比 1.43× / 1.08×，時間實際節省約 30% / 7.2%，避免混淆分母。
+- Appendix A 的 prototype artifact 使用 dummy weights；實驗支持系統效能，不能當成生成品質驗證。
+
+## 編譯與 ZIP 驗證
+
+需要 TeX Live（含 Beamer、TikZ、Latin Modern）及 `pdflatex`。一般手動編譯：
 
 ```bash
+cd 2026-11-04-meeting
 pdflatex -interaction=nonstopmode -halt-on-error -output-directory=output/pdf 2026-11-04-Helix.tex
 pdflatex -interaction=nonstopmode -halt-on-error -output-directory=output/pdf 2026-11-04-Helix.tex
 ```
 
-Overleaf 套件 `output/overleaf/Helix.zip` 的入口是 `main.tex`，可直接上傳。
+可重複執行的完整 build / QA（在本目錄）：
+
+```bash
+python3 -m venv /tmp/helix-qa-env
+/tmp/helix-qa-env/bin/pip install pymupdf pillow
+/tmp/helix-qa-env/bin/python scripts/build.py
+/tmp/helix-qa-env/bin/python scripts/validate.py --render-dir /tmp/helix-rendered-pages
+```
+
+`build.py` 編譯兩次、更新 PDF 與 ZIP，再將 ZIP 解壓到獨立暫存目錄編譯兩次，逐頁比較文字、rendered pixels 與連結目標。`validate.py` 檢查所有 named destinations、內部連結目的頁、文字邊界、圖像像素雜湊，再 render 全部頁面及 montage。自動檢查不能取代人工視覺檢查。
+
+Overleaf：建立專案並上傳 `output/overleaf/Helix.zip`，入口為 `main.tex`，compiler 選 **pdfLaTeX**。ZIP 包含 source 與 12 張 Without-Caption 圖，無需依賴 repo 其他目錄，也不需要歷史講稿或原論文才能編譯。
+
+## 本次驗證
+
+- 本地 pdfLaTeX 兩次及 ZIP 獨立編譯兩次成功；最終 log 無 warnings、undefined references 或 overfull boxes。
+- 57 頁輸出一致，15 頁 Main 已逐頁視覺檢查，所有 Backup 已 render 並檢查 montage，密集公式與數據頁另行放大檢查。
+- **224 個實際 PDF 內部連結**全部解析，Main / Backup / Index 目的頁皆正確。
+- **12 / 12 圖片**以 PDF embedded pixels 對照來源 PNG 的雜湊確認，不只核對檔名。
+- 未發現內容裁切、公式或 navigation 與 footline 重疊。Figure 2 的 viewport 是明確記錄的例外，完整來源仍可查看。
+- [視覺檢查與圖片放大對照](output/qa/REVIEW.md)、[機器檢查紀錄](output/qa/validation.json)、[Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)。暫存 log、單頁 render 不納入版本控制。
