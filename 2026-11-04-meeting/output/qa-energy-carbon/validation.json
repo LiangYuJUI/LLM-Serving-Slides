@@ -1,0 +1,33 @@
+{
+  "pages": 3,
+  "local_pdflatex_passes": 2,
+  "zip_pdflatex_passes": 2,
+  "final_logs_clean": true,
+  "standalone_pixels_text_links_identical": true,
+  "external_link_annotations": [
+    [],
+    [
+      "https://arxiv.org/pdf/2505.23970v3",
+      "https://doi.org/10.1145/3788087",
+      "https://greencache.persistentmemory.org"
+    ],
+    [
+      "https://arxiv.org/abs/2609.35569",
+      "https://arxiv.org/pdf/2609.35569"
+    ]
+  ],
+  "internal_links": 0,
+  "text_bounds_and_source_footer_separation": "pass",
+  "alignment": [
+    {
+      "source_y": 223.54017639160156,
+      "footer_y": 247.12498474121094
+    },
+    {
+      "source_y": 223.92718505859375,
+      "footer_y": 247.12498474121094
+    }
+  ],
+  "protected_files_unchanged": 38,
+  "visual_review": "See REVIEW.md; not inferred from automatic checks."
+}
