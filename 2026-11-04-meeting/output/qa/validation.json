@@ -1,23 +1,29 @@
 {
   "latex_intermediates_remaining": [],
   "blue_takeaway_panels": 0,
-  "source_pages_checked": 56,
+  "source_pages_checked": 57,
   "critical_claim_pages_checked": [
     3,
     6,
-    10,
     11,
-    12
+    47,
+    12,
+    13,
+    10
   ],
-  "pdf_pages": 57,
-  "main_pages": 15,
+  "pdf_pages": 58,
+  "main_pages": 16,
   "discussion_pages_including_index": 42,
-  "internal_links_checked": 224,
+  "internal_links_checked": 283,
   "caption_free_figures_matched_by_pixel_hash": 12,
+  "original_figures_matched_by_pixel_hash": [
+    "Helix/Helix_Figure_06_Single_Cluster_Results.png",
+    "Helix/Helix_Figure_07_Geo_Distributed_Cluster_Results.png"
+  ],
   "figures": [
     {
       "page": 2,
-      "file": "Helix_Figure_01_Model_Placement_Examples.png",
+      "file": "Helix/Without-Caption/Helix_Figure_01_Model_Placement_Examples.png",
       "bbox": [
         12.781000137329102,
         69.74028015136719,
@@ -27,7 +33,7 @@
     },
     {
       "page": 4,
-      "file": "Helix_Figure_03_System_Overview.png",
+      "file": "Helix/Without-Caption/Helix_Figure_03_System_Overview.png",
       "bbox": [
         13.39799976348877,
         29.7305908203125,
@@ -37,7 +43,7 @@
     },
     {
       "page": 5,
-      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "file": "Helix/Without-Caption/Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
       "bbox": [
         175.41004943847656,
         31.299636840820312,
@@ -47,7 +53,7 @@
     },
     {
       "page": 5,
-      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "file": "Helix/Without-Caption/Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
       "bbox": [
         175.41004943847656,
         10.169082641601562,
@@ -57,7 +63,7 @@
     },
     {
       "page": 7,
-      "file": "Helix_Figure_04_Per_Request_Pipeline_Scheduling.png",
+      "file": "Helix/Without-Caption/Helix_Figure_04_Per_Request_Pipeline_Scheduling.png",
       "bbox": [
         47.972999572753906,
         52.13752746582031,
@@ -66,58 +72,58 @@
       ]
     },
     {
-      "page": 10,
-      "file": "Helix_Figure_06_Single_Cluster_Results.png",
-      "bbox": [
-        30.781999588012695,
-        50.245391845703125,
-        422.7667236328125,
-        184.8719940185547
-      ]
-    },
-    {
       "page": 11,
-      "file": "Helix_Figure_07_Geo_Distributed_Cluster_Results.png",
+      "file": "Helix/Helix_Figure_06_Single_Cluster_Results.png",
       "bbox": [
-        12.760000228881836,
-        57.613677978515625,
-        440.78338623046875,
-        123.85899353027344
+        59.676998138427734,
+        50.88316345214844,
+        393.8668212890625,
+        194.0399932861328
       ]
     },
     {
       "page": 12,
-      "file": "Helix_Figure_08_High_GPU_Heterogeneity_Results.png",
+      "file": "Helix/Helix_Figure_07_Geo_Distributed_Cluster_Results.png",
       "bbox": [
-        69.89199829101562,
-        48.36199951171875,
-        383.6610412597656,
-        185.8459930419922
+        13.586999893188477,
+        59.41294860839844,
+        439.9548034667969,
+        161.45999145507812
       ]
     },
     {
       "page": 13,
-      "file": "Helix_Figure_09_Model_Placement_Comparison.png",
+      "file": "Helix/Without-Caption/Helix_Figure_08_High_GPU_Heterogeneity_Results.png",
       "bbox": [
-        12.781999588012695,
-        64.79154968261719,
-        440.772705078125,
-        146.1409912109375
+        69.89199829101562,
+        57.21800231933594,
+        383.6610412597656,
+        194.70199584960938
       ]
     },
     {
       "page": 14,
-      "file": "Helix_Figure_10_Request_Scheduling_Comparison.png",
+      "file": "Helix/Without-Caption/Helix_Figure_09_Model_Placement_Comparison.png",
       "bbox": [
-        12.78600025177002,
-        59.811302185058594,
-        440.74530029296875,
-        152.37298583984375
+        12.781999588012695,
+        74.53355407714844,
+        440.772705078125,
+        155.88299560546875
       ]
     },
     {
-      "page": 19,
-      "file": "Helix_Figure_01_Model_Placement_Examples.png",
+      "page": 15,
+      "file": "Helix/Without-Caption/Helix_Figure_10_Request_Scheduling_Comparison.png",
+      "bbox": [
+        12.78600025177002,
+        69.55231475830078,
+        440.74530029296875,
+        162.11399841308594
+      ]
+    },
+    {
+      "page": 20,
+      "file": "Helix/Without-Caption/Helix_Figure_01_Model_Placement_Examples.png",
       "bbox": [
         12.781000137329102,
         66.42027282714844,
@@ -126,8 +132,8 @@
       ]
     },
     {
-      "page": 20,
-      "file": "Helix_Figure_01_Model_Placement_Examples.png",
+      "page": 21,
+      "file": "Helix/Without-Caption/Helix_Figure_01_Model_Placement_Examples.png",
       "bbox": [
         12.781000137329102,
         55.495269775390625,
@@ -136,8 +142,8 @@
       ]
     },
     {
-      "page": 22,
-      "file": "Helix_Figure_03_System_Overview.png",
+      "page": 23,
+      "file": "Helix/Without-Caption/Helix_Figure_03_System_Overview.png",
       "bbox": [
         13.39799976348877,
         37.37959289550781,
@@ -146,18 +152,28 @@
       ]
     },
     {
-      "page": 24,
-      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "page": 25,
+      "file": "Helix/Without-Caption/Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
       "bbox": [
-        231.01095581054688,
-        42.093231201171875,
-        427.989013671875,
-        188.07403564453125
+        175.41004943847656,
+        32.87049865722656,
+        440.7684326171875,
+        229.52810668945312
       ]
     },
     {
-      "page": 28,
-      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "page": 25,
+      "file": "Helix/Without-Caption/Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "bbox": [
+        175.41004943847656,
+        11.739944458007812,
+        440.7684326171875,
+        208.39755249023438
+      ]
+    },
+    {
+      "page": 29,
+      "file": "Helix/Without-Caption/Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
       "bbox": [
         226.77210998535156,
         42.2972412109375,
@@ -166,8 +182,8 @@
       ]
     },
     {
-      "page": 28,
-      "file": "Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
+      "page": 29,
+      "file": "Helix/Without-Caption/Helix_Figure_02_Max_Flow_Graph_Abstraction.png",
       "bbox": [
         226.77210998535156,
         28.679046630859375,
@@ -176,8 +192,8 @@
       ]
     },
     {
-      "page": 38,
-      "file": "Helix_Figure_04_Per_Request_Pipeline_Scheduling.png",
+      "page": 39,
+      "file": "Helix/Without-Caption/Helix_Figure_04_Per_Request_Pipeline_Scheduling.png",
       "bbox": [
         218.21694946289062,
         83.55487060546875,
@@ -186,18 +202,18 @@
       ]
     },
     {
-      "page": 44,
-      "file": "Helix_Figure_05_Azure_Conversation_Statistics.png",
+      "page": 45,
+      "file": "Helix/Without-Caption/Helix_Figure_05_Azure_Conversation_Statistics.png",
       "bbox": [
-        226.7851104736328,
-        85.54676055908203,
-        440.7712707519531,
-        156.45404052734375
+        94.17900085449219,
+        43.74639129638672,
+        359.36663818359375,
+        131.6199951171875
       ]
     },
     {
-      "page": 45,
-      "file": "Helix_Figure_06_Single_Cluster_Results.png",
+      "page": 46,
+      "file": "Helix/Without-Caption/Helix_Figure_06_Single_Cluster_Results.png",
       "bbox": [
         28.707000732421875,
         51.354583740234375,
@@ -206,8 +222,8 @@
       ]
     },
     {
-      "page": 47,
-      "file": "Helix_Figure_07_Geo_Distributed_Cluster_Results.png",
+      "page": 48,
+      "file": "Helix/Without-Caption/Helix_Figure_07_Geo_Distributed_Cluster_Results.png",
       "bbox": [
         12.760000228881836,
         51.83367919921875,
@@ -216,48 +232,48 @@
       ]
     },
     {
-      "page": 49,
-      "file": "Helix_Figure_08_High_GPU_Heterogeneity_Results.png",
-      "bbox": [
-        226.7801055908203,
-        75.57595825195312,
-        440.786376953125,
-        169.34695434570312
-      ]
-    },
-    {
       "page": 50,
-      "file": "Helix_Figure_09_Model_Placement_Comparison.png",
+      "file": "Helix/Without-Caption/Helix_Figure_08_High_GPU_Heterogeneity_Results.png",
       "bbox": [
-        12.781999588012695,
-        59.01255798339844,
-        440.772705078125,
-        140.36199951171875
+        126.51000213623047,
+        28.427993774414062,
+        327.0420227050781,
+        116.29499816894531
       ]
     },
     {
-      "page": 52,
-      "file": "Helix_Figure_10_Request_Scheduling_Comparison.png",
+      "page": 51,
+      "file": "Helix/Without-Caption/Helix_Figure_09_Model_Placement_Comparison.png",
       "bbox": [
-        12.78600025177002,
-        54.03130340576172,
-        440.74530029296875,
-        146.59298706054688
+        -118.89373779296875,
+        67.43878173828125,
+        440.75042724609375,
+        173.81198120117188
       ]
     },
     {
-      "page": 54,
-      "file": "Helix_Figure_11_MILP_Optimization_Ablation.png",
+      "page": 53,
+      "file": "Helix/Without-Caption/Helix_Figure_10_Request_Scheduling_Comparison.png",
       "bbox": [
-        218.220947265625,
-        51.51014709472656,
-        440.7672119140625,
-        139.76895141601562
+        -197.5795440673828,
+        55.33824157714844,
+        440.79022216796875,
+        193.40879821777344
       ]
     },
     {
       "page": 55,
-      "file": "Helix_Figure_12_MILP_Solution_Quality.png",
+      "file": "Helix/Without-Caption/Helix_Figure_11_MILP_Optimization_Ablation.png",
+      "bbox": [
+        126.70999908447266,
+        28.739593505859375,
+        326.8263244628906,
+        108.10299682617188
+      ]
+    },
+    {
+      "page": 56,
+      "file": "Helix/Without-Caption/Helix_Figure_12_MILP_Solution_Quality.png",
       "bbox": [
         226.77410888671875,
         78.37435150146484,
@@ -270,7 +286,7 @@
     {
       "from_page": 1,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 1,
@@ -280,12 +296,12 @@
     {
       "from_page": 1,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 2,
       "destination": "B03",
-      "to_page": 19
+      "to_page": 20
     },
     {
       "from_page": 2,
@@ -295,17 +311,17 @@
     {
       "from_page": 2,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 3,
       "destination": "B07",
-      "to_page": 23
+      "to_page": 24
     },
     {
       "from_page": 3,
       "destination": "B13",
-      "to_page": 29
+      "to_page": 30
     },
     {
       "from_page": 3,
@@ -315,17 +331,17 @@
     {
       "from_page": 3,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 4,
       "destination": "B18",
-      "to_page": 35
+      "to_page": 36
     },
     {
       "from_page": 4,
       "destination": "B22",
-      "to_page": 39
+      "to_page": 40
     },
     {
       "from_page": 4,
@@ -335,12 +351,12 @@
     {
       "from_page": 4,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 5,
       "destination": "B12",
-      "to_page": 28
+      "to_page": 29
     },
     {
       "from_page": 5,
@@ -350,17 +366,42 @@
     {
       "from_page": 5,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 6,
+      "destination": "B14",
+      "to_page": 31
+    },
+    {
+      "from_page": 6,
+      "destination": "B15",
+      "to_page": 32
+    },
+    {
+      "from_page": 6,
+      "destination": "B15",
+      "to_page": 32
+    },
+    {
+      "from_page": 6,
+      "destination": "B16",
+      "to_page": 33
+    },
+    {
+      "from_page": 6,
+      "destination": "B16",
+      "to_page": 33
     },
     {
       "from_page": 6,
       "destination": "B13",
-      "to_page": 29
+      "to_page": 30
     },
     {
       "from_page": 6,
       "destination": "B17",
-      "to_page": 34
+      "to_page": 35
     },
     {
       "from_page": 6,
@@ -370,12 +411,12 @@
     {
       "from_page": 6,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 7,
       "destination": "B20",
-      "to_page": 37
+      "to_page": 38
     },
     {
       "from_page": 7,
@@ -385,17 +426,17 @@
     {
       "from_page": 7,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 8,
       "destination": "PARTIAL",
-      "to_page": 40
+      "to_page": 41
     },
     {
       "from_page": 8,
       "destination": "B22",
-      "to_page": 39
+      "to_page": 40
     },
     {
       "from_page": 8,
@@ -405,49 +446,59 @@
     {
       "from_page": 8,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 9,
       "destination": "B24",
-      "to_page": 42
+      "to_page": 43
     },
     {
       "from_page": 9,
       "destination": "B25",
+      "to_page": 45
+    },
+    {
+      "from_page": 9,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 9,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 10,
+      "destination": "SETUP",
       "to_page": 44
     },
     {
-      "from_page": 9,
+      "from_page": 10,
+      "destination": "B29",
+      "to_page": 52
+    },
+    {
+      "from_page": 10,
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 9,
+      "from_page": 10,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
-      "from_page": 10,
+      "from_page": 11,
       "destination": "B26",
+      "to_page": 47
+    },
+    {
+      "from_page": 11,
+      "destination": "FIG6",
       "to_page": 46
     },
     {
-      "from_page": 10,
-      "destination": "Navigation1",
-      "to_page": 1
-    },
-    {
-      "from_page": 10,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 11,
-      "destination": "B27",
-      "to_page": 48
-    },
-    {
       "from_page": 11,
       "destination": "Navigation1",
       "to_page": 1
@@ -455,127 +506,137 @@
     {
       "from_page": 11,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 12,
-      "destination": "B28",
+      "destination": "B27",
       "to_page": 49
     },
     {
       "from_page": 12,
+      "destination": "FIG7",
+      "to_page": 48
+    },
+    {
+      "from_page": 12,
       "destination": "Navigation1",
       "to_page": 1
     },
     {
       "from_page": 12,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 13,
+      "destination": "B28",
+      "to_page": 50
+    },
+    {
+      "from_page": 13,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 13,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 14,
       "destination": "B29",
+      "to_page": 52
+    },
+    {
+      "from_page": 14,
+      "destination": "FIG9",
       "to_page": 51
     },
     {
-      "from_page": 13,
+      "from_page": 14,
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 13,
+      "from_page": 14,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
-      "from_page": 14,
+      "from_page": 15,
       "destination": "B30",
+      "to_page": 54
+    },
+    {
+      "from_page": 15,
+      "destination": "FIG10",
       "to_page": 53
     },
     {
-      "from_page": 14,
+      "from_page": 15,
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 14,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
       "from_page": 15,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
-      "from_page": 15,
+      "from_page": 16,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 16,
       "destination": "FUTURE",
+      "to_page": 58
+    },
+    {
+      "from_page": 16,
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 16,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 17,
+      "destination": "B01",
+      "to_page": 18
+    },
+    {
+      "from_page": 17,
+      "destination": "B07",
+      "to_page": 24
+    },
+    {
+      "from_page": 17,
+      "destination": "B18",
+      "to_page": 36
+    },
+    {
+      "from_page": 17,
+      "destination": "B24",
+      "to_page": 43
+    },
+    {
+      "from_page": 17,
+      "destination": "B33",
       "to_page": 57
     },
     {
-      "from_page": 15,
-      "destination": "Navigation1",
-      "to_page": 1
-    },
-    {
-      "from_page": 15,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 16,
-      "destination": "B01",
-      "to_page": 17
-    },
-    {
-      "from_page": 16,
-      "destination": "B07",
-      "to_page": 23
-    },
-    {
-      "from_page": 16,
-      "destination": "B18",
-      "to_page": 35
-    },
-    {
-      "from_page": 16,
-      "destination": "B24",
-      "to_page": 42
-    },
-    {
-      "from_page": 16,
-      "destination": "B33",
-      "to_page": 56
-    },
-    {
-      "from_page": 16,
+      "from_page": 17,
       "destination": "M15",
-      "to_page": 15
-    },
-    {
-      "from_page": 16,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 16,
-      "destination": "Navigation16",
-      "to_page": 16
-    },
-    {
-      "from_page": 16,
-      "destination": "INDEX",
       "to_page": 16
     },
     {
       "from_page": 17,
-      "destination": "M02",
-      "to_page": 2
-    },
-    {
-      "from_page": 17,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 17,
@@ -585,7 +646,7 @@
     {
       "from_page": 17,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 18,
@@ -594,18 +655,33 @@
     },
     {
       "from_page": 18,
-      "destination": "INDEX",
-      "to_page": 16
+      "destination": "B02",
+      "to_page": 19
     },
     {
       "from_page": 18,
-      "destination": "Navigation17",
+      "destination": "B03",
+      "to_page": 20
+    },
+    {
+      "from_page": 18,
+      "destination": "B04",
+      "to_page": 21
+    },
+    {
+      "from_page": 18,
+      "destination": "INDEX",
       "to_page": 17
     },
     {
       "from_page": 18,
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 18,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 19,
@@ -615,17 +691,17 @@
     {
       "from_page": 19,
       "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 19,
-      "destination": "Navigation17",
       "to_page": 17
     },
     {
       "from_page": 19,
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 19,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 20,
@@ -634,78 +710,83 @@
     },
     {
       "from_page": 20,
-      "destination": "INDEX",
-      "to_page": 16
+      "destination": "B04",
+      "to_page": 21
     },
     {
       "from_page": 20,
-      "destination": "Navigation17",
+      "destination": "INDEX",
       "to_page": 17
     },
     {
       "from_page": 20,
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 20,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 21,
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 21,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 21,
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 21,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 22,
       "destination": "M03",
       "to_page": 3
     },
     {
-      "from_page": 21,
+      "from_page": 22,
       "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 21,
-      "destination": "Navigation21",
-      "to_page": 21
-    },
-    {
-      "from_page": 21,
-      "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 22,
+      "destination": "Navigation22",
+      "to_page": 22
+    },
+    {
+      "from_page": 22,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 23,
       "destination": "M04",
       "to_page": 4
     },
     {
-      "from_page": 22,
+      "from_page": 23,
       "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 22,
-      "destination": "Navigation21",
-      "to_page": 21
-    },
-    {
-      "from_page": 22,
-      "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 23,
-      "destination": "M05",
-      "to_page": 5
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 23,
       "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 23,
-      "destination": "Navigation21",
-      "to_page": 21
-    },
-    {
-      "from_page": 23,
-      "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 24,
@@ -714,18 +795,48 @@
     },
     {
       "from_page": 24,
-      "destination": "INDEX",
-      "to_page": 16
+      "destination": "M03",
+      "to_page": 3
     },
     {
       "from_page": 24,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "B05",
+      "to_page": 22
+    },
+    {
+      "from_page": 24,
+      "destination": "B08",
+      "to_page": 25
+    },
+    {
+      "from_page": 24,
+      "destination": "B09",
+      "to_page": 26
+    },
+    {
+      "from_page": 24,
+      "destination": "B10",
+      "to_page": 27
+    },
+    {
+      "from_page": 24,
+      "destination": "B11",
+      "to_page": 28
     },
     {
       "from_page": 24,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 24,
+      "destination": "Navigation22",
+      "to_page": 22
+    },
+    {
+      "from_page": 24,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 25,
@@ -734,18 +845,33 @@
     },
     {
       "from_page": 25,
-      "destination": "INDEX",
-      "to_page": 16
+      "destination": "B09",
+      "to_page": 26
     },
     {
       "from_page": 25,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "B10",
+      "to_page": 27
+    },
+    {
+      "from_page": 25,
+      "destination": "B11",
+      "to_page": 28
     },
     {
       "from_page": 25,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 25,
+      "destination": "Navigation22",
+      "to_page": 22
+    },
+    {
+      "from_page": 25,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 26,
@@ -755,17 +881,17 @@
     {
       "from_page": 26,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 26,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 26,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 27,
@@ -775,17 +901,17 @@
     {
       "from_page": 27,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 27,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 27,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 28,
@@ -795,37 +921,57 @@
     {
       "from_page": 28,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 28,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 28,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 29,
-      "destination": "M06",
-      "to_page": 6
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 29,
+      "destination": "B08",
+      "to_page": 25
+    },
+    {
+      "from_page": 29,
+      "destination": "B09",
+      "to_page": 26
+    },
+    {
+      "from_page": 29,
+      "destination": "B10",
+      "to_page": 27
+    },
+    {
+      "from_page": 29,
+      "destination": "B11",
+      "to_page": 28
     },
     {
       "from_page": 29,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 29,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 29,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 30,
@@ -834,18 +980,38 @@
     },
     {
       "from_page": 30,
-      "destination": "INDEX",
-      "to_page": 16
+      "destination": "M03",
+      "to_page": 3
     },
     {
       "from_page": 30,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "B14",
+      "to_page": 31
+    },
+    {
+      "from_page": 30,
+      "destination": "B15",
+      "to_page": 32
+    },
+    {
+      "from_page": 30,
+      "destination": "B16",
+      "to_page": 33
     },
     {
       "from_page": 30,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 30,
+      "destination": "Navigation22",
+      "to_page": 22
+    },
+    {
+      "from_page": 30,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 31,
@@ -855,17 +1021,17 @@
     {
       "from_page": 31,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 31,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 31,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 32,
@@ -875,17 +1041,22 @@
     {
       "from_page": 32,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 32,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 32,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 33,
+      "destination": "LINEAR",
+      "to_page": 34
     },
     {
       "from_page": 33,
@@ -895,17 +1066,17 @@
     {
       "from_page": 33,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 33,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 33,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 34,
@@ -915,57 +1086,77 @@
     {
       "from_page": 34,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 34,
-      "destination": "Navigation21",
-      "to_page": 21
+      "destination": "Navigation22",
+      "to_page": 22
     },
     {
       "from_page": 34,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 35,
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 35,
+      "destination": "B31",
+      "to_page": 55
+    },
+    {
+      "from_page": 35,
+      "destination": "B32",
+      "to_page": 56
+    },
+    {
+      "from_page": 35,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 35,
+      "destination": "Navigation22",
+      "to_page": 22
+    },
+    {
+      "from_page": 35,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 36,
       "destination": "M04",
       "to_page": 4
     },
     {
-      "from_page": 35,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 35,
-      "destination": "Navigation35",
-      "to_page": 35
-    },
-    {
-      "from_page": 35,
-      "destination": "INDEX",
-      "to_page": 16
+      "from_page": 36,
+      "destination": "B06",
+      "to_page": 23
     },
     {
       "from_page": 36,
-      "destination": "M07",
-      "to_page": 7
+      "destination": "B19",
+      "to_page": 37
     },
     {
       "from_page": 36,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 36,
-      "destination": "Navigation35",
-      "to_page": 35
+      "destination": "Navigation36",
+      "to_page": 36
     },
     {
       "from_page": 36,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 37,
@@ -975,17 +1166,17 @@
     {
       "from_page": 37,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 37,
-      "destination": "Navigation35",
-      "to_page": 35
+      "destination": "Navigation36",
+      "to_page": 36
     },
     {
       "from_page": 37,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 38,
@@ -994,78 +1185,108 @@
     },
     {
       "from_page": 38,
-      "destination": "INDEX",
-      "to_page": 16
+      "destination": "B19",
+      "to_page": 37
     },
     {
       "from_page": 38,
-      "destination": "Navigation35",
-      "to_page": 35
+      "destination": "B21",
+      "to_page": 39
+    },
+    {
+      "from_page": 38,
+      "destination": "B22",
+      "to_page": 40
     },
     {
       "from_page": 38,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 38,
+      "destination": "Navigation36",
+      "to_page": 36
+    },
+    {
+      "from_page": 38,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 39,
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 39,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 39,
+      "destination": "Navigation36",
+      "to_page": 36
+    },
+    {
+      "from_page": 39,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 40,
       "destination": "M08",
       "to_page": 8
     },
     {
-      "from_page": 39,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 39,
-      "destination": "Navigation35",
-      "to_page": 35
-    },
-    {
-      "from_page": 39,
-      "destination": "INDEX",
-      "to_page": 16
+      "from_page": 40,
+      "destination": "M04",
+      "to_page": 4
     },
     {
       "from_page": 40,
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 40,
+      "destination": "PARTIAL",
+      "to_page": 41
+    },
+    {
+      "from_page": 40,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 40,
+      "destination": "Navigation36",
+      "to_page": 36
+    },
+    {
+      "from_page": 40,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 41,
       "destination": "M08",
       "to_page": 8
     },
     {
-      "from_page": 40,
+      "from_page": 41,
       "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 40,
-      "destination": "Navigation35",
-      "to_page": 35
-    },
-    {
-      "from_page": 40,
-      "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 41,
-      "destination": "M09",
-      "to_page": 9
+      "destination": "Navigation36",
+      "to_page": 36
     },
     {
       "from_page": 41,
       "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 41,
-      "destination": "Navigation35",
-      "to_page": 35
-    },
-    {
-      "from_page": 41,
-      "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 42,
@@ -1075,17 +1296,17 @@
     {
       "from_page": 42,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 42,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "Navigation36",
+      "to_page": 36
     },
     {
       "from_page": 42,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 43,
@@ -1094,298 +1315,388 @@
     },
     {
       "from_page": 43,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 43,
-      "destination": "Navigation42",
+      "destination": "B23",
       "to_page": 42
     },
     {
       "from_page": 43,
+      "destination": "SETUP",
+      "to_page": 44
+    },
+    {
+      "from_page": 43,
+      "destination": "B25",
+      "to_page": 45
+    },
+    {
+      "from_page": 43,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
-      "from_page": 44,
-      "destination": "M09",
-      "to_page": 9
+      "from_page": 43,
+      "destination": "Navigation43",
+      "to_page": 43
     },
     {
-      "from_page": 44,
+      "from_page": 43,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 44,
-      "destination": "Navigation42",
-      "to_page": 42
-    },
-    {
-      "from_page": 44,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 45,
-      "destination": "M10",
+      "destination": "BASELINES",
       "to_page": 10
     },
     {
-      "from_page": 45,
+      "from_page": 44,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 44,
+      "destination": "Navigation43",
+      "to_page": 43
+    },
+    {
+      "from_page": 44,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 45,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "M09",
+      "to_page": 9
     },
     {
       "from_page": 45,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 45,
+      "destination": "Navigation43",
+      "to_page": 43
+    },
+    {
+      "from_page": 45,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 46,
       "destination": "M10",
-      "to_page": 10
+      "to_page": 11
+    },
+    {
+      "from_page": 46,
+      "destination": "B26",
+      "to_page": 47
     },
     {
       "from_page": 46,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 46,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "Navigation43",
+      "to_page": 43
     },
     {
       "from_page": 46,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 47,
-      "destination": "M11",
+      "destination": "M10",
       "to_page": 11
     },
     {
       "from_page": 47,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 47,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "FIG6",
+      "to_page": 46
     },
     {
       "from_page": 47,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 47,
+      "destination": "Navigation43",
+      "to_page": 43
+    },
+    {
+      "from_page": 47,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 48,
       "destination": "M11",
-      "to_page": 11
+      "to_page": 12
+    },
+    {
+      "from_page": 48,
+      "destination": "B27",
+      "to_page": 49
     },
     {
       "from_page": 48,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 48,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "Navigation43",
+      "to_page": 43
     },
     {
       "from_page": 48,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 49,
-      "destination": "M12",
+      "destination": "M11",
       "to_page": 12
     },
     {
       "from_page": 49,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 49,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "FIG7",
+      "to_page": 48
     },
     {
       "from_page": 49,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 49,
+      "destination": "Navigation43",
+      "to_page": 43
+    },
+    {
+      "from_page": 49,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 50,
-      "destination": "M13",
+      "destination": "M12",
       "to_page": 13
     },
     {
       "from_page": 50,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 50,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "Navigation43",
+      "to_page": 43
     },
     {
       "from_page": 50,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 51,
       "destination": "M13",
-      "to_page": 13
+      "to_page": 14
+    },
+    {
+      "from_page": 51,
+      "destination": "B29",
+      "to_page": 52
     },
     {
       "from_page": 51,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 51,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "Navigation43",
+      "to_page": 43
     },
     {
       "from_page": 51,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 52,
-      "destination": "M14",
+      "destination": "M13",
       "to_page": 14
     },
     {
       "from_page": 52,
-      "destination": "INDEX",
-      "to_page": 16
+      "destination": "BASELINES",
+      "to_page": 10
     },
     {
       "from_page": 52,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "FIG9",
+      "to_page": 51
     },
     {
       "from_page": 52,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
+    },
+    {
+      "from_page": 52,
+      "destination": "Navigation43",
+      "to_page": 43
+    },
+    {
+      "from_page": 52,
+      "destination": "INDEX",
+      "to_page": 17
     },
     {
       "from_page": 53,
       "destination": "M14",
-      "to_page": 14
+      "to_page": 15
+    },
+    {
+      "from_page": 53,
+      "destination": "B30",
+      "to_page": 54
     },
     {
       "from_page": 53,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 53,
-      "destination": "Navigation42",
-      "to_page": 42
+      "destination": "Navigation43",
+      "to_page": 43
     },
     {
       "from_page": 53,
       "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 54,
+      "destination": "M14",
+      "to_page": 15
+    },
+    {
+      "from_page": 54,
+      "destination": "FIG10",
+      "to_page": 53
+    },
+    {
+      "from_page": 54,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 54,
+      "destination": "Navigation43",
+      "to_page": 43
+    },
+    {
+      "from_page": 54,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 55,
       "destination": "M06",
       "to_page": 6
     },
     {
-      "from_page": 54,
-      "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 54,
-      "destination": "Navigation42",
-      "to_page": 42
-    },
-    {
-      "from_page": 54,
-      "destination": "INDEX",
-      "to_page": 16
+      "from_page": 55,
+      "destination": "B17",
+      "to_page": 35
     },
     {
       "from_page": 55,
+      "destination": "B32",
+      "to_page": 56
+    },
+    {
+      "from_page": 55,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 55,
+      "destination": "Navigation43",
+      "to_page": 43
+    },
+    {
+      "from_page": 55,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 56,
       "destination": "M06",
       "to_page": 6
     },
     {
-      "from_page": 55,
+      "from_page": 56,
       "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 55,
-      "destination": "Navigation42",
-      "to_page": 42
-    },
-    {
-      "from_page": 55,
-      "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 56,
-      "destination": "M15",
-      "to_page": 15
+      "destination": "Navigation43",
+      "to_page": 43
     },
     {
       "from_page": 56,
       "destination": "INDEX",
-      "to_page": 16
-    },
-    {
-      "from_page": 56,
-      "destination": "Navigation56",
-      "to_page": 56
-    },
-    {
-      "from_page": 56,
-      "destination": "INDEX",
-      "to_page": 16
+      "to_page": 17
     },
     {
       "from_page": 57,
       "destination": "M15",
-      "to_page": 15
-    },
-    {
-      "from_page": 57,
-      "destination": "INDEX",
       "to_page": 16
     },
     {
       "from_page": 57,
-      "destination": "Navigation56",
-      "to_page": 56
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 57,
+      "destination": "Navigation57",
+      "to_page": 57
     },
     {
       "from_page": 57,
       "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 58,
+      "destination": "M15",
       "to_page": 16
+    },
+    {
+      "from_page": 58,
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 58,
+      "destination": "Navigation57",
+      "to_page": 57
+    },
+    {
+      "from_page": 58,
+      "destination": "INDEX",
+      "to_page": 17
     }
   ],
   "frames": [
@@ -1445,42 +1756,48 @@
     },
     {
       "page": 10,
+      "label": "BASELINES",
+      "title": "What Does Helix Compare Against?",
+      "back_to_main": []
+    },
+    {
+      "page": 11,
       "label": "M10",
       "title": "Does Helix Improve Single-Cluster Serving?",
       "back_to_main": []
     },
     {
-      "page": 11,
+      "page": 12,
       "label": "M11",
       "title": "Does Helix Work Across Regions?",
       "back_to_main": []
     },
     {
-      "page": 12,
+      "page": 13,
       "label": "M12",
       "title": "What Happens with More GPU Types?",
       "back_to_main": []
     },
     {
-      "page": 13,
+      "page": 14,
       "label": "M13",
       "title": "Where Do the Gains Come From: Placement?",
       "back_to_main": []
     },
     {
-      "page": 14,
+      "page": 15,
       "label": "M14",
       "title": "Where Do the Gains Come From: Scheduling?",
       "back_to_main": []
     },
     {
-      "page": 15,
+      "page": 16,
       "label": "M15",
       "title": "Conclusion \\& Discussion",
       "back_to_main": []
     },
     {
-      "page": 16,
+      "page": 17,
       "label": "INDEX",
       "title": "Discussion Index",
       "back_to_main": [
@@ -1488,7 +1805,7 @@
       ]
     },
     {
-      "page": 17,
+      "page": 18,
       "label": "B01",
       "title": "Why Heterogeneous and Geo-Distributed Serving?",
       "back_to_main": [
@@ -1496,7 +1813,7 @@
       ]
     },
     {
-      "page": 18,
+      "page": 19,
       "label": "B02",
       "title": "Parallelism Across Nodes and GPUs",
       "back_to_main": [
@@ -1504,7 +1821,7 @@
       ]
     },
     {
-      "page": 19,
+      "page": 20,
       "label": "B03",
       "title": "Uniform Model Placement Is Sub-Optimal",
       "back_to_main": [
@@ -1512,7 +1829,7 @@
       ]
     },
     {
-      "page": 20,
+      "page": 21,
       "label": "B04",
       "title": "Network-Unaware Routing Creates Congestion",
       "back_to_main": [
@@ -1520,7 +1837,7 @@
       ]
     },
     {
-      "page": 21,
+      "page": 22,
       "label": "B05",
       "title": "Helix Design Requirements",
       "back_to_main": [
@@ -1528,7 +1845,7 @@
       ]
     },
     {
-      "page": 22,
+      "page": 23,
       "label": "B06",
       "title": "Helix System Overview",
       "back_to_main": [
@@ -1536,7 +1853,7 @@
       ]
     },
     {
-      "page": 23,
+      "page": 24,
       "label": "B07",
       "title": "From Model Placement to a Flow Network",
       "back_to_main": [
@@ -1544,7 +1861,7 @@
       ]
     },
     {
-      "page": 24,
+      "page": 25,
       "label": "B08",
       "title": "Max-Flow Graph Abstraction",
       "back_to_main": [
@@ -1552,7 +1869,7 @@
       ]
     },
     {
-      "page": 25,
+      "page": 26,
       "label": "B09",
       "title": "Modeling Compute Capacity",
       "back_to_main": [
@@ -1560,7 +1877,7 @@
       ]
     },
     {
-      "page": 26,
+      "page": 27,
       "label": "B10",
       "title": "Modeling Network Capacity",
       "back_to_main": [
@@ -1568,7 +1885,7 @@
       ]
     },
     {
-      "page": 27,
+      "page": 28,
       "label": "B11",
       "title": "Why Max Flow Represents Serving Throughput",
       "back_to_main": [
@@ -1576,7 +1893,7 @@
       ]
     },
     {
-      "page": 28,
+      "page": 29,
       "label": "B12",
       "title": "Worked Three-Node Example",
       "back_to_main": [
@@ -1584,7 +1901,7 @@
       ]
     },
     {
-      "page": 29,
+      "page": 30,
       "label": "B13",
       "title": "MILP Variables and Objective",
       "back_to_main": [
@@ -1592,7 +1909,7 @@
       ]
     },
     {
-      "page": 30,
+      "page": 31,
       "label": "B14",
       "title": "Placement and Memory Constraints",
       "back_to_main": [
@@ -1600,7 +1917,7 @@
       ]
     },
     {
-      "page": 31,
+      "page": 32,
       "label": "B15",
       "title": "Flow and Compute Constraints",
       "back_to_main": [
@@ -1608,7 +1925,7 @@
       ]
     },
     {
-      "page": 32,
+      "page": 33,
       "label": "B16",
       "title": "Connectivity and Network Constraints",
       "back_to_main": [
@@ -1616,7 +1933,7 @@
       ]
     },
     {
-      "page": 33,
+      "page": 34,
       "label": "LINEAR",
       "title": "Full Connectivity Linearization",
       "back_to_main": [
@@ -1624,7 +1941,7 @@
       ]
     },
     {
-      "page": 34,
+      "page": 35,
       "label": "B17",
       "title": "Making the MILP Practical",
       "back_to_main": [
@@ -1632,7 +1949,7 @@
       ]
     },
     {
-      "page": 35,
+      "page": 36,
       "label": "B18",
       "title": "Runtime Components and Control Flow",
       "back_to_main": [
@@ -1640,7 +1957,7 @@
       ]
     },
     {
-      "page": 36,
+      "page": 37,
       "label": "B19",
       "title": "Per-Request Pipelines",
       "back_to_main": [
@@ -1648,7 +1965,7 @@
       ]
     },
     {
-      "page": 37,
+      "page": 38,
       "label": "B20",
       "title": "Converting Max-Flow Weights into Scheduling",
       "back_to_main": [
@@ -1656,7 +1973,7 @@
       ]
     },
     {
-      "page": 38,
+      "page": 39,
       "label": "B21",
       "title": "Pipeline Scheduling Example",
       "back_to_main": [
@@ -1664,7 +1981,7 @@
       ]
     },
     {
-      "page": 39,
+      "page": 40,
       "label": "B22",
       "title": "KV-Cache Masking and Backpressure",
       "back_to_main": [
@@ -1672,7 +1989,7 @@
       ]
     },
     {
-      "page": 40,
+      "page": 41,
       "label": "PARTIAL",
       "title": "Partial Inference and Request-Specific KV",
       "back_to_main": [
@@ -1680,7 +1997,7 @@
       ]
     },
     {
-      "page": 41,
+      "page": 42,
       "label": "B23",
       "title": "Implementation and Prototype",
       "back_to_main": [
@@ -1688,7 +2005,7 @@
       ]
     },
     {
-      "page": 42,
+      "page": 43,
       "label": "B24",
       "title": "Evaluation Methodology",
       "back_to_main": [
@@ -1696,15 +2013,15 @@
       ]
     },
     {
-      "page": 43,
+      "page": 44,
       "label": "SETUP",
       "title": "Hardware, Baselines, and Normalization",
       "back_to_main": [
-        "M09"
+        "BASELINES"
       ]
     },
     {
-      "page": 44,
+      "page": 45,
       "label": "B25",
       "title": "Workload Characteristics",
       "back_to_main": [
@@ -1712,7 +2029,7 @@
       ]
     },
     {
-      "page": 45,
+      "page": 46,
       "label": "FIG6",
       "title": "Complete Figure 6: Single-Cluster Results",
       "back_to_main": [
@@ -1720,7 +2037,7 @@
       ]
     },
     {
-      "page": 46,
+      "page": 47,
       "label": "B26",
       "title": "Single-Cluster Results",
       "back_to_main": [
@@ -1728,7 +2045,7 @@
       ]
     },
     {
-      "page": 47,
+      "page": 48,
       "label": "FIG7",
       "title": "Complete Figure 7: Geo-Distributed Results",
       "back_to_main": [
@@ -1736,7 +2053,7 @@
       ]
     },
     {
-      "page": 48,
+      "page": 49,
       "label": "B27",
       "title": "Geo-Distributed Results",
       "back_to_main": [
@@ -1744,7 +2061,7 @@
       ]
     },
     {
-      "page": 49,
+      "page": 50,
       "label": "B28",
       "title": "High GPU-Heterogeneity Results",
       "back_to_main": [
@@ -1752,15 +2069,15 @@
       ]
     },
     {
-      "page": 50,
+      "page": 51,
       "label": "FIG9",
-      "title": "Complete Figure 9: Model Placement Deep Dive",
+      "title": "Figure 9: Placement Graph Detail",
       "back_to_main": [
         "M13"
       ]
     },
     {
-      "page": 51,
+      "page": 52,
       "label": "B29",
       "title": "Model Placement Deep Dive",
       "back_to_main": [
@@ -1768,15 +2085,15 @@
       ]
     },
     {
-      "page": 52,
+      "page": 53,
       "label": "FIG10",
-      "title": "Complete Figure 10: Request Scheduling Deep Dive",
+      "title": "Figure 10: Scheduling Graph Detail",
       "back_to_main": [
         "M14"
       ]
     },
     {
-      "page": 53,
+      "page": 54,
       "label": "B30",
       "title": "Request Scheduling Deep Dive",
       "back_to_main": [
@@ -1784,7 +2101,7 @@
       ]
     },
     {
-      "page": 54,
+      "page": 55,
       "label": "B31",
       "title": "MILP Optimization Ablation",
       "back_to_main": [
@@ -1792,7 +2109,7 @@
       ]
     },
     {
-      "page": 55,
+      "page": 56,
       "label": "B32",
       "title": "Solver Time and Solution Quality",
       "back_to_main": [
@@ -1800,7 +2117,7 @@
       ]
     },
     {
-      "page": 56,
+      "page": 57,
       "label": "B33",
       "title": "Limitations and Threats to Validity",
       "back_to_main": [
@@ -1808,7 +2125,7 @@
       ]
     },
     {
-      "page": 57,
+      "page": 58,
       "label": "FUTURE",
       "title": "Research Directions and Applicability",
       "back_to_main": [
@@ -1816,6 +2133,6 @@
       ]
     }
   ],
-  "rendered_pages": 57,
+  "rendered_pages": 58,
   "manual_visual_review": "Required separately; montage generation is not visual proof."
 }

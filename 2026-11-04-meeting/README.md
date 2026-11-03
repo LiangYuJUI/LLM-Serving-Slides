@@ -1,6 +1,6 @@
 # 2026-11-04 Research Meeting — Helix
 
-新版採 **15 頁 Main + 42 頁 Discussion / Backup（含 1 頁索引），共 57 頁**。主動報告約 15–20 分鐘，整場含問答約 30–40 分鐘；這是整體規劃，不是逐頁計時。所有 Main 在前，Backup 在後，不交錯。
+新版採 **16 頁 Main + 42 頁 Discussion / Backup（含 1 頁索引），共 58 頁**。主動報告約 15–20 分鐘，整場含問答約 30–40 分鐘；這是整體規劃，不是逐頁計時。所有 Main 在前，Backup 在後，不交錯。
 
 - [PDF](output/pdf/2026-11-04-Helix.pdf)
 - [Beamer source](2026-11-04-Helix.tex)
@@ -13,81 +13,85 @@
 
 頁碼為實際 PDF 頁碼，與頁腳一致。M13 / M14 分開呈現 placement / scheduling ablation，讓兩張完整圖各有一頁。
 
-| Main / PDF | 主題 | 對應 Backup PDF 頁 |
+| Main / PDF | 主題 | 直接連結至 PDF 頁 |
 |---|---|---|
-| M01 / 1 | Helix | 16（索引） |
-| M02 / 2 | Why Do We Need Helix? | 17, 18, 19, 20 |
-| M03 / 3 | What Does Helix Optimize? | 21 |
-| M04 / 4 | How Does One Request Run? | 22, 35 |
-| M05 / 5 | How Does Max Flow Model Serving? | 23, 24, 25, 26, 27, 28 |
-| M06 / 6 | How Does MILP Decide Placement? | 29, 30, 31, 32, 33, 34, 54, 55 |
-| M07 / 7 | How Does Runtime Scheduling Work? | 36, 37, 38 |
-| M08 / 8 | How Are Weights and KV Cache Managed? | 39, 40 |
-| M09 / 9 | How Is Helix Evaluated? | 41, 42, 43, 44 |
-| M10 / 10 | Does Helix Improve Single-Cluster Serving? | 45, 46 |
-| M11 / 11 | Does Helix Work Across Regions? | 47, 48 |
-| M12 / 12 | What Happens with More GPU Types? | 49 |
-| M13 / 13 | Where Do the Gains Come From: Placement? | 50, 51 |
-| M14 / 14 | Where Do the Gains Come From: Scheduling? | 52, 53 |
-| M15 / 15 | Conclusion & Discussion | 16, 56, 57 |
+| M01 / 1 | Helix | 17 |
+| M02 / 2 | Why Do We Need Helix? | 20 |
+| M03 / 3 | What Does Helix Optimize? | 24, 30 |
+| M04 / 4 | How Does One Request Run? | 36, 40 |
+| M05 / 5 | How Does Max Flow Model Serving? | 29 |
+| M06 / 6 | How Does MILP Decide Placement? | 30, 31, 32, 33, 35 |
+| M07 / 7 | How Does Runtime Scheduling Work? | 38 |
+| M08 / 8 | How Are Weights and KV Cache Managed? | 40, 41 |
+| M09 / 9 | How Is Helix Evaluated? | 43, 45 |
+| BASELINES / 10 | What Does Helix Compare Against? | 44, 52 |
+| M10 / 11 | Does Helix Improve Single-Cluster Serving? | 46, 47 |
+| M11 / 12 | Does Helix Work Across Regions? | 48, 49 |
+| M12 / 13 | What Happens with More GPU Types? | 50 |
+| M13 / 14 | Where Do the Gains Come From: Placement? | 51, 52 |
+| M14 / 15 | Where Do the Gains Come From: Scheduling? | 53, 54 |
+| M15 / 16 | Conclusion & Discussion | 58 |
+
+所有 Main 頁另有第 17 頁索引連結。補充頁以相關主題按鈕互相連接；全部 58 頁都能從 Main 經點選到達。共用補充頁提供各入口的 Main 頁碼按鈕。第 51 / 53 頁為節點圖放大檢視，完整圖保留在 Main 14 / 15。
 
 ## Backup 分組
 
 | 區塊 | PDF 頁 | 內容 | 返回 Main |
 |---|---|---|---|
-| Discussion Index | 16 | A–E 入口 | M15 |
-| A — Background and Motivation | 17–20 | GPU 規格、TP / PP / DP、Petals / Swarm、Fig. 1 | M02 |
-| B — Max Flow and MILP | 21–34 | 設計分工、架構、graph、cost model、全部主要 MILP constraints、solver | M03–M06 |
-| C — Runtime and Implementation | 35–41 | lifecycle、per-request pipeline、IWRR、KV masking、partial inference、vLLM / simulator | M04、M07–M09 |
-| D — Experimental Evidence | 42–55 | 設定、workload、完整 Figures 6–12、數據表、ablation、solver quality | M06、M09–M14 |
-| E — Limitations and Discussion | 56–57 | static placement、KV estimation、latency、simulation scope、研究方向 | M15 |
+| Discussion Index | 17 | A–E 入口 | M15 |
+| A — Background and Motivation | 18–21 | GPU 規格、TP / PP / DP、Petals / Swarm、Fig. 1 | M02 |
+| B — Max Flow and MILP | 22–35 | 設計分工、架構、graph、cost model、全部主要 MILP constraints、solver | M03–M06 |
+| C — Runtime and Implementation | 36–42 | lifecycle、per-request pipeline、IWRR、KV masking、partial inference、vLLM / simulator | M04、M07–M09 |
+| D — Experimental Evidence | 43–56 | 設定、workload、Figures 6–12（含節點圖放大）、數據表、ablation、solver quality | M06、M09–M14、BASELINES |
+| E — Limitations and Discussion | 57–58 | static placement、KV estimation、latency、simulation scope、研究方向 | M15 |
 
 ### 完整 Backup 頁碼
 
 | PDF | Named destination | 主題 | Back to Main |
 |---|---|---|---|
-| 16 | `INDEX` | Discussion Index | M15 |
-| 17 | `B01` | Why Heterogeneous and Geo-Distributed Serving? | M02 |
-| 18 | `B02` | Parallelism Across Nodes and GPUs | M02 |
-| 19 | `B03` | Uniform Model Placement Is Sub-Optimal | M02 |
-| 20 | `B04` | Network-Unaware Routing Creates Congestion | M02 |
-| 21 | `B05` | Helix Design Requirements | M03 |
-| 22 | `B06` | Helix System Overview | M04 |
-| 23 | `B07` | From Model Placement to a Flow Network | M05 |
-| 24 | `B08` | Max-Flow Graph Abstraction | M05 |
-| 25 | `B09` | Modeling Compute Capacity | M05 |
-| 26 | `B10` | Modeling Network Capacity | M05 |
-| 27 | `B11` | Why Max Flow Represents Serving Throughput | M05 |
-| 28 | `B12` | Worked Three-Node Example | M05 |
-| 29 | `B13` | MILP Variables and Objective | M06 |
-| 30 | `B14` | Placement and Memory Constraints | M06 |
-| 31 | `B15` | Flow and Compute Constraints | M06 |
-| 32 | `B16` | Connectivity and Network Constraints | M06 |
-| 33 | `LINEAR` | Full Connectivity Linearization | M06 |
-| 34 | `B17` | Making the MILP Practical | M06 |
-| 35 | `B18` | Runtime Components and Control Flow | M04 |
-| 36 | `B19` | Per-Request Pipelines | M07 |
-| 37 | `B20` | Converting Max-Flow Weights into Scheduling | M07 |
-| 38 | `B21` | Pipeline Scheduling Example | M07 |
-| 39 | `B22` | KV-Cache Masking and Backpressure | M08 |
-| 40 | `PARTIAL` | Partial Inference and Request-Specific KV | M08 |
-| 41 | `B23` | Implementation and Prototype | M09 |
-| 42 | `B24` | Evaluation Methodology | M09 |
-| 43 | `SETUP` | Hardware, Baselines, and Normalization | M09 |
-| 44 | `B25` | Workload Characteristics | M09 |
-| 45 | `FIG6` | Complete Figure 6: Single-Cluster Results | M10 |
-| 46 | `B26` | Single-Cluster Results | M10 |
-| 47 | `FIG7` | Complete Figure 7: Geo-Distributed Results | M11 |
-| 48 | `B27` | Geo-Distributed Results | M11 |
-| 49 | `B28` | High GPU-Heterogeneity Results | M12 |
-| 50 | `FIG9` | Complete Figure 9: Model Placement Deep Dive | M13 |
-| 51 | `B29` | Model Placement Deep Dive | M13 |
-| 52 | `FIG10` | Complete Figure 10: Request Scheduling Deep Dive | M14 |
-| 53 | `B30` | Request Scheduling Deep Dive | M14 |
-| 54 | `B31` | MILP Optimization Ablation | M06 |
-| 55 | `B32` | Solver Time and Solution Quality | M06 |
-| 56 | `B33` | Limitations and Threats to Validity | M15 |
-| 57 | `FUTURE` | Research Directions and Applicability | M15 |
+| 17 | `INDEX` | Discussion Index | M15 |
+| 18 | `B01` | Why Heterogeneous and Geo-Distributed Serving? | M02 |
+| 19 | `B02` | Parallelism Across Nodes and GPUs | M02 |
+| 20 | `B03` | Uniform Model Placement Is Sub-Optimal | M02 |
+| 21 | `B04` | Network-Unaware Routing Creates Congestion | M02 |
+| 22 | `B05` | Helix Design Requirements | M03 |
+| 23 | `B06` | Helix System Overview | M04 |
+| 24 | `B07` | From Model Placement to a Flow Network | M05 |
+| 25 | `B08` | Max-Flow Graph Abstraction | M05 |
+| 26 | `B09` | Modeling Compute Capacity | M05 |
+| 27 | `B10` | Modeling Network Capacity | M05 |
+| 28 | `B11` | Why Max Flow Represents Serving Throughput | M05 |
+| 29 | `B12` | Worked Three-Node Example | M05 |
+| 30 | `B13` | MILP Variables and Objective | M06 |
+| 31 | `B14` | Placement and Memory Constraints | M06 |
+| 32 | `B15` | Flow and Compute Constraints | M06 |
+| 33 | `B16` | Connectivity and Network Constraints | M06 |
+| 34 | `LINEAR` | Full Connectivity Linearization | M06 |
+| 35 | `B17` | Making the MILP Practical | M06 |
+| 36 | `B18` | Runtime Components and Control Flow | M04 |
+| 37 | `B19` | Per-Request Pipelines | M07 |
+| 38 | `B20` | Converting Max-Flow Weights into Scheduling | M07 |
+| 39 | `B21` | Pipeline Scheduling Example | M07 |
+| 40 | `B22` | KV-Cache Masking and Backpressure | M08 |
+| 41 | `PARTIAL` | Partial Inference and Request-Specific KV | M08 |
+| 42 | `B23` | Implementation and Prototype | M09 |
+| 43 | `B24` | Evaluation Methodology | M09 |
+| 44 | `SETUP` | Hardware, Baselines, and Normalization | BASELINES |
+| 45 | `B25` | Workload Characteristics | M09 |
+| 46 | `FIG6` | Complete Figure 6: Single-Cluster Results | M10 |
+| 47 | `B26` | Single-Cluster Results | M10 |
+| 48 | `FIG7` | Complete Figure 7: Geo-Distributed Results | M11 |
+| 49 | `B27` | Geo-Distributed Results | M11 |
+| 50 | `B28` | High GPU-Heterogeneity Results | M12 |
+| 51 | `FIG9` | Figure 9: Placement Graph Detail | M13 |
+| 52 | `B29` | Model Placement Deep Dive | M13 |
+| 53 | `FIG10` | Figure 10: Scheduling Graph Detail | M14 |
+| 54 | `B30` | Request Scheduling Deep Dive | M14 |
+| 55 | `B31` | MILP Optimization Ablation | M06 |
+| 56 | `B32` | Solver Time and Solution Quality | M06 |
+| 57 | `B33` | Limitations and Threats to Validity | M15 |
+| 58 | `FUTURE` | Research Directions and Applicability | M15 |
+
 
 ## 導覽方式
 
@@ -100,7 +104,7 @@ Main 的 Details 按鈕進入相關技術頁。每張 Backup 的 **Back to Main*
 所有 12 張 Figure 均直接引用 `Helix/Without-Caption/`。`Helix/` 中原始 12 張 PNG 全數保留且未修改。沒有 fallback 到舊圖，也沒有重新加入 `\caption{...}` 或外部長 caption。
 
 - 大幅放大 Main 的 Figures 1–4、6–10；縮小邊界，讓寬圖使用頁面寬度，讓圖、簡短解讀、來源與導覽共同使用頁面高度。
-- M05（PDF 5）及 cost example（PDF 28）用 `graphicx` 的兩個 viewport 顯示 Figure 2 的實體拓撲及 flow graph，略去圖內長段說明。沒有重製或改寫 PNG；所有節點、capacity、layer table、payload labels 均保留。PDF 24 仍提供完整 Figure 2。
+- M05（PDF 5）及 cost example（PDF 29）用 `graphicx` 的兩個 viewport 顯示 Figure 2 的實體拓撲及 flow graph，略去圖內長段說明。沒有重製或改寫 PNG；所有節點、capacity、layer table、payload labels 均保留。PDF 25 仍提供完整 Figure 2。
 - 其他圖不裁切、不拆分、不拉伸；保留素材自帶的 subfigure labels 和 legends。若 caption-free 素材沒有底排標籤，圖旁文字明列 subplot 順序與意義。
 - Backup 圖片與數值表分頁，避免把大圖壓回小圖。短內容採垂直平衡，較完整的公式與表格保持可讀。
 - 原始圖內的 subfigure 說明是來源像素的一部分；未在圖下重複貼上外部 caption。
@@ -134,7 +138,7 @@ python3 -m venv /tmp/helix-qa-env
 
 Overleaf：建立專案並上傳 `output/overleaf/Helix.zip`，入口為 `main.tex`，compiler 選 **pdfLaTeX**。ZIP 包含 source 與 12 張 Without-Caption 圖，無需依賴 repo 其他目錄，也不需要歷史講稿或原論文才能編譯。
 
-## 本次驗證
+## 歷次驗證（以下舊紀錄使用當時頁碼）
 
 - 本地 pdfLaTeX 兩次及 ZIP 獨立編譯兩次成功；最終 log 無 warnings、undefined references 或 overfull boxes。
 - 57 頁輸出一致，15 頁 Main 已逐頁視覺檢查，所有 Backup 已 render 並檢查 montage，密集公式與數據頁另行放大檢查。
@@ -164,3 +168,23 @@ Overleaf：建立專案並上傳 `output/overleaf/Helix.zip`，入口為 `main.t
 - PDF 34：Petals / Swarm / SP heuristics 提供 warm-start candidates，Gurobi 繼續搜尋，不保證初始方案最優。Pruning、warm start、early stopping 分開說明。
 
 PDF 與 ZIP 獨立編譯驗證通過，仍為 57 頁、224 個內部連結及 12 張來源圖片；第 3–7、34 頁已視覺檢查，來源、頁碼與雙向導覽保留，無 LaTeX 中間檔殘留。詳見 [最新 QA 紀錄](output/qa/REVIEW.md)。
+
+2026-11-02 順序調整：PDF 第 3、4 頁交換。第 3 頁為 Request Lifecycle，第 4 頁為 Optimization Objective。保留穩定的 M04 / M03 topic labels，因此 Backup 返回連結仍回到正確主題。
+
+2026-11-02 再次交換第 3、4 頁：目前 PDF 3 為 What Does Helix Optimize?（M03），PDF 4 為 How Does One Request Run?（M04）。
+
+## 最新 Baseline 比較頁（2026-11-02）
+
+新增 PDF 10「What Does Helix Compare Against?」，集中比較 Helix、Swarm、SP、Petals。PDF 9 移除 Baselines 條目，保留實驗設定、模型、trace 與 metrics。新頁強調 Swarm / SP 為 end-to-end baselines，Petals 僅比較 placement；placement ablation 固定 Helix scheduler，切換 placement。
+
+目前為 16 頁 Main、PDF 17 Discussion Index、PDF 18–58 Technical Backup。沿用既有 topic labels，因此 M10–M15 現在對應 PDF 11–16，新頁使用 BASELINES label。新頁連到 PDF 44 Baseline Details 及 PDF 52 Placement Ablation，Baseline Details 返回新頁。
+
+最新 build / QA：58 頁、228 個內部連結、12 張圖片；PDF 與獨立 ZIP 各編譯兩次通過。已檢查 PDF 9–11 排版，無內容裁切或頁腳重疊，無 LaTeX 中間檔殘留。
+
+## Figure 6 完整原圖例外（2026-11-02）
+
+依使用者指定，PDF 11 使用 `Helix/Helix_Figure_06_Single_Cluster_Results.png` 完整原圖，保留 (e)–(h) 下排標籤與原圖 caption，不裁切。圖下改為 Offline 飽和測量與 Online 平均 75% peak throughput 到達負載的英文說明。原先 throughput ratio / latency trade-off 仍保留於 B26。這是先前全數使用 Without-Caption 規則的明確例外；其餘圖不變。
+
+ZIP 新增完整 Figure 6 素材；驗證核對 12 張 caption-free 圖及 1 張原始 Figure 6 的像素，限制原圖只用於 M10 / PDF 11。58 頁、228 個連結與獨立 ZIP 編譯驗證通過，無中間檔殘留。
+
+PDF 12 圖片更新：依使用者指定改用完整 `Helix/Helix_Figure_07_Geo_Distributed_Cluster_Results.png`，保留原圖標籤及 caption；正文與連結不變。ZIP 收錄原圖，驗證允許的原圖例外為 PDF 11 / 12 的 Figures 6 / 7，總計核對 14 個圖像像素雜湊。58 頁、228 個連結驗證通過。

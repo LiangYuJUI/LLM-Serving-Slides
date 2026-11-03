@@ -42,7 +42,11 @@ def main():
             z.write(SOURCE, 'main.tex')
             for image in sorted((ROOT / 'Helix' / 'Without-Caption').glob('*.png')):
                 z.write(image, image.relative_to(ROOT))
-            z.writestr('README.txt', 'Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for navigation.\nFigures: supplied Helix/Without-Caption PNGs, unchanged.\n')
+            original_fig6 = ROOT / 'Helix/Helix_Figure_06_Single_Cluster_Results.png'
+            z.write(original_fig6, original_fig6.relative_to(ROOT))
+            original_fig7 = ROOT / 'Helix/Helix_Figure_07_Geo_Distributed_Cluster_Results.png'
+            z.write(original_fig7, original_fig7.relative_to(ROOT))
+            z.writestr('README.txt', 'Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for navigation.\nFigures: 12 supplied Without-Caption PNGs plus original Figures 6 and 7 for Main results; unchanged pixels.\n')
         extracted = temp / 'overleaf'
         with zipfile.ZipFile(archive) as z:
             assert z.testzip() is None
