@@ -1,6 +1,10 @@
 {
   "pages": 22,
   "paper_pages": 13,
+  "completed_summaries": 12,
+  "pending_papers": [
+    "h3"
+  ],
   "category_covers": 5,
   "local_pdflatex_passes": 2,
   "zip_pdflatex_passes": 2,
@@ -38,11 +42,6 @@
     },
     {
       "page": 9,
-      "motivation_y": 46.684078216552734,
-      "method_y": 148.5620880126953
-    },
-    {
-      "page": 11,
       "motivation_y": 46.684078216552734,
       "method_y": 148.5620880126953
     },

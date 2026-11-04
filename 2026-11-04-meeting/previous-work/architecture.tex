@@ -1,21 +1,9 @@
 % Category B; sources are intentionally not shown on slides.
 \categorycover{HBM/HBF Architecture\\and Data-Path Co-Design}{How should GPU, HBM, and HBF be organized to improve memory efficiency?}{H3; FlashAccel; HBFlex; Beyond Capacity}
-% Source: https://research.skhynix.com/publications/detail/seq/116
-\begin{frame}[t]{H3: Hybrid Architecture Using High Bandwidth Memory\\and High Bandwidth Flash for Cost-Efficient LLM Inference}
-\vspace{.02cm}
-\begin{minipage}[t][3.25cm][t]{\linewidth}
-\begin{summarysection}{Motivation}
-\item \key{Capacity and cost:} Long-sequence inference needs more memory than HBM economically provides, while HBF trades capacity for access and write costs.
-\item \key{Access asymmetry:} Large read-only data can exploit HBF capacity; mutable data benefits from HBM latency and write endurance.
-\item \key{Outcome:} The reported simulations improve throughput per power over HBM-only systems, especially for large shared precomputed KV workloads.
-\end{summarysection}
-\end{minipage}
-\vspace{.18cm}
-\begin{summarysection}{Method}
-\item \key{Partition:} Classify inference data by whether it is read-only or requires updates, rather than placing all state in a single medium.
-\item \key{Combine:} Use a hybrid HBM/HBF organization: place large read-only state in HBF and retain other data in HBM.
-\item \key{Exploit capacity:} Keep more requests resident with the same GPU count, evaluating the concurrency benefit against HBF access and power costs.
-\end{summarysection}
+% H3 content pending access to the original paper.
+\begin{frame}[c]{H3: Hybrid Architecture Using High Bandwidth Memory\\and High Bandwidth Flash for Cost-Efficient LLM Inference}
+\centering
+{\Large\color{Muted}Pending}
 \end{frame}
 % Source: https://arxiv.org/abs/2607.10186v2
 \begin{frame}[t]{FlashAccel: Leveraging High-Bandwidth Flash (HBF)\\for High-Throughput LLM Inference}

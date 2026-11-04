@@ -11,3 +11,5 @@ Edit the corresponding module to add a paper within an existing category. The ma
 | D: HBF-Accelerated Retrieval and RAG Systems | [retrieval.tex](retrieval.tex) | haven |
 
 `directions.tex` holds the final synthesis and proposed next steps. `index.json` is the machine-readable slide-to-paper map used by validation. The standalone ZIP includes all TeX modules, so no original decks are required to compile it.
+
+H3 remains in the paper count with status `pending`; its slide contains only the title and Pending until the original paper is available.

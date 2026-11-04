@@ -71,9 +71,7 @@ Active decode KV stays in HBM. Cold paused KV is evicted to HBF and prefetched b
 
 ### Page 11: h3
 
-[Primary source](https://research.skhynix.com/publications/detail/seq/116). IEEE DOI access was unavailable; official SK hynix research abstract, publication detail seq/116, read on 2026-11-04.
-
-Summary restricted to verified hybrid placement and qualitative simulated throughput-per-power benefit. The proposed prefetch/overlap detail was omitted because the accessible official abstract does not verify it. No numerical result or unverified circuit topology is asserted on this slide.
+Pending access to the original paper. Only the full paper title and “Pending” remain on the slide; all previous summary claims have been removed at the user's request.
 
 ### Page 12: flashaccel
 
@@ -125,9 +123,9 @@ Pages 21–22 are explicitly candidate questions and proposed next steps. They d
 
 Run `python scripts/build_previous_work.py` from this meeting directory, using Python with PyMuPDF and Pillow plus pdfLaTeX on PATH. Tested with `/tmp/helix-qa-env/bin/python` and TeX Live 2026.
 
-- Exactly 22 pages, 13 distinct paper summaries and five category covers in the requested order.
+- Exactly 22 pages, 12 completed paper summaries and one pending H3 placeholder and five category covers in the requested order.
 - All full paper titles checked against the category index after typography normalization.
-- Each paper: one bold teal Motivation heading, one Method heading and six bullets; 10pt body font; identical heading positions.
+- Each completed paper summary: one bold teal Motivation heading, one Method heading and six bullets; 10pt body font; identical heading positions.
 - No PDF links, subtitles, source rows, obsolete standalone section labels or page-number footers.
 - Every text span is in bounds with bottom clearance; pairwise span-overlap checks pass.
 - Local source and extracted ZIP each compiled twice. Final logs contain no warnings, undefined references or overfull boxes.

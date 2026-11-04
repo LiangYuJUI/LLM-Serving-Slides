@@ -107,7 +107,8 @@
       "key": "h3",
       "title": "H3: Hybrid Architecture Using High Bandwidth Memory  and High Bandwidth Flash for Cost-Efficient LLM Inference",
       "source": "https://research.skhynix.com/publications/detail/seq/116",
-      "file": "architecture.tex"
+      "file": "architecture.tex",
+      "status": "pending"
     },
     {
       "page": 12,

@@ -74,6 +74,9 @@ def check(pdf):
         if info['type'] != 'paper':
             assert 'Motivation' not in text and 'Method' not in text
             continue
+        if info.get('status') == 'pending':
+            assert normalize(text) == normalize(info['title'] + 'Pending'), i
+            continue
         assert all(label not in text for label in forbidden), i
         assert text.count('Motivation') == text.count('Method') == 1
         headings = [s for s in spans if s['text'] in ('Motivation', 'Method')]
@@ -140,7 +143,7 @@ def main():
             canvas.paste(im, (x, y))
             draw.text((x+8, y+228), str(page), fill='black')
         canvas.save(QA / f'montage-{start:02d}.png')
-    report = {'pages': len(doc), 'paper_pages': 13, 'category_covers': 5, 'local_pdflatex_passes': 2, 'zip_pdflatex_passes': 2,
+    report = {'pages': len(doc), 'paper_pages': 13, 'completed_summaries': 12, 'pending_papers': ['h3'], 'category_covers': 5, 'local_pdflatex_passes': 2, 'zip_pdflatex_passes': 2,
               'final_logs_clean': True, 'standalone_pixels_text_links_identical': True,
               'external_link_annotations': 0, 'sections_per_summary': ['Motivation', 'Method'],
               'subtitles_sources_footers_absent': True, 'six_bullets_per_summary': True,
