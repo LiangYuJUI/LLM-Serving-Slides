@@ -71,18 +71,18 @@
       "page": 7,
       "type": "paper",
       "category": "A",
-      "key": "characterizing",
-      "title": "Characterizing High Bandwidth Flash for LLM Serving",
-      "source": "https://arxiv.org/abs/2609.39131v2",
+      "key": "sucks",
+      "title": "HBF Sucks? A Full-Stack Characterization of  High-Bandwidth Flash for KV-Centric LLM Serving",
+      "source": "https://arxiv.org/abs/2608.11668v4",
       "file": "characterization.tex"
     },
     {
       "page": 8,
       "type": "paper",
       "category": "A",
-      "key": "sucks",
-      "title": "HBF Sucks? A Full-Stack Characterization of  High-Bandwidth Flash for KV-Centric LLM Serving",
-      "source": "https://arxiv.org/abs/2608.11668v4",
+      "key": "characterizing",
+      "title": "Characterizing High Bandwidth Flash for LLM Serving",
+      "source": "https://arxiv.org/abs/2609.39131v2",
       "file": "characterization.tex"
     },
     {

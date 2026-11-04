@@ -1,22 +1,5 @@
 % Category A; sources are intentionally not shown on slides.
-\categorycover{HBF System Characterization\\and KV-Centric Serving}{When does HBF improve LLM serving, and when does it become a bottleneck?}{Characterizing HBF; HBF Sucks?; Hot--Cold Tiering}
-% Source: https://arxiv.org/abs/2609.39131v2
-\begin{frame}[t]{Characterizing High Bandwidth Flash for LLM Serving}
-\vspace{.02cm}
-\begin{minipage}[t][3.25cm][t]{\linewidth}
-\begin{summarysection}{Motivation}
-\item \key{Capacity pressure:} Long contexts and agentic calls compete for HBM space for weights, active KV and reusable prefixes.
-\item \key{Retention matters:} More HBF capacity helps only when placement and scheduling account for read costs, slow writes and finite endurance.
-\item \key{Outcome:} Trace-driven simulation improves completion time and estimated write lifetime. Modeled energy savings exclude static power.
-\end{summarysection}
-\end{minipage}
-\vspace{.18cm}
-\begin{summarysection}{Method}
-\item \key{Organize:} Model an HBM--HBF--host hierarchy and compare weight placement and KV residency under different memory organizations.
-\item \key{Retain:} Track prefix reuse and cache movement. Buffer growing KV in HBM and preserve useful prefixes to avoid reloads or recomputation.
-\item \key{Schedule:} Prioritize cache hits and limit admission with buffered cache-aware scheduling, balancing batch growth against future KV reuse.
-\end{summarysection}
-\end{frame}
+\categorycover{HBF System Characterization\\and KV-Centric Serving}{When does HBF improve LLM serving, and when does it become a bottleneck?}{HBF Sucks?; Characterizing HBF; Hot--Cold Tiering}
 % Source: https://arxiv.org/abs/2608.11668v4
 \begin{frame}[t]{HBF Sucks? A Full-Stack Characterization of\\High-Bandwidth Flash for KV-Centric LLM Serving}
 \vspace{.02cm}
@@ -32,6 +15,23 @@
 \item \key{Replay:} Extend TokenSim with GPU/near-tier/HBF costs and replay production KV-offload traces using capacity-matched SSD baselines.
 \item \key{Diagnose:} Test three conditions: reads on the critical path, enough useful reads per write, and bandwidth that can be sustained.
 \item \key{Constrain:} Combine thermal throttling and write-endurance models to distinguish peak device bandwidth from practical serving benefits.
+\end{summarysection}
+\end{frame}
+% Source: https://arxiv.org/abs/2609.39131v2
+\begin{frame}[t]{Characterizing High Bandwidth Flash for LLM Serving}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Capacity pressure:} Long contexts and agentic calls compete for HBM space for weights, active KV and reusable prefixes.
+\item \key{Retention matters:} More HBF capacity helps only when placement and scheduling account for read costs, slow writes and finite endurance.
+\item \key{Outcome:} Trace-driven simulation improves completion time and estimated write lifetime. Modeled energy savings exclude static power.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Organize:} Model an HBM--HBF--host hierarchy and compare weight placement and KV residency under different memory organizations.
+\item \key{Retain:} Track prefix reuse and cache movement. Buffer growing KV in HBM and preserve useful prefixes to avoid reloads or recomputation.
+\item \key{Schedule:} Prioritize cache hits and limit admission with buffered cache-aware scheduling, balancing batch growth against future KV reuse.
 \end{summarysection}
 \end{frame}
 % Source: https://arxiv.org/abs/2609.25782v1

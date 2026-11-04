@@ -16,8 +16,8 @@ Visual template: 16:9, 10pt Beamer Madrid, Latin Modern, original Helix colors, 
 | 04 | paper 1 | Cache Your Prompt When It's Green — Carbon-Aware Caching for Large Language Model Serving |
 | 05 | paper 1 | Beyond Energy: When Sustainability Dimensions Reshape LLM Serving Decisions |
 | 06 | category A | HBF System Characterization and KV-Centric Serving |
-| 07 | paper A | Characterizing High Bandwidth Flash for LLM Serving |
-| 08 | paper A | HBF Sucks? A Full-Stack Characterization of  High-Bandwidth Flash for KV-Centric LLM Serving |
+| 07 | paper A | HBF Sucks? A Full-Stack Characterization of  High-Bandwidth Flash for KV-Centric LLM Serving |
+| 08 | paper A | Characterizing High Bandwidth Flash for LLM Serving |
 | 09 | paper A | Hot--Cold Tiering of HBM and High Bandwidth Flash  for Agentic LLM Serving |
 | 10 | category B | HBM/HBF Architecture and Data-Path Co-Design |
 | 11 | paper B | H3: Hybrid Architecture Using High Bandwidth Memory  and High Bandwidth Flash for Cost-Efficient LLM Inference |
@@ -51,17 +51,17 @@ The professor-provided Drive folder `191Idq-StTW0QH4VFEcMocCDHdUa0Fi6Z` returned
 
 50.2% is the median reduction in worst-case regret over 20 capacity seeds in the 12-region study, versus the offline WaterWise adaptation. It is not the percentage reduction of the two separately reported median regrets. Operational invariance fixes workload, location and time; embodied impacts can reverse configuration rankings.
 
-### Page 07: characterizing
-
-[Primary source](https://arxiv.org/abs/2609.39131v2). Downloaded arXiv:2609.39131v2; §§3–4, §6, limitations; existing Characterizing-HBF TeX and figure interpretations.
-
-Trace-driven architecture characterization, calibrated with H100/B200 kernels. Energy uses operation counts and memory/communication traffic and excludes static power. Larger batches can increase TPOT; completion-time gains do not establish SLO gains. Lifetime is estimated, not a physical wear-out measurement.
-
-### Page 08: sucks
+### Page 07: sucks
 
 [Primary source](https://arxiv.org/abs/2608.11668v4). Downloaded arXiv:2608.11668v4; §§5–8, Fig.12, Tables 2/3/8; existing HBF_Sucks TeX and original figure descriptions.
 
 Mooncake-style drop-in substitution with package-resource trade-offs is the evaluated case. More writes than reads, near-tier loss and modeled thermal/wear constraints explain the negative result. Do not generalize to every HBF organization/runtime. The paper’s rhetorical “measured” wording does not make these HBF projections device measurements.
+
+### Page 08: characterizing
+
+[Primary source](https://arxiv.org/abs/2609.39131v2). Downloaded arXiv:2609.39131v2; §§3–4, §6, limitations; existing Characterizing-HBF TeX and figure interpretations.
+
+Trace-driven architecture characterization, calibrated with H100/B200 kernels. Energy uses operation counts and memory/communication traffic and excludes static power. Larger batches can increase TPOT; completion-time gains do not establish SLO gains. Lifetime is estimated, not a physical wear-out measurement.
 
 ### Page 09: hotcold
 
@@ -144,3 +144,7 @@ Run `python scripts/build_previous_work.py` from this meeting directory, using P
 Inserted Contents after the cover, listing all five categories and paper counts (2, 3, 4, 3, 1; total 13). Updated the slide index and validation to 22 pages. Removed the obsolete standalone Energy-Carbon-Summary PDF.
 
 Validation passed for 22 pages and the standalone ZIP. Visually inspected the new contents page: category labels, counts and total fit without clipping or overlaps. All 21 original pages retain identical extracted text and rendered pixels after insertion.
+
+## Characterization presentation order
+
+Swapped pages 7 and 8: HBF Sucks? now precedes Characterizing HBF, presenting system characterization and design conditions before hierarchical memory management and cache-aware scheduling. Updated the category cover paper order and index.
