@@ -1,0 +1,23 @@
+% Candidate research questions synthesized from the reviewed work; not proven novelty.
+\begin{frame}[c]{What Remains Open in HBM/HBF Co-Design?}
+\reviewpoint{Architecture trade-offs}{Under a common power and package budget, when do HBM-only, hybrid HBM/HBF and full-HBF designs offer the best capacity, bandwidth and serving efficiency?}
+\reviewpoint{Power and thermal interaction}{How do static/dynamic power, throttling, retention maintenance and extra flash traffic change sustainable bandwidth and energy per request?}
+\reviewpoint{Runtime and data placement}{Which tiers suit weights, active KV, paused KV, reusable prefixes and MoE experts? When do migration costs outweigh reuse benefits?}
+\reviewpoint{Simulation fidelity}{Which conclusions survive changes in hardware assumptions, latency-injection semantics and thermal models without physical HBF validation?}
+{\color{Muted}Candidate open questions from this review; no claim of first discovery.}
+\end{frame}
+
+\begingroup
+\renewcommand{\reviewpoint}[2]{\par{\bfseries\color{Accent}#1}\par #2\par\smallskip}
+\begin{frame}[t]{Proposed Research Directions and Next Steps}
+\vspace{0cm}
+{\bfseries\color{Accent}Power- and Thermal-Aware HBM/HBF Co-Design\\for Energy-Efficient LLM Serving}\par\medskip
+\reviewpoint{1. Power-constrained architecture co-design}{Compare stack/capacity allocations in HBM-only, hybrid and full-HBF designs under common package limits. Minimize energy subject to serving SLOs.}
+\reviewpoint{2. Thermal- and endurance-aware KV placement}{Separate active, paused and reusable KV. Compare adaptive and static placement for energy, temperature and flash writes.}
+\reviewpoint{3. Simulator-based evaluation}{Reproduce both HBFSim baselines. Calibrate power/thermal models where justified and test sensitivity to uncertain hardware assumptions.}
+{\bfseries\color{Accent}Next steps}\par\smallskip
+Read 1--2 papers/week; reproduce baselines; test one hypothesis/iteration; refine scope with the advisor.
+\par{\small\color{Muted}Candidate directions; novelty and thesis scope remain to be established.}
+\end{frame}
+
+\endgroup

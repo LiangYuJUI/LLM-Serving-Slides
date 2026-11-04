@@ -1,0 +1,53 @@
+% Category A; sources are intentionally not shown on slides.
+\categorycover{HBF System Characterization\\and KV-Centric Serving}{When does HBF improve LLM serving, and when does it become a bottleneck?}{Characterizing HBF; HBF Sucks?; Hot--Cold Tiering}
+% Source: https://arxiv.org/abs/2609.39131v2
+\begin{frame}[t]{Characterizing High Bandwidth Flash for LLM Serving}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Capacity pressure:} Long contexts and agentic calls compete for HBM space for weights, active KV and reusable prefixes.
+\item \key{Retention matters:} More HBF capacity helps only when placement and scheduling account for read costs, slow writes and finite endurance.
+\item \key{Outcome:} Trace-driven simulation improves completion time and estimated write lifetime. Modeled energy savings exclude static power.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Organize:} Model an HBM--HBF--host hierarchy and compare weight placement and KV residency under different memory organizations.
+\item \key{Retain:} Track prefix reuse and cache movement. Buffer growing KV in HBM and preserve useful prefixes to avoid reloads or recomputation.
+\item \key{Schedule:} Prioritize cache hits and limit admission with buffered cache-aware scheduling, balancing batch growth against future KV reuse.
+\end{summarysection}
+\end{frame}
+% Source: https://arxiv.org/abs/2608.11668v4
+\begin{frame}[t]{HBF Sucks? A Full-Stack Characterization of\\High-Bandwidth Flash for KV-Centric LLM Serving}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Drop-in risk:} Faster flash does not ensure faster serving when HBF replaces SSD storage but also consumes near-tier package resources.
+\item \key{Traffic mismatch:} Hot KV remains in the near tier, leaving HBF a cold, write-heavy stream with limited useful reads to repay writes.
+\item \key{Outcome:} The modeled Mooncake-style substitution can worsen latency and goodput. This is a conditional deployment result, not a rejection of HBF.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Replay:} Extend TokenSim with GPU/near-tier/HBF costs and replay production KV-offload traces using capacity-matched SSD baselines.
+\item \key{Diagnose:} Test three conditions: reads on the critical path, enough useful reads per write, and bandwidth that can be sustained.
+\item \key{Constrain:} Combine thermal throttling and write-endurance models to distinguish peak device bandwidth from practical serving benefits.
+\end{summarysection}
+\end{frame}
+% Source: https://arxiv.org/abs/2609.25782v1
+\begin{frame}[t]{Hot--Cold Tiering of HBM and High Bandwidth Flash\\for Agentic LLM Serving}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Idle state:} Agentic sessions pause for tools or users while retaining large KV histories that exceed HBM capacity.
+\item \key{Two access patterns:} Active KV is read every decode step; paused KV is read on resume. Serving all KV from HBF wastes read energy.
+\item \key{Outcome:} Trace-based evaluation expands retained-session capacity while keeping active decoding in HBM and reducing flash read power.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Classify:} Use session activity to separate a small hot KV working set from a large cold pool of paused-session state.
+\item \key{Place:} Keep active KV in HBM. Evict cold KV to HBF under capacity pressure; immutable blocks with valid HBF copies need no rewrite.
+\item \key{Resume:} Prefetch paused KV back into HBM through buffered inter-tier transfers before execution resumes, overlapping movement with decode.
+\end{summarysection}
+\end{frame}

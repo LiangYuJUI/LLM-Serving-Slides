@@ -1,0 +1,70 @@
+% Category B; sources are intentionally not shown on slides.
+\categorycover{HBM/HBF Architecture\\and Data-Path Co-Design}{How should GPU, HBM, and HBF be organized to improve memory efficiency?}{H3; FlashAccel; HBFlex; Beyond Capacity}
+% Source: https://research.skhynix.com/publications/detail/seq/116
+\begin{frame}[t]{H3: Hybrid Architecture Using High Bandwidth Memory\\and High Bandwidth Flash for Cost-Efficient LLM Inference}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Capacity and cost:} Long-sequence inference needs more memory than HBM economically provides, while HBF trades capacity for access and write costs.
+\item \key{Access asymmetry:} Large read-only data can exploit HBF capacity; mutable data benefits from HBM latency and write endurance.
+\item \key{Outcome:} The reported simulations improve throughput per power over HBM-only systems, especially for large shared precomputed KV workloads.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Partition:} Classify inference data by whether it is read-only or requires updates, rather than placing all state in a single medium.
+\item \key{Combine:} Use a hybrid HBM/HBF organization: place large read-only state in HBF and retain other data in HBM.
+\item \key{Exploit capacity:} Keep more requests resident with the same GPU count, evaluating the concurrency benefit against HBF access and power costs.
+\end{summarysection}
+\end{frame}
+% Source: https://arxiv.org/abs/2607.10186v2
+\begin{frame}[t]{FlashAccel: Leveraging High-Bandwidth Flash (HBF)\\for High-Throughput LLM Inference}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Capacity wall:} Large model weights and KV histories restrict batch size and prefix retention in HBM-based GPUs.
+\item \key{Utilization gap:} HBF capacity alone cannot hide NAND latency or keep its many planes busy under changing inference accesses.
+\item \key{Outcome:} The simulated hardware/software design improves throughput and energy efficiency over HBM-only serving under a latency constraint.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Hide latency:} Integrate GPU, HBM and HBF with distributed SRAM buffers that prefetch data ahead of GPU consumption.
+\item \key{Arrange data:} Lay out weights in access order and balance KV data across HBF planes to improve parallel reads and manage flash erasure.
+\item \key{Manage:} Expose heterogeneous resources through an HBF-aware storage layer and programming model, coordinating persistent data and execution.
+\end{summarysection}
+\end{frame}
+% Source: https://arxiv.org/abs/2609.18675v1
+\begin{frame}[t]{HBFlex: A Flexible Memory System for Bridging Fine-Grained\\LLM States and Coarse-Grained HBF Parallel Execution}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Package trade-off:} Full-HBF designs devote more package resources to capacity and parallel bandwidth than hybrid designs retaining HBM.
+\item \key{Dynamic-state cost:} Fine-grained KV reads imbalance planes; incremental writes block reads; mixed KV lifetimes amplify garbage collection.
+\item \key{Outcome:} Trace-driven simulations improve throughput over the evaluated H3 and FlashAccel baselines through coordinated KV management.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Balance reads:} Distribute KV placement and attention accesses across planes, exposing parallelism and reducing overloaded-plane delays.
+\item \key{Schedule writes:} Aggregate incremental KV updates and write them back during sufficiently long compute windows to reduce read interference.
+\item \key{Reclaim carefully:} Pack KV with similar lifetimes into blocks and defer reclamation, reducing valid-page migration and extra flash writes.
+\end{summarysection}
+\end{frame}
+% Source: https://drive.google.com/file/d/1IHfgK1Tj3ytcPLpDlG87RLXM27l9DEtv/view
+\begin{frame}[t]{Beyond Capacity: Scalable MoE LLM Inference via\\High-Bandwidth Flash with Direct GPU and HBM Paths}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Expert capacity:} MoE expert weights outgrow HBM even though each token uses only a small subset of experts.
+\item \key{Delivery bottleneck:} A single HBM relay path can leave direct GPU--HBF bandwidth unused, while late expert selection exposes NAND latency.
+\item \key{Outcome:} Event-driven serving simulation shows higher expert-delivery efficiency and throughput than either delivery route alone.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Use two paths:} DASH assigns whole experts to direct GPU--HBF or HBF--HBM-base-die--GPU routes and transfers them concurrently.
+\item \key{Look ahead:} Determine upcoming experts early enough to overlap HBF reads with preceding computation, reducing exposed read latency.
+\item \key{Separate traffic:} Isolate immutable expert weights from mutable KV; buffer small decode writes and coordinate larger prefill transfers.
+\end{summarysection}
+\end{frame}

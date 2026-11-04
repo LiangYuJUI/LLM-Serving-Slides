@@ -1,0 +1,87 @@
+{
+  "pages": 22,
+  "paper_pages": 13,
+  "category_covers": 5,
+  "local_pdflatex_passes": 2,
+  "zip_pdflatex_passes": 2,
+  "final_logs_clean": true,
+  "standalone_pixels_text_links_identical": true,
+  "external_link_annotations": 0,
+  "sections_per_summary": [
+    "Motivation",
+    "Method"
+  ],
+  "subtitles_sources_footers_absent": true,
+  "six_bullets_per_summary": true,
+  "internal_links": 0,
+  "text_bounds_and_span_overlap": "pass",
+  "alignment": [
+    {
+      "page": 4,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 5,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 7,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 8,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 9,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 11,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 12,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 13,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 14,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 16,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 17,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 18,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    },
+    {
+      "page": 20,
+      "motivation_y": 46.684078216552734,
+      "method_y": 148.5620880126953
+    }
+  ],
+  "protected_files_unchanged": 49,
+  "visual_review": "See REVIEW.md; not inferred from automatic checks."
+}

@@ -1,0 +1,56 @@
+% Category C; sources are intentionally not shown on slides.
+\categorycover{HBF Simulation\\and Power/Thermal Modeling}{How can HBF architectures be evaluated before physical hardware becomes available?}{HBFSim (real GPU); HBFSim (event-driven); HBM Power}
+% Source: https://arxiv.org/abs/2609.09800v3
+\begin{frame}[t]{HBFSim: Fast and Faithful Simulation of\\High-Bandwidth Flash Under Real GPU Execution}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Evaluation gap:} Physical HBF is unavailable for validation; cycle-level GPU simulation is slow and fixed traces miss runtime changes.
+\item \key{Core idea:} Run the real workload on a GPU and model only the program-visible HBF memory behavior.
+\item \key{Outcome:} The paper demonstrates timing injection and logical-capacity experiments. Injection accuracy is not future-HBF prediction accuracy.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Intercept:} Register modeled address ranges and instrument supported PTX memory accesses while real GPU kernels execute.
+\item \key{Model service:} Timing-only mode retains GPU data; Capacity mode uses backing storage and GPU frames. MQSim supplies media timing.
+\item \key{Check scope:} Public defaults use issue-point waits. Dependency waits are experimental; thermal/reliability modeling is optional and uncalibrated.
+\end{summarysection}
+\end{frame}
+% Source: https://arxiv.org/abs/2610.23503v1
+\begin{frame}[t]{HBFSim: A Simulator for Exploring HBF\\in Memory Hierarchies for LLMs}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Design uncertainty:} HBM/HBF capacity, NAND latency and finite endurance make hierarchy choices difficult before hardware is available.
+\item \key{Flash semantics:} Placement must account for page programming, out-of-place updates, garbage collection and data movement.
+\item \key{Outcome:} The event-driven study finds active KV retention in HBM preferable to using HBM merely as an HBF cache in its evaluated workloads.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Drive workloads:} Use a calibrated LLM serving frontend to generate weight, KV and scratch accesses with application dependencies.
+\item \key{Simulate hierarchy:} Model HBM, HBF and host tiers with event-driven resource calendars, links and host-managed flash translation.
+\item \key{Explore policies:} Vary placement and transfers; track NAND reads, programs, erases and write amplification to estimate serving time and endurance.
+\end{summarysection}
+\end{frame}
+% Source: https://arxiv.org/abs/2610.14244v1
+\begingroup
+\setbeamerfont{frametitle}{size=\normalsize,series=\bfseries}
+\begin{frame}[t]{Understanding the Power Consumption of Modern High Bandwidth Memory:\\Experimental Analysis and Modeling Using Real HBM2 DRAM Chips}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Power uncertainty:} A fixed HBM power assumption misses differences across commands, banks and transferred data patterns.
+\item \key{Measured variation:} Real HBM2 measurements show that internal structure and bus toggling materially change memory power.
+\item \key{Outcome:} An empirical HBM model predicts measured power more accurately than evaluated prior models. This work characterizes HBM, not HBF.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Measure:} Run controlled command and data-pattern experiments on 36 real HBM2 chips, separating structural and data-dependent effects.
+\item \key{Model:} Extend DRAMPower using measured currents and switching behavior to account for bank organization and data transitions.
+\item \key{Validate:} Compare predicted power with measurements and workload traces, including LLM decoding; separately check HBM3E GPU power.
+\end{summarysection}
+\end{frame}
+\endgroup

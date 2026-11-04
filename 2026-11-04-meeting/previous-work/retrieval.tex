@@ -1,0 +1,19 @@
+% Category D; sources are intentionally not shown on slides.
+\categorycover{HBF-Accelerated Retrieval\\and RAG Systems}{Can HBF accelerate retrieval workloads beyond LLM decoding?}{HAVEN: vector search and reranking}
+% Source: https://drive.google.com/file/d/1B2Sy8GHSAgfoiHFMcmndiJHMQ1G9KODf/view
+\begin{frame}[t]{HAVEN: High-Bandwidth Flash Augmented Vector Engine for\\Large-Scale Approximate Nearest-Neighbor Search Acceleration}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Retrieval bottleneck:} Billion-scale RAG vector databases exceed GPU HBM. High-recall reranking must fetch full-precision vectors from DRAM or SSD.
+\item \key{Locality opportunity:} On-package HBF can retain large read-mostly vector data near the GPU and reduce off-GPU transfers.
+\item \key{Outcome:} Modeled IVF-PQ pipelines improve reranking throughput and latency over GPU--DRAM/SSD systems. The target is retrieval, not LLM decode.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Store nearby:} Augment a GPU/HBM package with HBF holding full-precision vectors, avoiding host-memory round trips during reranking.
+\item \key{Search in stages:} Use IVF-PQ to identify candidates, then a near-storage search unit to support exact-distance reranking close to vector data.
+\item \key{Evaluate limits:} Model NAND subarrays, power-constrained HBF bandwidth and the retrieval pipeline to quantify data-movement and search benefits.
+\end{summarysection}
+\end{frame}

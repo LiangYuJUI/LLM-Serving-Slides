@@ -1,0 +1,108 @@
+% Master previous-work review; independent from the existing decks. Style copied from 2026-11-04-Helix.tex.
+% Evidence: GreenCache arXiv:2505.23970v3, Secs. 5--6; PRISM
+% arXiv:2609.35569v1, Props. 1/3, Sec. 5.3, Appendix A.6, Table 12.
+% Conventional GPU serving optimization; no HBM/HBF hardware co-design claims.
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\graphicspath{{./}{figures/}}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{hyperref}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{Ink}{HTML}{243748}
+\definecolor{Muted}{HTML}{667B8B}
+\definecolor{Accent}{HTML}{347E74}
+\definecolor{AccentBlue}{HTML}{507DAD}
+\definecolor{SoftMint}{HTML}{E6F4EE}
+\definecolor{SoftBlue}{HTML}{E9F2F9}
+\definecolor{SoftLilac}{HTML}{F1EEF8}
+\definecolor{Paper}{HTML}{FBFCFE}
+\definecolor{Divider}{HTML}{D8E4EB}
+
+\setbeamercolor{background canvas}{bg=Paper}
+\setbeamercolor{normal text}{fg=Ink}
+\setbeamercolor{structure}{fg=Accent}
+\setbeamercolor{frametitle}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{title}{fg=Ink}
+\setbeamercolor{subtitle}{fg=Muted}
+\setbeamercolor{block title}{fg=Ink,bg=SoftBlue}
+\setbeamercolor{block body}{fg=Ink,bg=white}
+\setbeamercolor{item}{fg=Accent}
+\setbeamercolor{caption name}{fg=Muted}
+\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamerfont{footline}{size=\tiny}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=1.05cm,dp=.16cm,leftskip=.55cm,rightskip=.40cm]{frametitle}%
+    \parbox[b]{\dimexpr\paperwidth-.95cm\relax}{\raggedright\usebeamerfont{frametitle}\fontsize{11}{12}\selectfont\insertframetitle}
+  \end{beamercolorbox}}
+
+
+\setbeamersize{text margin left=.45cm,text margin right=.45cm}
+% Two balanced sections share the same geometry on both summary slides.
+\newenvironment{summarysection}[1]{%
+  \par\noindent{\large\bfseries\color{Accent}#1}\par\vspace{.10cm}
+  \begin{itemize}\setlength{\itemsep}{.12cm}\setlength{\parskip}{0pt}
+}{\end{itemize}}
+\newcommand{\key}[1]{\textbf{#1}}
+
+\newcommand{\categorycover}[3]{%
+\begin{frame}[c]{Research Area}
+\relax
+{\LARGE\bfseries #1\par}\bigskip
+{\large\color{Accent}#2\par}\bigskip
+{\color{Muted}#3\par}
+\end{frame}}
+\newcommand{\reviewpoint}[2]{\par{\bfseries\color{Accent}#1}\par\smallskip #2\par\medskip}
+\hypersetup{pdftitle={Previous Work Review and Research Directions},
+ pdfsubject={Energy-Efficient LLM Serving and HBM/HBF Co-Design}}
+\begin{document}
+\begin{frame}[c]{Previous Work Review \& Research Directions}
+\relax
+{\LARGE\bfseries Previous Work Review\par\medskip \& Research Directions\par}
+\bigskip
+{\large\color{Accent}Energy-Efficient LLM Serving and HBM/HBF Co-Design}\par
+\bigskip
+\textbf{Research meeting: 4 November 2026}\\
+Yu-Jui Liang\quad Advisor: Hsiang-Yun Cheng\\
+National Taiwan University / Academia Sinica
+\end{frame}
+\begin{frame}[c]{Contents}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\textwidth}{@{}Xr@{}}
+\textbf{\color{Accent}Research category} & \textbf{\color{Accent}Papers} \\
+\midrule
+Power-, Energy-, and Carbon-Aware GPU Serving Optimization & 2 \\
+HBF System Characterization and KV-Centric Serving & 3 \\
+HBM/HBF Architecture and Data-Path Co-Design & 4 \\
+HBF Simulation and Power/Thermal Modeling & 3 \\
+HBF-Accelerated Retrieval and RAG Systems & 1 \\
+\midrule
+\textbf{Total} & \textbf{13} \\
+\end{tabularx}
+\end{frame}
+\input{previous-work/gpu-serving.tex}
+\input{previous-work/characterization.tex}
+\input{previous-work/architecture.tex}
+\input{previous-work/simulation.tex}
+\input{previous-work/retrieval.tex}
+\input{previous-work/directions.tex}
+\end{document}

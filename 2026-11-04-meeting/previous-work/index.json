@@ -1,0 +1,198 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "file": "gpu-serving.tex",
+      "name": "Power-, Energy-, and Carbon-Aware GPU Serving Optimization"
+    },
+    {
+      "id": "A",
+      "file": "characterization.tex",
+      "name": "HBF System Characterization and KV-Centric Serving"
+    },
+    {
+      "id": "B",
+      "file": "architecture.tex",
+      "name": "HBM/HBF Architecture and Data-Path Co-Design"
+    },
+    {
+      "id": "C",
+      "file": "simulation.tex",
+      "name": "HBF Simulation and Power/Thermal Modeling"
+    },
+    {
+      "id": "D",
+      "file": "retrieval.tex",
+      "name": "HBF-Accelerated Retrieval and RAG Systems"
+    }
+  ],
+  "slides": [
+    {
+      "page": 1,
+      "type": "cover",
+      "title": "Previous Work Review & Research Directions"
+    },
+    {
+      "page": 2,
+      "type": "contents",
+      "title": "Contents"
+    },
+    {
+      "page": 3,
+      "type": "category",
+      "category": "1",
+      "title": "Power-, Energy-, and Carbon-Aware GPU Serving Optimization"
+    },
+    {
+      "page": 4,
+      "type": "paper",
+      "category": "1",
+      "key": "greencache",
+      "title": "Cache Your Prompt When It's Green --- Carbon-Aware Caching for Large Language Model Serving",
+      "source": "https://arxiv.org/pdf/2505.23970v3",
+      "file": "gpu-serving.tex"
+    },
+    {
+      "page": 5,
+      "type": "paper",
+      "category": "1",
+      "key": "prism",
+      "title": "Beyond Energy: When Sustainability Dimensions Reshape LLM Serving Decisions",
+      "source": "https://arxiv.org/abs/2609.35569",
+      "file": "gpu-serving.tex"
+    },
+    {
+      "page": 6,
+      "type": "category",
+      "category": "A",
+      "title": "HBF System Characterization and KV-Centric Serving"
+    },
+    {
+      "page": 7,
+      "type": "paper",
+      "category": "A",
+      "key": "characterizing",
+      "title": "Characterizing High Bandwidth Flash for LLM Serving",
+      "source": "https://arxiv.org/abs/2609.39131v2",
+      "file": "characterization.tex"
+    },
+    {
+      "page": 8,
+      "type": "paper",
+      "category": "A",
+      "key": "sucks",
+      "title": "HBF Sucks? A Full-Stack Characterization of  High-Bandwidth Flash for KV-Centric LLM Serving",
+      "source": "https://arxiv.org/abs/2608.11668v4",
+      "file": "characterization.tex"
+    },
+    {
+      "page": 9,
+      "type": "paper",
+      "category": "A",
+      "key": "hotcold",
+      "title": "Hot--Cold Tiering of HBM and High Bandwidth Flash  for Agentic LLM Serving",
+      "source": "https://arxiv.org/abs/2609.25782v1",
+      "file": "characterization.tex"
+    },
+    {
+      "page": 10,
+      "type": "category",
+      "category": "B",
+      "title": "HBM/HBF Architecture and Data-Path Co-Design"
+    },
+    {
+      "page": 11,
+      "type": "paper",
+      "category": "B",
+      "key": "h3",
+      "title": "H3: Hybrid Architecture Using High Bandwidth Memory  and High Bandwidth Flash for Cost-Efficient LLM Inference",
+      "source": "https://research.skhynix.com/publications/detail/seq/116",
+      "file": "architecture.tex"
+    },
+    {
+      "page": 12,
+      "type": "paper",
+      "category": "B",
+      "key": "flashaccel",
+      "title": "FlashAccel: Leveraging High-Bandwidth Flash (HBF)  for High-Throughput LLM Inference",
+      "source": "https://arxiv.org/abs/2607.10186v2",
+      "file": "architecture.tex"
+    },
+    {
+      "page": 13,
+      "type": "paper",
+      "category": "B",
+      "key": "hbflex",
+      "title": "HBFlex: A Flexible Memory System for Bridging Fine-Grained  LLM States and Coarse-Grained HBF Parallel Execution",
+      "source": "https://arxiv.org/abs/2609.18675v1",
+      "file": "architecture.tex"
+    },
+    {
+      "page": 14,
+      "type": "paper",
+      "category": "B",
+      "key": "beyond",
+      "title": "Beyond Capacity: Scalable MoE LLM Inference via  High-Bandwidth Flash with Direct GPU and HBM Paths",
+      "source": "https://drive.google.com/file/d/1IHfgK1Tj3ytcPLpDlG87RLXM27l9DEtv/view",
+      "file": "architecture.tex"
+    },
+    {
+      "page": 15,
+      "type": "category",
+      "category": "C",
+      "title": "HBF Simulation and Power/Thermal Modeling"
+    },
+    {
+      "page": 16,
+      "type": "paper",
+      "category": "C",
+      "key": "realgpu",
+      "title": "HBFSim: Fast and Faithful Simulation of  High-Bandwidth Flash Under Real GPU Execution",
+      "source": "https://arxiv.org/abs/2609.09800v3",
+      "file": "simulation.tex"
+    },
+    {
+      "page": 17,
+      "type": "paper",
+      "category": "C",
+      "key": "event",
+      "title": "HBFSim: A Simulator for Exploring HBF  in Memory Hierarchies for LLMs",
+      "source": "https://arxiv.org/abs/2610.23503v1",
+      "file": "simulation.tex"
+    },
+    {
+      "page": 18,
+      "type": "paper",
+      "category": "C",
+      "key": "hbmpower",
+      "title": "Understanding the Power Consumption of Modern High Bandwidth Memory:  Experimental Analysis and Modeling Using Real HBM2 DRAM Chips",
+      "source": "https://arxiv.org/abs/2610.14244v1",
+      "file": "simulation.tex"
+    },
+    {
+      "page": 19,
+      "type": "category",
+      "category": "D",
+      "title": "HBF-Accelerated Retrieval and RAG Systems"
+    },
+    {
+      "page": 20,
+      "type": "paper",
+      "category": "D",
+      "key": "haven",
+      "title": "HAVEN: High-Bandwidth Flash Augmented Vector Engine for  Large-Scale Approximate Nearest-Neighbor Search Acceleration",
+      "source": "https://drive.google.com/file/d/1B2Sy8GHSAgfoiHFMcmndiJHMQ1G9KODf/view",
+      "file": "retrieval.tex"
+    },
+    {
+      "page": 21,
+      "type": "discussion",
+      "title": "What Remains Open in HBM/HBF Co-Design?"
+    },
+    {
+      "page": 22,
+      "type": "discussion",
+      "title": "Proposed Research Directions and Next Steps"
+    }
+  ]
+}

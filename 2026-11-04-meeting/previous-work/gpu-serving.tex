@@ -1,0 +1,37 @@
+% Category 1; sources are intentionally not shown on slides.
+\categorycover{Power-, Energy-, and Carbon-Aware\\GPU Serving Optimization}{How can conventional GPU serving systems optimize energy, carbon, and resource allocation?}{GreenCache; PRISM / Beyond Energy}
+% Source: https://arxiv.org/pdf/2505.23970v3
+\begin{frame}[t]{Cache Your Prompt When It's Green ---\\Carbon-Aware Caching for Large Language Model Serving}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Caching trade-off:} Reusing SSD-based prefix KV caches avoids prefill computation and operational carbon from electricity, but adds embodied carbon from SSD manufacturing.
+\item \key{Variable benefits:} Carbon-efficient cache capacity changes with request load and grid carbon intensity. Larger caches are not always greener.
+\item \key{Outcome:} Llama-3 70B in France: 15.1\% average carbon reduction vs.\ Full Cache, peaking at 25.3\% in multi-turn serving. Reported latency SLO attainment: $>90\%$.
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Profile:} Measure latency and power across cache capacities and request loads. Estimate operational and allocated embodied carbon, capturing KV-reuse benefits.
+\item \key{Allocate:} Predict load and grid carbon intensity. An ILP selects provisioned SSD cache capacity to minimize carbon subject to TTFT/TPOT SLO-attainment constraints.
+\item \key{Replace:} Least Carbon Savings (LCS) scores KV entries using reused tokens, hit frequency, size and age, evicting entries with the lowest carbon-benefit scores.
+\end{summarysection}
+\end{frame}
+
+% Source: https://arxiv.org/abs/2609.35569
+\begin{frame}[t]{Beyond Energy: When Sustainability Dimensions\\Reshape LLM Serving Decisions}
+\vspace{.02cm}
+\begin{minipage}[t][3.25cm][t]{\linewidth}
+\begin{summarysection}{Motivation}
+\item \key{Sustainability trade-off:} Minimizing IT energy need not minimize carbon, water or biodiversity impacts across deployment regions and times.
+\item \key{Scope matters:} For a fixed workload and region/time, all four operational-only rankings follow configuration energy. Deployment or embodied impacts can change rankings.
+\item \key{Outcome:} 50.2\% median reduction in worst-case regret vs.\ offline WaterWise in the 12-region evaluation (20 capacity seeds).
+\end{summarysection}
+\end{minipage}
+\vspace{.18cm}
+\begin{summarysection}{Method}
+\item \key{Model:} Combine IT energy with regional environmental intensities to evaluate four operational impacts. Add embodied impacts for lifecycle comparisons.
+\item \key{Compare:} Separate GPU/model configuration rankings from region/time deployment rankings. Identify when operational rankings agree and embodied impacts reverse them.
+\item \key{Route:} Allocate workloads across regions to minimize the largest relative regret vs.\ each dimension's optimum, subject to regional capacity and serving constraints.
+\end{summarysection}
+\end{frame}
