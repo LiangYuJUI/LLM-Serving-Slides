@@ -1,0 +1,1815 @@
+{
+  "pdf_pages": 40,
+  "main_pages": 16,
+  "backup_pages_including_index": 24,
+  "internal_links_checked": 190,
+  "figures_matched_by_pixel_hash": 20,
+  "whitespace": [
+    {
+      "page": 1,
+      "label": "M01",
+      "lower_empty_ratio": 0.525
+    },
+    {
+      "page": 2,
+      "label": "M02",
+      "lower_empty_ratio": 0.416
+    },
+    {
+      "page": 3,
+      "label": "M03",
+      "lower_empty_ratio": 0.826
+    },
+    {
+      "page": 4,
+      "label": "M04",
+      "lower_empty_ratio": 0.887
+    },
+    {
+      "page": 5,
+      "label": "M05",
+      "lower_empty_ratio": 0.831
+    },
+    {
+      "page": 6,
+      "label": "M06",
+      "lower_empty_ratio": 0.581
+    },
+    {
+      "page": 7,
+      "label": "M07",
+      "lower_empty_ratio": 0.619
+    },
+    {
+      "page": 8,
+      "label": "M08",
+      "lower_empty_ratio": 0.44
+    },
+    {
+      "page": 9,
+      "label": "M09",
+      "lower_empty_ratio": 0.501
+    },
+    {
+      "page": 10,
+      "label": "M10",
+      "lower_empty_ratio": 0.477
+    },
+    {
+      "page": 11,
+      "label": "M11",
+      "lower_empty_ratio": 0.863
+    },
+    {
+      "page": 12,
+      "label": "M12",
+      "lower_empty_ratio": 0.33
+    },
+    {
+      "page": 13,
+      "label": "M13",
+      "lower_empty_ratio": 0.868
+    },
+    {
+      "page": 14,
+      "label": "M14",
+      "lower_empty_ratio": 0.894
+    },
+    {
+      "page": 15,
+      "label": "M15",
+      "lower_empty_ratio": 0.877
+    },
+    {
+      "page": 16,
+      "label": "M16",
+      "lower_empty_ratio": 0.352
+    },
+    {
+      "page": 17,
+      "label": "INDEX",
+      "lower_empty_ratio": 0.915
+    },
+    {
+      "page": 18,
+      "label": "B01",
+      "lower_empty_ratio": 0.869
+    },
+    {
+      "page": 19,
+      "label": "B02",
+      "lower_empty_ratio": 0.886
+    },
+    {
+      "page": 20,
+      "label": "B03",
+      "lower_empty_ratio": 0.881
+    },
+    {
+      "page": 21,
+      "label": "B04",
+      "lower_empty_ratio": 0.849
+    },
+    {
+      "page": 22,
+      "label": "B05",
+      "lower_empty_ratio": 0.873
+    },
+    {
+      "page": 23,
+      "label": "B06",
+      "lower_empty_ratio": 0.898
+    },
+    {
+      "page": 24,
+      "label": "B07",
+      "lower_empty_ratio": 0.881
+    },
+    {
+      "page": 25,
+      "label": "B08",
+      "lower_empty_ratio": 0.908
+    },
+    {
+      "page": 26,
+      "label": "B09",
+      "lower_empty_ratio": 0.851
+    },
+    {
+      "page": 27,
+      "label": "B10",
+      "lower_empty_ratio": 0.834
+    },
+    {
+      "page": 28,
+      "label": "B11",
+      "lower_empty_ratio": 0.877
+    },
+    {
+      "page": 29,
+      "label": "B12",
+      "lower_empty_ratio": 0.979
+    },
+    {
+      "page": 30,
+      "label": "B13",
+      "lower_empty_ratio": 0.785
+    },
+    {
+      "page": 31,
+      "label": "B14",
+      "lower_empty_ratio": 0.956
+    },
+    {
+      "page": 32,
+      "label": "B15",
+      "lower_empty_ratio": 0.868
+    },
+    {
+      "page": 33,
+      "label": "B16",
+      "lower_empty_ratio": 0.872
+    },
+    {
+      "page": 34,
+      "label": "B17",
+      "lower_empty_ratio": 0.834
+    },
+    {
+      "page": 35,
+      "label": "B18",
+      "lower_empty_ratio": 0.857
+    },
+    {
+      "page": 36,
+      "label": "B19",
+      "lower_empty_ratio": 0.874
+    },
+    {
+      "page": 37,
+      "label": "B20",
+      "lower_empty_ratio": 0.881
+    },
+    {
+      "page": 38,
+      "label": "B21",
+      "lower_empty_ratio": 0.86
+    },
+    {
+      "page": 39,
+      "label": "B22",
+      "lower_empty_ratio": 0.862
+    },
+    {
+      "page": 40,
+      "label": "B23",
+      "lower_empty_ratio": 0.925
+    }
+  ],
+  "frames": [
+    {
+      "page": 1,
+      "label": "M01",
+      "title": ""
+    },
+    {
+      "page": 2,
+      "label": "M02",
+      "title": "What Does GreenCache Do?"
+    },
+    {
+      "page": 3,
+      "label": "M03",
+      "title": "Why Cache Repeated Context?"
+    },
+    {
+      "page": 4,
+      "label": "M04",
+      "title": "Why Isn't More Cache Always Greener?"
+    },
+    {
+      "page": 5,
+      "label": "M05",
+      "title": "Why Must Cache Size Adapt?"
+    },
+    {
+      "page": 6,
+      "label": "M06",
+      "title": "How Does GreenCache Work?"
+    },
+    {
+      "page": 7,
+      "label": "M07",
+      "title": "How Is Cache Capacity Selected?"
+    },
+    {
+      "page": 8,
+      "label": "M08",
+      "title": "What Does LCS Evict?"
+    },
+    {
+      "page": 9,
+      "label": "M09",
+      "title": "Real Prototype, Traces, or a Simulator?"
+    },
+    {
+      "page": 10,
+      "label": "M10",
+      "title": "What Are the Evaluation Settings?"
+    },
+    {
+      "page": 11,
+      "label": "M11",
+      "title": "Q1: Does GreenCache Reduce Carbon?"
+    },
+    {
+      "page": 12,
+      "label": "M12",
+      "title": "Q2: Does GreenCache Still Meet SLOs?"
+    },
+    {
+      "page": 13,
+      "label": "M13",
+      "title": "Q3: Does Capacity Track Load and CI?"
+    },
+    {
+      "page": 14,
+      "label": "M14",
+      "title": "Q4: Does Adaptive Sizing Help?"
+    },
+    {
+      "page": 15,
+      "label": "M15",
+      "title": "Q4: Does LCS Improve Token Reuse?"
+    },
+    {
+      "page": 16,
+      "label": "M16",
+      "title": "Conclusion and Limitations"
+    },
+    {
+      "page": 17,
+      "label": "INDEX",
+      "title": "Discussion Index"
+    },
+    {
+      "page": 18,
+      "label": "B01",
+      "title": "Which Grids, and How Fast Does CI Move?"
+    },
+    {
+      "page": 19,
+      "label": "B02",
+      "title": "Where Does Caching Change Latency?"
+    },
+    {
+      "page": 20,
+      "label": "B03",
+      "title": "How Long Is the Repeated Context?"
+    },
+    {
+      "page": 21,
+      "label": "B04",
+      "title": "What Does Request Rate Change?"
+    },
+    {
+      "page": 22,
+      "label": "B05",
+      "title": "Does a Bigger Cache Always Raise the Hit Rate?"
+    },
+    {
+      "page": 23,
+      "label": "B06",
+      "title": "Table 1: Embodied Carbon on This Server"
+    },
+    {
+      "page": 24,
+      "label": "B07",
+      "title": "Carbon Accounting, Equations (1)--(5)"
+    },
+    {
+      "page": 25,
+      "label": "B08",
+      "title": "Load and CI Push Capacity in Opposite Ways"
+    },
+    {
+      "page": 26,
+      "label": "B09",
+      "title": "What Do the Profiles Actually Contain?"
+    },
+    {
+      "page": 27,
+      "label": "B10",
+      "title": "Equation (6): Capacity ILP"
+    },
+    {
+      "page": 28,
+      "label": "B11",
+      "title": "SLO Thresholds and Decision Granularity"
+    },
+    {
+      "page": 29,
+      "label": "B12",
+      "title": "Load Forecast and Carbon-Intensity Forecast"
+    },
+    {
+      "page": 30,
+      "label": "B13",
+      "title": "LCS Scores for the Two Tasks"
+    },
+    {
+      "page": 31,
+      "label": "B14",
+      "title": "What Is Measured, Replayed, and Modeled?"
+    },
+    {
+      "page": 32,
+      "label": "B15",
+      "title": "Figure 12b: Llama-3 8B Carbon"
+    },
+    {
+      "page": 33,
+      "label": "B16",
+      "title": "Figure 13b: Llama-3 8B SLO Timelines"
+    },
+    {
+      "page": 34,
+      "label": "B17",
+      "title": "Figure 14b: Document Timeline, $\\alpha=0.4$"
+    },
+    {
+      "page": 35,
+      "label": "B18",
+      "title": "Solver Time per Resize"
+    },
+    {
+      "page": 36,
+      "label": "B19",
+      "title": "Do Forecast and Profile Errors Spend the Savings?"
+    },
+    {
+      "page": 37,
+      "label": "B20",
+      "title": "How Often Should the Cache Resize?"
+    },
+    {
+      "page": 38,
+      "label": "B21",
+      "title": "SSD Lifetime Changes the Embodied Weight"
+    },
+    {
+      "page": 39,
+      "label": "B22",
+      "title": "SSD Embodied Carbon Is an Assumption"
+    },
+    {
+      "page": 40,
+      "label": "B23",
+      "title": "Limits, and What We Would Not Claim"
+    }
+  ],
+  "figures": [
+    {
+      "page": 3,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig01.png",
+      "bbox": [
+        70.0,
+        61.2,
+        383.6,
+        142.0
+      ]
+    },
+    {
+      "page": 4,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig07.png",
+      "bbox": [
+        52.6,
+        57.7,
+        400.9,
+        164.9
+      ]
+    },
+    {
+      "page": 5,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig08.png",
+      "bbox": [
+        60.4,
+        46.8,
+        393.1,
+        141.7
+      ]
+    },
+    {
+      "page": 6,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig10.png",
+      "bbox": [
+        13.6,
+        41.2,
+        269.4,
+        172.0
+      ]
+    },
+    {
+      "page": 11,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
+      "bbox": [
+        38.4,
+        57.2,
+        415.1,
+        292.5
+      ]
+    },
+    {
+      "page": 12,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
+      "bbox": [
+        91.4,
+        57.7,
+        362.1,
+        224.8
+      ]
+    },
+    {
+      "page": 13,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
+      "bbox": [
+        75.9,
+        47.9,
+        377.6,
+        305.1
+      ]
+    },
+    {
+      "page": 14,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig15.png",
+      "bbox": [
+        69.0,
+        60.5,
+        384.6,
+        158.3
+      ]
+    },
+    {
+      "page": 18,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig02.png",
+      "bbox": [
+        78.8,
+        32.6,
+        374.7,
+        130.2
+      ]
+    },
+    {
+      "page": 19,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig03.png",
+      "bbox": [
+        146.1,
+        35.2,
+        307.4,
+        130.2
+      ]
+    },
+    {
+      "page": 20,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig04.png",
+      "bbox": [
+        153.8,
+        35.8,
+        299.7,
+        127.9
+      ]
+    },
+    {
+      "page": 21,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig05.png",
+      "bbox": [
+        143.1,
+        35.8,
+        310.5,
+        139.3
+      ]
+    },
+    {
+      "page": 22,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig06.png",
+      "bbox": [
+        135.4,
+        35.8,
+        318.2,
+        150.6
+      ]
+    },
+    {
+      "page": 25,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig09.png",
+      "bbox": [
+        38.3,
+        41.2,
+        168.0,
+        207.0
+      ]
+    },
+    {
+      "page": 26,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig11.png",
+      "bbox": [
+        105.9,
+        34.7,
+        347.7,
+        121.1
+      ]
+    },
+    {
+      "page": 32,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
+      "bbox": [
+        13.6,
+        28.6,
+        439.9,
+        294.9
+      ]
+    },
+    {
+      "page": 32,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
+      "bbox": [
+        64.9,
+        -57.1,
+        388.6,
+        145.1
+      ]
+    },
+    {
+      "page": 33,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
+      "bbox": [
+        13.6,
+        23.7,
+        439.9,
+        287.0
+      ]
+    },
+    {
+      "page": 33,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
+      "bbox": [
+        60.8,
+        -58.4,
+        392.8,
+        146.6
+      ]
+    },
+    {
+      "page": 34,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
+      "bbox": [
+        13.6,
+        24.2,
+        439.9,
+        387.5
+      ]
+    },
+    {
+      "page": 34,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
+      "bbox": [
+        121.3,
+        -46.0,
+        332.2,
+        133.8
+      ]
+    },
+    {
+      "page": 35,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig16.png",
+      "bbox": [
+        147.1,
+        35.8,
+        306.4,
+        135.0
+      ]
+    },
+    {
+      "page": 36,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig17.png",
+      "bbox": [
+        101.2,
+        35.2,
+        352.3,
+        113.2
+      ]
+    },
+    {
+      "page": 37,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig18.png",
+      "bbox": [
+        66.9,
+        35.2,
+        386.7,
+        110.3
+      ]
+    },
+    {
+      "page": 38,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig19.png",
+      "bbox": [
+        75.9,
+        35.2,
+        377.6,
+        127.4
+      ]
+    },
+    {
+      "page": 39,
+      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig20.png",
+      "bbox": [
+        51.4,
+        35.2,
+        402.2,
+        127.4
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_page": 1,
+      "from_label": "M01",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 1,
+      "from_label": "M01",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 1,
+      "from_label": "M01",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 2,
+      "from_label": "M02",
+      "destination": "B06",
+      "to_page": 23
+    },
+    {
+      "from_page": 2,
+      "from_label": "M02",
+      "destination": "B07",
+      "to_page": 24
+    },
+    {
+      "from_page": 2,
+      "from_label": "M02",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 2,
+      "from_label": "M02",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 3,
+      "from_label": "M03",
+      "destination": "B02",
+      "to_page": 19
+    },
+    {
+      "from_page": 3,
+      "from_label": "M03",
+      "destination": "B03",
+      "to_page": 20
+    },
+    {
+      "from_page": 3,
+      "from_label": "M03",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 3,
+      "from_label": "M03",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 4,
+      "from_label": "M04",
+      "destination": "B06",
+      "to_page": 23
+    },
+    {
+      "from_page": 4,
+      "from_label": "M04",
+      "destination": "B07",
+      "to_page": 24
+    },
+    {
+      "from_page": 4,
+      "from_label": "M04",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 4,
+      "from_label": "M04",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 5,
+      "from_label": "M05",
+      "destination": "B01",
+      "to_page": 18
+    },
+    {
+      "from_page": 5,
+      "from_label": "M05",
+      "destination": "B08",
+      "to_page": 25
+    },
+    {
+      "from_page": 5,
+      "from_label": "M05",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 5,
+      "from_label": "M05",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 6,
+      "from_label": "M06",
+      "destination": "B09",
+      "to_page": 26
+    },
+    {
+      "from_page": 6,
+      "from_label": "M06",
+      "destination": "B10",
+      "to_page": 27
+    },
+    {
+      "from_page": 6,
+      "from_label": "M06",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 6,
+      "from_label": "M06",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 7,
+      "from_label": "M07",
+      "destination": "B10",
+      "to_page": 27
+    },
+    {
+      "from_page": 7,
+      "from_label": "M07",
+      "destination": "B11",
+      "to_page": 28
+    },
+    {
+      "from_page": 7,
+      "from_label": "M07",
+      "destination": "B12",
+      "to_page": 29
+    },
+    {
+      "from_page": 7,
+      "from_label": "M07",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 7,
+      "from_label": "M07",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 8,
+      "from_label": "M08",
+      "destination": "B13",
+      "to_page": 30
+    },
+    {
+      "from_page": 8,
+      "from_label": "M08",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 8,
+      "from_label": "M08",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 9,
+      "from_label": "M09",
+      "destination": "B14",
+      "to_page": 31
+    },
+    {
+      "from_page": 9,
+      "from_label": "M09",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 9,
+      "from_label": "M09",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 10,
+      "from_label": "M10",
+      "destination": "B11",
+      "to_page": 28
+    },
+    {
+      "from_page": 10,
+      "from_label": "M10",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 10,
+      "from_label": "M10",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 11,
+      "from_label": "M11",
+      "destination": "B15",
+      "to_page": 32
+    },
+    {
+      "from_page": 11,
+      "from_label": "M11",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 11,
+      "from_label": "M11",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 12,
+      "from_label": "M12",
+      "destination": "B16",
+      "to_page": 33
+    },
+    {
+      "from_page": 12,
+      "from_label": "M12",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 12,
+      "from_label": "M12",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 13,
+      "from_label": "M13",
+      "destination": "B17",
+      "to_page": 34
+    },
+    {
+      "from_page": 13,
+      "from_label": "M13",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 13,
+      "from_label": "M13",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 14,
+      "from_label": "M14",
+      "destination": "B09",
+      "to_page": 26
+    },
+    {
+      "from_page": 14,
+      "from_label": "M14",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 14,
+      "from_label": "M14",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 15,
+      "from_label": "M15",
+      "destination": "B13",
+      "to_page": 30
+    },
+    {
+      "from_page": 15,
+      "from_label": "M15",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 15,
+      "from_label": "M15",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 16,
+      "from_label": "M16",
+      "destination": "B23",
+      "to_page": 40
+    },
+    {
+      "from_page": 16,
+      "from_label": "M16",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 16,
+      "from_label": "M16",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B01",
+      "to_page": 18
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B09",
+      "to_page": 26
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B14",
+      "to_page": 31
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B19",
+      "to_page": 36
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "M09",
+      "to_page": 9
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B14",
+      "to_page": 31
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B10",
+      "to_page": 27
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B11",
+      "to_page": 28
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B15",
+      "to_page": 32
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B17",
+      "to_page": 34
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "B23",
+      "to_page": 40
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "M16",
+      "to_page": 16
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "Navigation17",
+      "to_page": 17
+    },
+    {
+      "from_page": 17,
+      "from_label": "INDEX",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 18,
+      "from_label": "B01",
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 18,
+      "from_label": "B01",
+      "destination": "B02",
+      "to_page": 19
+    },
+    {
+      "from_page": 18,
+      "from_label": "B01",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 18,
+      "from_label": "B01",
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 18,
+      "from_label": "B01",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 19,
+      "from_label": "B02",
+      "destination": "M03",
+      "to_page": 3
+    },
+    {
+      "from_page": 19,
+      "from_label": "B02",
+      "destination": "B03",
+      "to_page": 20
+    },
+    {
+      "from_page": 19,
+      "from_label": "B02",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 19,
+      "from_label": "B02",
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 19,
+      "from_label": "B02",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 20,
+      "from_label": "B03",
+      "destination": "M03",
+      "to_page": 3
+    },
+    {
+      "from_page": 20,
+      "from_label": "B03",
+      "destination": "B04",
+      "to_page": 21
+    },
+    {
+      "from_page": 20,
+      "from_label": "B03",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 20,
+      "from_label": "B03",
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 20,
+      "from_label": "B03",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 21,
+      "from_label": "B04",
+      "destination": "M04",
+      "to_page": 4
+    },
+    {
+      "from_page": 21,
+      "from_label": "B04",
+      "destination": "B05",
+      "to_page": 22
+    },
+    {
+      "from_page": 21,
+      "from_label": "B04",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 21,
+      "from_label": "B04",
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 21,
+      "from_label": "B04",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 22,
+      "from_label": "B05",
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 22,
+      "from_label": "B05",
+      "destination": "B06",
+      "to_page": 23
+    },
+    {
+      "from_page": 22,
+      "from_label": "B05",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 22,
+      "from_label": "B05",
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 22,
+      "from_label": "B05",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 23,
+      "from_label": "B06",
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 23,
+      "from_label": "B06",
+      "destination": "M04",
+      "to_page": 4
+    },
+    {
+      "from_page": 23,
+      "from_label": "B06",
+      "destination": "B07",
+      "to_page": 24
+    },
+    {
+      "from_page": 23,
+      "from_label": "B06",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 23,
+      "from_label": "B06",
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 23,
+      "from_label": "B06",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 24,
+      "from_label": "B07",
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 24,
+      "from_label": "B07",
+      "destination": "M04",
+      "to_page": 4
+    },
+    {
+      "from_page": 24,
+      "from_label": "B07",
+      "destination": "B08",
+      "to_page": 25
+    },
+    {
+      "from_page": 24,
+      "from_label": "B07",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 24,
+      "from_label": "B07",
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 24,
+      "from_label": "B07",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 25,
+      "from_label": "B08",
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 25,
+      "from_label": "B08",
+      "destination": "B09",
+      "to_page": 26
+    },
+    {
+      "from_page": 25,
+      "from_label": "B08",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 25,
+      "from_label": "B08",
+      "destination": "Navigation18",
+      "to_page": 18
+    },
+    {
+      "from_page": 25,
+      "from_label": "B08",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 26,
+      "from_label": "B09",
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 26,
+      "from_label": "B09",
+      "destination": "M14",
+      "to_page": 14
+    },
+    {
+      "from_page": 26,
+      "from_label": "B09",
+      "destination": "B10",
+      "to_page": 27
+    },
+    {
+      "from_page": 26,
+      "from_label": "B09",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 26,
+      "from_label": "B09",
+      "destination": "Navigation26",
+      "to_page": 26
+    },
+    {
+      "from_page": 26,
+      "from_label": "B09",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 27,
+      "from_label": "B10",
+      "destination": "M06",
+      "to_page": 6
+    },
+    {
+      "from_page": 27,
+      "from_label": "B10",
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 27,
+      "from_label": "B10",
+      "destination": "B11",
+      "to_page": 28
+    },
+    {
+      "from_page": 27,
+      "from_label": "B10",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 27,
+      "from_label": "B10",
+      "destination": "Navigation26",
+      "to_page": 26
+    },
+    {
+      "from_page": 27,
+      "from_label": "B10",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 28,
+      "from_label": "B11",
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 28,
+      "from_label": "B11",
+      "destination": "M10",
+      "to_page": 10
+    },
+    {
+      "from_page": 28,
+      "from_label": "B11",
+      "destination": "B12",
+      "to_page": 29
+    },
+    {
+      "from_page": 28,
+      "from_label": "B11",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 28,
+      "from_label": "B11",
+      "destination": "Navigation26",
+      "to_page": 26
+    },
+    {
+      "from_page": 28,
+      "from_label": "B11",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 29,
+      "from_label": "B12",
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 29,
+      "from_label": "B12",
+      "destination": "B13",
+      "to_page": 30
+    },
+    {
+      "from_page": 29,
+      "from_label": "B12",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 29,
+      "from_label": "B12",
+      "destination": "Navigation26",
+      "to_page": 26
+    },
+    {
+      "from_page": 29,
+      "from_label": "B12",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 30,
+      "from_label": "B13",
+      "destination": "M08",
+      "to_page": 8
+    },
+    {
+      "from_page": 30,
+      "from_label": "B13",
+      "destination": "M15",
+      "to_page": 15
+    },
+    {
+      "from_page": 30,
+      "from_label": "B13",
+      "destination": "B14",
+      "to_page": 31
+    },
+    {
+      "from_page": 30,
+      "from_label": "B13",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 30,
+      "from_label": "B13",
+      "destination": "Navigation26",
+      "to_page": 26
+    },
+    {
+      "from_page": 30,
+      "from_label": "B13",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 31,
+      "from_label": "B14",
+      "destination": "M09",
+      "to_page": 9
+    },
+    {
+      "from_page": 31,
+      "from_label": "B14",
+      "destination": "B15",
+      "to_page": 32
+    },
+    {
+      "from_page": 31,
+      "from_label": "B14",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 31,
+      "from_label": "B14",
+      "destination": "Navigation31",
+      "to_page": 31
+    },
+    {
+      "from_page": 31,
+      "from_label": "B14",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 32,
+      "from_label": "B15",
+      "destination": "M11",
+      "to_page": 11
+    },
+    {
+      "from_page": 32,
+      "from_label": "B15",
+      "destination": "B16",
+      "to_page": 33
+    },
+    {
+      "from_page": 32,
+      "from_label": "B15",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 32,
+      "from_label": "B15",
+      "destination": "Navigation31",
+      "to_page": 31
+    },
+    {
+      "from_page": 32,
+      "from_label": "B15",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 33,
+      "from_label": "B16",
+      "destination": "M12",
+      "to_page": 12
+    },
+    {
+      "from_page": 33,
+      "from_label": "B16",
+      "destination": "B17",
+      "to_page": 34
+    },
+    {
+      "from_page": 33,
+      "from_label": "B16",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 33,
+      "from_label": "B16",
+      "destination": "Navigation31",
+      "to_page": 31
+    },
+    {
+      "from_page": 33,
+      "from_label": "B16",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 34,
+      "from_label": "B17",
+      "destination": "M13",
+      "to_page": 13
+    },
+    {
+      "from_page": 34,
+      "from_label": "B17",
+      "destination": "B18",
+      "to_page": 35
+    },
+    {
+      "from_page": 34,
+      "from_label": "B17",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 34,
+      "from_label": "B17",
+      "destination": "Navigation31",
+      "to_page": 31
+    },
+    {
+      "from_page": 34,
+      "from_label": "B17",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 35,
+      "from_label": "B18",
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 35,
+      "from_label": "B18",
+      "destination": "B19",
+      "to_page": 36
+    },
+    {
+      "from_page": 35,
+      "from_label": "B18",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 35,
+      "from_label": "B18",
+      "destination": "Navigation31",
+      "to_page": 31
+    },
+    {
+      "from_page": 35,
+      "from_label": "B18",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 36,
+      "from_label": "B19",
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 36,
+      "from_label": "B19",
+      "destination": "B20",
+      "to_page": 37
+    },
+    {
+      "from_page": 36,
+      "from_label": "B19",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 36,
+      "from_label": "B19",
+      "destination": "Navigation36",
+      "to_page": 36
+    },
+    {
+      "from_page": 36,
+      "from_label": "B19",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 37,
+      "from_label": "B20",
+      "destination": "M07",
+      "to_page": 7
+    },
+    {
+      "from_page": 37,
+      "from_label": "B20",
+      "destination": "B21",
+      "to_page": 38
+    },
+    {
+      "from_page": 37,
+      "from_label": "B20",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 37,
+      "from_label": "B20",
+      "destination": "Navigation36",
+      "to_page": 36
+    },
+    {
+      "from_page": 37,
+      "from_label": "B20",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 38,
+      "from_label": "B21",
+      "destination": "M16",
+      "to_page": 16
+    },
+    {
+      "from_page": 38,
+      "from_label": "B21",
+      "destination": "B22",
+      "to_page": 39
+    },
+    {
+      "from_page": 38,
+      "from_label": "B21",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 38,
+      "from_label": "B21",
+      "destination": "Navigation36",
+      "to_page": 36
+    },
+    {
+      "from_page": 38,
+      "from_label": "B21",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 39,
+      "from_label": "B22",
+      "destination": "M16",
+      "to_page": 16
+    },
+    {
+      "from_page": 39,
+      "from_label": "B22",
+      "destination": "B23",
+      "to_page": 40
+    },
+    {
+      "from_page": 39,
+      "from_label": "B22",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 39,
+      "from_label": "B22",
+      "destination": "Navigation36",
+      "to_page": 36
+    },
+    {
+      "from_page": 39,
+      "from_label": "B22",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 40,
+      "from_label": "B23",
+      "destination": "M16",
+      "to_page": 16
+    },
+    {
+      "from_page": 40,
+      "from_label": "B23",
+      "destination": "INDEX",
+      "to_page": 17
+    },
+    {
+      "from_page": 40,
+      "from_label": "B23",
+      "destination": "Navigation36",
+      "to_page": 36
+    },
+    {
+      "from_page": 40,
+      "from_label": "B23",
+      "destination": "INDEX",
+      "to_page": 17
+    }
+  ]
+}
