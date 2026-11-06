@@ -88,7 +88,7 @@
 | 19 | — | 38 |
 | 20 | — | 39 |
 
-Fig. 12、13、14 在 Main 只放大論文中的相關列或子圖。Backup 放另一半，legend 使用論文原始 PDF 的向量裁切。沒有重繪座標軸。
+Fig. 12、13、14 在 Main 只放大論文中的相關列或子圖。Backup 放另一半，legend 使用同一張 PNG 的 viewport。沒有重繪座標軸。
 
 ## Claim → source
 
@@ -130,14 +130,14 @@ python3 -m venv /tmp/greencache-qa
 /tmp/greencache-qa/bin/python scripts/validate.py
 ```
 
-`build.py` 先執行 `scripts/extract_figures.py`，再在本目錄編譯兩次，寫出 PDF 與 Overleaf ZIP，再把 ZIP 解到暫存目錄編譯兩次，並比對文字、像素與連結目標。ZIP 入口是 `main.tex`，compiler 選 **pdfLaTeX**。圖檔直接擷取自指定的 `GreenCache-Carbon-Aware-KV-Caching-SIGMETRICS2026.pdf`，存於 `Figures-PDF/`：20 張完整圖與 9 張子圖／圖例，共 29 個向量 PDF。舊 PNG 保留作為原始資料，簡報與 ZIP 均不再引用。
+`build.py` 在本目錄編譯兩次，寫出 PDF 與 Overleaf ZIP，再把 ZIP 解到暫存目錄編譯兩次，並比對文字、像素與連結目標。ZIP 入口是 `main.tex`，compiler 選 **pdfLaTeX**。圖檔是 20 張未改像素的 Without-Caption PNG，路徑與原始碼中的相對路徑一致。
 
-擷取座標與來源 SHA-256 記於 `Figures-PDF/manifest.json`。Fig. 12–14 的分列與圖例使用獨立 PDF；Fig. 12 圖例直接使用原始 Form XObject，避免夾帶鄰近座標刻度。編譯中間檔只寫入自動清除的暫存目錄。
+這些 PNG 的 `pHYs` 是 3780 px/m。pdfTeX 因此用約 0.752813 pt/px，不是 1 px = 1 bp。Fig. 12、13、14 的裁切已經換成這個單位。
 
 ## QA
 
 - 本地兩次與 ZIP 獨立兩次編譯通過，最終 log 沒有 Overfull、undefined reference 或 Warning。
-- 40 頁、190 個內部連結、20 張圖的引用與 29 個向量圖檔對來源 PDF 的渲染比對都通過。Main 可以點到全部 Backup。
+- 40 頁、190 個內部連結、20 張來源圖的像素雜湊都通過。Main 可以點到全部 Backup。
 - [Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)、[逐頁 PNG](output/qa/pages/)、[機器紀錄](output/qa/validation.json)、[視覺紀錄](output/qa/REVIEW.md)。
 
 ## Main speaking points

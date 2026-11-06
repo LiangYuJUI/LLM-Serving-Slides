@@ -7,10 +7,8 @@ Checked after the clean pdfLaTeX log and the ZIP byte-level page comparison. Aut
 - Fig. 12a on PDF 11 keeps the legend, three 70B panels, axis labels, cache-size annotations, and the “(a)” caption. The 8B row is on PDF 32.
 - Fig. 13a on PDF 12 keeps the legend, six 70B panels, thresholds, and the “(a) Llama-3 70B” caption. The 8B row is on PDF 33.
 - Fig. 14a on PDF 13 keeps all four grids (FR, FI, ES, CISO), both rows, axis labels, cache-size labels, and the “(a)” caption. PDF 34 is the document timeline, with the original legend strip above it.
-- All 20 figures now come directly from the specified SIGMETRICS PDF as vector assets. The 9 row/legend variants also retain original PDF content.
-- Fig. 12's legend is isolated from the original Form XObject so adjacent axis ticks are excluded. Its backup row excludes the preceding 70B caption.
-- Fig. 2 is a clean original PDF crop; the old PNG-specific crop note has been replaced.
-- All 29 assets are checked against fresh source extractions, with source SHA-256 recorded in the manifest. Local and standalone ZIP builds have identical rendered pages and link targets.
+- An earlier crop used 1 px = 1 bp. These PNGs are 3780 px/m, so that crop cut through Fig. 14’s lower panels and let text overlap the image. The current trims use 0.752813 pt/px. The overlap is gone.
+- Fig. 2 on PDF 18 drops about 16 px of orphan title pixels at the top of the supplied PNG. The axes and legend remain.
 
 ## Layout
 

@@ -9,7 +9,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / '2026-11-11-GreenCache.tex'
-FIGDIR = ROOT / 'GreenCache-Research-Meeting-2026-11-11' / 'Figures-PDF'
+FIGDIR = ROOT / 'GreenCache-Research-Meeting-2026-11-11' / 'Without-Caption'
 
 
 def compile_twice(directory, source, output):
@@ -30,8 +30,6 @@ def compile_twice(directory, source, output):
 
 
 def main():
-    from extract_figures import main as extract_figures
-    extract_figures()
     output = ROOT / 'output'
     with tempfile.TemporaryDirectory(prefix='greencache-build-') as tmp:
         temp = Path(tmp)
@@ -42,13 +40,13 @@ def main():
         archive = output / 'overleaf' / 'GreenCache.zip'
         with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
             z.write(SOURCE, 'main.tex')
-            for image in sorted(FIGDIR.glob('*.pdf')):
+            for image in sorted(FIGDIR.glob('*.png')):
                 z.write(image, image.relative_to(ROOT).as_posix())
             z.writestr(
                 'README.txt',
                 'Main file: main.tex\nCompiler: pdfLaTeX\n'
                 'Compile twice for navigation.\n'
-                'Figures: original vector crops from the SIGMETRICS 2026 paper.\n')
+                'Figures: 20 supplied Without-Caption PNGs. Pixels are unchanged.\n')
         extracted = temp / 'overleaf'
         with zipfile.ZipFile(archive) as z:
             assert z.testzip() is None
