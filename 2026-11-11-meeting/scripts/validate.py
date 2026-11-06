@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Check GreenCache destinations, links, image pixels, and page renders."""
+"""Check GreenCache destinations, links, PDF figure provenance, and page renders."""
 from pathlib import Path
 import argparse
 import hashlib
 import json
 import re
 import tempfile
-from collections import Counter
+from extract_figures import PAPER, FIGDIR, CROPS, make_figure
 import pymupdf as fitz
 from PIL import Image, ImageDraw
 
@@ -67,9 +67,7 @@ def validate(render_dir):
                     assert r.y0 >= -1 and r.y1 <= doc[i].rect.height + 1, (i + 1, span['text'])
                     if r.y0 < 242:
                         assert r.y1 < 244, (i + 1, 'content touches footer', span['text'], span['bbox'])
-        # Cropped figures keep the full PNG in the content stream, so the
-        # reported image box is not the visible clip. Button clearance is
-        # checked visually; this loop only rejects buttons that leave the page.
+        # Button clearance is also checked visually on the rendered pages.
     # Every backup page is reachable from a main slide without section-nav links.
     reached = set(range(main_count))
     pending = list(reached)
@@ -104,21 +102,27 @@ def validate(render_dir):
         content = ' '.join(doc[expected[label]].get_text().split())
         for needle in needles:
             assert needle in content, (label, needle)
-    files = sorted((ROOT / 'GreenCache-Research-Meeting-2026-11-11/Without-Caption').glob('*.png'))
-    assert len(files) == 20
-    hashes = {}
-    for path in files:
-        pixels = Image.open(path).convert('RGB').tobytes()
-        hashes[hashlib.md5(pixels).digest()] = str(path.relative_to(ROOT))
+    manifest = json.loads((FIGDIR / 'manifest.json').read_text())
+    assert manifest['source_sha256'] == hashlib.sha256(PAPER.read_bytes()).hexdigest()
+    assert 'Without-Caption' not in text and '.png' not in text
+    assert r'\gcpart' not in text
+    # Validate each vector asset against a fresh extraction of the specified
+    # source PDF, including all dedicated row and legend crops.
+    with fitz.open(PAPER) as paper:
+        for key in CROPS:
+            with fitz.open(FIGDIR / f'GreenCache-Fig{key}.pdf') as actual:
+                with make_figure(paper, key) as reference:
+                    with fitz.open(stream=reference.tobytes(garbage=4, deflate=True), filetype='pdf') as expected_asset:
+                        assert actual[0].get_pixmap(matrix=fitz.Matrix(2, 2)).digest == expected_asset[0].get_pixmap(matrix=fitz.Matrix(2, 2)).digest, key
     used = set()
     occurrences = []
-    for i, page in enumerate(doc):
-        for item in page.get_image_info(hashes=True):
-            assert item['digest'] in hashes, (i + 1, 'image is not a supplied Without-Caption PNG')
-            name = hashes[item['digest']]
-            used.add(name)
-            occurrences.append({'page': i + 1, 'file': name, 'bbox': [round(v, 1) for v in item['bbox']]})
-    assert used == set(hashes.values()), sorted(set(hashes.values()) - used)
+    for i, (_, _, body) in enumerate(frames):
+        for key in re.findall(r'\\gc(?:img)?\{([^}]+)\}', body):
+            assert key in CROPS, key
+            used.add(key[:2])
+            occurrences.append({'page': i + 1, 'file': f'Figures-PDF/GreenCache-Fig{key}.pdf',
+                                'paper_page': CROPS[key][0]})
+    assert used == {f'{i:02}' for i in range(1, 21)}, used
     qa = ROOT / 'output/qa'
     qa.mkdir(exist_ok=True)
     render_dir.mkdir(parents=True, exist_ok=True)
@@ -153,7 +157,9 @@ def validate(render_dir):
         'main_pages': main_count,
         'backup_pages_including_index': len(doc) - main_count,
         'internal_links_checked': len(links),
-        'figures_matched_by_pixel_hash': len(used),
+        'original_figures_referenced': len(used),
+        'vector_assets_verified_against_source': len(CROPS),
+        'source_sha256': manifest['source_sha256'],
         'whitespace': whitespace,
         'frames': [{'page': i + 1, 'label': label, 'title': title}
                    for i, (label, title, _) in enumerate(frames)],
@@ -162,7 +168,7 @@ def validate(render_dir):
     }
     (qa / 'validation.json').write_text(json.dumps(report, indent=2) + '\n')
     empty_mains = [row for row in whitespace if row['page'] <= main_count and row['lower_empty_ratio'] > 0.72]
-    print(f'PASS: {len(doc)} pages, {len(links)} links, {len(used)} figure hashes.')
+    print(f'PASS: {len(doc)} pages, {len(links)} links, {len(used)} original figures, {len(CROPS)} verified vector assets.')
     if empty_mains:
         print('LOWER-PAGE EMPTY CANDIDATES:')
         for row in empty_mains:
