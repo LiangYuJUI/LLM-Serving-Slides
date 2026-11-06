@@ -2,11 +2,15 @@
 
 Checked after the clean pdfLaTeX log and the ZIP byte-level page comparison. Automatic lower-page white ratios treat chart interiors as empty, so they are not used as a failure signal. The pages below were inspected as rendered PNGs.
 
+## With-Caption update
+
+All 20 embedded figures match the supplied With-Caption PNGs by pixel hash. The 40-page local PDF and independently compiled Overleaf ZIP render identically; 190 internal links pass validation. Both updated montages and the split-figure pages were inspected. Captions remain visible, and content stays clear of the footer. Compilation intermediates are created in temporary directories and removed automatically.
+
 ## Figures
 
-- Fig. 12a on PDF 11 keeps the legend, three 70B panels, axis labels, cache-size annotations, and the “(a)” caption. The 8B row is on PDF 32.
-- Fig. 13a on PDF 12 keeps the legend, six 70B panels, thresholds, and the “(a) Llama-3 70B” caption. The 8B row is on PDF 33.
-- Fig. 14a on PDF 13 keeps all four grids (FR, FI, ES, CISO), both rows, axis labels, cache-size labels, and the “(a)” caption. PDF 34 is the document timeline, with the original legend strip above it.
+- Fig. 12a on PDF 11 keeps the legend, three 70B panels, axis labels, cache-size annotations, the “(a)” caption, and the original Fig. 12 caption. The 8B row is on PDF 32.
+- Fig. 13a on PDF 12 keeps the legend, six 70B panels, thresholds, the “(a) Llama-3 70B” caption, and the original Fig. 13 caption. The 8B row is on PDF 33.
+- Fig. 14a on PDF 13 keeps all four grids (FR, FI, ES, CISO), both rows, axis labels, cache-size labels, the “(a)” caption, and the original Fig. 14 caption. PDF 34 is the document timeline, with the original legend strip above it.
 - An earlier crop used 1 px = 1 bp. These PNGs are 3780 px/m, so that crop cut through Fig. 14’s lower panels and let text overlap the image. The current trims use 0.752813 pt/px. The overlap is gone.
 - Fig. 2 on PDF 18 drops about 16 px of orphan title pixels at the top of the supplied PNG. The axes and legend remain.
 

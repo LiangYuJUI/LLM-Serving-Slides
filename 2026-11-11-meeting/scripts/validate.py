@@ -104,7 +104,7 @@ def validate(render_dir):
         content = ' '.join(doc[expected[label]].get_text().split())
         for needle in needles:
             assert needle in content, (label, needle)
-    files = sorted((ROOT / 'GreenCache-Research-Meeting-2026-11-11/Without-Caption').glob('*.png'))
+    files = sorted((ROOT / 'GreenCache-Research-Meeting-2026-11-11/With-Caption').glob('*.png'))
     assert len(files) == 20
     hashes = {}
     for path in files:
@@ -114,7 +114,7 @@ def validate(render_dir):
     occurrences = []
     for i, page in enumerate(doc):
         for item in page.get_image_info(hashes=True):
-            assert item['digest'] in hashes, (i + 1, 'image is not a supplied Without-Caption PNG')
+            assert item['digest'] in hashes, (i + 1, 'image is not a supplied With-Caption PNG')
             name = hashes[item['digest']]
             used.add(name)
             occurrences.append({'page': i + 1, 'file': name, 'bbox': [round(v, 1) for v in item['bbox']]})

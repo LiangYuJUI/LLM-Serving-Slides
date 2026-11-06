@@ -23,7 +23,7 @@
     {
       "page": 4,
       "label": "M04",
-      "lower_empty_ratio": 0.887
+      "lower_empty_ratio": 0.855
     },
     {
       "page": 5,
@@ -33,7 +33,7 @@
     {
       "page": 6,
       "label": "M06",
-      "lower_empty_ratio": 0.581
+      "lower_empty_ratio": 0.58
     },
     {
       "page": 7,
@@ -58,22 +58,22 @@
     {
       "page": 11,
       "label": "M11",
-      "lower_empty_ratio": 0.863
+      "lower_empty_ratio": 0.877
     },
     {
       "page": 12,
       "label": "M12",
-      "lower_empty_ratio": 0.33
+      "lower_empty_ratio": 0.326
     },
     {
       "page": 13,
       "label": "M13",
-      "lower_empty_ratio": 0.868
+      "lower_empty_ratio": 0.889
     },
     {
       "page": 14,
       "label": "M14",
-      "lower_empty_ratio": 0.894
+      "lower_empty_ratio": 0.883
     },
     {
       "page": 15,
@@ -128,7 +128,7 @@
     {
       "page": 25,
       "label": "B08",
-      "lower_empty_ratio": 0.908
+      "lower_empty_ratio": 0.929
     },
     {
       "page": 26,
@@ -411,261 +411,291 @@
   "figures": [
     {
       "page": 3,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig01.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig01.png",
       "bbox": [
-        70.0,
+        92.1,
         61.2,
-        383.6,
-        142.0
+        361.5,
+        141.9
       ]
     },
     {
       "page": 4,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig07.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig07.png",
       "bbox": [
-        52.6,
+        83.0,
         57.7,
-        400.9,
+        370.6,
         164.9
       ]
     },
     {
       "page": 5,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig08.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig08.png",
       "bbox": [
-        60.4,
+        79.6,
         46.8,
-        393.1,
+        373.9,
         141.7
       ]
     },
     {
       "page": 6,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig10.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig10.png",
       "bbox": [
-        13.6,
+        33.4,
         41.2,
-        269.4,
-        172.0
+        249.7,
+        173.0
       ]
     },
     {
       "page": 11,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
       "bbox": [
-        38.4,
+        62.8,
         57.2,
-        415.1,
-        292.5
+        390.8,
+        274.4
+      ]
+    },
+    {
+      "page": 11,
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
+      "bbox": [
+        106.9,
+        15.8,
+        346.6,
+        174.6
       ]
     },
     {
       "page": 12,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
       "bbox": [
-        91.4,
+        115.1,
         57.7,
-        362.1,
-        224.8
+        338.5,
+        203.4
+      ]
+    },
+    {
+      "page": 12,
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
+      "bbox": [
+        97.4,
+        -24.9,
+        356.2,
+        143.9
       ]
     },
     {
       "page": 13,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
       "bbox": [
-        75.9,
+        88.8,
         47.9,
-        377.6,
-        305.1
+        364.8,
+        293.5
+      ]
+    },
+    {
+      "page": 13,
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
+      "bbox": [
+        105.2,
+        -33.9,
+        348.3,
+        182.3
       ]
     },
     {
       "page": 14,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig15.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig15.png",
       "bbox": [
-        69.0,
+        86.1,
         60.5,
-        384.6,
+        367.4,
         158.3
       ]
     },
     {
       "page": 18,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig02.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig02.png",
       "bbox": [
-        78.8,
-        32.6,
-        374.7,
+        104.6,
+        33.1,
+        349.0,
         130.2
       ]
     },
     {
       "page": 19,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig03.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig03.png",
       "bbox": [
-        146.1,
+        159.7,
         35.2,
-        307.4,
+        293.9,
         130.2
       ]
     },
     {
       "page": 20,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig04.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig04.png",
       "bbox": [
-        153.8,
+        166.1,
         35.8,
-        299.7,
+        287.4,
         127.9
       ]
     },
     {
       "page": 21,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig05.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig05.png",
       "bbox": [
-        143.1,
+        162.0,
         35.8,
-        310.5,
+        291.5,
         139.3
       ]
     },
     {
       "page": 22,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig06.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig06.png",
       "bbox": [
-        135.4,
+        150.7,
         35.8,
-        318.2,
+        302.8,
         150.6
       ]
     },
     {
       "page": 25,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig09.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig09.png",
       "bbox": [
-        38.3,
+        44.6,
         41.2,
-        168.0,
+        161.6,
         207.0
       ]
     },
     {
       "page": 26,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig11.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig11.png",
       "bbox": [
-        105.9,
+        131.3,
         34.7,
-        347.7,
+        322.3,
         121.1
       ]
     },
     {
       "page": 32,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
       "bbox": [
         13.6,
         28.6,
         439.9,
-        294.9
+        311.0
       ]
     },
     {
       "page": 32,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
       "bbox": [
-        64.9,
-        -57.1,
-        388.6,
-        145.1
+        93.5,
+        -38.7,
+        360.1,
+        137.9
       ]
     },
     {
       "page": 33,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
       "bbox": [
         13.6,
         23.7,
         439.9,
-        287.0
+        301.9
       ]
     },
     {
       "page": 33,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
       "bbox": [
-        60.8,
-        -58.4,
-        392.8,
-        146.6
+        90.5,
+        -38.7,
+        363.1,
+        139.2
       ]
     },
     {
       "page": 34,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
       "bbox": [
         13.6,
         24.2,
         439.9,
-        387.5
+        403.4
       ]
     },
     {
       "page": 34,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
       "bbox": [
-        121.3,
-        -46.0,
-        332.2,
-        133.8
+        135.3,
+        -33.7,
+        318.3,
+        129.1
       ]
     },
     {
       "page": 35,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig16.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig16.png",
       "bbox": [
-        147.1,
+        164.9,
         35.8,
-        306.4,
+        288.7,
         135.0
       ]
     },
     {
       "page": 36,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig17.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig17.png",
       "bbox": [
-        101.2,
+        114.6,
         35.2,
-        352.3,
+        338.9,
         113.2
       ]
     },
     {
       "page": 37,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig18.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig18.png",
       "bbox": [
-        66.9,
+        90.1,
         35.2,
-        386.7,
+        363.4,
         110.3
       ]
     },
     {
       "page": 38,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig19.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig19.png",
       "bbox": [
-        75.9,
+        93.4,
         35.2,
-        377.6,
+        360.1,
         127.4
       ]
     },
     {
       "page": 39,
-      "file": "GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig20.png",
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig20.png",
       "bbox": [
-        51.4,
+        74.6,
         35.2,
-        402.2,
+        379.0,
         127.4
       ]
     }

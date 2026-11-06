@@ -63,9 +63,10 @@
 \newcommand{\slidenote}[2]{\par\vspace{0.04cm}{\scriptsize\color{Muted}Source: GreenCache, #1}\hfill #2\par}
 \newcommand{\back}[2][]{\par\vspace{0.02cm}\nav{#2}{Main \ref*{#2}}\ #1\hfill\nav{INDEX}{Discussion Index}}
 \newcommand{\point}[2]{\par\vspace{0.02cm}\textbf{\color{Accent}#1}\quad{\small #2}\par}
-\newcommand{\gc}[1]{GreenCache-Research-Meeting-2026-11-11/Without-Caption/CacheYourPromptWhenItsGreen_Fig#1.png}
+\newcommand{\gc}[1]{GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig#1.png}
 % These PNGs carry 3780 px/m. pdfTeX therefore uses 0.752813pt per pixel, not 1bp.
-% Trim values below are already converted. Order: left bottom right top.
+% Trim values use the With-Caption image dimensions. Order: left bottom right top.
+% Split figures retain their original legend and caption as separate viewports.
 \newcommand{\gcimg}[2]{\includegraphics[width=\linewidth,height=#2,keepaspectratio]{\gc{#1}}}
 \newcommand{\gcpart}[3]{\includegraphics[width=\linewidth,height=#2,keepaspectratio,trim=#3,clip]{\gc{#1}}}
 \newcommand{\card}[3]{%
@@ -203,7 +204,7 @@ Other models, grids, and tasks differ.\par}
 \vspace{0.02cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.60\textwidth}
-{\centering\includegraphics[width=\linewidth]{\gc{10}}\par}
+{\centering\gcimg{10}{4.65cm}\par}
 \end{column}
 \begin{column}{0.38\textwidth}
 \point{1. Profile}{Sweep SSD sizes and loads. Record TTFT, TPOT, and power.}
@@ -323,7 +324,7 @@ TPOT attainment $\ge 90\%$\par}
 \vspace{0.02cm}
 {\small Question: can adaptive capacity beat a fixed full cache on total carbon? Bars: No Cache, GreenCache, Full Cache. Blue labels are the GreenCache size in TB. Llama-3 70B.\par}
 \vspace{0.02cm}
-{\centering\gcpart{12}{4.25cm}{0 411.79bp 0 0}\par}
+{\centering\gcpart{12}{3.70cm}{0 462.78bp 0 0}\par\vspace{0.02cm}\gcpart{12}{0.32cm}{0 0 0 843.64bp}\par}
 \vspace{0.04cm}
 {\small Versus \textbf{Full Cache}, averaged over FR, FI, ES, and CISO: multi-turn \textbf{12.6\%}, document $\alpha=0.4$ \textbf{9.4\%}, document $\alpha=0.7$ \textbf{5.6\%}. These are not the FR-only 15.1\%.\par}
 \vspace{0.02cm}
@@ -335,7 +336,7 @@ TPOT attainment $\ge 90\%$\par}
 \vspace{0.02cm}
 {\small Question: is the carbon saving bought with unacceptable latency? P90 below the dashed threshold means at least 90\% attainment. Llama-3 70B.\par}
 \vspace{0.02cm}
-{\centering\gcpart{13}{3.15cm}{0 388.45bp 0 0}\par}
+{\centering\gcpart{13}{2.60cm}{0 435.69bp 0 0}\par\vspace{0.02cm}\gcpart{13}{0.32cm}{0 0 0 833.90bp}\par}
 \vspace{0.04cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.33\textwidth}
@@ -357,7 +358,7 @@ TPOT attainment $\ge 90\%$\par}
 \vspace{0.02cm}
 {\small Llama-3 70B, multi-turn. Normalized CI and request rate, carbon per prompt, and the chosen cache size.\par}
 \vspace{0.02cm}
-{\centering\gcpart{14}{4.70cm}{0 554.82bp 0 0}\par}
+{\centering\gcpart{14}{4.30cm}{0 605.06bp 0 0}\par\vspace{0.02cm}\gcpart{14}{0.32cm}{0 0 0 1151.11bp}\par}
 \vspace{0.04cm}
 {\small On \textbf{FR, multi-turn, versus Full Cache}: average reduction \textbf{15.1\%}, maximum \textbf{25.3\%}. At 12\,AM the paper reports 15\,TB less SSD than Full Cache. High load still pushes capacity up. CISO, the higher-CI grid, keeps more cache.\par}
 \slidenote{Sec.~6.2, Fig.~14a}{\nav{B17}{Document Timeline}}
@@ -683,9 +684,9 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 
 \begin{frame}[t,label=B15]{Figure 12b: Llama-3 8B Carbon}
 \vspace{0.02cm}
-{\centering\gcpart{12}{0.55cm}{0 789.70bp 0 31.62bp}\par}
+{\centering\gcpart{12}{0.55cm}{0 840.69bp 0 31.62bp}\par}
 \vspace{0.02cm}
-{\centering\gcpart{12}{3.20cm}{0 30.11bp 0 435.13bp}\par}
+{\centering\gcpart{12}{3.20cm}{0 0.00bp 0 435.13bp}\par}
 \vspace{0.06cm}
 \point{Same three workloads, smaller machine}{Versus Full Cache the paper reports 10.8\%, 7.6\%, and 9.7\% lower carbon for multi-turn, $\alpha=0.4$, and $\alpha=0.7$.}
 \point{Do not stack this on the 70B bars}{8B uses 2$\times$ L40, BF16, and an 8\,TB maximum. 70B uses 4$\times$ L40, INT8, and 16\,TB.}
@@ -696,9 +697,9 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 
 \begin{frame}[t,label=B16]{Figure 13b: Llama-3 8B SLO Timelines}
 \vspace{0.02cm}
-{\centering\gcpart{13}{0.72cm}{0 749.80bp 0 34.63bp}\par}
+{\centering\gcpart{13}{0.72cm}{0 797.04bp 0 34.63bp}\par}
 \vspace{0.02cm}
-{\centering\gcpart{13}{3.08cm}{0 30.11bp 0 448.68bp}\par}
+{\centering\gcpart{13}{3.08cm}{0 0.00bp 0 448.68bp}\par}
 \vspace{0.04cm}
 \point{Multi-turn lines match the text}{TTFT threshold 0.5\,s and TPOT threshold 0.15\,s. GreenCache stays under them; No Cache crosses TTFT.}
 \point{Document TTFT is unresolved}{The text sets 2.5\,s. The dashed line in these document panels is at 4.0\,s. TPOT in the figure is drawn at 0.15\,s.}
@@ -709,9 +710,9 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 
 \begin{frame}[t,label=B17]{Figure 14b: Document Timeline, $\alpha=0.4$}
 \vspace{0.02cm}
-{\centering\gcpart{14}{0.42cm}{0 1083.30bp 0 42.16bp}\par}
+{\centering\gcpart{14}{0.42cm}{0 1133.54bp 0 42.16bp}\par}
 \vspace{0.01cm}
-{\centering\gcpart{14}{2.90cm}{0 30.11bp 0 594.72bp}\par}
+{\centering\gcpart{14}{2.90cm}{0 0.00bp 0 594.72bp}\par}
 \vspace{0.04cm}
 \point{Larger footprints}{Document context keeps the cache near the top of the 16\,TB range for much of the day. The paper's multi-turn range versus Full Cache is 6.9--20.4\%; the document range is 3.2--16.2\%.}
 \point{Less room to shrink}{When the SLO already needs a large cache, embodied-carbon savings get smaller. That is why this task saves less than multi-turn at the same hours of high load.}

@@ -9,7 +9,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / '2026-11-11-GreenCache.tex'
-FIGDIR = ROOT / 'GreenCache-Research-Meeting-2026-11-11' / 'Without-Caption'
+FIGDIR = ROOT / 'GreenCache-Research-Meeting-2026-11-11' / 'With-Caption'
 
 
 def compile_twice(directory, source, output):
@@ -46,7 +46,7 @@ def main():
                 'README.txt',
                 'Main file: main.tex\nCompiler: pdfLaTeX\n'
                 'Compile twice for navigation.\n'
-                'Figures: 20 supplied Without-Caption PNGs. Pixels are unchanged.\n')
+                'Figures: 20 supplied With-Caption PNGs. Pixels are unchanged.\n')
         extracted = temp / 'overleaf'
         with zipfile.ZipFile(archive) as z:
             assert z.testzip() is None
