@@ -278,123 +278,109 @@ TTFT and TPOT are evaluated separately.\par}
 \end{columns}
 \vspace{0.16cm}
 {\centering\small\bfseries\color{Accent}Lower LCS Score $\rightarrow$ Higher Eviction Priority\par}
-{\footnotesize Equation (7) is a general scoring principle, not a directly measured CO$_2$ value.\par}
+{\footnotesize Eq.~(7): general design principle, not measured CO$_2$. Eqs.~(8)--(9): workload-specific implementations.\par}
 \vspace{0.08cm}
 {\footnotesize\textbf{Grow:} Allocate additional SSD; later requests gradually warm the cache.\\
 \textbf{Shrink:} Evict lowest-score entries to the target size, then release spare capacity.\par}
 \vspace{0.10cm}
-{\footnotesize\hyperlink{B13}{\textbf{Eq. (8): Multi-turn Conversation}}\quad
-\hyperlink{B25}{\textbf{Eq. (9): Document QA}}\quad
-\hyperlink{M16}{\textbf{FIFO vs. LRU vs. LCS Results}}\par}
+{\footnotesize\hyperlink{M10}{\textbf{Eq. (8): Multi-turn Conversation}}\quad
+\hyperlink{M11}{\textbf{Eq. (9): Document QA}}\quad
+\hyperlink{M12}{\textbf{FIFO vs. LRU vs. LCS Results}}\par}
 \slidenote{Sec.~5.5, Eq.~(7)}{}
 \end{frame}
 
-\begin{frame}[t,label=M10]{Real Prototype, Traces, or a Simulator?}
+\begin{frame}[t,label=M10]{How Does LCS Work for Multi-Turn Conversations?}
 \vspace{0.06cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.32\textwidth}
-\card{mintbox}{Actual hardware}{GreenCache is built on LMCache, which uses vLLM and continuous batching. Llama-3 70B: 4$\times$ L40, INT8, up to 16\,TB SSD. Llama-3 8B: 2$\times$ L40, BF16, up to 8\,TB. The Table~1 platform has 512\,GB DDR4.}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{bluebox}{Replayed workload}{ShareGPT and TriviaQA supply text and reuse. Arrivals are Poisson, with rates taken from the Azure LLM trace and scaled to this machine. CI comes from CarbonCast for FR, FI, ES, and CISO.}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{lilacbox}{Carbon model}{CPU power from RAPL and GPU power from pyNVML, every 1\,ms. SSD and DRAM power come from specifications. Embodied carbon is an ACT-style accounting model, amortized over allocation time.}
-\end{column}
-\end{columns}
+\begin{column}{0.55\textwidth}
+{\small\bfseries\color{Accent}ShareGPT: task-specific Equation (8)}\par
 \vspace{0.12cm}
-\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.14cm]{mintbox}
-{\small No standalone GPU-serving simulator is reported. GreenCache extends LMCache/vLLM and evaluates measured serving behavior with realistic traces and carbon models.\par}
-\end{beamercolorbox}
-\vspace{0.08cm}
-{\footnotesize Resizing allocates or releases cloud SSD capacity. It is not a measurement of physically installing or removing drives, and it is not a direct measurement of factory emissions at each resize.\par}
-\slidenote{Secs.~5.2--5.4, 6.1}{\nav{B14}{Measurement Notes}}
-\end{frame}
-
-\begin{frame}[t,label=M11]{What Are the Evaluation Settings?}
-\vspace{0.08cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
-\card{bluebox}{Models}{Llama-3 70B (INT8, 4$\times$ L40) and Llama-3 8B (BF16, 2$\times$ L40). Different GPU counts and precisions, so the two models are not an apples-to-apples pair. Context window 8k tokens; longer context is truncated.}
-\vspace{0.10cm}
-\card{lilacbox}{Workloads}{ShareGPT multi-turn conversation. TriviaQA document comprehension at Zipf skewness $\alpha=0.4$ and $\alpha=0.7$. Hourly CI and hourly cache decisions.}
-\end{column}
-\begin{column}{0.49\textwidth}
-\card{mintbox}{Baselines}{\textbf{No Cache:} vLLM, no context cache. \textbf{Full Cache:} the maximum configured capacity. \textbf{GreenCache:} adaptive capacity plus LCS. Full Cache and GreenCache share the same maximum.}
-\vspace{0.10cm}
-\card{bluebox}{Metrics}{Total carbon per prompt. TTFT and TPOT SLO attainment, shown as P90 against the threshold. Cache capacity over the day. Token-level cache hit rate in the replacement study.}
-\end{column}
-\end{columns}
+{\large $\displaystyle \mathrm{Score}_{\mathrm{chat}}=\frac{\mathrm{CurTurn}\times\#\mathrm{AccuToken}}{\mathrm{Size}\times\mathrm{Age}}$\par}
+\vspace{0.18cm}
+{\footnotesize\textbf{CurTurn} --- Current conversation turn index. Later turns typically rely on longer prior contexts; deeper conversations are favored, all else equal.\par}
 \vspace{0.12cm}
-{\small Target attainment is 90\% for TTFT and, separately, 90\% for TPOT. Threshold values and the trace-scaling procedure are in the backup.\par}
-\slidenote{Sec.~6.1}{\nav{B11}{SLO Thresholds}}
-\end{frame}
-
-\begin{frame}[t,label=M12]{Q1: Does GreenCache Reduce Carbon?}
-\vspace{0.02cm}
-{\small Question: can adaptive capacity beat a fixed full cache on total carbon? Bars: No Cache, GreenCache, Full Cache. Blue labels are the GreenCache size in TB. Llama-3 70B.\par}
-\vspace{0.02cm}
-{\centering\gcpart{12}{3.70cm}{0 462.78bp 0 0}\par\vspace{0.02cm}\gcpart{12}{0.32cm}{0 0 0 843.64bp}\par}
-\vspace{0.04cm}
-{\small Versus \textbf{Full Cache}, averaged over FR, FI, ES, and CISO: multi-turn \textbf{12.6\%}, document $\alpha=0.4$ \textbf{9.4\%}, document $\alpha=0.7$ \textbf{5.6\%}. These are not the FR-only 15.1\%.\par}
-\vspace{0.02cm}
-{\small\textbf{GreenCache lowers carbon by provisioning less cache when full capacity is unnecessary.} No Cache is sometimes lower still, and the next slide shows why that is not an acceptable point.\par}
-\slidenote{Sec.~6.2, Fig.~12a}{\nav{B15}{Llama-3 8B}}
-\end{frame}
-
-\begin{frame}[t,label=M13]{Q2: Does GreenCache Still Meet SLOs?}
-\vspace{0.02cm}
-{\small Question: is the carbon saving bought with unacceptable latency? P90 below the dashed threshold means at least 90\% attainment. Llama-3 70B.\par}
-\vspace{0.02cm}
-{\centering\gcpart{13}{2.60cm}{0 435.69bp 0 0}\par\vspace{0.02cm}\gcpart{13}{0.32cm}{0 0 0 833.90bp}\par}
-\vspace{0.04cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.33\textwidth}
-\card{bluebox}{Thresholds}{Multi-turn TTFT 2.5\,s, TPOT 0.2\,s. Document TTFT is 15\,s. Fig.~13 keeps the 0.2\,s TPOT line.}
+{\footnotesize\textbf{\#AccuToken} --- Accumulated reused tokens across turns. More accumulated reuse means more avoided prefill computation.\par}
+\vspace{0.12cm}
+{\footnotesize\textbf{Size / Age} --- The same storage-footprint and time-in-storage penalties as Equation (7).\par}
 \end{column}
-\begin{column}{0.33\textwidth}
-\card{mintbox}{GreenCache}{P90 sits slightly above Full Cache and stays under both lines in these plots.}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{lilacbox}{No Cache}{P90 crosses the lines often, so the lower-carbon point is not viable.}
-\end{column}
-\end{columns}
+\begin{column}{0.43\textwidth}
+{\centering\small\bfseries\color{Accent}History KV reuse across turns\par}
 \vspace{0.06cm}
-{\small\textbf{Lower carbon counts only when the serving constraints hold.}\par}
-\slidenote{Secs.~6.1--6.2, Fig.~13a}{\nav{B16}{8B Timelines}}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center},box/.style={draw=Accent,rounded corners=2pt,text width=5.4cm,minimum height=0.76cm}]
+\node[box] (t1) at (0,0) {\textbf{Turn 1}\\Build reusable history KV};
+\node[box] (t2) at (0,-1.12) {\textbf{Turn 2}\\Reuse matching prior-context KV};
+\node[box] (t3) at (0,-2.24) {\textbf{Turn 3}\\Reuse a longer matching history};
+\draw[->,thick,Accent] (t1) -- (t2);
+\draw[->,thick,Accent] (t2) -- (t3);
+\end{tikzpicture}\par
+\vspace{0.08cm}
+{\scriptsize Reuse requires matching, retained KV. New tokens still need computation; hits are not guaranteed.\par}
+\end{column}
+\end{columns}
+\vspace{0.15cm}
+{\footnotesize\textbf{Conversation-specific LCS prioritizes conversation depth and accumulated token reuse.}\par}
+\vspace{0.08cm}
+{\scriptsize Scores are proxies, not gCO$_2$e; they do not multiply by current CI. No separate Eq.~(7) vs.~(8) vs.~(9) ablation is reported.\par}
+\vspace{0.12cm}
+{\footnotesize\hyperlink{M09}{\textbf{Back to General LCS}}\quad
+\hyperlink{M11}{\textbf{Document QA Score}}\quad
+\hyperlink{M12}{\textbf{LCS Evaluation}}\quad\hyperlink{B13}{\textbf{Detailed Multi-turn Example}}\par}
+\slidenote{Sec.~5.5, Eq.~(8); Sec.~6.3.2}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
-\begin{frame}[t,label=M14]{Q3: Does Capacity Track Load and CI?}
-\vspace{0.02cm}
-{\small Llama-3 70B, multi-turn. Normalized CI and request rate, carbon per prompt, and the chosen cache size.\par}
-\vspace{0.02cm}
-{\centering\gcpart{14}{4.30cm}{0 605.06bp 0 0}\par\vspace{0.02cm}\gcpart{14}{0.32cm}{0 0 0 1151.11bp}\par}
-\vspace{0.04cm}
-{\small On \textbf{FR, multi-turn, versus Full Cache}: average reduction \textbf{15.1\%}, maximum \textbf{25.3\%}. At 12\,AM the paper reports 15\,TB less SSD than Full Cache. High load still pushes capacity up. CISO, the higher-CI grid, keeps more cache.\par}
-\slidenote{Sec.~6.2, Fig.~14a}{\nav{B17}{Document Timeline}}
+\begin{frame}[t,label=M11]{How Does LCS Work for Document QA?}
+\vspace{0.06cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.55\textwidth}
+{\small\bfseries\color{Accent}TriviaQA: task-specific Equation (9)}\par
+\vspace{0.12cm}
+{\large $\displaystyle \mathrm{Score}_{\mathrm{doc}}=\frac{\#\mathrm{Hit}\times\mathrm{AccuDocLen}}{\mathrm{Size}\times\mathrm{Age}}$\par}
+\vspace{0.18cm}
+{\footnotesize\textbf{\#Hit} --- Document cache hits across questions. Frequently reused documents receive higher priority.\par}
+\vspace{0.12cm}
+{\footnotesize\textbf{AccuDocLen} --- Accumulated length of reused document content. More reused document context means more avoided prefill work.\par}
+\vspace{0.12cm}
+{\footnotesize\textbf{Size / Age} --- The same storage-footprint and time-in-storage penalties as Equation (7).\par}
+\end{column}
+\begin{column}{0.43\textwidth}
+{\centering\small\bfseries\color{Accent}One document, multiple questions\par}
+\vspace{0.06cm}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center}]
+\node[draw=Accent,rounded corners=2pt,text width=4.8cm,minimum height=1cm] (doc) at (0,0) {\textbf{Shared Document}\\Cached Document KV};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q1) at (-2,-2) {Question 1};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q2) at (0,-2) {Question 2};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q3) at (2,-2) {Question 3};
+\draw[->,thick,Accent] (doc.south) -- (q1.north);
+\draw[->,thick,Accent] (doc.south) -- (q2.north);
+\draw[->,thick,Accent] (doc.south) -- (q3.north);
+\node[fill=Paper,inner sep=2pt] at (0,-1.1) {Reuse the same document prefix};
+\end{tikzpicture}\par
+\vspace{0.08cm}
+{\scriptsize Matching retained document KV is reused; each question's new tokens still need computation.\par}
+\end{column}
+\end{columns}
+\vspace{0.15cm}
+{\footnotesize\textbf{Document-specific LCS prioritizes frequently reused documents and accumulated reused content.}\par}
+\vspace{0.08cm}
+{\footnotesize TriviaQA $\alpha=0.4$ and $\alpha=0.7$ both use Eq.~(9): different document-access distributions, not different formulas.\par}
+\vspace{0.12cm}
+{\footnotesize\hyperlink{M09}{\textbf{Back to General LCS}}\quad
+\hyperlink{M10}{\textbf{Multi-turn Score}}\quad
+\hyperlink{M12}{\textbf{Replacement Results}}\quad\hyperlink{B25}{\textbf{Detailed Document Example}}\par}
+\slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
-\begin{frame}[t,label=M15]{Q4: Does Adaptive Sizing Help?}
-\vspace{0.04cm}
-{\small Ablation: LMCache's LRU plus GreenCache's adaptive capacity (``LRU + Optimal''), versus Full Cache. ES grid average CI, 124\,gCO$_2$e/kWh. Llama-3 70B.\par}
-\vspace{0.04cm}
-{\centering\gcimg{15}{3.45cm}\par}
-\vspace{0.04cm}
-\point{Capacity alone}{Without LCS, resizing still beats Full Cache: up to 10.3\% on multi-turn, and 6.6--9.9\% on document QA.}
-\point{Load eats the margin}{The solver grows the cache to hold the SLO. ``Optimal'' means the profiled adaptive size, not a global-optimum proof.}
-\point{Next}{Whether LCS improves token reuse is a separate measurement.\par}
-\slidenote{Sec.~6.3.1, Fig.~15}{\nav{B09}{Profiling Heatmaps}}
-\end{frame}
-
-\begin{frame}[t,label=M16]{Does LCS Outperform FIFO and LRU?}
+\begin{frame}[t,label=M12]{Does LCS Outperform FIFO and LRU?}
 \vspace{0.04cm}
 {\footnotesize\textbf{FIFO:} Evict the earliest inserted entry.\quad
 \textbf{LRU:} Evict the least recently used entry.\\
 \textbf{LCS:} Evict the entry with the lowest LCS score.\par}
 \vspace{0.08cm}
 {\footnotesize\hyperlink{M09}{\textbf{LCS General Score}}\quad
-\hyperlink{B13}{\textbf{Multi-turn Score}}\quad
-\hyperlink{B25}{\textbf{Document QA Score}}\hfill Table 3: Llama-3 70B\par}
+\hyperlink{M10}{\textbf{Multi-turn Score}}\quad
+\hyperlink{M11}{\textbf{Document QA Score}}\quad\hyperlink{B13}{\textbf{Chat Example}}\quad\hyperlink{B25}{\textbf{Doc Example}}\hfill Llama-3 70B\par}
 \vspace{0.08cm}
 {\centering\renewcommand{\arraystretch}{1.08}\small
 \begin{tabular}{lccccccccc}
@@ -420,7 +406,106 @@ Size & \multicolumn{3}{c}{ShareGPT} & \multicolumn{3}{c}{TriviaQA $\alpha=0.4$} 
 \slidenote{Sec.~6.3.2, Table~3. Token reuse, not measured CO$_2$ savings.}{}
 \end{frame}
 
-\begin{frame}[t,label=M17]{Conclusion and Limitations}
+\begin{frame}[t,label=M13]{Real Prototype, Traces, or a Simulator?}
+\vspace{0.06cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.32\textwidth}
+\card{mintbox}{Actual hardware}{GreenCache is built on LMCache, which uses vLLM and continuous batching. Llama-3 70B: 4$\times$ L40, INT8, up to 16\,TB SSD. Llama-3 8B: 2$\times$ L40, BF16, up to 8\,TB. The Table~1 platform has 512\,GB DDR4.}
+\end{column}
+\begin{column}{0.32\textwidth}
+\card{bluebox}{Replayed workload}{ShareGPT and TriviaQA supply text and reuse. Arrivals are Poisson, with rates taken from the Azure LLM trace and scaled to this machine. CI comes from CarbonCast for FR, FI, ES, and CISO.}
+\end{column}
+\begin{column}{0.32\textwidth}
+\card{lilacbox}{Carbon model}{CPU power from RAPL and GPU power from pyNVML, every 1\,ms. SSD and DRAM power come from specifications. Embodied carbon is an ACT-style accounting model, amortized over allocation time.}
+\end{column}
+\end{columns}
+\vspace{0.12cm}
+\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.14cm]{mintbox}
+{\small No standalone GPU-serving simulator is reported. GreenCache extends LMCache/vLLM and evaluates measured serving behavior with realistic traces and carbon models.\par}
+\end{beamercolorbox}
+\vspace{0.08cm}
+{\footnotesize Resizing allocates or releases cloud SSD capacity. It is not a measurement of physically installing or removing drives, and it is not a direct measurement of factory emissions at each resize.\par}
+\slidenote{Secs.~5.2--5.4, 6.1}{\nav{B14}{Measurement Notes}}
+\end{frame}
+
+\begin{frame}[t,label=M14]{What Are the Evaluation Settings?}
+\vspace{0.08cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+\card{bluebox}{Models}{Llama-3 70B (INT8, 4$\times$ L40) and Llama-3 8B (BF16, 2$\times$ L40). Different GPU counts and precisions, so the two models are not an apples-to-apples pair. Context window 8k tokens; longer context is truncated.}
+\vspace{0.10cm}
+\card{lilacbox}{Workloads}{ShareGPT multi-turn conversation. TriviaQA document comprehension at Zipf skewness $\alpha=0.4$ and $\alpha=0.7$. Hourly CI and hourly cache decisions.}
+\end{column}
+\begin{column}{0.49\textwidth}
+\card{mintbox}{Baselines}{\textbf{No Cache:} vLLM, no context cache. \textbf{Full Cache:} the maximum configured capacity. \textbf{GreenCache:} adaptive capacity plus LCS. Full Cache and GreenCache share the same maximum.}
+\vspace{0.10cm}
+\card{bluebox}{Metrics}{Total carbon per prompt. TTFT and TPOT SLO attainment, shown as P90 against the threshold. Cache capacity over the day. Token-level cache hit rate in the replacement study.}
+\end{column}
+\end{columns}
+\vspace{0.12cm}
+{\small Target attainment is 90\% for TTFT and, separately, 90\% for TPOT. Threshold values and the trace-scaling procedure are in the backup.\par}
+\slidenote{Sec.~6.1}{\nav{B11}{SLO Thresholds}}
+\end{frame}
+
+\begin{frame}[t,label=M15]{Q1: Does GreenCache Reduce Carbon?}
+\vspace{0.02cm}
+{\small Question: can adaptive capacity beat a fixed full cache on total carbon? Bars: No Cache, GreenCache, Full Cache. Blue labels are the GreenCache size in TB. Llama-3 70B.\par}
+\vspace{0.02cm}
+{\centering\gcpart{12}{3.70cm}{0 462.78bp 0 0}\par\vspace{0.02cm}\gcpart{12}{0.32cm}{0 0 0 843.64bp}\par}
+\vspace{0.04cm}
+{\small Versus \textbf{Full Cache}, averaged over FR, FI, ES, and CISO: multi-turn \textbf{12.6\%}, document $\alpha=0.4$ \textbf{9.4\%}, document $\alpha=0.7$ \textbf{5.6\%}. These are not the FR-only 15.1\%.\par}
+\vspace{0.02cm}
+{\small\textbf{GreenCache lowers carbon by provisioning less cache when full capacity is unnecessary.} No Cache is sometimes lower still, and the next slide shows why that is not an acceptable point.\par}
+\slidenote{Sec.~6.2, Fig.~12a}{\nav{B15}{Llama-3 8B}}
+\end{frame}
+
+\begin{frame}[t,label=M16]{Q2: Does GreenCache Still Meet SLOs?}
+\vspace{0.02cm}
+{\small Question: is the carbon saving bought with unacceptable latency? P90 below the dashed threshold means at least 90\% attainment. Llama-3 70B.\par}
+\vspace{0.02cm}
+{\centering\gcpart{13}{2.60cm}{0 435.69bp 0 0}\par\vspace{0.02cm}\gcpart{13}{0.32cm}{0 0 0 833.90bp}\par}
+\vspace{0.04cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.33\textwidth}
+\card{bluebox}{Thresholds}{Multi-turn TTFT 2.5\,s, TPOT 0.2\,s. Document TTFT is 15\,s. Fig.~13 keeps the 0.2\,s TPOT line.}
+\end{column}
+\begin{column}{0.33\textwidth}
+\card{mintbox}{GreenCache}{P90 sits slightly above Full Cache and stays under both lines in these plots.}
+\end{column}
+\begin{column}{0.32\textwidth}
+\card{lilacbox}{No Cache}{P90 crosses the lines often, so the lower-carbon point is not viable.}
+\end{column}
+\end{columns}
+\vspace{0.06cm}
+{\small\textbf{Lower carbon counts only when the serving constraints hold.}\par}
+\slidenote{Secs.~6.1--6.2, Fig.~13a}{\nav{B16}{8B Timelines}}
+\end{frame}
+
+\begin{frame}[t,label=M17]{Q3: Does Capacity Track Load and CI?}
+\vspace{0.02cm}
+{\small Llama-3 70B, multi-turn. Normalized CI and request rate, carbon per prompt, and the chosen cache size.\par}
+\vspace{0.02cm}
+{\centering\gcpart{14}{4.30cm}{0 605.06bp 0 0}\par\vspace{0.02cm}\gcpart{14}{0.32cm}{0 0 0 1151.11bp}\par}
+\vspace{0.04cm}
+{\small On \textbf{FR, multi-turn, versus Full Cache}: average reduction \textbf{15.1\%}, maximum \textbf{25.3\%}. At 12\,AM the paper reports 15\,TB less SSD than Full Cache. High load still pushes capacity up. CISO, the higher-CI grid, keeps more cache.\par}
+\slidenote{Sec.~6.2, Fig.~14a}{\nav{B17}{Document Timeline}}
+\end{frame}
+
+\begin{frame}[t,label=M18]{Q4: Does Adaptive Sizing Help?}
+\vspace{0.04cm}
+{\small Ablation: LMCache's LRU plus GreenCache's adaptive capacity (``LRU + Optimal''), versus Full Cache. ES grid average CI, 124\,gCO$_2$e/kWh. Llama-3 70B.\par}
+\vspace{0.04cm}
+{\centering\gcimg{15}{3.45cm}\par}
+\vspace{0.04cm}
+\point{Capacity alone}{Without LCS, resizing still beats Full Cache: up to 10.3\% on multi-turn, and 6.6--9.9\% on document QA.}
+\point{Load eats the margin}{The solver grows the cache to hold the SLO. ``Optimal'' means the profiled adaptive size, not a global-optimum proof.}
+\point{Next}{Whether LCS improves token reuse is a separate measurement.\par}
+\slidenote{Sec.~6.3.1, Fig.~15}{\nav{B09}{Profiling Heatmaps}}
+\end{frame}
+
+
+
+\begin{frame}[t,label=M19]{Conclusion and Limitations}
 \vspace{0.06cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
@@ -461,7 +546,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
 {\small\raggedright
-\textbf{Is it a simulator?} \nav{M10}{M10} \nav{B14}{Notes}\par
+\textbf{Is it a simulator?} \nav{M13}{M13} \nav{B14}{Notes}\par
 \vspace{0.08cm}
 \textbf{System walkthrough} \nav{M05}{1/2} \nav{M06}{2/2}\par
 \vspace{0.06cm}
@@ -473,12 +558,12 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 {\small\raggedright
 \textbf{8B and the other task} \nav{B15}{Fig.~12} \nav{B17}{Fig.~14b}\par
 \vspace{0.08cm}
-\textbf{LCS:} \nav{M09}{General} \nav{B13}{Chat} \nav{B25}{Doc QA} \nav{M16}{Results}\par
+\textbf{LCS:} \nav{M09}{General} \nav{M10}{Chat} \nav{M11}{Doc QA} \nav{M12}{Results}\par
 \vspace{0.08cm}
 \textbf{What we would not claim} \nav{B23}{Limits}\par}
 \end{column}
 \end{columns}
-\back{M17}
+\back{M19}
 \end{frame}
 
 \section{Background}
@@ -627,7 +712,7 @@ C = E\times\mathrm{CI} + \frac{T}{\mathrm{LT}}\left(C_{e,\mathrm{Cache}}+C_{e,\m
 \point{Read the colors carefully}{TTFT and TPOT: lower is better. The carbon-savings panel is higher-better. The paper defines that ratio as no-cache over cached, so a value \textbf{above 1 is a benefit}. This is the opposite direction from Fig.~8, where a ratio below 1 is a reduction.}
 \point{The pattern used by the solver}{Large caches help latency, especially at higher rate. At low rate a large cache can sit below 1 on the savings panel.\par}
 \slidenote{Sec.~5.2, Fig.~11}{}
-\back[\nav{M15}{Main \ref*{M15}} \nav{M08}{Solver} \nav{B10}{Next}]{M05}
+\back[\nav{M18}{Main \ref*{M18}} \nav{M08}{Solver} \nav{B10}{Next}]{M05}
 \end{frame}
 
 \begin{frame}[t,label=B10]{Full ILP and Variables}
@@ -723,7 +808,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \vspace{0.06cm}
 {\scriptsize\textbf{\color{Accent}Unresolved 8B document TTFT.}\; Section~6.1 relaxes that threshold to 2.5\,s. The dashed line on that Fig.~13 panel is drawn at 4.0\,s. Both are shown; this deck does not pick one. A P90 curve under the drawn threshold is the paper's picture of at least 90\% attainment.\par}
 \slidenote{Sec.~5.4, Eq.~(6), Sec.~6.1, Fig.~13}{}
-\back[\nav{M06}{Arch.} \nav{M11}{Settings} \nav{B12}{Next}]{M08}
+\back[\nav{M06}{Arch.} \nav{M14}{Settings} \nav{B12}{Next}]{M08}
 \end{frame}
 
 \begin{frame}[t,label=B12]{Load Forecast and Carbon-Intensity Forecast}
@@ -737,44 +822,34 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \back[\nav{M07}{Solver} \nav{B13}{Next}]{M05}
 \end{frame}
 
-\begin{frame}[t,label=B13]{How Does LCS Work for Multi-Turn Conversations?}
-\vspace{0.06cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.55\textwidth}
-{\small\bfseries\color{Accent}ShareGPT: task-specific Equation (8)}\par
-\vspace{0.12cm}
-{\large $\displaystyle \mathrm{Score}_{\mathrm{chat}}=\frac{\mathrm{CurTurn}\times\#\mathrm{AccuToken}}{\mathrm{Size}\times\mathrm{Age}}$\par}
-\vspace{0.18cm}
-{\footnotesize\textbf{CurTurn} --- Current conversation turn index. Later turns typically rely on longer prior contexts; deeper conversations are favored, all else equal.\par}
-\vspace{0.12cm}
-{\footnotesize\textbf{\#AccuToken} --- Accumulated reused tokens across turns. More accumulated reuse means more avoided prefill computation.\par}
-\vspace{0.12cm}
-{\footnotesize\textbf{Size / Age} --- The same storage-footprint and time-in-storage penalties as Equation (7).\par}
-\end{column}
-\begin{column}{0.43\textwidth}
-{\centering\small\bfseries\color{Accent}History KV reuse across turns\par}
-\vspace{0.06cm}
-\centering
-\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center},box/.style={draw=Accent,rounded corners=2pt,text width=5.4cm,minimum height=0.76cm}]
-\node[box] (t1) at (0,0) {\textbf{Turn 1}\\Build reusable history KV};
-\node[box] (t2) at (0,-1.12) {\textbf{Turn 2}\\Reuse matching prior-context KV};
-\node[box] (t3) at (0,-2.24) {\textbf{Turn 3}\\Reuse a longer matching history};
-\draw[->,thick,Accent] (t1) -- (t2);
-\draw[->,thick,Accent] (t2) -- (t3);
-\end{tikzpicture}\par
-\vspace{0.08cm}
-{\scriptsize Reuse requires matching, retained KV. New tokens still need computation; hits are not guaranteed.\par}
-\end{column}
-\end{columns}
-\vspace{0.15cm}
-{\footnotesize\textbf{Methodology:} Conversation-specific LCS replaces the general numerator with conversation depth and accumulated reused tokens.\par}
-\vspace{0.08cm}
-{\scriptsize Scores are proxies, not gCO$_2$e; they do not multiply by current CI. No separate Eq.~(7) vs.~(8) vs.~(9) ablation is reported.\par}
-\vspace{0.12cm}
-{\footnotesize\hyperlink{M09}{\textbf{Back to General LCS}}\quad
-\hyperlink{B25}{\textbf{Document QA Score}}\quad
-\hyperlink{M16}{\textbf{LCS Evaluation}}\par}
-\slidenote{Sec.~5.5, Eq.~(8); Sec.~6.3.2}{\nav{INDEX}{Discussion Index}}
+\begin{frame}[t,label=B13]{Detailed Multi-turn LCS Example}
+\vspace{0.04cm}
+{\centering\Large $\displaystyle \mathrm{Score}_{\mathrm{chat}}=\frac{\mathrm{CurTurn}\times\#\mathrm{AccuToken}}{\mathrm{Size}\times\mathrm{Age}}$\quad{\small Eq.~(8)}\par}
+\vspace{0.04cm}
+{\small\textbf{CurTurn:} Current turn index; deeper conversations tend to reuse longer history.\\
+\textbf{\#AccuToken:} Total tokens reused across turns, indicating avoided prefill work.\\
+\textbf{Size:} SSD footprint.\quad\textbf{Age:} Time stored, not time since the last hit.\par}
+\vspace{0.04cm}
+{\small\bfseries\color{Accent}Hypothetical entries --- illustrative values, not paper measurements}\par
+{\centering\small\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{lrrrrl}
+\toprule
+Entry & CurTurn & \#AccuToken & Size (GiB) & Age (h) & Score\\
+\midrule
+A & 2 & 200 & 1 & 2 & $2\times200/(1\times2)=200$\\
+B & 4 & 200 & 1 & 2 & $4\times200/(1\times2)=400$\\
+C & 4 & 600 & 2 & 2 & $4\times600/(2\times2)=600$\\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.04cm}
+{\footnotesize\textbf{A vs. B:} Doubling turn depth doubles the score, all else equal.\\
+\textbf{B vs. C:} Three times the accumulated reuse outweighs twice the storage cost.\\
+\textbf{Evict A first:} It has the lowest score. Deeper history and greater reuse favor retention.\par}
+\vspace{0.04cm}
+{\footnotesize This is a heuristic, not measured CO$_2$. Use consistent units; the example does not predict a real workload's hit rate.\par}
+\vspace{0.04cm}
+{\footnotesize\hyperlink{M10}{\textbf{Back to M10}}\quad\hyperlink{M09}{\textbf{General LCS M09}}\quad\hyperlink{M11}{\textbf{Document QA M11}}\quad\hyperlink{M12}{\textbf{Table 3 M12}}\par}
+\slidenote{Sec.~5.5, Eq.~(8). Numerical example is illustrative.}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
 \section{Evaluation}
@@ -785,7 +860,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Time and grid}{Azure LLM inference trace, downscaled so the peak fits this server's sustainable throughput. Main carbon run uses variable CI on 6 July 2022. Ablations and SSD sensitivities use the ES average, 124\,gCO$_2$e/kWh, and fixed rates of 1.5 prompts/s (multi-turn) or 0.2 (document) where Sec.~6.6 says so.}
 \point{Power}{CPU: RAPL. GPU: pyNVML at 1\,ms. SSD and DRAM: specification power, because those parts expose no direct measurement interface in the paper.\par}
 \slidenote{Secs.~3, 5.2, 6.1, 6.6}{}
-\back[\nav{B15}{Next}]{M10}
+\back[\nav{B15}{Next}]{M13}
 \end{frame}
 
 \begin{frame}[t,label=B15]{Figure 12b: Llama-3 8B Carbon}
@@ -798,7 +873,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Do not stack this on the 70B bars}{8B uses 2$\times$ L40, BF16, and an 8\,TB maximum. 70B uses 4$\times$ L40, INT8, and 16\,TB.}
 \point{Legend}{The strip above is the original Fig.~12 legend: gray No Cache, green GreenCache, tan Full Cache. Blue numbers are cache size in TB.\par}
 \slidenote{Sec.~6.2, Fig.~12b. Legend viewport is the original top strip.}{}
-\back[\nav{B16}{Next}]{M12}
+\back[\nav{B16}{Next}]{M15}
 \end{frame}
 
 \begin{frame}[t,label=B16]{Figure 13b: Llama-3 8B SLO Timelines}
@@ -811,7 +886,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Document TTFT is unresolved}{The text sets 2.5\,s. The dashed line in these document panels is at 4.0\,s. TPOT in the figure is drawn at 0.15\,s.}
 \point{Reading P90}{Staying under the dashed line is the paper's $\ge 90\%$ attainment test. The 70B half of this figure is on the main slide.\par}
 \slidenote{Secs.~6.1--6.2, Fig.~13b}{}
-\back[\nav{B17}{Next}]{M13}
+\back[\nav{B17}{Next}]{M16}
 \end{frame}
 
 \begin{frame}[t,label=B17]{Figure 14b: Document Timeline, $\alpha=0.4$}
@@ -824,7 +899,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Less room to shrink}{When the SLO already needs a large cache, embodied-carbon savings get smaller. That is why this task saves less than multi-turn at the same hours of high load.}
 \point{Legend}{Red CI, dashed orange request rate, brown Full Cache CO$_2$, dashed green GreenCache CO$_2$, blue bars cache size in TB. The FR 15.1\% / 25.3\% numbers belong to multi-turn, Fig.~14a, not to this panel.\par}
 \slidenote{Sec.~6.2, Fig.~14}{}
-\back[\nav{B18}{Next}]{M14}
+\back[\nav{B18}{Next}]{M17}
 \end{frame}
 
 \begin{frame}[t,label=B18]{Solver Time per Resize}
@@ -869,7 +944,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Direction}{A 3-year life raises amortized SSD carbon, so shrinking the cache is worth more: the paper reports up to 11.9\% savings in this study. A longer life makes the same resize less valuable.}
 \point{Markers}{The figure includes No Cache and a Fail-SLO marker. A low bar that fails the SLO is not counted as the GreenCache result.\par}
 \slidenote{Sec.~6.6.2, Fig.~19}{}
-\back[\nav{B22}{Next}]{M17}
+\back[\nav{B22}{Next}]{M19}
 \end{frame}
 
 \begin{frame}[t,label=B22]{SSD Embodied Carbon Is an Assumption}
@@ -880,7 +955,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Reported end point}{At 90\,kgCO$_2$e/TB, GreenCache's saving versus the full cache reaches up to 25\% in this sensitivity. Heavier SSD carbon makes the adaptive shrink more valuable.}
 \point{What this does not measure}{The bars are the accounting model under a changed emission factor. They are not a second hardware campaign.\par}
 \slidenote{Sec.~6.6.3, Fig.~20, Table~1}{}
-\back[\nav{B23}{Next}]{M17}
+\back[\nav{B23}{Next}]{M19}
 \end{frame}
 
 \begin{frame}[t,label=B23]{Limits, and What We Would Not Claim}
@@ -891,7 +966,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Possible extension / our interpretation}{A carbon-aware decision about how much fast memory to provision could inform HBM or HBF hierarchy design. Nothing in this paper measures HBM or HBF, and the 15.1\% result does not transfer to that hardware.\par}
 \point{Eviction boundary}{Discarding SSD KV entries does not move all KV back into GPU HBM. Solver sets capacity; LCS selects replacements.}
 \slidenote{Secs.~5.5, 7. The HBF sentence is our research note.}{}
-\back{M17}
+\back{M19}
 \end{frame}
 
 \section{Method}
@@ -908,47 +983,34 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \end{frame}
 
 
-\begin{frame}[t,label=B25]{How Does LCS Work for Document QA?}
-\vspace{0.06cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.55\textwidth}
-{\small\bfseries\color{Accent}TriviaQA: task-specific Equation (9)}\par
-\vspace{0.12cm}
-{\large $\displaystyle \mathrm{Score}_{\mathrm{doc}}=\frac{\#\mathrm{Hit}\times\mathrm{AccuDocLen}}{\mathrm{Size}\times\mathrm{Age}}$\par}
-\vspace{0.18cm}
-{\footnotesize\textbf{\#Hit} --- Document cache hits across questions. Frequently reused documents receive higher priority.\par}
-\vspace{0.12cm}
-{\footnotesize\textbf{AccuDocLen} --- Accumulated length of reused document content. More reused document context means more avoided prefill work.\par}
-\vspace{0.12cm}
-{\footnotesize\textbf{Size / Age} --- The same storage-footprint and time-in-storage penalties as Equation (7).\par}
-\end{column}
-\begin{column}{0.43\textwidth}
-{\centering\small\bfseries\color{Accent}One document, multiple questions\par}
-\vspace{0.06cm}
-\centering
-\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center}]
-\node[draw=Accent,rounded corners=2pt,text width=4.8cm,minimum height=1cm] (doc) at (0,0) {\textbf{Shared Document}\\Cached Document KV};
-\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q1) at (-2,-2) {Question 1};
-\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q2) at (0,-2) {Question 2};
-\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q3) at (2,-2) {Question 3};
-\draw[->,thick,Accent] (doc.south) -- (q1.north);
-\draw[->,thick,Accent] (doc.south) -- (q2.north);
-\draw[->,thick,Accent] (doc.south) -- (q3.north);
-\node[fill=Paper,inner sep=2pt] at (0,-1.1) {Reuse the same document prefix};
-\end{tikzpicture}\par
-\vspace{0.08cm}
-{\scriptsize Matching retained document KV is reused; each question's new tokens still need computation.\par}
-\end{column}
-\end{columns}
-\vspace{0.15cm}
-{\footnotesize\textbf{Different reuse patterns:} Chat uses $\mathrm{CurTurn}\times\#\mathrm{AccuToken}$ as history grows; document QA uses $\#\mathrm{Hit}\times\mathrm{AccuDocLen}$ across questions on the same document.\par}
-\vspace{0.08cm}
-{\footnotesize TriviaQA $\alpha=0.4$ and $\alpha=0.7$ both use Eq.~(9): different document-access distributions, not different formulas.\par}
-\vspace{0.12cm}
-{\footnotesize\hyperlink{M09}{\textbf{Back to General LCS}}\quad
-\hyperlink{B13}{\textbf{Multi-turn Score}}\quad
-\hyperlink{M16}{\textbf{Replacement Results}}\par}
-\slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{INDEX}{Discussion Index}}
+\begin{frame}[t,label=B25]{Detailed Document QA LCS Example}
+\vspace{0.04cm}
+{\centering\Large $\displaystyle \mathrm{Score}_{\mathrm{doc}}=\frac{\#\mathrm{Hit}\times\mathrm{AccuDocLen}}{\mathrm{Size}\times\mathrm{Age}}$\quad{\small Eq.~(9)}\par}
+\vspace{0.04cm}
+{\small\textbf{\#Hit:} Document reuse events across questions, not a token count.\\
+\textbf{AccuDocLen:} Total reused document tokens, not the SSD footprint.\\
+\textbf{Size / Age:} Occupied SSD space / time stored; both penalize the score.\par}
+\vspace{0.04cm}
+{\small\bfseries\color{Accent}Hypothetical documents --- illustrative values, not paper measurements}\par
+{\centering\small\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{lrrrrl}
+\toprule
+Document & \#Hit & AccuDocLen & Size (GiB) & Age (h) & Score\\
+\midrule
+A & 2 & 1000 & 1 & 2 & $2\times1000/(1\times2)=1000$\\
+B & 4 & 1000 & 1 & 2 & $4\times1000/(1\times2)=2000$\\
+C & 4 & 3000 & 2 & 2 & $4\times3000/(2\times2)=3000$\\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.04cm}
+{\footnotesize\textbf{Evict A first:} Lowest score. More hits (B) or more reused content (C) can justify retention despite a larger footprint.\par}
+\vspace{0.04cm}
+{\footnotesize\textbf{Access skew:} TriviaQA $\alpha=0.7$ concentrates more questions on popular documents than $\alpha=0.4$. Both use Eq.~(9); these toy entries do not simulate either distribution.\par}
+\vspace{0.04cm}
+{\footnotesize The score is a heuristic, not measured CO$_2$ or a token-level hit-rate percentage.\par}
+\vspace{0.04cm}
+{\footnotesize\hyperlink{M11}{\textbf{Back to M11}}\quad\hyperlink{M09}{\textbf{General LCS M09}}\quad\hyperlink{M10}{\textbf{Multi-turn M10}}\quad\hyperlink{M12}{\textbf{Table 3 M12}}\par}
+\slidenote{Sec.~5.5, Eq.~(9); Sec.~6.1. Numerical example is illustrative.}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
 \end{document}

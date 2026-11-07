@@ -33,9 +33,10 @@ def validate(render_dir):
     assert len(frames) == len(doc), (len(frames), len(doc))
     expected = {label: i for i, (label, _, _) in enumerate(frames)}
     main_count = expected['INDEX']
-    assert main_count == 17, main_count
-    assert len(doc) == 44, len(doc)
-    assert expected['B25'] == 43, expected['B25']
+    assert main_count == 19, main_count
+    assert [frames[i][0] for i in range(main_count)] == [f'M{i:02}' for i in range(1, 20)]
+    assert len(doc) == 46, len(doc)
+    assert expected['B25'] == 45, expected['B25']
     section_starts = []
     page_count = 0
     for token in re.finditer(r'\\section\{|\\begin\{frame\}', text):
@@ -100,16 +101,18 @@ def validate(render_dir):
         'M08': ['SLO Constraints', 'Equation (6)', '5.4.2', 'TTFT Attainment',
                 'TPOT Attainment', 'Feasible Cache Sizes', 'mathematical constraints'],
         'M09': ['Solver chooses capacity', 'Accumulated Hit Tokens', 'Time in Storage', 'Higher Eviction Priority',
-                'not a directly measured', 'Grow:', 'Shrink:'],
-        'B13': ['CurTurn', 'AccuToken', 'ShareGPT', 'hits are not guaranteed', 'No separate'],
-        'B25': ['AccuDocLen', 'TriviaQA', '0.4', '0.7', 'not different formulas'],
-        'M10': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
-        'M12': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
-        'M13': ['2.5', '15', 'not viable'],
-        'M14': ['15.1%', '25.3%', '15 TB'],
-        'M16': ['Evict the earliest inserted entry', 'Evict the least recently used entry',
+                'not measured', 'Grow:', 'Shrink:'],
+        'M10': ['CurTurn', 'AccuToken', 'ShareGPT', 'hits are not guaranteed', 'No separate'],
+        'B13': ['Hypothetical', 'CurTurn', 'AccuToken', 'Evict A first', 'heuristic'],
+        'M11': ['AccuDocLen', 'TriviaQA', '0.4', '0.7', 'not different formulas'],
+        'B25': ['Hypothetical', 'AccuDocLen', 'Evict A first', 'Access skew'],
+        'M13': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
+        'M15': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
+        'M16': ['2.5', '15', 'not viable'],
+        'M17': ['15.1%', '25.3%', '15 TB'],
+        'M12': ['Evict the earliest inserted entry', 'Evict the least recently used entry',
                 'Evict the entry with the lowest LCS score', 'reused input tokens', '0.26', '0.35'],
-        'M17': ['OUR INTERPRETATION', 'does not evaluate HBF'],
+        'M19': ['OUR INTERPRETATION', 'does not evaluate HBF'],
         'B09': ['above 1 is a benefit', 'opposite direction'],
         'B10': ['7.03', 'PuLP', 'prefill', 'CBC'],
         'B11': ['does not pick one', '4.0', '90%'],
@@ -120,10 +123,16 @@ def validate(render_dir):
         for needle in needles:
             assert needle in content, (label, needle)
     # All four methodology/result pages link directly to every other page.
-    lcs_labels = ['M09', 'M16', 'B13', 'B25']
+    lcs_labels = ['M09', 'M10', 'M11', 'M12']
     for origin in lcs_labels:
         for target in set(lcs_labels) - {origin}:
             assert expected[target] in graph[expected[origin]], (origin, target)
+    assert [expected[k] for k in lcs_labels] == [8, 9, 10, 11]
+    assert expected['INDEX'] == 19 and expected['B13'] == 33
+    assert text.count(r'\begin{tabular}{lccccccccc}') == 1
+    for backup in ['B13', 'B25']:
+        for main in lcs_labels:
+            assert expected[main] in graph[expected[backup]], (backup, main)
     # Table 3: independently transcribed from the paper, Sec. 6.3.2, PDF 19.
     table3 = [
         '0.05 0.05 0.08 0.05 0.05 0.06 0.10 0.11 0.19',
@@ -132,7 +141,7 @@ def validate(render_dir):
         '0.34 0.40 0.47 0.19 0.20 0.22 0.37 0.38 0.44',
         '0.52 0.69 0.71 0.31 0.32 0.33 0.47 0.52 0.52',
     ]
-    assert re.findall(r'0\.\d{2}', doc[expected['M16']].get_text()) == ' '.join(table3).split()
+    assert re.findall(r'0\.\d{2}', doc[expected['M12']].get_text()) == ' '.join(table3).split()
     files = sorted((ROOT / 'GreenCache-Research-Meeting-2026-11-11/With-Caption').glob('*.png'))
     assert len(files) == 20
     hashes = {}

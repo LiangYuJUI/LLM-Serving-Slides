@@ -1,40 +1,33 @@
 # Visual and scientific QA — 2026-11-11 GreenCache
 
-## Structure and layout
+## Page order and layout
 
-- 17 main slides, 1 discussion index, and 26 backup slides, 44 pages total.
-- PDF 7 and PDF 8 share one conceptual summary, \(S^*=\arg\min_{S\in\mathcal{S}}\widehat{C}_{\mathrm{total}}(S)\), in the same position and size. The line under it says this is a conceptual summary and that the full integer linear program is Equation (6).
-- PDF 7 links each item title to a backup: decision variable and embodied carbon to B10, the candidate set to B24, operational carbon to B07, and model inputs to B12.
+- 19 Main pages + 27 Discussion/Backup pages (including the index) = 46 pages.
+- PDF 9 / M09: general Eq. (7), all variable meanings, lower score means earlier eviction, compact grow/shrink operations, and task-specific implementation distinction.
+- PDF 10 / M10: ShareGPT Eq. (8), conversation depth and accumulated token reuse, three-turn history-KV diagram.
+- PDF 11 / M11: TriviaQA Eq. (9), document hit count and accumulated reused document length, shared-prefix KV diagram. Both alpha settings use Eq. (9).
+- M10 and M11 use identical left/right column widths, formula font size, and formula position.
+- PDF 12 / M12: the single complete Table 3, with FIFO/LRU/LCS definitions and all 45 original numbers. The 4 TB row is bolded; the +9 percentage-point finding concerns token-level hit rate, not request-level hits or carbon reduction.
+- PDF 13–18 retain the prototype, settings, and four experiment pages. Conclusion is PDF 19. No experiment page was removed.
+- Discussion Index is PDF 20. B13 is PDF 34; B25 is PDF 46. Each backup now gives three explicitly hypothetical scoring examples and links to M09–M12.
+- B13 examples yield 200, 400, 600; B25 examples yield 1000, 2000, 3000. All use consistent GiB/hour units and evict A first. These are illustrative calculations, not paper experiments.
+- PDF 1–8 and all seven moved experiment/conclusion pages are pixel-identical above the footer to the pre-task committed baseline. Footers intentionally reflect new page numbers / total 46.
 - PDF 8 separates two groups. Group A is the Equation (6) attainment sums. Group B is labeled as the §5.4.2 modeling assumptions and states that Equation (6) does not list that group as mathematical constraints.
-- B10 (PDF 29) keeps the printed Equation (6), including the other-hardware numerator \(t^{j_t}_{\mathrm{TTFT},i}\) and the wedge between the two sums. It names operational carbon, SSD embodied carbon, and other-hardware embodied carbon, lists Table 2, and keeps PuLP + CBC at 7.03 s. The objective is prefill carbon; decode latency is carried by the TPOT SLO.
-- B11 (PDF 30) shows the TTFT and TPOT binary indicators as separate sums. Each sum is at least 90%. The same requests need not clear both. The 8B document TTFT note still records Section 6.1 at 2.5 s and the Fig. 13 dashed line at 4.0 s.
-- B24 (PDF 43) states the 1 TB grid, the 16 TB / 8 TB maxima, hourly resizing with CI held constant inside the hour, warmed-up LCS profiles, and the effect of prediction and profiling error. Those assumptions are not added to Equation (6).
-- Slides 4 and 5 keep their previous body. Slide 6 adds a Solver link next to the existing ILP and SLO buttons. LCS remains PDF 9. The index is PDF 18. Backup labels B00–B23 follow it, and B24 is PDF 43; the new B25 is PDF 44.
-- Inspected PDF 7, 8, 29, 30, and 43. Formulas, item links, source lines, and navigation sit inside the page. The equation on PDF 30 is clear of the attainment sentence, and the PDF 29 symbol sits above the Table 2 rule.
+- Inspected PDF 9–12, 20, 34, and 46. Formulas, tables, reuse diagrams, and hyperlink labels are legible, with no clipping or overlaps. Main 9–12 are captured in `lcs-main-09-12.png`.
 
-## Validation
+## Build and navigation validation
 
-- Local PDF: two clean pdfLaTeX passes, with no Overfull, undefined-reference, or LaTeX warnings.
-- Extracted Overleaf ZIP: two passes; all 44 rendered pages, text, and link targets match the local PDF.
-- 245 links checked, including main-to-backup return links and reachability of all backup pages.
-- All 20 embedded source figures match the supplied With-Caption PNGs by pixel hash.
-- Build intermediates are created in temporary directories and removed automatically.
+- Local PDF: two clean pdfLaTeX passes; no Overfull, undefined-reference, or LaTeX warnings.
+- Extracted Overleaf ZIP: two passes; all 46 rendered pages, text, and link targets match the local PDF.
+- 263 internal links resolve to real destinations; every backup remains reachable and main-to-backup return links pass.
+- The four Main LCS slides have all 12 directed cross-links. Both detailed backups return to all four Main pages.
+- Validator checks actual PDF destinations for pages 9–12, 20, 34, and 46; Main labels match page numbers. Table 3 appears once, with all 45 values independently checked against paper PDF 19.
+- All 20 embedded paper figures retain their source pixel hashes.
 
 ## Scientific boundaries
 
-- The main-slide formula is a summary of the capacity choice. Equation (6) remains the paper's ILP.
-- TTFT and TPOT each require 90% attainment. The two sums do not force one shared subset of requests to pass both.
-- Group B on PDF 8 is the §5.4.2 modeling assumption set: discrete sizes, an hourly interval with constant CI, and profile-based feasibility.
-- 8B document TTFT remains unresolved: Section 6.1 says 2.5 s while Fig. 13 shows 4.0 s.
-- The HBF discussion remains labeled as our interpretation.
-
-## LCS refactor — 2026-11-08
-
-- M09 / PDF 9: general Eq. (7), all four variable definitions, explicit time-in-storage Age, lowest-score-first rule, compact grow/shrink operations, and clickable links to both task scores and Table 3.
-- M16 / PDF 16: all 45 original Table 3 values retained and verified against the paper (PDF 19); only the 4 TB row is bolded. FIFO/LRU/LCS definitions and token-level hit-rate denominator are explicit. The +9 percentage-point finding and equal 52% result refer to TriviaQA alpha=0.7, not measured carbon savings.
-- B13 / PDF 32: Eq. (8) only; ShareGPT turn depth and accumulated reuse, with a three-turn history-KV diagram. Reuse requires matching retained KV; new tokens still require computation.
-- B25 / PDF 44: Eq. (9) only; three questions reuse one cached document prefix. Both TriviaQA skewness settings use the same score. Layout matches B13.
-- Inspected PDF 9, 16, 18, 32, 42, and 44. Formulas, diagrams, table values, captions, and navigation are legible and do not overlap or clip.
-- The four LCS pages have 12 direct cross-links, including every main-to-backup and backup-to-main pair. All 245 destinations resolve, every backup remains reachable, and return links pass validation.
-- Unmodified main pages are pixel-identical above the footer to the baseline PDF; total-page footers intentionally change from 43 to 44.
-- B23 records the accounting and eviction boundaries. LCS scores do not directly use current CI and are not measured gCO2e; no independent comparison of Equations (7), (8), and (9) is claimed.
+- Eq. (7) is the general principle; ShareGPT uses Eq. (8), both TriviaQA skewness settings use Eq. (9). No independent Eq. (7)/(8)/(9) ablation is claimed.
+- Age is time in storage. Scores are heuristics, not measured CO2, and do not directly multiply by current CI.
+- Reuse requires matching retained KV; new input tokens still require computation.
+- Solver sets capacity; LCS selects replacements. Releasing allocated SSD changes amortized accounting, not historical manufacturing emissions, and does not move all SSD KV into GPU HBM.
+- TTFT/TPOT attainment sums remain separate. The unresolved 8B document TTFT threshold and HBF interpretation remain identified in their original content.
