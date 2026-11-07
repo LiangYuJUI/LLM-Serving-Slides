@@ -2,29 +2,28 @@
 
 ## Structure and layout
 
-- 15 main slides plus 25 index/background/backup slides, 40 pages total.
-- PDF 2 defines embodied and operational carbon and uses Fig. 7 to explain the request-rate trend, without detailed platform numbers. It explicitly explains that the allocated SSD cost is shared across more prompts as load rises; manufacturing emissions themselves do not decrease. PDF 3 explains the Fig. 8 trends across low/high-CI grids and low/high-CI hours within CISO. Both retain the supplied captions.
-- PDF 4 states the optimization objective and separate latency attainments. PDF 5 and 6 share the same 60% / 38% columns and complete Figure 10, with identical image dimensions, placement, and original caption. Their right columns cover monitoring / prediction and optimization / execution respectively; descriptions occupy one or two lines, except the expanded SARIMA name and explanation, which use three lines on PDF 5. Both carry the hourly / 1 TB / continuous-serving note.
-- Detailed solver implementation remains in B10; capacity limits are retained in B11, and forecast-dependent optimality in B12. The index links to both walkthrough slides; method backups return to the relevant main slide.
-- Only PDF pages 5, 6, 16, 27, 28, and 29 changed in this redesign; the other 34 pages are pixel-identical to the preceding PDF.
-- The KV reuse explanation and Fig. 1 now occupy B00 / PDF 17. The index is PDF 16. Backup pages B01–B23 remain at PDF 18–40.
-- The cover follows the Helix hierarchy. Blue title and content backgrounds remain removed. Source figures keep their original colors.
-- Inspected the revised pages and updated all-page montages. Figures, captions, source lines, and navigation remain within the page with no overlapping content.
+- 17 main slides, 1 discussion index, and 25 backup slides, 43 pages total.
+- PDF 7 and PDF 8 share one conceptual summary, \(S^*=\arg\min_{S\in\mathcal{S}}\widehat{C}_{\mathrm{total}}(S)\), in the same position and size. The line under it says this is a conceptual summary and that the full integer linear program is Equation (6).
+- PDF 7 links each item title to a backup: decision variable and embodied carbon to B10, the candidate set to B24, operational carbon to B07, and model inputs to B12.
+- PDF 8 separates two groups. Group A is the Equation (6) attainment sums. Group B is labeled as the §5.4.2 modeling assumptions and states that Equation (6) does not list that group as mathematical constraints.
+- B10 (PDF 29) keeps the printed Equation (6), including the other-hardware numerator \(t^{j_t}_{\mathrm{TTFT},i}\) and the wedge between the two sums. It names operational carbon, SSD embodied carbon, and other-hardware embodied carbon, lists Table 2, and keeps PuLP + CBC at 7.03 s. The objective is prefill carbon; decode latency is carried by the TPOT SLO.
+- B11 (PDF 30) shows the TTFT and TPOT binary indicators as separate sums. Each sum is at least 90%. The same requests need not clear both. The 8B document TTFT note still records Section 6.1 at 2.5 s and the Fig. 13 dashed line at 4.0 s.
+- B24 (PDF 43) states the 1 TB grid, the 16 TB / 8 TB maxima, hourly resizing with CI held constant inside the hour, warmed-up LCS profiles, and the effect of prediction and profiling error. Those assumptions are not added to Equation (6).
+- Slides 4 and 5 keep their previous body. Slide 6 adds a Solver link next to the existing ILP and SLO buttons. LCS remains PDF 9. The index is PDF 18. Backup labels B00–B23 follow it, and B24 is the last page.
+- Inspected PDF 7, 8, 29, 30, and 43. Formulas, item links, source lines, and navigation sit inside the page. The equation on PDF 30 is clear of the attainment sentence, and the PDF 29 symbol sits above the Table 2 rule.
 
 ## Validation
 
 - Local PDF: two clean pdfLaTeX passes, with no Overfull, undefined-reference, or LaTeX warnings.
-- Extracted Overleaf ZIP: two passes; all 40 rendered pages, text, and link targets match the local PDF.
-- 193 links checked, including main-to-backup return links and reachability of all backup pages.
+- Extracted Overleaf ZIP: two passes; all 43 rendered pages, text, and link targets match the local PDF.
+- 231 links checked, including main-to-backup return links and reachability of all backup pages.
 - All 20 embedded source figures match the supplied With-Caption PNGs by pixel hash.
 - Build intermediates are created in temporary directories and removed automatically.
 
 ## Scientific boundaries
 
-- Low-load carbon cost is described as embodied carbon per prompt outweighing operational savings, without asserting a lower hit rate.
-- 480 kgCO2e and 76.6% describe the Table 1 platform and model; allocation time determines the serving charge.
-- Fig. 8 uses cache / no-cache carbon; below 1 is a reduction. The fixed capacity and request rate remain explicit while the body explains the carbon tradeoff without detailed percentages.
-- TTFT and TPOT each require 90% attainment, rather than a per-request or joint guarantee.
-- 15.1% / 25.3% remain in the experiments and conclusion, labeled FR, Llama-3 70B, multi-turn, versus Full Cache.
+- The main-slide formula is a summary of the capacity choice. Equation (6) remains the paper's ILP.
+- TTFT and TPOT each require 90% attainment. The two sums do not force one shared subset of requests to pass both.
+- Group B on PDF 8 is the §5.4.2 modeling assumption set: discrete sizes, an hourly interval with constant CI, and profile-based feasibility.
 - 8B document TTFT remains unresolved: Section 6.1 says 2.5 s while Fig. 13 shows 4.0 s.
 - The HBF discussion remains labeled as our interpretation.

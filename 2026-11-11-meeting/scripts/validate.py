@@ -33,7 +33,7 @@ def validate(render_dir):
     assert len(frames) == len(doc), (len(frames), len(doc))
     expected = {label: i for i, (label, _, _) in enumerate(frames)}
     main_count = expected['INDEX']
-    assert main_count == 15, main_count
+    assert main_count == 17, main_count
     section_starts = []
     page_count = 0
     for token in re.finditer(r'\\section\{|\\begin\{frame\}', text):
@@ -93,15 +93,21 @@ def validate(render_dir):
         'B00': ['1.7', '0.03', 'not an end-to-end'],
         'M02': ['manufacturing', 'electricity', 'allocation time', 'low request rates', 'shared across more prompts'],
         'M03': ['below 1', 'Above 1', 'Cleaner electricity', 'offset the SSD', 'generation mix', 'Low-CI hours', 'High-CI hours'],
-        'M07': ['Lowest score', 'not a measured'],
-        'M08': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
-        'M10': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
-        'M11': ['2.5', '15', 'not viable'],
-        'M12': ['15.1%', '25.3%', '15 TB'],
-        'M14': ['reused input tokens', '0.26', '0.35'],
-        'M15': ['OUR INTERPRETATION', 'does not evaluate HBF'],
+        'M07': ['Conceptual summary', 'Decision Variable', 'Candidate Set',
+                'Operational Carbon', 'Embodied Carbon', 'Model Inputs'],
+        'M08': ['SLO Constraints', 'Equation (6)', '5.4.2', 'TTFT Attainment',
+                'TPOT Attainment', 'Feasible Cache Sizes', 'mathematical constraints'],
+        'M09': ['Lowest score', 'not a measured'],
+        'M10': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
+        'M12': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
+        'M13': ['2.5', '15', 'not viable'],
+        'M14': ['15.1%', '25.3%', '15 TB'],
+        'M16': ['reused input tokens', '0.26', '0.35'],
+        'M17': ['OUR INTERPRETATION', 'does not evaluate HBF'],
         'B09': ['above 1 is a benefit', 'opposite direction'],
-        'B11': ['does not pick one', '4.0'],
+        'B10': ['7.03', 'PuLP', 'prefill', 'CBC'],
+        'B11': ['does not pick one', '4.0', '90%'],
+        'B24': ['1 TB', '16 TB', '8 TB', 'warm-up', 'constant'],
     }
     for label, needles in claims.items():
         content = ' '.join(doc[expected[label]].get_text().split())
