@@ -89,7 +89,7 @@ def validate(render_dir):
         'M04': ['90%', 'amortized', 'separate fraction'],
         'B00': ['1.7', '0.03', 'not an end-to-end'],
         'M02': ['manufacturing', 'electricity', 'allocation time', 'low request rates', 'shared across more prompts'],
-        'M03': ['below 1', 'Above 1', '16.5%', '7.5%'],
+        'M03': ['below 1', 'Above 1', 'Cleaner electricity', 'offset the SSD', 'generation mix', 'Low-CI hours', 'High-CI hours'],
         'M07': ['Lowest score', 'not a measured'],
         'M08': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
         'M10': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],

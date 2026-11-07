@@ -119,13 +119,20 @@ National Taiwan University / Academia Sinica
 \vspace{0.02cm}
 {\centering\gcimg{08}{2.70cm}\par}
 \vspace{0.04cm}
-\point{Across grids, Fig.~8(a)}{FR (CI 33): \textbf{16.5\% more} carbon. MISO (CI 485): \textbf{7.5\% less}. CI unit: gCO$_2$e/kWh.}
-\point{Within a day, Fig.~8(b)}{CISO CI changes from 37 at 7\,AM to 232 at 8\,PM. The same cache has different carbon benefits.}
-\point{Capacity evidence, Fig.~7(b)}{The previous slide compares 0--16\,TB: more SSD adds embodied carbon, while avoided computation saves more carbon at high CI.}
-
-\vspace{0.04cm}
-{\small\textbf{Capacity must account for load, carbon intensity, and latency constraints.}\par}
-\slidenote{pp.~8--9, Figs.~7(b), 8; Takeaway~5}{\nav{B01}{Grid CI} \nav{B08}{Adapt Illustration}}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+{\small\bfseries\color{Accent}Across grids, Fig.~8(a)}\par
+\point{Low CI, e.g.\ FR}{Cleaner electricity means less carbon avoided by skipping prefill. Added SSD embodied carbon can raise total emissions.}
+\point{High CI, e.g.\ MISO}{The same energy saving avoids more carbon, enough to offset the SSD embodied cost.}
+\end{column}
+\begin{column}{0.49\textwidth}
+{\small\bfseries\color{Accent}Within a day, Fig.~8(b)}\par
+{\small CISO's generation mix changes over time, so its CI changes too.\par}
+\point{Low-CI hours}{Caching saves less carbon and may increase total emissions.}
+\point{High-CI hours}{Avoiding repeated computation saves more carbon, making caching more beneficial.}
+\end{column}
+\end{columns}
+\slidenote{pp.~8--9, Fig.~8; Takeaway~5}{\nav{B01}{Grid CI} \nav{B08}{Adapt Illustration}}
 \end{frame}
 
 \begin{frame}[t,label=M04]{What Does GreenCache Optimize?}

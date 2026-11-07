@@ -3,7 +3,7 @@
 ## Structure and layout
 
 - 15 main slides plus 25 index/background/backup slides, 40 pages total.
-- PDF 2 defines embodied and operational carbon and uses Fig. 7 to explain the request-rate trend, without detailed platform numbers. It explicitly explains that the allocated SSD cost is shared across more prompts as load rises; manufacturing emissions themselves do not decrease. PDF 3 uses Fig. 8 and explicitly refers to Fig. 7(b) for capacity evidence. Both retain the supplied captions.
+- PDF 2 defines embodied and operational carbon and uses Fig. 7 to explain the request-rate trend, without detailed platform numbers. It explicitly explains that the allocated SSD cost is shared across more prompts as load rises; manufacturing emissions themselves do not decrease. PDF 3 explains the Fig. 8 trends across low/high-CI grids and low/high-CI hours within CISO. Both retain the supplied captions.
 - PDF 4 states the optimization objective and separate latency attainments. PDF 6 explains profiling, forecasting, solving, and applying the chosen capacity without repeating the objective slide.
 - The KV reuse explanation and Fig. 1 now occupy B00 / PDF 17. The index is PDF 16. Backup pages B01–B23 remain at PDF 18–40.
 - The cover follows the Helix hierarchy. Blue title and content backgrounds remain removed. Source figures keep their original colors.
@@ -21,7 +21,7 @@
 
 - Low-load carbon cost is described as embodied carbon per prompt outweighing operational savings, without asserting a lower hit rate.
 - 480 kgCO2e and 76.6% describe the Table 1 platform and model; allocation time determines the serving charge.
-- Fig. 8 uses cache / no-cache carbon; below 1 is a reduction. FR +16.5% and MISO -7.5% apply to the stated fixed-cache setting.
+- Fig. 8 uses cache / no-cache carbon; below 1 is a reduction. The fixed capacity and request rate remain explicit while the body explains the carbon tradeoff without detailed percentages.
 - TTFT and TPOT each require 90% attainment, rather than a per-request or joint guarantee.
 - 15.1% / 25.3% remain in the experiments and conclusion, labeled FR, Llama-3 70B, multi-turn, versus Full Cache.
 - 8B document TTFT remains unresolved: Section 6.1 says 2.5 s while Fig. 13 shows 4.0 s.

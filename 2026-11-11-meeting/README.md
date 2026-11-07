@@ -88,7 +88,7 @@
 | 19 | — | 38 |
 | 20 | — | 39 |
 
-Fig. 7 保留完整原圖與 caption：第 2 頁聚焦 (a) 的負載比較，第 3 頁引用 (b) 支持容量取捨。Fig. 12、13、14 在 Main 放大相關子圖，Backup 放另一半；legend 與 caption 均來自原始 PNG viewport，沒有重繪座標軸。
+Fig. 7 保留完整原圖與 caption：第 2 頁聚焦 (a) 的負載比較。第 3 頁用 Fig. 8 說明不同電網與同一電網不同時段的 CI 趨勢及碳排取捨。Fig. 12、13、14 在 Main 放大相關子圖，Backup 放另一半；legend 與 caption 均來自原始 PNG viewport，沒有重繪座標軸。
 
 ## Claim → source
 
