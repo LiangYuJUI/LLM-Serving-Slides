@@ -10,6 +10,7 @@
 \usepackage{booktabs,tabularx,array}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage{tikz}
 
 \usetheme{Madrid}
 \usecolortheme{default}
@@ -249,28 +250,43 @@ TTFT and TPOT are evaluated separately.\par}
 \slidenote{Sec.~5.4, Eq.~(6), \S\,5.4.2}{\nav{B11}{SLO Constraints} \nav{B24}{Assumptions} \nav{B10}{Full ILP} \nav{B09}{Profiles}}
 \end{frame}
 
-\begin{frame}[t,label=M09]{What Does LCS Evict?}
+\begin{frame}[t,label=M09]{How Does LCS Rank KV Cache Entries?}
 \vspace{0.04cm}
-{\small LRU keeps recently used entries. It ignores how many tokens a hit avoids, and how much SSD that entry occupies.\par}
-\vspace{0.02cm}
-\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.10cm]{bluebox}
-\centering
-{\small Least Carbon Savings score, Equation~(7). Lowest score is evicted first.\par}
-\vspace{0.04cm}
-{\Large $\displaystyle \mathrm{Score}=\frac{\#\mathrm{Token}\times\#\mathrm{Hit}}{\mathrm{Size}\times\mathrm{Age}}$\par}
-\vspace{0.02cm}
-{\scriptsize This is a carbon-savings proxy. It is not a measured kgCO$_2$e for that entry.\par}
-\end{beamercolorbox}
-\vspace{0.12cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.24\textwidth}\card{mintbox}{\#Token}{Reused token volume. More reused context avoids more prefill.}\end{column}
-\begin{column}{0.24\textwidth}\card{bluebox}{\#Hit}{How often the entry is reused.}\end{column}
-\begin{column}{0.24\textwidth}\card{lilacbox}{Size}{Entry footprint. Smaller entries cost less embodied carbon.}\end{column}
-\begin{column}{0.24\textwidth}\card{mintbox}{Age}{Time in storage. Older entries are cheaper to drop.}\end{column}
-\end{columns}
+{\footnotesize\textbf{Solver chooses capacity $\rightarrow$ Cache Manager resizes $\rightarrow$ LCS ranks entries for eviction}\par}
+\vspace{0.05cm}
+{\footnotesize Solver selects SSD capacity; Cache Manager allocates or releases it; LCS chooses entries to evict when reclaiming space.\par}
 \vspace{0.10cm}
-{\small Conversation and document QA use task-specific versions of the same idea, Equations~(8)--(9).\par}
-\slidenote{Sec.~5.5, Eq.~(7)}{\nav{B13}{Task Scores}}
+{\centering\LARGE $\displaystyle \mathrm{Score}=\frac{\#\mathrm{Token}\times\#\mathrm{Hit}}{\mathrm{Size}\times\mathrm{Age}}$\quad{\small Eq.~(7)}\par}
+\vspace{0.18cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.24\textwidth}
+{\footnotesize\bfseries\color{Accent}\#Token --- Accumulated Hit Tokens}\par
+{\footnotesize Total tokens successfully reused from the entry. More reused tokens mean more avoided prefill computation.\par}
+\end{column}
+\begin{column}{0.24\textwidth}
+{\footnotesize\bfseries\color{Accent}\#Hit --- Cache Hit Count}\par
+{\footnotesize Number of times the entry is reused. More hits suggest higher future reuse potential.\par}
+\end{column}
+\begin{column}{0.24\textwidth}
+{\footnotesize\bfseries\color{Accent}Size --- Storage Footprint}\par
+{\footnotesize SSD space occupied by the entry. Larger entries consume more storage capacity.\par}
+\end{column}
+\begin{column}{0.24\textwidth}
+{\footnotesize\bfseries\color{Accent}Age --- Time in Storage}\par
+{\footnotesize How long the entry has remained stored. Older entries receive a larger score penalty.\par}
+\end{column}
+\end{columns}
+\vspace{0.16cm}
+{\centering\small\bfseries\color{Accent}Lower LCS Score $\rightarrow$ Higher Eviction Priority\par}
+{\footnotesize Equation (7) is a general scoring principle, not a directly measured CO$_2$ value.\par}
+\vspace{0.08cm}
+{\footnotesize\textbf{Grow:} Allocate additional SSD; later requests gradually warm the cache.\\
+\textbf{Shrink:} Evict lowest-score entries to the target size, then release spare capacity.\par}
+\vspace{0.10cm}
+{\footnotesize\hyperlink{B13}{\textbf{Eq. (8): Multi-turn Conversation}}\quad
+\hyperlink{B25}{\textbf{Eq. (9): Document QA}}\quad
+\hyperlink{M16}{\textbf{FIFO vs. LRU vs. LCS Results}}\par}
+\slidenote{Sec.~5.5, Eq.~(7)}{}
 \end{frame}
 
 \begin{frame}[t,label=M10]{Real Prototype, Traces, or a Simulator?}
@@ -370,11 +386,17 @@ TTFT and TPOT are evaluated separately.\par}
 \slidenote{Sec.~6.3.1, Fig.~15}{\nav{B09}{Profiling Heatmaps}}
 \end{frame}
 
-\begin{frame}[t,label=M16]{Q4: Does LCS Improve Token Reuse?}
+\begin{frame}[t,label=M16]{Does LCS Outperform FIFO and LRU?}
 \vspace{0.04cm}
-{\small Hit rate $=$ reused input tokens / total input tokens. Not the fraction of requests that hit. Llama-3 70B.\par}
+{\footnotesize\textbf{FIFO:} Evict the earliest inserted entry.\quad
+\textbf{LRU:} Evict the least recently used entry.\\
+\textbf{LCS:} Evict the entry with the lowest LCS score.\par}
 \vspace{0.08cm}
-{\centering\renewcommand{\arraystretch}{1.28}\small
+{\footnotesize\hyperlink{M09}{\textbf{LCS General Score}}\quad
+\hyperlink{B13}{\textbf{Multi-turn Score}}\quad
+\hyperlink{B25}{\textbf{Document QA Score}}\hfill Table 3: Llama-3 70B\par}
+\vspace{0.08cm}
+{\centering\renewcommand{\arraystretch}{1.08}\small
 \begin{tabular}{lccccccccc}
 \toprule
 Size & \multicolumn{3}{c}{ShareGPT} & \multicolumn{3}{c}{TriviaQA $\alpha=0.4$} & \multicolumn{3}{c}{TriviaQA $\alpha=0.7$}\\
@@ -382,15 +404,20 @@ Size & \multicolumn{3}{c}{ShareGPT} & \multicolumn{3}{c}{TriviaQA $\alpha=0.4$} 
 \midrule
 1 & 0.05 & 0.05 & 0.08 & 0.05 & 0.05 & 0.06 & 0.10 & 0.11 & 0.19\\
 2 & 0.11 & 0.12 & 0.17 & 0.08 & 0.08 & 0.09 & 0.16 & 0.19 & 0.25\\
-4 & 0.19 & 0.21 & 0.28 & 0.12 & 0.12 & 0.14 & 0.23 & \textbf{0.26} & \textbf{0.35}\\
+\textbf{4} & \textbf{0.19} & \textbf{0.21} & \textbf{0.28} & \textbf{0.12} & \textbf{0.12} & \textbf{0.14} & \textbf{0.23} & \textbf{0.26} & \textbf{0.35}\\
 8 & 0.34 & 0.40 & 0.47 & 0.19 & 0.20 & 0.22 & 0.37 & 0.38 & 0.44\\
 16 & 0.52 & 0.69 & 0.71 & 0.31 & 0.32 & 0.33 & 0.47 & 0.52 & 0.52\\
 \bottomrule
 \end{tabular}\par}
-\vspace{0.12cm}
-\point{Where LCS moves the rate}{At TriviaQA $\alpha=0.7$ and 4\,TB, LRU is 0.26 and LCS is 0.35: nine percentage points, on the token definition above.}
-\point{Where it does not}{At 16\,TB the policies converge, especially on the skewed document task. LCS matters more when the cache is tight.\par}
-\slidenote{Sec.~6.3.2, Table~3}{\nav{B13}{Score Formulas}}
+\vspace{0.10cm}
+{\footnotesize Token-level hit rate = reused input tokens / total input tokens.\par}
+\vspace{0.08cm}
+{\small\textbf{\color{Accent}LCS improves reuse under limited cache capacity.}\par}
+{\footnotesize At 4\,TB, TriviaQA $\alpha=0.7$: 26\% (LRU) to 35\% (LCS), +9 percentage points.\par}
+\vspace{0.06cm}
+{\small\textbf{\color{Accent}The advantage shrinks with abundant capacity.}\par}
+{\footnotesize At 16\,TB, LRU and LCS both reach 52\% for TriviaQA $\alpha=0.7$.\par}
+\slidenote{Sec.~6.3.2, Table~3. Token reuse, not measured CO$_2$ savings.}{}
 \end{frame}
 
 \begin{frame}[t,label=M17]{Conclusion and Limitations}
@@ -445,6 +472,8 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \begin{column}{0.49\textwidth}
 {\small\raggedright
 \textbf{8B and the other task} \nav{B15}{Fig.~12} \nav{B17}{Fig.~14b}\par
+\vspace{0.08cm}
+\textbf{LCS:} \nav{M09}{General} \nav{B13}{Chat} \nav{B25}{Doc QA} \nav{M16}{Results}\par
 \vspace{0.08cm}
 \textbf{What we would not claim} \nav{B23}{Limits}\par}
 \end{column}
@@ -708,33 +737,44 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \back[\nav{M07}{Solver} \nav{B13}{Next}]{M05}
 \end{frame}
 
-\begin{frame}[t,label=B13]{LCS Scores for the Two Tasks}
+\begin{frame}[t,label=B13]{How Does LCS Work for Multi-Turn Conversations?}
 \vspace{0.06cm}
-{\small Conversation reuses prior turns. Document QA reuses one document across questions. Size and Age stay as in Equation~(7); the numerator is task-specific.\par}
-\vspace{0.08cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
-\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.14cm]{bluebox}
-{\scriptsize\bfseries\color{Accent}EQUATION (8): MULTI-TURN}\par\vspace{1mm}
-{\Large $\displaystyle \mathrm{Score}=\frac{\mathrm{CurTurn}\times\#\mathrm{AccuToken}}{\mathrm{Size}\times\mathrm{Age}}$\par}
-\vspace{1mm}
-{\small CurTurn keeps entries from deeper in the dialogue. \#AccuToken is reused tokens across turns.\par}
-\end{beamercolorbox}
+\begin{column}{0.55\textwidth}
+{\small\bfseries\color{Accent}ShareGPT: task-specific Equation (8)}\par
+\vspace{0.12cm}
+{\large $\displaystyle \mathrm{Score}_{\mathrm{chat}}=\frac{\mathrm{CurTurn}\times\#\mathrm{AccuToken}}{\mathrm{Size}\times\mathrm{Age}}$\par}
+\vspace{0.18cm}
+{\footnotesize\textbf{CurTurn} --- Current conversation turn index. Later turns typically rely on longer prior contexts; deeper conversations are favored, all else equal.\par}
+\vspace{0.12cm}
+{\footnotesize\textbf{\#AccuToken} --- Accumulated reused tokens across turns. More accumulated reuse means more avoided prefill computation.\par}
+\vspace{0.12cm}
+{\footnotesize\textbf{Size / Age} --- The same storage-footprint and time-in-storage penalties as Equation (7).\par}
 \end{column}
-\begin{column}{0.49\textwidth}
-\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.14cm]{mintbox}
-{\scriptsize\bfseries\color{Accent}EQUATION (9): DOCUMENT QA}\par\vspace{1mm}
-{\Large $\displaystyle \mathrm{Score}=\frac{\#\mathrm{Hit}\times\mathrm{AccuDocLen}}{\mathrm{Size}\times\mathrm{Age}}$\par}
-\vspace{1mm}
-{\small \#Hit counts questions on that document. AccuDocLen is reused document length.\par}
-\end{beamercolorbox}
+\begin{column}{0.43\textwidth}
+{\centering\small\bfseries\color{Accent}History KV reuse across turns\par}
+\vspace{0.06cm}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center},box/.style={draw=Accent,rounded corners=2pt,text width=5.4cm,minimum height=0.76cm}]
+\node[box] (t1) at (0,0) {\textbf{Turn 1}\\Build reusable history KV};
+\node[box] (t2) at (0,-1.12) {\textbf{Turn 2}\\Reuse matching prior-context KV};
+\node[box] (t3) at (0,-2.24) {\textbf{Turn 3}\\Reuse a longer matching history};
+\draw[->,thick,Accent] (t1) -- (t2);
+\draw[->,thick,Accent] (t2) -- (t3);
+\end{tikzpicture}\par
+\vspace{0.08cm}
+{\scriptsize Reuse requires matching, retained KV. New tokens still need computation; hits are not guaranteed.\par}
 \end{column}
 \end{columns}
+\vspace{0.15cm}
+{\footnotesize\textbf{Methodology:} Conversation-specific LCS replaces the general numerator with conversation depth and accumulated reused tokens.\par}
+\vspace{0.08cm}
+{\scriptsize Scores are proxies, not gCO$_2$e; they do not multiply by current CI. No separate Eq.~(7) vs.~(8) vs.~(9) ablation is reported.\par}
 \vspace{0.12cm}
-\point{Eviction}{Lowest score leaves first, until the allocated size is met. Enlarging allocates more cloud SSD; shrinking releases the freed capacity.}
-\point{Still a proxy}{None of (7)--(9) multiplies by the current CI. CI affects the capacity decision. The score ranks entries inside the chosen capacity.\par}
-\slidenote{Sec.~5.5, Eqs.~(7)--(9)}{}
-\back[\nav{M16}{Main \ref*{M16}} \nav{B14}{Next}]{M09}
+{\footnotesize\hyperlink{M09}{\textbf{Back to General LCS}}\quad
+\hyperlink{B25}{\textbf{Document QA Score}}\quad
+\hyperlink{M16}{\textbf{LCS Evaluation}}\par}
+\slidenote{Sec.~5.5, Eq.~(8); Sec.~6.3.2}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
 \section{Evaluation}
@@ -846,10 +886,11 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \begin{frame}[t,label=B23]{Limits, and What We Would Not Claim}
 \vspace{0.06cm}
 \point{Trace}{Section~7: the public Azure LLM trace covers about one week. A stronger load model would need a longer trace. The authors treat the predictor as replaceable.}
-\point{Embodied carbon}{The paper explicitly rejects treating unused hardware as sunk carbon. Unused cloud capacity is assumed to be used by someone else, so allocated SSD is charged for its time. That is an accounting assumption.}
+\point{Embodied carbon}{SSD is charged by allocated capacity and time under amortized accounting. Releasing capacity does not erase manufacturing emissions; the paper assumes others can use that capacity.}
 \point{MoE, from the authors' discussion}{Mixture-of-experts models can cut activated compute while leaving KV storage in place, which would make the SSD term relatively larger. The experiments themselves are dense Llama-3, not MoE runs.}
 \point{Possible extension / our interpretation}{A carbon-aware decision about how much fast memory to provision could inform HBM or HBF hierarchy design. Nothing in this paper measures HBM or HBF, and the 15.1\% result does not transfer to that hardware.\par}
-\slidenote{Sec.~7. The HBF sentence is our research note.}{}
+\point{Eviction boundary}{Discarding SSD KV entries does not move all KV back into GPU HBM. Solver sets capacity; LCS selects replacements.}
+\slidenote{Secs.~5.5, 7. The HBF sentence is our research note.}{}
 \back{M17}
 \end{frame}
 
@@ -864,6 +905,50 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Why the search stays small}{Section~A reduces the general form to 0--1 Knapsack, so the unrestricted problem is NP-hard. This instance stays small because the candidates are the 1\,TB grid over a finite hourly horizon.\par}
 \slidenote{Secs.~5.4.2--5.4.3, 6.1, 6.5; Sec.~A}{}
 \back[\nav{M08}{Main \ref*{M08}}]{M07}
+\end{frame}
+
+
+\begin{frame}[t,label=B25]{How Does LCS Work for Document QA?}
+\vspace{0.06cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.55\textwidth}
+{\small\bfseries\color{Accent}TriviaQA: task-specific Equation (9)}\par
+\vspace{0.12cm}
+{\large $\displaystyle \mathrm{Score}_{\mathrm{doc}}=\frac{\#\mathrm{Hit}\times\mathrm{AccuDocLen}}{\mathrm{Size}\times\mathrm{Age}}$\par}
+\vspace{0.18cm}
+{\footnotesize\textbf{\#Hit} --- Document cache hits across questions. Frequently reused documents receive higher priority.\par}
+\vspace{0.12cm}
+{\footnotesize\textbf{AccuDocLen} --- Accumulated length of reused document content. More reused document context means more avoided prefill work.\par}
+\vspace{0.12cm}
+{\footnotesize\textbf{Size / Age} --- The same storage-footprint and time-in-storage penalties as Equation (7).\par}
+\end{column}
+\begin{column}{0.43\textwidth}
+{\centering\small\bfseries\color{Accent}One document, multiple questions\par}
+\vspace{0.06cm}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center}]
+\node[draw=Accent,rounded corners=2pt,text width=4.8cm,minimum height=1cm] (doc) at (0,0) {\textbf{Shared Document}\\Cached Document KV};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q1) at (-2,-2) {Question 1};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q2) at (0,-2) {Question 2};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q3) at (2,-2) {Question 3};
+\draw[->,thick,Accent] (doc.south) -- (q1.north);
+\draw[->,thick,Accent] (doc.south) -- (q2.north);
+\draw[->,thick,Accent] (doc.south) -- (q3.north);
+\node[fill=Paper,inner sep=2pt] at (0,-1.1) {Reuse the same document prefix};
+\end{tikzpicture}\par
+\vspace{0.08cm}
+{\scriptsize Matching retained document KV is reused; each question's new tokens still need computation.\par}
+\end{column}
+\end{columns}
+\vspace{0.15cm}
+{\footnotesize\textbf{Different reuse patterns:} Chat uses $\mathrm{CurTurn}\times\#\mathrm{AccuToken}$ as history grows; document QA uses $\#\mathrm{Hit}\times\mathrm{AccuDocLen}$ across questions on the same document.\par}
+\vspace{0.08cm}
+{\footnotesize TriviaQA $\alpha=0.4$ and $\alpha=0.7$ both use Eq.~(9): different document-access distributions, not different formulas.\par}
+\vspace{0.12cm}
+{\footnotesize\hyperlink{M09}{\textbf{Back to General LCS}}\quad
+\hyperlink{B13}{\textbf{Multi-turn Score}}\quad
+\hyperlink{M16}{\textbf{Replacement Results}}\par}
+\slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
 \end{document}

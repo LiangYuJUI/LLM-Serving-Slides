@@ -34,6 +34,8 @@ def validate(render_dir):
     expected = {label: i for i, (label, _, _) in enumerate(frames)}
     main_count = expected['INDEX']
     assert main_count == 17, main_count
+    assert len(doc) == 44, len(doc)
+    assert expected['B25'] == 43, expected['B25']
     section_starts = []
     page_count = 0
     for token in re.finditer(r'\\section\{|\\begin\{frame\}', text):
@@ -97,12 +99,16 @@ def validate(render_dir):
                 'Operational Carbon', 'Embodied Carbon', 'Model Inputs'],
         'M08': ['SLO Constraints', 'Equation (6)', '5.4.2', 'TTFT Attainment',
                 'TPOT Attainment', 'Feasible Cache Sizes', 'mathematical constraints'],
-        'M09': ['Lowest score', 'not a measured'],
+        'M09': ['Solver chooses capacity', 'Accumulated Hit Tokens', 'Time in Storage', 'Higher Eviction Priority',
+                'not a directly measured', 'Grow:', 'Shrink:'],
+        'B13': ['CurTurn', 'AccuToken', 'ShareGPT', 'hits are not guaranteed', 'No separate'],
+        'B25': ['AccuDocLen', 'TriviaQA', '0.4', '0.7', 'not different formulas'],
         'M10': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
         'M12': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
         'M13': ['2.5', '15', 'not viable'],
         'M14': ['15.1%', '25.3%', '15 TB'],
-        'M16': ['reused input tokens', '0.26', '0.35'],
+        'M16': ['Evict the earliest inserted entry', 'Evict the least recently used entry',
+                'Evict the entry with the lowest LCS score', 'reused input tokens', '0.26', '0.35'],
         'M17': ['OUR INTERPRETATION', 'does not evaluate HBF'],
         'B09': ['above 1 is a benefit', 'opposite direction'],
         'B10': ['7.03', 'PuLP', 'prefill', 'CBC'],
@@ -113,6 +119,20 @@ def validate(render_dir):
         content = ' '.join(doc[expected[label]].get_text().split())
         for needle in needles:
             assert needle in content, (label, needle)
+    # All four methodology/result pages link directly to every other page.
+    lcs_labels = ['M09', 'M16', 'B13', 'B25']
+    for origin in lcs_labels:
+        for target in set(lcs_labels) - {origin}:
+            assert expected[target] in graph[expected[origin]], (origin, target)
+    # Table 3: independently transcribed from the paper, Sec. 6.3.2, PDF 19.
+    table3 = [
+        '0.05 0.05 0.08 0.05 0.05 0.06 0.10 0.11 0.19',
+        '0.11 0.12 0.17 0.08 0.08 0.09 0.16 0.19 0.25',
+        '0.19 0.21 0.28 0.12 0.12 0.14 0.23 0.26 0.35',
+        '0.34 0.40 0.47 0.19 0.20 0.22 0.37 0.38 0.44',
+        '0.52 0.69 0.71 0.31 0.32 0.33 0.47 0.52 0.52',
+    ]
+    assert re.findall(r'0\.\d{2}', doc[expected['M16']].get_text()) == ' '.join(table3).split()
     files = sorted((ROOT / 'GreenCache-Research-Meeting-2026-11-11/With-Caption').glob('*.png'))
     assert len(files) == 20
     hashes = {}
@@ -162,6 +182,8 @@ def validate(render_dir):
         'main_pages': main_count,
         'backup_pages_including_index': len(doc) - main_count,
         'internal_links_checked': len(links),
+        'lcs_cross_links_checked': 12,
+        'table3_values_checked': 45,
         'figures_matched_by_pixel_hash': len(used),
         'whitespace': whitespace,
         'frames': [{'page': i + 1, 'label': label, 'title': title}

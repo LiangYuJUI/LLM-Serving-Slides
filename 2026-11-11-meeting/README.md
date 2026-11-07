@@ -1,6 +1,6 @@
 # 2026-11-11 Research Meeting — GreenCache
 
-**17 頁 Main + 26 頁 Discussion / Backup（含 1 頁索引），共 43 頁。** 主動報告約 15–20 分鐘。Main 在前，Backup 在後。
+**17 頁 Main + 27 頁 Discussion / Backup（含 1 頁索引），共 44 頁。** 主動報告約 15–20 分鐘。Main 在前，Backup 在後。
 
 - [PDF](output/pdf/2026-11-11-GreenCache.pdf)
 - [Beamer source](2026-11-11-GreenCache.tex)
@@ -23,14 +23,14 @@
 | M06 / 6 | How Does GreenCache Work? (2/2): Optimization & Execution | Fig. 10 | 1, 7, 18, 29, 30 |
 | M07 / 7 | How Does the Solver Decide? (1/2): Variables & Inputs | 概念式摘要公式 | 1, 18, 26, 29, 31, 43 |
 | M08 / 8 | How Does the Solver Decide? (2/2): Constraints | 同一公式 + Eq. (6) / §5.4.2 | 1, 18, 28, 29, 30, 43 |
-| M09 / 9 | What Does LCS Evict? | Eq. (7) | 1, 18, 32 |
+| M09 / 9 | How Does LCS Rank KV Cache Entries? | Eq. (7) | 1, 16, 18, 32, 44 |
 | M10 / 10 | Real Prototype, Traces, or a Simulator? | — | 1, 18, 33 |
 | M11 / 11 | What Are the Evaluation Settings? | — | 1, 18, 30 |
 | M12 / 12 | Q1: Does GreenCache Reduce Carbon? | Fig. 12 | 1, 18, 34 |
 | M13 / 13 | Q2: Does GreenCache Still Meet SLOs? | Fig. 13 | 1, 18, 35 |
 | M14 / 14 | Q3: Does Capacity Track Load and CI? | Fig. 14 | 1, 18, 36 |
 | M15 / 15 | Q4: Does Adaptive Sizing Help? | Fig. 15 | 1, 18, 28 |
-| M16 / 16 | Q4: Does LCS Improve Token Reuse? | Table 3 | 1, 18, 32 |
+| M16 / 16 | Does LCS Outperform FIFO and LRU? | Table 3 | 1, 9, 18, 32, 44 |
 | M17 / 17 | Conclusion and Limitations | — | 1, 18, 42 |
 
 Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）尺寸與位置相同，右側分別介紹 monitoring / prediction 與 optimization / execution。兩頁底部均標示 hourly resizing、1 TB granularity，以及最佳化期間持續 serving。Slide 7、8 使用同一條概念式摘要 \(S^*=\arg\min_{S\in\mathcal S}\widehat C_{\mathrm{total}}(S)\)，並標明它不是 Equation (6)。變數與輸入連到 B10、B07、B12、B24；SLO 連到 B11；容量域與 §5.4.2 假設連到 B24 與 B09。PuLP/CBC 與完整 Equation (6) 在 B10；TTFT/TPOT 的 binary indicators 與門檻在 B11；1 TB 粒度、70B 16 TB、8B 8 TB、每小時決策與 profiling 假設在 B24。
@@ -41,7 +41,7 @@ Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）
 
 | PDF | Label | 內容 | 返回 / 導覽 |
 |---|---|---|---|
-| 18 | INDEX | Discussion Index | 5, 6, 7, 8, 10, 17, 18, 19, 28, 29, 30, 33, 34, 36, 38, 42, 43 |
+| 18 | INDEX | Discussion Index | 5, 6, 7, 8, 9, 10, 16, 17, 18, 19, 28, 29, 30, 32, 33, 34, 36, 38, 42, 43, 44 |
 | 19 | B00 | Why Cache Repeated Context? | 2, 18, 19, 21, 22 |
 | 20 | B01 | Which Grids, and How Fast Does CI Move? | 3, 18, 19, 21 |
 | 21 | B02 | Where Does Caching Change Latency? | 18, 19, 22 |
@@ -55,7 +55,7 @@ Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）
 | 29 | B10 | Full ILP and Variables | 6, 7, 8, 18, 28, 30, 37 |
 | 30 | B11 | Exact SLO Constraints | 6, 8, 11, 18, 28, 31 |
 | 31 | B12 | Load Forecast and Carbon-Intensity Forecast | 5, 7, 18, 28, 32 |
-| 32 | B13 | LCS Scores for the Two Tasks | 9, 16, 18, 28, 33 |
+| 32 | B13 | How Does LCS Work for Multi-Turn Conversations? | 9, 16, 18, 28, 44 |
 | 33 | B14 | What Is Measured, Replayed, and Modeled? | 10, 18, 33, 34 |
 | 34 | B15 | Figure 12b: Llama-3 8B Carbon | 12, 18, 33, 35 |
 | 35 | B16 | Figure 13b: Llama-3 8B SLO Timelines | 13, 18, 33, 36 |
@@ -67,6 +67,7 @@ Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）
 | 41 | B22 | SSD Embodied Carbon Is an Assumption | 17, 18, 38, 42 |
 | 42 | B23 | Limits, and What We Would Not Claim | 17, 18, 38 |
 | 43 | B24 | Discrete Capacity and Solver Assumptions | 7, 8, 18, 43 |
+| 44 | B25 | How Does LCS Work for Document QA? | 9, 16, 18, 32, 43 |
 
 ## Figure → slide
 
@@ -94,6 +95,17 @@ Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）
 | 20 | — | 41 |
 
 Fig. 7 保留完整原圖與 caption：第 2 頁聚焦 (a) 的負載比較。第 3 頁用 Fig. 8 說明不同電網與同一電網不同時段的 CI 趨勢及碳排取捨。Fig. 12、13、14 在 Main 放大相關子圖，Backup 放另一半；legend 與 caption 均來自原始 PNG viewport，沒有重繪座標軸。
+
+## LCS methodology and navigation
+
+| Topic | Label / PDF | Evidence |
+|---|---|---|
+| General LCS score and capacity/replacement boundary | M09 / 9 | §5.5, Eq. (7) |
+| FIFO / LRU / LCS token-level hit rates | M16 / 16 | §6.3.2, Table 3 (all 45 values retained) |
+| Multi-turn history KV reuse | B13 / 32 | ShareGPT, Eq. (8) |
+| Shared document-prefix KV reuse | B25 / 44 | TriviaQA α=0.4 and α=0.7, Eq. (9) |
+
+Each of these four pages links directly to the other three; the Discussion Index links to all four. B13 and B25 use matching formula/variables + diagram columns. The diagrams are conceptual KV reuse illustrations, not additional paper figures. Age means time in storage. Scores are proxies, not measured gCO₂e, and do not multiply by current CI. The paper reports no independent Eq. (7)/(8)/(9) ablation. Grow/shrink changes allocation under amortized carbon accounting; eviction does not transfer all SSD KV back to GPU HBM.
 
 ## Claim → source
 
@@ -142,7 +154,7 @@ python3 -m venv /tmp/greencache-qa
 ## QA
 
 - 本地兩次與 ZIP 獨立兩次編譯通過，最終 log 沒有 Overfull、undefined reference 或 Warning。
-- 43 頁、231 個內部連結、20 張來源圖的像素雜湊都通過。Main 17 頁。Main 可以點到全部 Backup，Backup 能回到對應 Main。
+- 44 頁、245 個內部連結、20 張來源圖的像素雜湊都通過。Main 17 頁。Main 可以點到全部 Backup，Backup 能回到對應 Main。
 - [Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)、[逐頁 PNG](output/qa/pages/)、[機器紀錄](output/qa/validation.json)、[視覺紀錄](output/qa/REVIEW.md)。
 
 ## Main speaking points
