@@ -372,38 +372,35 @@ TTFT and TPOT are evaluated separately.\par}
 \slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
-\begin{frame}[t,label=M12]{Does LCS Outperform FIFO and LRU?}
-\vspace{0.04cm}
-{\footnotesize\textbf{FIFO:} Evict the earliest inserted entry.\quad
-\textbf{LRU:} Evict the least recently used entry.\\
-\textbf{LCS:} Evict the entry with the lowest LCS score.\par}
-\vspace{0.08cm}
-{\footnotesize\hyperlink{M09}{\textbf{LCS General Score}}\quad
-\hyperlink{M10}{\textbf{Multi-turn Score}}\quad
-\hyperlink{M11}{\textbf{Document QA Score}}\quad\hyperlink{B13}{\textbf{Chat Example}}\quad\hyperlink{B25}{\textbf{Doc Example}}\hfill Llama-3 70B\par}
-\vspace{0.08cm}
-{\centering\renewcommand{\arraystretch}{1.08}\small
-\begin{tabular}{lccccccccc}
+\begin{frame}[t,label=M12]{Why Use LCS Instead of FIFO or LRU?}
+\vspace{0.01cm}
+{\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.16}%
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.05cm}>{\hyphenpenalty=10000\exhyphenpenalty=10000\raggedright\arraybackslash}p{5.35cm}>{\hyphenpenalty=10000\exhyphenpenalty=10000\raggedright\arraybackslash}X@{}}
 \toprule
-Size & \multicolumn{3}{c}{ShareGPT} & \multicolumn{3}{c}{TriviaQA $\alpha=0.4$} & \multicolumn{3}{c}{TriviaQA $\alpha=0.7$}\\
-(TB) & FIFO & LRU & LCS & FIFO & LRU & LCS & FIFO & LRU & LCS\\
+\textbf{Policy} & \textbf{How Does It Work?} & \textbf{Limitation / Potential Problem}\\
 \midrule
-1 & 0.05 & 0.05 & 0.08 & 0.05 & 0.05 & 0.06 & 0.10 & 0.11 & 0.19\\
-2 & 0.11 & 0.12 & 0.17 & 0.08 & 0.08 & 0.09 & 0.16 & 0.19 & 0.25\\
-\textbf{4} & \textbf{0.19} & \textbf{0.21} & \textbf{0.28} & \textbf{0.12} & \textbf{0.12} & \textbf{0.14} & \textbf{0.23} & \textbf{0.26} & \textbf{0.35}\\
-8 & 0.34 & 0.40 & 0.47 & 0.19 & 0.20 & 0.22 & 0.37 & 0.38 & 0.44\\
-16 & 0.52 & 0.69 & 0.71 & 0.31 & 0.32 & 0.33 & 0.47 & 0.52 & 0.52\\
+\textbf{FIFO} & Evicts the earliest inserted cache entry. & Ignores reuse frequency and value; frequently reused entries may be evicted simply because they are old.\\[0.08cm]
+\textbf{LRU} & Evicts the least recently accessed entry. & Does not directly consider reused token volume, hit frequency, or storage footprint.\\[0.08cm]
+\textbf{\textcolor{Accent}{LCS (Ours)}} & Ranks entries by reused tokens, hit count, size, and age. & Uses a heuristic proxy rather than measuring actual CO$_2$ savings per entry.\\
 \bottomrule
-\end{tabular}\par}
+\end{tabularx}\par}
+\vspace{0.34cm}
+{\scriptsize\color{Muted}Inferred from each mechanism; not a separately measured failure case.\par}
 \vspace{0.10cm}
-{\footnotesize Token-level hit rate = reused input tokens / total input tokens.\par}
-\vspace{0.08cm}
-{\small\textbf{\color{Accent}LCS improves reuse under limited cache capacity.}\par}
-{\footnotesize At 4\,TB, TriviaQA $\alpha=0.7$: 26\% (LRU) to 35\% (LCS), +9 percentage points.\par}
-\vspace{0.06cm}
-{\small\textbf{\color{Accent}The advantage shrinks with abundant capacity.}\par}
-{\footnotesize At 16\,TB, LRU and LCS both reach 52\% for TriviaQA $\alpha=0.7$.\par}
-\slidenote{Sec.~6.3.2, Table~3. Token reuse, not measured CO$_2$ savings.}{}
+{\footnotesize\textbf{Representative result.}\enspace Llama-3 70B;\ TriviaQA, $\alpha=0.7$;\ cache size 4\,TB;\ metric: token-level cache hit rate.\par}
+\vspace{0.05cm}
+{\centering\large\textbf{FIFO: 23\%}\hspace{0.85cm}\textbf{LRU: 26\%}\hspace{0.85cm}\textbf{\textcolor{Accent}{LCS: 35\%}}\par}
+\vspace{0.03cm}
+{\centering\small\bfseries\textcolor{Accent}{LCS improves token-level cache hit rate by 9 percentage points over LRU.}\par}
+\vspace{0.02cm}
+{\footnotesize LCS is especially useful when cache capacity is limited.\\
+Token-level hit rate = reused input tokens / total input tokens.\par}
+\vspace{0.05cm}
+{\footnotesize\hyperlink{M09}{\textbf{General LCS Score}}\quad
+\hyperlink{M10}{\textbf{Multi-turn Score}}\quad
+\hyperlink{M11}{\textbf{Document QA Score}}\quad
+\hyperlink{B26}{\textbf{\textcolor{Accent}{\underline{Full Table 3}}}}\par}
+\slidenote{Section 6.3.2, Table 3.}{}
 \end{frame}
 
 \begin{frame}[t,label=M13]{Real Prototype, Traces, or a Simulator?}
@@ -558,7 +555,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 {\small\raggedright
 \textbf{8B and the other task} \nav{B15}{Fig.~12} \nav{B17}{Fig.~14b}\par
 \vspace{0.08cm}
-\textbf{LCS:} \nav{M09}{General} \nav{M10}{Chat} \nav{M11}{Doc QA} \nav{M12}{Results}\par
+\textbf{LCS:} \nav{M09}{General} \nav{M10}{Chat} \nav{M11}{Doc QA} \nav{M12}{Policies} \nav{B26}{Table 3}\par
 \vspace{0.08cm}
 \textbf{What we would not claim} \nav{B23}{Limits}\par}
 \end{column}
@@ -848,7 +845,7 @@ C & 4 & 600 & 2 & 2 & $4\times600/(2\times2)=600$\\
 \vspace{0.04cm}
 {\footnotesize This is a heuristic, not measured CO$_2$. Use consistent units; the example does not predict a real workload's hit rate.\par}
 \vspace{0.04cm}
-{\footnotesize\hyperlink{M10}{\textbf{Back to M10}}\quad\hyperlink{M09}{\textbf{General LCS M09}}\quad\hyperlink{M11}{\textbf{Document QA M11}}\quad\hyperlink{M12}{\textbf{Table 3 M12}}\par}
+{\footnotesize\hyperlink{M10}{\textbf{Back to M10}}\quad\hyperlink{M09}{\textbf{General LCS M09}}\quad\hyperlink{M11}{\textbf{Document QA M11}}\quad\hyperlink{M12}{\textbf{Policies M12}}\par}
 \slidenote{Sec.~5.5, Eq.~(8). Numerical example is illustrative.}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
@@ -1009,8 +1006,49 @@ C & 4 & 3000 & 2 & 2 & $4\times3000/(2\times2)=3000$\\
 \vspace{0.04cm}
 {\footnotesize The score is a heuristic, not measured CO$_2$ or a token-level hit-rate percentage.\par}
 \vspace{0.04cm}
-{\footnotesize\hyperlink{M11}{\textbf{Back to M11}}\quad\hyperlink{M09}{\textbf{General LCS M09}}\quad\hyperlink{M10}{\textbf{Multi-turn M10}}\quad\hyperlink{M12}{\textbf{Table 3 M12}}\par}
+{\footnotesize\hyperlink{M11}{\textbf{Back to M11}}\quad\hyperlink{M09}{\textbf{General LCS M09}}\quad\hyperlink{M10}{\textbf{Multi-turn M10}}\quad\hyperlink{M12}{\textbf{Policies M12}}\par}
 \slidenote{Sec.~5.5, Eq.~(9); Sec.~6.1. Numerical example is illustrative.}{\nav{INDEX}{Discussion Index}}
+\end{frame}
+
+\begin{frame}[t,label=B26]{Full Replacement Policy Comparison --- Table 3}
+\vspace{0.01cm}
+{\footnotesize\textbf{Llama-3 70B.}\quad Token-level hit rate = reused input tokens / total input tokens.\par}
+\vspace{0.05cm}
+{\centering\footnotesize\setlength{\tabcolsep}{3.6pt}\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}lccccccccc@{}}
+\toprule
+Size & \multicolumn{3}{c}{\textbf{ShareGPT}} & \multicolumn{3}{c}{\textbf{TriviaQA $\alpha=0.4$}} & \multicolumn{3}{c}{\textbf{TriviaQA $\alpha=0.7$}}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+(TB) & FIFO & LRU & \textcolor{Accent}{\textbf{LCS}} & FIFO & LRU & \textcolor{Accent}{\textbf{LCS}} & FIFO & LRU & \textcolor{Accent}{\textbf{LCS}}\\
+\midrule
+1 & 0.05 & 0.05 & 0.08 & 0.05 & 0.05 & 0.06 & 0.10 & 0.11 & 0.19\\
+2 & 0.11 & 0.12 & 0.17 & 0.08 & 0.08 & 0.09 & 0.16 & 0.19 & 0.25\\
+\textbf{4} & \textbf{0.19} & \textbf{0.21} & \textbf{0.28} & \textbf{0.12} & \textbf{0.12} & \textbf{0.14} & \textbf{0.23} & \textbf{0.26} & \textbf{0.35}\\
+8 & 0.34 & 0.40 & 0.47 & 0.19 & 0.20 & 0.22 & 0.37 & 0.38 & 0.44\\
+16 & 0.52 & 0.69 & 0.71 & 0.31 & 0.32 & 0.33 & 0.47 & 0.52 & 0.52\\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.07cm}
+{\footnotesize\textbf{\textcolor{Accent}{1. Limited Capacity}}\par}
+{\scriptsize At 4\,TB, LCS improves token-level cache hit rate across all three workloads.\par}
+{\scriptsize ShareGPT: LRU 0.21 $\rightarrow$ LCS 0.28.\quad
+TriviaQA $\alpha=0.4$: LRU 0.12 $\rightarrow$ LCS 0.14.\quad
+TriviaQA $\alpha=0.7$: LRU 0.26 $\rightarrow$ LCS 0.35.\par}
+\vspace{0.04cm}
+{\footnotesize\textbf{\textcolor{Accent}{2. Abundant Capacity}}\par}
+{\scriptsize At 16\,TB, the gap becomes smaller for some workloads.
+Example: TriviaQA $\alpha=0.7$, LRU = LCS = 0.52.\par}
+\vspace{0.04cm}
+{\footnotesize\textbf{\textcolor{Accent}{3. Interpretation}}\par}
+{\scriptsize LCS prioritizes entries with higher reuse potential per storage footprint, using age as an additional penalty.\\
+Higher token-level hit rate means more input tokens are reused from cache, potentially avoiding repeated prefill computation.\\
+This table does not directly measure CO$_2$ savings.\par}
+\vspace{0.06cm}
+{\footnotesize\hyperlink{M12}{\textbf{Main M12: Policy Comparison}}\quad
+\hyperlink{M09}{\textbf{General LCS}}\quad
+\hyperlink{M10}{\textbf{Multi-turn}}\quad
+\hyperlink{M11}{\textbf{Document QA}}\par}
+\slidenote{Section 6.3.2, Table 3.}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
 \end{document}

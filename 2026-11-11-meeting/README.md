@@ -1,6 +1,6 @@
 # 2026-11-11 Research Meeting — GreenCache
 
-**19 頁 Main + 27 頁 Discussion / Backup（含 1 頁索引），共 46 頁。** 主動報告約 15–20 分鐘。Main 在前，Backup 在後。
+**19 頁 Main + 28 頁 Discussion / Backup（含 1 頁索引），共 47 頁。** 主動報告約 15–20 分鐘。Main 在前，Backup 在後。
 
 - [PDF](output/pdf/2026-11-11-GreenCache.pdf)
 - [Beamer source](2026-11-11-GreenCache.tex)
@@ -26,7 +26,7 @@
 | M09 / 9 | How Does LCS Rank KV Cache Entries? | Eq. (7) | 1, 10, 11, 12, 20 |
 | M10 / 10 | How Does LCS Work for Multi-Turn Conversations? | Eq. (8) + KV reuse diagram | 1, 9, 11, 12, 20, 34 |
 | M11 / 11 | How Does LCS Work for Document QA? | Eq. (9) + KV reuse diagram | 1, 9, 10, 12, 20, 46 |
-| M12 / 12 | Does LCS Outperform FIFO and LRU? | Table 3 | 1, 9, 10, 11, 20, 34, 46 |
+| M12 / 12 | Why Use LCS Instead of FIFO or LRU? | FIFO / LRU / LCS comparison; 4 TB example | 1, 9, 10, 11, 20, 47 |
 | M13 / 13 | Real Prototype, Traces, or a Simulator? | — | 1, 20, 35 |
 | M14 / 14 | What Are the Evaluation Settings? | — | 1, 20, 32 |
 | M15 / 15 | Q1: Does GreenCache Reduce Carbon? | Fig. 12 | 1, 20, 36 |
@@ -43,7 +43,7 @@ Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）
 
 | PDF | Label | 內容 | 返回 / 導覽 |
 |---|---|---|---|
-| 20 | INDEX | Discussion Index | 5, 6, 7, 8, 9, 10, 11, 12, 13, 19, 20, 21, 30, 31, 32, 35, 36, 38, 40, 44, 45 |
+| 20 | INDEX | Discussion Index | 5, 6, 7, 8, 9, 10, 11, 12, 13, 19, 20, 21, 30, 31, 32, 35, 36, 38, 40, 44, 45, 47 |
 | 21 | B00 | Why Cache Repeated Context? | 2, 20, 21, 23, 24 |
 | 22 | B01 | Which Grids, and How Fast Does CI Move? | 3, 20, 21, 23 |
 | 23 | B02 | Where Does Caching Change Latency? | 20, 21, 24 |
@@ -70,6 +70,7 @@ Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）
 | 44 | B23 | Limits, and What We Would Not Claim | 19, 20, 40 |
 | 45 | B24 | Discrete Capacity & Solver Assumptions | 7, 8, 20, 45 |
 | 46 | B25 | Detailed Document QA LCS Example | 9, 10, 11, 12, 20, 45 |
+| 47 | B26 | Full Replacement Policy Comparison — Table 3 | 9, 10, 11, 12, 20, 45 |
 
 ## Figure → slide
 
@@ -100,18 +101,19 @@ Fig. 7 保留完整原圖與 caption：第 2 頁聚焦 (a) 的負載比較。第
 
 ## LCS methodology and navigation
 
-**PDF 9–12 是連續的 Main LCS 段落：Eq. (7) → Eq. (8) → Eq. (9) → Table 3。**
+**PDF 9–12 是連續的 Main LCS 段落：Eq. (7) → Eq. (8) → Eq. (9) → FIFO / LRU / LCS policy comparison。** 完整 Table 3 在 Backup B26（PDF 47），不在 Main。
 
 | Topic | Label / PDF | Evidence |
 |---|---|---|
 | General LCS principle | M09 / 9 | §5.5, Eq. (7) |
 | Multi-turn history KV reuse | M10 / 10 | ShareGPT, Eq. (8) |
 | Shared document-prefix KV reuse | M11 / 11 | TriviaQA α=0.4 and α=0.7, Eq. (9) |
-| FIFO / LRU / LCS token-level hit rate | M12 / 12 | §6.3.2, Table 3; all 45 values, one table only |
+| Why LCS instead of FIFO or LRU | M12 / 12 | Mechanism comparison. Representative token-level hit rate: Llama-3 70B, TriviaQA α=0.7, 4 TB — FIFO 23%, LRU 26%, LCS 35% (+9 percentage points vs. LRU) |
 | Detailed multi-turn scoring example | B13 / 34 | Three hypothetical entries, explicitly not paper data |
 | Detailed document scoring example | B25 / 46 | Three hypothetical documents; hit count vs. reused tokens vs. size |
+| Full Table 3 | B26 / 47 | §6.3.2; Llama-3 70B; all 45 token-level hit rates. Not a direct CO₂ measurement |
 
-The four Main pages link directly to each other. M10 links to B13, M11 to B25, and M12 to both examples. Both backups link back to all four Main LCS pages. The index is PDF 20. [Main 9–12 screenshot](output/qa/lcs-main-09-12.png).
+The four Main pages link directly to each other. M10 links to B13, M11 to B25, and M12 links to B26. B13 and B25 link back to M09–M12. B26 links back to M09–M12. The index is PDF 20 and also opens B26. [Main 9–12 screenshot](output/qa/lcs-main-09-12.png).
 
 M10 and M11 share formula position, font size, and column layout. Their diagrams illustrate matching retained KV reuse, not unconditional hits. Age means time in storage. Scores are heuristics, not measured gCO₂e, and do not multiply by current CI. The paper reports no independent Eq. (7)/(8)/(9) ablation. Grow/shrink changes allocation under amortized carbon accounting; eviction does not transfer all SSD KV back to GPU HBM.
 
@@ -131,7 +133,7 @@ M10 and M11 share formula position, font size, and column layout. Their diagrams
 | CISO day: 37 gCO₂e/kWh at 7 AM, 232 at 8 PM | Fig. 8b | Sec. 3.2 |
 | ρ = 0.9, separate TTFT and TPOT sums | Not one joint probability | Eq. (6), Sec. 5.4 |
 | Resize hourly, 1 TB steps, PuLP + CBC, 7.03 s average | Controller overhead, not the token path | Secs. 5.4, 6.1, 6.4 |
-| Token hit rate; 4 TB, TriviaQA α=0.7: LRU 0.26, LCS 0.35 | Reused input tokens / total input tokens | Table 3, Sec. 6.3.2 |
+| Token hit rate; 4 TB, TriviaQA α=0.7: FIFO 0.23, LRU 0.26, LCS 0.35 | Reused input tokens / total input tokens. +9 percentage points is LCS minus LRU, not a relative percent. Full 45-value table is B26 | Table 3, Sec. 6.3.2 |
 | LRU + adaptive capacity: up to 10.3%, and 6.6–9.9% | Versus Full Cache, ES average CI 124 gCO₂e/kWh | Sec. 6.3.1, Fig. 15 |
 | Error trims 0.0064% / 0.20% / 0.79% of savings | CI, then plus load, then plus profiler, versus ground truth | Sec. 6.5 |
 | 3-year SSD life: up to 11.9%; 90 kgCO₂e/TB: up to 25% | ES grid, fixed rates in Sec. 6.6 | Secs. 6.6.2–6.6.3 |
@@ -162,7 +164,7 @@ python3 -m venv /tmp/greencache-qa
 ## QA
 
 - 本地兩次與 ZIP 獨立兩次編譯通過，最終 log 沒有 Overfull、undefined reference 或 Warning。
-- 46 頁、263 個內部連結、20 張來源圖的像素雜湊都通過。Main 19 頁。Main 可以點到全部 Backup，Backup 能回到對應 Main。
+- 47 頁、270 個內部連結、20 張來源圖的像素雜湊都通過。Main 19 頁，Discussion / Backup 28 頁。Main 可以點到全部 Backup，Backup 能回到對應 Main。M12 的 Full Table 3 連到 B26；B26 回到 M09–M12。
 - [Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)、[逐頁 PNG](output/qa/pages/)、[機器紀錄](output/qa/validation.json)、[視覺紀錄](output/qa/REVIEW.md)。
 
 ## Main speaking points
@@ -176,7 +178,7 @@ python3 -m venv /tmp/greencache-qa
 7. 沒有獨立 GPU simulator。硬體是真的，到達與 CI 是 trace，碳排是會計模型。
 8. 70B 相對 Full Cache 的三個 workload 平均是 12.6%、9.4%、5.6%。15.1% / 25.3% 只屬於 FR、multi-turn。
 9. 碳排下降時 P90 仍在作者的門檻下。No Cache 常常過不了 SLO。
-10. 容量會隨負載與 CI 變。LCS 的 hit rate 是 token 比例；4 TB、α=0.7 時 LRU 0.26、LCS 0.35。
+10. 容量會隨負載與 CI 變。LCS 的 hit rate 是 token 比例。4 TB、TriviaQA α=0.7：FIFO 23%、LRU 26%、LCS 35%，比 LRU 高 9 個百分點。完整 Table 3 在 B26，不直接等於減碳。
 11. 限制是 trace 長度、攤提假設、工作負載與 SLO。HBF 是我們的延伸問題，不是這篇的實驗結果。
 
 ## Unresolved

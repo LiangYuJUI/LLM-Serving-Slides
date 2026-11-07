@@ -35,8 +35,9 @@ def validate(render_dir):
     main_count = expected['INDEX']
     assert main_count == 19, main_count
     assert [frames[i][0] for i in range(main_count)] == [f'M{i:02}' for i in range(1, 20)]
-    assert len(doc) == 46, len(doc)
+    assert len(doc) == 47, len(doc)
     assert expected['B25'] == 45, expected['B25']
+    assert expected['B26'] == 46, expected['B26']
     section_starts = []
     page_count = 0
     for token in re.finditer(r'\\section\{|\\begin\{frame\}', text):
@@ -110,8 +111,9 @@ def validate(render_dir):
         'M15': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
         'M16': ['2.5', '15', 'not viable'],
         'M17': ['15.1%', '25.3%', '15 TB'],
-        'M12': ['Evict the earliest inserted entry', 'Evict the least recently used entry',
-                'Evict the entry with the lowest LCS score', 'reused input tokens', '0.26', '0.35'],
+        'M12': ['How Does It Work?', 'Potential Problem', '23%', '26%', '35%',
+                '9 percentage points', 'reused input tokens', 'Full Table 3'],
+        'B26': ['Limited Capacity', 'Abundant Capacity', 'Interpretation', 'does not directly measure'],
         'M19': ['OUR INTERPRETATION', 'does not evaluate HBF'],
         'B09': ['above 1 is a benefit', 'opposite direction'],
         'B10': ['7.03', 'PuLP', 'prefill', 'CBC'],
@@ -129,11 +131,17 @@ def validate(render_dir):
             assert expected[target] in graph[expected[origin]], (origin, target)
     assert [expected[k] for k in lcs_labels] == [8, 9, 10, 11]
     assert expected['INDEX'] == 19 and expected['B13'] == 33
-    assert text.count(r'\begin{tabular}{lccccccccc}') == 1
+    assert text.count(r'\begin{tabular}{@{}lccccccccc@{}}') == 1
+    assert text.count(r'\begin{tabular}{lccccccccc}') == 0
     for backup in ['B13', 'B25']:
         for main in lcs_labels:
             assert expected[main] in graph[expected[backup]], (backup, main)
+    assert expected['B26'] in graph[expected['M12']]
+    assert expected['B26'] in graph[expected['INDEX']]
+    for main in lcs_labels:
+        assert expected[main] in graph[expected['B26']], main
     # Table 3: independently transcribed from the paper, Sec. 6.3.2, PDF 19.
+    # All 45 values live on B26. M12 keeps only the 4 TB TriviaQA α=0.7 example.
     table3 = [
         '0.05 0.05 0.08 0.05 0.05 0.06 0.10 0.11 0.19',
         '0.11 0.12 0.17 0.08 0.08 0.09 0.16 0.19 0.25',
@@ -141,7 +149,22 @@ def validate(render_dir):
         '0.34 0.40 0.47 0.19 0.20 0.22 0.37 0.38 0.44',
         '0.52 0.69 0.71 0.31 0.32 0.33 0.47 0.52 0.52',
     ]
-    assert re.findall(r'0\.\d{2}', doc[expected['M12']].get_text()) == ' '.join(table3).split()
+    expected_values = ' '.join(table3).split()
+    b26_table = doc[expected['B26']].get_text().split('1. Limited Capacity')[0]
+    found_values = re.findall(r'0\.\d{2}', b26_table)
+    assert found_values == expected_values, (len(found_values), found_values)
+    assert len(found_values) == 45
+    m12_text = ' '.join(doc[expected['M12']].get_text().split())
+    for needle in ['Llama-3 70B', 'TriviaQA', '4 TB', '23%', '26%', '35%',
+                   '9 percentage points', 'especially useful when cache capacity is limited']:
+        assert needle in m12_text, needle
+    assert not re.findall(r'0\.\d{2}', m12_text), m12_text
+    assert '0.69' not in m12_text and '0.52' not in m12_text
+    full_table_hits = doc[expected['M12']].search_for('Full Table 3')
+    b26_boxes = [fitz.Rect(link['from']) for link in doc[expected['M12']].get_links()
+                 if link.get('nameddest') == 'B26']
+    assert full_table_hits and b26_boxes
+    assert any(box.intersects(hit) for box in b26_boxes for hit in full_table_hits)
     files = sorted((ROOT / 'GreenCache-Research-Meeting-2026-11-11/With-Caption').glob('*.png'))
     assert len(files) == 20
     hashes = {}
