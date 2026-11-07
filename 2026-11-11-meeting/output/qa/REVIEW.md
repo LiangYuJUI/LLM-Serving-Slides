@@ -4,7 +4,9 @@
 
 - 15 main slides plus 25 index/background/backup slides, 40 pages total.
 - PDF 2 defines embodied and operational carbon and uses Fig. 7 to explain the request-rate trend, without detailed platform numbers. It explicitly explains that the allocated SSD cost is shared across more prompts as load rises; manufacturing emissions themselves do not decrease. PDF 3 explains the Fig. 8 trends across low/high-CI grids and low/high-CI hours within CISO. Both retain the supplied captions.
-- PDF 4 states the optimization objective and separate latency attainments. PDF 6 explains profiling, forecasting, solving, and applying the chosen capacity without repeating the objective slide.
+- PDF 4 states the optimization objective and separate latency attainments. PDF 5 and 6 share the same 60% / 38% columns and complete Figure 10, with identical image dimensions, placement, and original caption. Their right columns cover monitoring / prediction and optimization / execution respectively; descriptions occupy one or two lines, except the expanded SARIMA name and explanation, which use three lines on PDF 5. Both carry the hourly / 1 TB / continuous-serving note.
+- Detailed solver implementation remains in B10; capacity limits are retained in B11, and forecast-dependent optimality in B12. The index links to both walkthrough slides; method backups return to the relevant main slide.
+- Only PDF pages 5, 6, 16, 27, 28, and 29 changed in this redesign; the other 34 pages are pixel-identical to the preceding PDF.
 - The KV reuse explanation and Fig. 1 now occupy B00 / PDF 17. The index is PDF 16. Backup pages B01–B23 remain at PDF 18–40.
 - The cover follows the Helix hierarchy. Blue title and content backgrounds remain removed. Source figures keep their original colors.
 - Inspected the revised pages and updated all-page montages. Figures, captions, source lines, and navigation remain within the page with no overlapping content.

@@ -19,8 +19,8 @@
 | M02 / 2 | Why Do We Need GreenCache? | Fig. 7 | 1, 16, 17, 23, 24 |
 | M03 / 3 | Why Is a Fixed Cache Size Suboptimal? | Fig. 8 | 1, 16, 18, 25 |
 | M04 / 4 | What Does GreenCache Optimize? | 最佳化目標 + SLO | 1, 16, 23, 24 |
-| M05 / 5 | How Does GreenCache Work? | Fig. 10 | 1, 16, 26, 27 |
-| M06 / 6 | How Is Cache Capacity Selected? | Profiling / Forecast / ILP | 1, 16, 27, 28, 29 |
+| M05 / 5 | How Does GreenCache Work? (1/2): Monitoring & Prediction | Fig. 10 | 1, 16, 26, 29 |
+| M06 / 6 | How Does GreenCache Work? (2/2): Optimization & Execution | Fig. 10 | 1, 16, 27, 28 |
 | M07 / 7 | What Does LCS Evict? | Eq. (7) | 1, 16, 30 |
 | M08 / 8 | Real Prototype, Traces, or a Simulator? | — | 1, 16, 31 |
 | M09 / 9 | What Are the Evaluation Settings? | — | 1, 16, 28 |
@@ -31,13 +31,15 @@
 | M14 / 14 | Q4: Does LCS Improve Token Reuse? | Table 3 | 1, 16, 30 |
 | M15 / 15 | Conclusion and Limitations | — | 1, 16, 40 |
 
+Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）尺寸與位置相同，右側分別介紹 monitoring / prediction 與 optimization / execution。兩頁底部均標示 hourly resizing、1 TB granularity，以及最佳化期間持續 serving。PuLP/CBC 保留在 B10；容量上限（70B 16 TB、8B 8 TB）與決策粒度保留在 B11；預測器細節與最佳化範圍保留在 B12。
+
 所有 Main 的頁腳都能打開第 16 頁索引。Fig. 1 的 KV reuse 基本機制移至第 17 頁 B00。
 
 ## Backup
 
 | PDF | Label | 內容 | 返回 / 導覽 |
 |---|---|---|---|
-| 16 | INDEX | Discussion Index | 8, 15, 16, 17, 26, 27, 28, 31, 32, 34, 36, 40 |
+| 16 | INDEX | Discussion Index | 5, 6, 8, 15, 16, 17, 26, 27, 28, 31, 32, 34, 36, 40 |
 | 17 | B00 | Why Cache Repeated Context? | 2, 16, 17, 19, 20 |
 | 18 | B01 | Which Grids, and How Fast Does CI Move? | 3, 16, 17, 19 |
 | 19 | B02 | Where Does Caching Change Latency? | 16, 17, 20 |
@@ -48,9 +50,9 @@
 | 24 | B07 | Carbon Accounting, Equations (1)--(5) | 2, 4, 16, 17, 25 |
 | 25 | B08 | Load and CI Push Capacity in Opposite Ways | 3, 16, 17, 26 |
 | 26 | B09 | What Do the Profiles Actually Contain? | 5, 13, 16, 26, 27 |
-| 27 | B10 | Equation (6): Capacity ILP | 5, 6, 16, 26, 28 |
+| 27 | B10 | Equation (6): Capacity ILP | 6, 16, 26, 28 |
 | 28 | B11 | SLO Thresholds and Decision Granularity | 6, 9, 16, 26, 29 |
-| 29 | B12 | Load Forecast and Carbon-Intensity Forecast | 6, 16, 26, 30 |
+| 29 | B12 | Load Forecast and Carbon-Intensity Forecast | 5, 16, 26, 30 |
 | 30 | B13 | LCS Scores for the Two Tasks | 7, 14, 16, 26, 31 |
 | 31 | B14 | What Is Measured, Replayed, and Modeled? | 8, 16, 31, 32 |
 | 32 | B15 | Figure 12b: Llama-3 8B Carbon | 10, 16, 31, 33 |
@@ -76,7 +78,7 @@
 | 7 | 2 | — |
 | 8 | 3 | — |
 | 9 | — | 25 |
-| 10 | 5 | — |
+| 10 | 5, 6 | — |
 | 11 | — | 26 |
 | 12 | 10 | 32 |
 | 13 | 11 | 33 |

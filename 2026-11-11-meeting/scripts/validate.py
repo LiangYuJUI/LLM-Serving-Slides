@@ -86,7 +86,10 @@ def validate(render_dir):
             if target > expected['INDEX']:
                 assert origin in graph[target], ('missing return', frames[origin][0], frames[target][0])
     claims = {
-        'M04': ['90%', 'amortized', 'separate fraction'],
+        'M04': ['90%', 'amortized', 'at most 10%', 'evaluated separately',
+                'hardware lifetime and usage time', 'configurations are fixed',
+                'current performance feedback', 'preset SLO constraints',
+                'the ILP decides the capacity'],
         'B00': ['1.7', '0.03', 'not an end-to-end'],
         'M02': ['manufacturing', 'electricity', 'allocation time', 'low request rates', 'shared across more prompts'],
         'M03': ['below 1', 'Above 1', 'Cleaner electricity', 'offset the SSD', 'generation mix', 'Low-CI hours', 'High-CI hours'],

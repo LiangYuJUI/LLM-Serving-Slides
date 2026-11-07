@@ -148,48 +148,59 @@ C_{\mathrm{operational}}(S)+C_{\mathrm{embodied,\ allocated}}(S)
 \mathrm{TTFT\ attainment}\ge90\%,\qquad
 \mathrm{TPOT\ attainment}\ge90\%.
 \]
+{\footnotesize Each metric allows at most 10\% of requests to exceed its latency threshold.\\
+TTFT and TPOT are evaluated separately.\par}
 \vspace{0.10cm}
-\point{Carbon accounting}{Operational carbon is energy $\times$ CI. Embodied carbon is amortized over allocation time, including allocated SSD and other server components.}
-\point{Inputs and decision}{Predicted request rate and CI, plus profiled serving behavior, inform the choice of SSD capacity $S$ from discrete candidates $\mathcal{S}$.}
-\point{Replacement policy}{LCS ranks which KV entries to retain inside the chosen capacity.}
-\vspace{0.12cm}
-{\footnotesize TTFT: time to first token. TPOT: time per output token. Each attainment is a separate fraction of requests; neither is a guarantee for every request.\par}
+\point{Carbon accounting}{Operational carbon = energy $\times$ CI. Embodied carbon is amortized by hardware lifetime and usage time. GPU, CPU, and DRAM configurations are fixed; only SSD cache capacity changes dynamically.}
+\point{Inputs and decision}{The solver uses predicted request rate, predicted CI, profiled performance/power, current performance feedback, and preset SLO constraints to select SSD cache capacity $S\in\mathcal{S}$.}
+\point{Replacement policy}{LCS decides which KV cache entries to retain or evict within the selected capacity; the ILP decides the capacity.}
 \slidenote{Secs.~3.2, 5.4--5.5, Eq.~(6)}{\nav{B06}{Embodied Carbon} \nav{B07}{Carbon Model}}
 \end{frame}
 
-\begin{frame}[t,label=M05]{How Does GreenCache Work?}
+% Shared geometry keeps the complete Figure 10 and its original caption identical.
+\begingroup
+\setbeamerfont{frametitle}{size=\normalsize,series=\bfseries}
+\newcommand{\component}[2]{%
+  {\small\bfseries\color{Accent}#1}\par
+  {\footnotesize\raggedright #2\par}\vspace{0.22cm}}
+\begin{frame}[t,label=M05]{How Does GreenCache Work? (1/2): Monitoring \& Prediction}
 \vspace{0.02cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.60\textwidth}
-{\centering\gcimg{10}{4.65cm}\par}
+{\centering\gcimg{10}{5.55cm}\par}
 \end{column}
 \begin{column}{0.38\textwidth}
-\point{1. Profile}{Sweep SSD sizes and loads. Record TTFT, TPOT, and power.}
-\point{2. Forecast}{Authors' SARIMA load model. CI from existing EnsembleCI.}
-\point{3. Choose}{ILP selects the lowest-carbon discrete size that meets both attainments.}
-\point{4. Apply}{Resize the cloud SSD allocation and evict with LCS.}
+\vspace{0.14cm}
+\component{Profiler}{Profiles TTFT, TPOT, and power across cache sizes and request rates.}
+\component{Perf. Monitor}{Tracks current request rate, TTFT, and TPOT.}
+\component{Load Predictor}{Seasonal Autoregressive Integrated Moving Average (SARIMA) forecasts future request rates.}
+\component{CI Predictor}{Uses EnsembleCI from prior work to forecast grid carbon intensity.}
 \end{column}
 \end{columns}
-\vspace{0.08cm}
-\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.08cm]{mintbox}
-{\small Green boxes in Fig.~10 are the new control path. Requests still run on LMCache / vLLM. The decision is a cache size, not a new GPU kernel.\par}
-\end{beamercolorbox}
-\slidenote{Secs.~4--5.1, Fig.~10}{\nav{B09}{Profiles} \nav{B10}{ILP}}
+\vspace{0.06cm}
+{\footnotesize Hourly resizing, 1\,TB granularity. Serving continues during optimization.\par}
+\slidenote{Secs.~4--5.3, Fig.~10}{\nav{B09}{Profiles} \nav{B12}{Predictors}}
 \end{frame}
 
-\begin{frame}[t,label=M06]{How Is Cache Capacity Selected?}
-\vspace{0.10cm}
-\point{1. Profile candidate sizes}{Measure TTFT, TPOT, and power across cache sizes and request rates. These profiles describe the candidates available to the controller.}
-\vspace{0.18cm}
-\point{2. Forecast the next interval}{Predict request rate with SARIMA and carbon intensity with EnsembleCI. The live TTFT / TPOT monitor supplies feedback.}
-\vspace{0.18cm}
-\point{3. Solve the capacity ILP}{Use the profiles and forecasts to select the lowest-carbon candidate that meets both attainment constraints. Implementation: PuLP with the CBC solver.}
-\vspace{0.18cm}
-\point{4. Apply and repeat}{Resize hourly in 1\,TB steps. Maximum capacity: 16\,TB for Llama-3 70B and 8\,TB for 8B. LCS evicts entries when capacity shrinks.}
-\vspace{0.20cm}
-{\small\textbf{Scope of optimality:} the best profiled candidate under the forecasts and constraints. Forecast and profile errors can change the chosen capacity.\par}
-\slidenote{Secs.~5.2--5.5, 6.1, Eq.~(6)}{\nav{B10}{Full ILP} \nav{B11}{SLO Numbers} \nav{B12}{Predictors}}
+\begin{frame}[t,label=M06]{How Does GreenCache Work? (2/2): Optimization \& Execution}
+\vspace{0.02cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.60\textwidth}
+{\centering\gcimg{10}{5.55cm}\par}
+\end{column}
+\begin{column}{0.38\textwidth}
+\vspace{0.14cm}
+\component{SLO Input}{Predefined TTFT / TPOT thresholds; $\ge90\%$ attainment each.}
+\component{Constraint Solver}{ILP selects the lowest-carbon feasible SSD capacity.}
+\component{Cache Manager}{Resizes SSD allocation and evicts entries using LCS.}
+\component{LLM Server \& Cache}{LMCache/vLLM serves requests and reuses stored KV.}
+\end{column}
+\end{columns}
+\vspace{0.06cm}
+{\footnotesize Hourly resizing, 1\,TB granularity. Serving continues during optimization.\par}
+\slidenote{Secs.~5.4--5.5, 6.1, 6.4; Fig.~10}{\nav{B10}{Full ILP} \nav{B11}{SLO Numbers}}
 \end{frame}
+\endgroup
 
 \begin{frame}[t,label=M07]{What Does LCS Evict?}
 \vspace{0.04cm}
@@ -367,7 +378,7 @@ Size & \multicolumn{3}{c}{ShareGPT} & \multicolumn{3}{c}{TriviaQA $\alpha=0.4$} 
 Topic & What is here & Jump\\
 \midrule
 A. Motivation & KV reuse, grids, latency, embodied carbon, Equations~(1)--(5) & \nav{B00}{Open A}\\[0.18cm]
-B. Method & Profiles, ILP, SLO numbers, predictors, LCS formulas & \nav{B09}{Open B}\\[0.18cm]
+B. Method & Monitoring / prediction, capacity ILP, SLOs, LCS & \nav{B09}{Open B}\\[0.18cm]
 C. Evidence & Measurement boundary, 8B results, document timeline, solver time & \nav{B14}{Open C}\\[0.18cm]
 D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits & \nav{B19}{Open D}\\
 \bottomrule
@@ -377,6 +388,8 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \begin{column}{0.49\textwidth}
 {\small\raggedright
 \textbf{Is it a simulator?} \nav{M08}{M08} \nav{B14}{Notes}\par
+\vspace{0.08cm}
+\textbf{System walkthrough} \nav{M05}{1/2} \nav{M06}{2/2}\par
 \vspace{0.08cm}
 \textbf{Full ILP and SLOs} \nav{B10}{Eq.~6} \nav{B11}{Thresholds}\par}
 \end{column}
@@ -561,10 +574,10 @@ C = E\times\mathrm{CI} + \frac{T}{\mathrm{LT}}\left(C_{e,\mathrm{Cache}}+C_{e,\m
 \]
 }
 \point{Indices}{$j_t$ is the predicted request rate at hour $t$, and $\mathrm{CI}_t$ is the predicted intensity. $z=1$ when that request meets the corresponding latency limit.}
-\point{Not one probability}{The two sums are separate constraints. A request can meet TTFT and miss TPOT.}
-\point{Scope of the objective}{The carbon sum is written on prefill time. Cache size does not cut decode FLOPs; it changes decode delay through the batch. Solver: PuLP + CBC. Average decision time 7.03\,s.\par}
+\point{Separate constraints}{A request can meet TTFT and miss TPOT.}
+\point{Scope of the objective}{Prefill-time carbon; cache size affects decode delay via batching, not decode FLOPs. PuLP + CBC; 7.03\,s average.\par}
 \slidenote{Sec.~5.4, Table~2, Eq.~(6), Sec.~6.4}{}
-\back[\nav{M06}{Main \ref*{M06}} \nav{B11}{Next}]{M05}
+\back[\nav{B11}{Next}]{M06}
 \end{frame}
 
 \begin{frame}[t,label=B11]{SLO Thresholds and Decision Granularity}
@@ -583,19 +596,20 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \vspace{0.12cm}
 \point{Unresolved 8B document TTFT}{Section~6.1 says the document TTFT threshold is relaxed to 2.5\,s for Llama-3 8B. The dashed line on that Fig.~13 panel is drawn at 4.0\,s. Both are shown; this deck does not pick one.}
 \point{How attainment is shown}{$\rho=0.9$. A P90 curve under the threshold is the paper's picture of at least 90\% attainment.}
-\point{Search space}{Integer TB steps, CI treated as constant inside each hour, profiles taken after LCS warm-up. The paper proves NP-hardness by reduction to 0--1 Knapsack and then says the 1\,TB grid makes the actual search small.\par}
+\point{Search space}{Hourly resizing in 1\,TB steps; up to 16\,TB (70B) or 8\,TB (8B). CI is constant within each hour; profiles follow LCS warm-up. NP-hard by 0--1 Knapsack reduction, but the 1\,TB grid keeps the search small.\par}
 \slidenote{Secs.~5.4, 6.1, Fig.~13}{}
 \back[\nav{M09}{Main \ref*{M09}} \nav{B12}{Next}]{M06}
 \end{frame}
 
 \begin{frame}[t,label=B12]{Load Forecast and Carbon-Intensity Forecast}
 \vspace{0.08cm}
-\point{Load}{SARIMA, fit with pmdarima, including its parameter search. Hold-out uses the latest three days and predicts 24 hours. At runtime the model updates every hour. It runs on separate CPU cores.}
+\point{Load}{SARIMA (Seasonal Autoregressive Integrated Moving Average) captures daily periodicity and short-term autocorrelation. pmdarima fits parameters by maximum likelihood and auto-tunes them. Hold-out uses the latest three days to predict 24 hours; runtime updates hourly on separate CPU cores.}
 \point{Carbon intensity}{EnsembleCI, an existing predictor, trained on 18 months of CarbonCast and evaluated on 6 July 2022. GreenCache does not claim to have designed EnsembleCI.}
 \point{Errors, Sec.~6.5}{Load MAPE 4.3\%. CI MAPE: FR 12.7\%, FI 15.3\%, ES 11.3\%, CISO 6.8\%. Median context-length gap versus the profile: 5.78\% (multi-turn) and 1.13\% (document).}
 \point{Effect on the carbon result}{Relative to an ideal run with ground truth, CI error trims 0.0064\% of the savings on average, adding load error trims 0.20\%, and adding profiler mismatch trims 0.79\%.\par}
-\slidenote{Secs.~5.3, 6.1, 6.5}{}
-\back[\nav{B13}{Next}]{M06}
+\point{Scope of optimality}{Best profiled candidate under forecasts and SLOs; forecast and profile errors can change the choice.}
+\slidenote{Secs.~5.3, 5.4, 6.1, 6.5}{}
+\back[\nav{B13}{Next}]{M05}
 \end{frame}
 
 \begin{frame}[t,label=B13]{LCS Scores for the Two Tasks}

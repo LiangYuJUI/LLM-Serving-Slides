@@ -23,17 +23,17 @@
     {
       "page": 4,
       "label": "M04",
-      "lower_empty_ratio": 0.865
+      "lower_empty_ratio": 0.845
     },
     {
       "page": 5,
       "label": "M05",
-      "lower_empty_ratio": 0.58
+      "lower_empty_ratio": 0.89
     },
     {
       "page": 6,
       "label": "M06",
-      "lower_empty_ratio": 0.921
+      "lower_empty_ratio": 0.887
     },
     {
       "page": 7,
@@ -83,7 +83,7 @@
     {
       "page": 16,
       "label": "INDEX",
-      "lower_empty_ratio": 0.915
+      "lower_empty_ratio": 0.899
     },
     {
       "page": 17,
@@ -138,17 +138,17 @@
     {
       "page": 27,
       "label": "B10",
-      "lower_empty_ratio": 0.834
+      "lower_empty_ratio": 0.867
     },
     {
       "page": 28,
       "label": "B11",
-      "lower_empty_ratio": 0.878
+      "lower_empty_ratio": 0.881
     },
     {
       "page": 29,
       "label": "B12",
-      "lower_empty_ratio": 0.979
+      "lower_empty_ratio": 0.933
     },
     {
       "page": 30,
@@ -230,12 +230,12 @@
     {
       "page": 5,
       "label": "M05",
-      "title": "How Does GreenCache Work?"
+      "title": "How Does GreenCache Work? (1/2): Monitoring \\& Prediction"
     },
     {
       "page": 6,
       "label": "M06",
-      "title": "How Is Cache Capacity Selected?"
+      "title": "How Does GreenCache Work? (2/2): Optimization \\& Execution"
     },
     {
       "page": 7,
@@ -433,10 +433,20 @@
       "page": 5,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig10.png",
       "bbox": [
-        33.4,
+        13.6,
         41.2,
-        249.7,
-        173.0
+        269.4,
+        197.1
+      ]
+    },
+    {
+      "page": 6,
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig10.png",
+      "bbox": [
+        13.6,
+        41.2,
+        269.4,
+        197.1
       ]
     },
     {
@@ -806,8 +816,8 @@
     {
       "from_page": 5,
       "from_label": "M05",
-      "destination": "B10",
-      "to_page": 27
+      "destination": "B12",
+      "to_page": 29
     },
     {
       "from_page": 5,
@@ -832,12 +842,6 @@
       "from_label": "M06",
       "destination": "B11",
       "to_page": 28
-    },
-    {
-      "from_page": 6,
-      "from_label": "M06",
-      "destination": "B12",
-      "to_page": 29
     },
     {
       "from_page": 6,
@@ -1048,6 +1052,18 @@
       "from_label": "INDEX",
       "destination": "B14",
       "to_page": 31
+    },
+    {
+      "from_page": 16,
+      "from_label": "INDEX",
+      "destination": "M05",
+      "to_page": 5
+    },
+    {
+      "from_page": 16,
+      "from_label": "INDEX",
+      "destination": "M06",
+      "to_page": 6
     },
     {
       "from_page": 16,
@@ -1430,12 +1446,6 @@
     {
       "from_page": 27,
       "from_label": "B10",
-      "destination": "M05",
-      "to_page": 5
-    },
-    {
-      "from_page": 27,
-      "from_label": "B10",
       "destination": "M06",
       "to_page": 6
     },
@@ -1502,8 +1512,8 @@
     {
       "from_page": 29,
       "from_label": "B12",
-      "destination": "M06",
-      "to_page": 6
+      "destination": "M05",
+      "to_page": 5
     },
     {
       "from_page": 29,
