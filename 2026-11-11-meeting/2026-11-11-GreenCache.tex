@@ -100,15 +100,16 @@ National Taiwan University / Academia Sinica
 
 \begin{frame}[t,label=M02]{Why Do We Need GreenCache?}
 \vspace{0.04cm}
-{\small A hit reloads reusable KV from SSD and avoids repeated prefill. The saved computation comes with a storage carbon cost.\par}
+{\small Reusing KV from SSD saves prefill computation, but adds storage carbon.\par}
 \vspace{0.02cm}
-{\centering\gcimg{07}{3.35cm}\par}
+{\centering\gcimg{07}{3.15cm}\par}
 \vspace{0.04cm}
-\point{Read Fig.~7(a), ES grid}{At low request rates, SSD embodied carbon per prompt outweighs the operational savings. At higher rates, caching saves more total carbon.}
-\point{Storage cost}{Table~1 models up to 16\,TB SSD at 480\,kgCO$_2$e: \textbf{76.6\%} of this server's embodied carbon, not a universal datacenter share. Serving is charged by allocation time, not 480\,kg at each resize.}
+\point{Embodied carbon}{Hardware manufacturing emissions, amortized over hardware allocation time.}
+\point{Operational carbon}{Emissions from serving electricity: energy use $\times$ grid carbon intensity.}
+\point{Trend in Fig.~7(a)}{At low request rates, SSD embodied carbon outweighs the operational savings. As the rate increases, caching becomes more carbon-efficient.}
 \vspace{0.06cm}
 {\small\textbf{More KV caching is not always more carbon-efficient.}\par}
-\slidenote{p.~5, Table~1; p.~8, Fig.~7, Sec.~3.2.2}{\nav{B00}{KV Reuse} \nav{B06}{Table 1} \nav{B07}{Equations}}
+\slidenote{Secs.~2.3, 3.2; Fig.~7}{\nav{B00}{KV Reuse} \nav{B06}{Table 1} \nav{B07}{Equations}}
 \end{frame}
 
 \begin{frame}[t,label=M03]{Why Is a Fixed Cache Size Suboptimal?}

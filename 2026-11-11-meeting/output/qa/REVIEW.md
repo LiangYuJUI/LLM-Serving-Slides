@@ -3,7 +3,7 @@
 ## Structure and layout
 
 - 15 main slides plus 25 index/background/backup slides, 40 pages total.
-- PDF 2 uses Fig. 7 to establish the carbon tradeoff. PDF 3 uses Fig. 8 and explicitly refers to Fig. 7(b) for capacity evidence. Both retain the supplied captions.
+- PDF 2 defines embodied and operational carbon and uses Fig. 7 to explain the request-rate trend, without detailed platform numbers. PDF 3 uses Fig. 8 and explicitly refers to Fig. 7(b) for capacity evidence. Both retain the supplied captions.
 - PDF 4 states the optimization objective and separate latency attainments. PDF 6 explains profiling, forecasting, solving, and applying the chosen capacity without repeating the objective slide.
 - The KV reuse explanation and Fig. 1 now occupy B00 / PDF 17. The index is PDF 16. Backup pages B01–B23 remain at PDF 18–40.
 - The cover follows the Helix hierarchy. Blue title and content backgrounds remain removed. Source figures keep their original colors.

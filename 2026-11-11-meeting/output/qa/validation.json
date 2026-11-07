@@ -13,7 +13,7 @@
     {
       "page": 2,
       "label": "M02",
-      "lower_empty_ratio": 0.838
+      "lower_empty_ratio": 0.855
     },
     {
       "page": 3,
@@ -413,10 +413,10 @@
       "page": 2,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig07.png",
       "bbox": [
-        99.3,
-        57.7,
-        354.2,
-        152.7
+        106.9,
+        48.5,
+        346.6,
+        137.8
       ]
     },
     {
