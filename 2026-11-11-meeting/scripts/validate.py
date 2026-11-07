@@ -33,7 +33,7 @@ def validate(render_dir):
     assert len(frames) == len(doc), (len(frames), len(doc))
     expected = {label: i for i, (label, _, _) in enumerate(frames)}
     main_count = expected['INDEX']
-    assert main_count == 16, main_count
+    assert main_count == 15, main_count
     section_starts = []
     page_count = 0
     for token in re.finditer(r'\\section\{|\\begin\{frame\}', text):
@@ -86,17 +86,17 @@ def validate(render_dir):
             if target > expected['INDEX']:
                 assert origin in graph[target], ('missing return', frames[origin][0], frames[target][0])
     claims = {
-        'M02': ['15.1%', '25.3%', 'Full Cache', 'FR'],
-        'M03': ['1.7', '0.03', 'not an end-to-end'],
-        'M04': ['76.6%', 'not a universal'],
-        'M05': ['below 1', 'Above 1', '16.5%', '7.5%'],
-        'M08': ['Lowest score', 'not a measured'],
-        'M09': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
-        'M11': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
-        'M12': ['2.5', '15', 'not viable'],
-        'M13': ['15.1%', '25.3%', '15 TB'],
-        'M15': ['reused input tokens', '0.26', '0.35'],
-        'M16': ['OUR INTERPRETATION', 'does not evaluate HBF'],
+        'M04': ['90%', 'amortized', 'separate fraction'],
+        'B00': ['1.7', '0.03', 'not an end-to-end'],
+        'M02': ['76.6%', 'not a universal', 'allocation time'],
+        'M03': ['below 1', 'Above 1', '16.5%', '7.5%'],
+        'M07': ['Lowest score', 'not a measured'],
+        'M08': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
+        'M10': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
+        'M11': ['2.5', '15', 'not viable'],
+        'M12': ['15.1%', '25.3%', '15 TB'],
+        'M14': ['reused input tokens', '0.26', '0.35'],
+        'M15': ['OUR INTERPRETATION', 'does not evaluate HBF'],
         'B09': ['above 1 is a benefit', 'opposite direction'],
         'B11': ['does not pick one', '4.0'],
     }

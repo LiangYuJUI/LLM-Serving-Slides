@@ -1,6 +1,6 @@
 # 2026-11-11 Research Meeting — GreenCache
 
-**16 頁 Main + 24 頁 Discussion / Backup（含 1 頁索引），共 40 頁。** 主動報告約 15–20 分鐘。Main 在前，Backup 在後。
+**15 頁 Main + 25 頁 Discussion / Backup（含 1 頁索引），共 40 頁。** 主動報告約 15–20 分鐘。Main 在前，Backup 在後。
 
 - [PDF](output/pdf/2026-11-11-GreenCache.pdf)
 - [Beamer source](2026-11-11-GreenCache.tex)
@@ -15,80 +15,80 @@
 
 | Main / PDF | 主題 | 主要圖 | 直接連結 |
 |---|---|---|---|
-| M01 / 1 | Title | — | 17 |
-| M02 / 2 | What Does GreenCache Do? | — | 23, 24 |
-| M03 / 3 | Why Cache Repeated Context? | Fig. 1 | 19, 20 |
-| M04 / 4 | Why Isn't More Cache Always Greener? | Fig. 7 | 23, 24 |
-| M05 / 5 | Why Must Cache Size Adapt? | Fig. 8 | 18, 25 |
-| M06 / 6 | How Does GreenCache Work? | Fig. 10 | 26, 27 |
-| M07 / 7 | How Is Cache Capacity Selected? | Eq. (6) 的簡化 | 27, 28, 29 |
-| M08 / 8 | What Does LCS Evict? | Eq. (7) | 30 |
-| M09 / 9 | Real Prototype, Traces, or a Simulator? | — | 31 |
-| M10 / 10 | What Are the Evaluation Settings? | — | 28 |
-| M11 / 11 | Q1: Does GreenCache Reduce Carbon? | Fig. 12a, Llama-3 70B | 32 |
-| M12 / 12 | Q2: Does GreenCache Still Meet SLOs? | Fig. 13a, Llama-3 70B | 33 |
-| M13 / 13 | Q3: Does Capacity Track Load and CI? | Fig. 14a, multi-turn | 34 |
-| M14 / 14 | Q4: Does Adaptive Sizing Help? | Fig. 15 | 26 |
-| M15 / 15 | Q4: Does LCS Improve Token Reuse? | Table 3 | 30 |
-| M16 / 16 | Conclusion and Limitations | — | 40 |
+| M01 / 1 | GreenCache | — | 1, 16 |
+| M02 / 2 | Why Do We Need GreenCache? | Fig. 7 | 1, 16, 17, 23, 24 |
+| M03 / 3 | Why Is a Fixed Cache Size Suboptimal? | Fig. 8 | 1, 16, 18, 25 |
+| M04 / 4 | What Does GreenCache Optimize? | 最佳化目標 + SLO | 1, 16, 23, 24 |
+| M05 / 5 | How Does GreenCache Work? | Fig. 10 | 1, 16, 26, 27 |
+| M06 / 6 | How Is Cache Capacity Selected? | Profiling / Forecast / ILP | 1, 16, 27, 28, 29 |
+| M07 / 7 | What Does LCS Evict? | Eq. (7) | 1, 16, 30 |
+| M08 / 8 | Real Prototype, Traces, or a Simulator? | — | 1, 16, 31 |
+| M09 / 9 | What Are the Evaluation Settings? | — | 1, 16, 28 |
+| M10 / 10 | Q1: Does GreenCache Reduce Carbon? | Fig. 12 | 1, 16, 32 |
+| M11 / 11 | Q2: Does GreenCache Still Meet SLOs? | Fig. 13 | 1, 16, 33 |
+| M12 / 12 | Q3: Does Capacity Track Load and CI? | Fig. 14 | 1, 16, 34 |
+| M13 / 13 | Q4: Does Adaptive Sizing Help? | Fig. 15 | 1, 16, 26 |
+| M14 / 14 | Q4: Does LCS Improve Token Reuse? | Table 3 | 1, 16, 30 |
+| M15 / 15 | Conclusion and Limitations | — | 1, 16, 40 |
 
-所有 Main 的頁腳都能打開第 17 頁索引。
+所有 Main 的頁腳都能打開第 16 頁索引。Fig. 1 的 KV reuse 基本機制移至第 17 頁 B00。
 
 ## Backup
 
-| PDF | Label | 內容 | 返回 |
+| PDF | Label | 內容 | 返回 / 導覽 |
 |---|---|---|---|
-| 17 | INDEX | Discussion Index | M16 |
-| 18 | B01 | Fig. 2 grids and CI | M05 |
-| 19 | B02 | Fig. 3 latency vs context | M03 |
-| 20 | B03 | Fig. 4 context-length distributions | M03 |
-| 21 | B04 | Fig. 5 request rate | M04 |
-| 22 | B05 | Fig. 6 cache size and hit rate | M05 |
-| 23 | B06 | Table 1 embodied carbon, 76.6% | M02, M04 |
-| 24 | B07 | Equations (1)–(5) | M02, M04 |
-| 25 | B08 | Fig. 9 load and CI cartoons | M05 |
-| 26 | B09 | Fig. 11 profiling heatmaps | M06, M14 |
-| 27 | B10 | Equation (6) ILP | M06, M07 |
-| 28 | B11 | SLO thresholds, including the unresolved 8B case | M07, M10 |
-| 29 | B12 | SARIMA and EnsembleCI | M07 |
-| 30 | B13 | LCS Equations (7)–(9) | M08, M15 |
-| 31 | B14 | Measured vs replayed vs modeled | M09 |
-| 32 | B15 | Fig. 12b, Llama-3 8B carbon | M11 |
-| 33 | B16 | Fig. 13b, Llama-3 8B SLO timelines | M12 |
-| 34 | B17 | Fig. 14b, document timeline | M13 |
-| 35 | B18 | Fig. 16 solver time | M07 |
-| 36 | B19 | Fig. 17 prediction and profile error | M07 |
-| 37 | B20 | Fig. 18 resize interval | M07 |
-| 38 | B21 | Fig. 19 SSD lifetime | M16 |
-| 39 | B22 | Fig. 20 SSD embodied-carbon factor | M16 |
-| 40 | B23 | Limits, MoE discussion, HBF note | M16 |
+| 16 | INDEX | Discussion Index | 8, 15, 16, 17, 26, 27, 28, 31, 32, 34, 36, 40 |
+| 17 | B00 | Why Cache Repeated Context? | 2, 16, 17, 19, 20 |
+| 18 | B01 | Which Grids, and How Fast Does CI Move? | 3, 16, 17, 19 |
+| 19 | B02 | Where Does Caching Change Latency? | 16, 17, 20 |
+| 20 | B03 | How Long Is the Repeated Context? | 16, 17, 21 |
+| 21 | B04 | What Does Request Rate Change? | 2, 16, 17, 22 |
+| 22 | B05 | Does a Bigger Cache Always Raise the Hit Rate? | 3, 16, 17, 23 |
+| 23 | B06 | Table 1: Embodied Carbon on This Server | 2, 4, 16, 17, 24 |
+| 24 | B07 | Carbon Accounting, Equations (1)--(5) | 2, 4, 16, 17, 25 |
+| 25 | B08 | Load and CI Push Capacity in Opposite Ways | 3, 16, 17, 26 |
+| 26 | B09 | What Do the Profiles Actually Contain? | 5, 13, 16, 26, 27 |
+| 27 | B10 | Equation (6): Capacity ILP | 5, 6, 16, 26, 28 |
+| 28 | B11 | SLO Thresholds and Decision Granularity | 6, 9, 16, 26, 29 |
+| 29 | B12 | Load Forecast and Carbon-Intensity Forecast | 6, 16, 26, 30 |
+| 30 | B13 | LCS Scores for the Two Tasks | 7, 14, 16, 26, 31 |
+| 31 | B14 | What Is Measured, Replayed, and Modeled? | 8, 16, 31, 32 |
+| 32 | B15 | Figure 12b: Llama-3 8B Carbon | 10, 16, 31, 33 |
+| 33 | B16 | Figure 13b: Llama-3 8B SLO Timelines | 11, 16, 31, 34 |
+| 34 | B17 | Figure 14b: Document Timeline, α=0.4 | 12, 16, 31, 35 |
+| 35 | B18 | Solver Time per Resize | 6, 16, 31, 36 |
+| 36 | B19 | Do Forecast and Profile Errors Spend the Savings? | 6, 16, 36, 37 |
+| 37 | B20 | How Often Should the Cache Resize? | 6, 16, 36, 38 |
+| 38 | B21 | SSD Lifetime Changes the Embodied Weight | 15, 16, 36, 39 |
+| 39 | B22 | SSD Embodied Carbon Is an Assumption | 15, 16, 36, 40 |
+| 40 | B23 | Limits, and What We Would Not Claim | 15, 16, 36 |
 
 ## Figure → slide
 
-| Figure | Main | Backup |
+| Figure | Main PDF | Backup PDF |
 |---|---|---|
-| 1 | 3 | — |
+| 1 | — | 17 |
 | 2 | — | 18 |
 | 3 | — | 19 |
 | 4 | — | 20 |
 | 5 | — | 21 |
 | 6 | — | 22 |
-| 7 | 4 | — |
-| 8 | 5 | — |
+| 7 | 2 | — |
+| 8 | 3 | — |
 | 9 | — | 25 |
-| 10 | 6 | — |
+| 10 | 5 | — |
 | 11 | — | 26 |
-| 12 | 11（70B row） | 32（8B row） |
-| 13 | 12（70B row） | 33（8B row） |
-| 14 | 13（multi-turn） | 34（document, α=0.4） |
-| 15 | 14 | — |
+| 12 | 10 | 32 |
+| 13 | 11 | 33 |
+| 14 | 12 | 34 |
+| 15 | 13 | — |
 | 16 | — | 35 |
 | 17 | — | 36 |
 | 18 | — | 37 |
 | 19 | — | 38 |
 | 20 | — | 39 |
 
-Fig. 12、13、14 在 Main 只放大論文中的相關列或子圖。Backup 放另一半，legend 使用同一張 PNG 的 viewport。沒有重繪座標軸。
+Fig. 7 保留完整原圖與 caption：第 2 頁聚焦 (a) 的負載比較，第 3 頁引用 (b) 支持容量取捨。Fig. 12、13、14 在 Main 放大相關子圖，Backup 放另一半；legend 與 caption 均來自原始 PNG viewport，沒有重繪座標軸。
 
 ## Claim → source
 
@@ -113,7 +113,7 @@ Fig. 12、13、14 在 Main 只放大論文中的相關列或子圖。Backup 放�
 
 ## Prototype, traces, and the carbon model
 
-PDF 9 是這題的回答。
+PDF 8 是這題的回答。
 
 - **實際系統：** GreenCache 建在 LMCache 上，LMCache 使用 vLLM 與 continuous batching。沒有論文句子說作者開發或改造了一個獨立的 GPU serving simulator。
 - **工作負載：** ShareGPT 與 TriviaQA 提供內容與重用；到達過程是 Poisson，速率來自 Azure LLM trace，並縮放到這台機器的可持續吞吐量。CI 來自 CarbonCast，經既有的 EnsembleCI 預測。
@@ -137,7 +137,7 @@ python3 -m venv /tmp/greencache-qa
 ## QA
 
 - 本地兩次與 ZIP 獨立兩次編譯通過，最終 log 沒有 Overfull、undefined reference 或 Warning。
-- 40 頁、190 個內部連結、20 張來源圖的像素雜湊都通過。Main 可以點到全部 Backup。
+- 40 頁、193 個內部連結、20 張來源圖的像素雜湊都通過。Main 可以點到全部 Backup。
 - [Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)、[逐頁 PNG](output/qa/pages/)、[機器紀錄](output/qa/validation.json)、[視覺紀錄](output/qa/REVIEW.md)。
 
 ## Main speaking points

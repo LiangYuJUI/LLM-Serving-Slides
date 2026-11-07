@@ -98,103 +98,57 @@ National Taiwan University / Academia Sinica
 \slidenote{title page}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
-\begin{frame}[t,label=M02]{What Does GreenCache Do?}
-\vspace{0.08cm}
-{\small GreenCache chooses SSD capacity for KV reuse by joint operational and embodied carbon, under latency SLOs.\par}
+\begin{frame}[t,label=M02]{Why Do We Need GreenCache?}
+\vspace{0.04cm}
+{\small A hit reloads reusable KV from SSD and avoids repeated prefill. The saved computation comes with a storage carbon cost.\par}
+\vspace{0.02cm}
+{\centering\gcimg{07}{3.35cm}\par}
+\vspace{0.04cm}
+\point{Read Fig.~7(a), ES grid}{At low request rates, SSD embodied carbon per prompt outweighs the operational savings. At higher rates, caching saves more total carbon.}
+\point{Storage cost}{Table~1 models up to 16\,TB SSD at 480\,kgCO$_2$e: \textbf{76.6\%} of this server's embodied carbon, not a universal datacenter share. Serving is charged by allocation time, not 480\,kg at each resize.}
+\vspace{0.06cm}
+{\small\textbf{More KV caching is not always more carbon-efficient.}\par}
+\slidenote{p.~5, Table~1; p.~8, Fig.~7, Sec.~3.2.2}{\nav{B00}{KV Reuse} \nav{B06}{Table 1} \nav{B07}{Equations}}
+\end{frame}
+
+\begin{frame}[t,label=M03]{Why Is a Fixed Cache Size Suboptimal?}
+\vspace{0.04cm}
+{\small Fixed 16\,TB cache, 1.5 prompts/s. Carbon ratio = cache / no cache: \textbf{below 1} is a reduction; \textbf{Above 1} is an increase.\par}
+\vspace{0.02cm}
+{\centering\gcimg{08}{2.70cm}\par}
+\vspace{0.04cm}
+\point{Across grids, Fig.~8(a)}{FR (CI 33): \textbf{16.5\% more} carbon. MISO (CI 485): \textbf{7.5\% less}. CI unit: gCO$_2$e/kWh.}
+\point{Within a day, Fig.~8(b)}{CISO CI changes from 37 at 7\,AM to 232 at 8\,PM. The same cache has different carbon benefits.}
+\point{Capacity evidence, Fig.~7(b)}{The previous slide compares 0--16\,TB: more SSD adds embodied carbon, while avoided computation saves more carbon at high CI.}
+
+\vspace{0.04cm}
+{\small\textbf{Capacity must account for load, carbon intensity, and latency constraints.}\par}
+\slidenote{pp.~8--9, Figs.~7(b), 8; Takeaway~5}{\nav{B01}{Grid CI} \nav{B08}{Adapt Illustration}}
+\end{frame}
+
+\begin{frame}[t,label=M04]{What Does GreenCache Optimize?}
 \vspace{0.12cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.32\textwidth}
-\begin{beamercolorbox}[wd=\linewidth,ht=3.15cm,leftskip=0.12cm,rightskip=0.10cm]{lilacbox}
-\vspace{0.14cm}{\scriptsize\bfseries\color{Accent}PROBLEM}\par\vspace{1.2mm}
-{\small KV reuse avoids repeated prefill, but the stored KV needs SSD capacity.\par}
-\vspace{0.18cm}
-{\small That capacity adds embodied carbon for as long as the SSD stays allocated.\par}
-\end{beamercolorbox}
-\end{column}
-\begin{column}{0.32\textwidth}
-\begin{beamercolorbox}[wd=\linewidth,ht=3.15cm,leftskip=0.12cm,rightskip=0.10cm]{bluebox}
-\vspace{0.14cm}{\scriptsize\bfseries\color{Accent}METHOD}\par\vspace{1.2mm}
-{\small Profile latency and power. Forecast load and carbon intensity.\par}
-\vspace{0.18cm}
-{\small An ILP then picks a discrete SSD size that meets TTFT and TPOT attainment.\par}
-\end{beamercolorbox}
-\end{column}
-\begin{column}{0.32\textwidth}
-\begin{beamercolorbox}[wd=\linewidth,ht=3.15cm,leftskip=0.12cm,rightskip=0.10cm]{mintbox}
-\vspace{0.14cm}{\scriptsize\bfseries\color{Accent}RESULT}\par\vspace{1.2mm}
-{\small On the evaluated workloads, total carbon falls relative to a fixed full cache.\par}
-\vspace{0.18cm}
-{\small The latency SLO attainment stays at the authors' 90\% target.\par}
-\end{beamercolorbox}
-\end{column}
-\end{columns}
-\vspace{0.14cm}
-\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.14cm]{mintbox}
-{\small\textbf{Reported gain, one setting only.}\quad
-Llama-3 70B, FR grid, multi-turn conversation, versus Full Cache:
-average carbon reduction \textbf{15.1\%}, and up to \textbf{25.3\%}.
-Other models, grids, and tasks differ.\par}
-\end{beamercolorbox}
-\vspace{0.06cm}
-{\small This is not a generic KV-cache speedup paper. More cache can raise total carbon when SSD embodied carbon outweighs the compute it avoids.\par}
-\slidenote{Abstract, Sec.~1, Sec.~6.2}{\nav{B06}{Embodied Carbon} \nav{B07}{Carbon Model}}
+{\small Choose allocated SSD capacity to minimize estimated serving carbon while meeting two latency requirements.\par}
+\vspace{0.20cm}
+\[
+\min_{S\in\mathcal{S}}\quad
+C_{\mathrm{operational}}(S)+C_{\mathrm{embodied,\ allocated}}(S)
+\]
+\[
+\text{subject to}\quad
+\mathrm{TTFT\ attainment}\ge90\%,\qquad
+\mathrm{TPOT\ attainment}\ge90\%.
+\]
+\vspace{0.10cm}
+\point{Carbon accounting}{Operational carbon is energy $\times$ CI. Embodied carbon is amortized over allocation time, including allocated SSD and other server components.}
+\point{Inputs and decision}{Predicted request rate and CI, plus profiled serving behavior, inform the choice of SSD capacity $S$ from discrete candidates $\mathcal{S}$.}
+\point{Replacement policy}{LCS ranks which KV entries to retain inside the chosen capacity.}
+\vspace{0.12cm}
+{\footnotesize TTFT: time to first token. TPOT: time per output token. Each attainment is a separate fraction of requests; neither is a guarantee for every request.\par}
+\slidenote{Secs.~3.2, 5.4--5.5, Eq.~(6)}{\nav{B06}{Embodied Carbon} \nav{B07}{Carbon Model}}
 \end{frame}
 
-\begin{frame}[t,label=M03]{Why Cache Repeated Context?}
-\vspace{0.06cm}
-{\small Multi-turn chats and document questions resend a shared context. A hit reloads KV instead of recomputing that prefill.\par}
-\vspace{0.06cm}
-{\centering\gcimg{01}{2.85cm}\par}
-\vspace{0.08cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
-\point{What a hit saves}{Existing context is loaded from storage and stitched with the new tokens. Prefill of the repeated context is skipped.}
-\point{What a hit does not save}{Autoregressive decode FLOPs remain. Decode latency can still fall because continuous batching waits less.}
-\end{column}
-\begin{column}{0.49\textwidth}
-\point{ShareGPT, Llama-3 70B, 4$\times$ L40}{Average prompt-processing TTFT is 1.7\,s. Loading the previous context's KV averages 0.03\,s.}
-\point{How to read those two times}{They are not the same work item, and they are not an end-to-end speedup of one request.}
-\end{column}
-\end{columns}
-\slidenote{Sec.~2.2, Fig.~1}{\nav{B02}{Latency Detail} \nav{B03}{Context Length}}
-\end{frame}
-
-\begin{frame}[t,label=M04]{Why Isn't More Cache Always Greener?}
-\vspace{0.04cm}
-{\small Operational carbon is energy $\times$ CI. Embodied carbon is manufacturing, charged for the time the SSD is allocated.\par}
-\vspace{0.02cm}
-{\centering\gcimg{07}{3.78cm}\par}
-\vspace{0.06cm}
-{\small More cache cuts prefill energy, and that energy is worth more carbon when CI is high. Reserved SSD adds embodied carbon; in Fig.~7a a low request rate makes the cache dirtier than no cache.\par}
-\vspace{0.04cm}
-{\small Table~1: 16\,TB SSD is up to 480\,kgCO$_2$e, \textbf{76.6\%} of \textbf{this} server's embodied carbon, not a universal datacenter share.\par}
-\vspace{0.02cm}
-{\small\textbf{Maximizing hit rate is not the same as minimizing total carbon.}\par}
-\slidenote{Secs.~2.3, 3.2, Fig.~7, Table~1}{\nav{B06}{Table 1} \nav{B07}{Equations}}
-\end{frame}
-
-\begin{frame}[t,label=M05]{Why Must Cache Size Adapt?}
-\vspace{0.04cm}
-{\small A fixed 16\,TB cache. Ratio \textbf{below 1}: less carbon than no cache. \textbf{Above 1}: the cache increases emissions.\par}
-\vspace{0.02cm}
-{\centering\gcimg{08}{3.35cm}\par}
-\vspace{0.04cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
-\point{Across grids}{That cache \textbf{raises} emissions 16.5\% on FR (33\,gCO$_2$e/kWh) and \textbf{lowers} them 7.5\% on MISO (485).}
-\point{Inside one day}{CISO on Fig.~8b: CI is 37\,gCO$_2$e/kWh at 7\,AM and 232 at 8\,PM.}
-\end{column}
-\begin{column}{0.49\textwidth}
-\point{Load still matters}{Fig.~7: a higher request rate makes avoided prefill worth more, and a small cache can miss the SLO.}
-\point{Not an off switch}{Low CI raises the relative cost of SSD. High load can still require a large cache.}
-\end{column}
-\end{columns}
-\vspace{0.02cm}
-{\small\textbf{Capacity depends on load, carbon intensity, and the SLO together.}\par}
-\slidenote{Sec.~3.2, Figs.~7--8}{\nav{B01}{Grid CI} \nav{B08}{Adapt Illustration}}
-\end{frame}
-
-\begin{frame}[t,label=M06]{How Does GreenCache Work?}
+\begin{frame}[t,label=M05]{How Does GreenCache Work?}
 \vspace{0.02cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.60\textwidth}
@@ -214,42 +168,21 @@ Other models, grids, and tasks differ.\par}
 \slidenote{Secs.~4--5.1, Fig.~10}{\nav{B09}{Profiles} \nav{B10}{ILP}}
 \end{frame}
 
-\begin{frame}[t,label=M07]{How Is Cache Capacity Selected?}
-\vspace{0.06cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.46\textwidth}
-\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.16cm]{mintbox}
-{\scriptsize\bfseries\color{Accent}OBJECTIVE}\par\vspace{0.8mm}
-{\small Minimize estimated total carbon: operational energy $\times$ CI, plus embodied carbon of the allocated SSD and the other server components.\par}
-\vspace{0.16cm}
-{\scriptsize\bfseries\color{Accent}SUBJECT TO TWO SEPARATE ATTAINMENTS}\par\vspace{0.8mm}
-{\small TTFT attainment $\ge 90\%$\par}
-{\small TPOT attainment $\ge 90\%$\par}
-{\small Capacity $\in$ discrete SSD sizes.\par}
-\end{beamercolorbox}
-\vspace{0.12cm}
-{\footnotesize TTFT: time to first token. TPOT: time per output token. $\rho=0.9$ is a fraction of requests for each metric, not one joint probability.\par}
-\end{column}
-\begin{column}{0.52\textwidth}
-\point{Inputs}{Profiled latency and power, predicted request rate, predicted CI, and the live TTFT / TPOT monitor.}
-\point{Decision}{Integer linear program, solved with PuLP and the CBC solver. Full Equation~(6) is in the backup.}
-\point{Defaults}{Resize every hour. Capacity step is 1\,TB. Llama-3 70B can use up to 16\,TB; 8B up to 8\,TB.}
-\point{What ``optimal'' means here}{Best profiled candidate under the forecast and the SLO constraints. It is not a claim of global optimality for every trace.}
-\end{column}
-\end{columns}
+\begin{frame}[t,label=M06]{How Is Cache Capacity Selected?}
 \vspace{0.10cm}
-\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.10cm]{bluebox}
-\centering
-{\small $\min$\; total carbon
-\qquad subject to\qquad
-TTFT attainment $\ge 90\%$
-\quad and\quad
-TPOT attainment $\ge 90\%$\par}
-\end{beamercolorbox}
-\slidenote{Secs.~5.4, 6.1, Eq.~(6)}{\nav{B10}{Full ILP} \nav{B11}{SLO Numbers} \nav{B12}{Predictors}}
+\point{1. Profile candidate sizes}{Measure TTFT, TPOT, and power across cache sizes and request rates. These profiles describe the candidates available to the controller.}
+\vspace{0.18cm}
+\point{2. Forecast the next interval}{Predict request rate with SARIMA and carbon intensity with EnsembleCI. The live TTFT / TPOT monitor supplies feedback.}
+\vspace{0.18cm}
+\point{3. Solve the capacity ILP}{Use the profiles and forecasts to select the lowest-carbon candidate that meets both attainment constraints. Implementation: PuLP with the CBC solver.}
+\vspace{0.18cm}
+\point{4. Apply and repeat}{Resize hourly in 1\,TB steps. Maximum capacity: 16\,TB for Llama-3 70B and 8\,TB for 8B. LCS evicts entries when capacity shrinks.}
+\vspace{0.20cm}
+{\small\textbf{Scope of optimality:} the best profiled candidate under the forecasts and constraints. Forecast and profile errors can change the chosen capacity.\par}
+\slidenote{Secs.~5.2--5.5, 6.1, Eq.~(6)}{\nav{B10}{Full ILP} \nav{B11}{SLO Numbers} \nav{B12}{Predictors}}
 \end{frame}
 
-\begin{frame}[t,label=M08]{What Does LCS Evict?}
+\begin{frame}[t,label=M07]{What Does LCS Evict?}
 \vspace{0.04cm}
 {\small LRU keeps recently used entries. It ignores how many tokens a hit avoids, and how much SSD that entry occupies.\par}
 \vspace{0.02cm}
@@ -273,7 +206,7 @@ TPOT attainment $\ge 90\%$\par}
 \slidenote{Sec.~5.5, Eq.~(7)}{\nav{B13}{Task Scores}}
 \end{frame}
 
-\begin{frame}[t,label=M09]{Real Prototype, Traces, or a Simulator?}
+\begin{frame}[t,label=M08]{Real Prototype, Traces, or a Simulator?}
 \vspace{0.06cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.32\textwidth}
@@ -295,7 +228,7 @@ TPOT attainment $\ge 90\%$\par}
 \slidenote{Secs.~5.2--5.4, 6.1}{\nav{B14}{Measurement Notes}}
 \end{frame}
 
-\begin{frame}[t,label=M10]{What Are the Evaluation Settings?}
+\begin{frame}[t,label=M09]{What Are the Evaluation Settings?}
 \vspace{0.08cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
@@ -314,7 +247,7 @@ TPOT attainment $\ge 90\%$\par}
 \slidenote{Sec.~6.1}{\nav{B11}{SLO Thresholds}}
 \end{frame}
 
-\begin{frame}[t,label=M11]{Q1: Does GreenCache Reduce Carbon?}
+\begin{frame}[t,label=M10]{Q1: Does GreenCache Reduce Carbon?}
 \vspace{0.02cm}
 {\small Question: can adaptive capacity beat a fixed full cache on total carbon? Bars: No Cache, GreenCache, Full Cache. Blue labels are the GreenCache size in TB. Llama-3 70B.\par}
 \vspace{0.02cm}
@@ -326,7 +259,7 @@ TPOT attainment $\ge 90\%$\par}
 \slidenote{Sec.~6.2, Fig.~12a}{\nav{B15}{Llama-3 8B}}
 \end{frame}
 
-\begin{frame}[t,label=M12]{Q2: Does GreenCache Still Meet SLOs?}
+\begin{frame}[t,label=M11]{Q2: Does GreenCache Still Meet SLOs?}
 \vspace{0.02cm}
 {\small Question: is the carbon saving bought with unacceptable latency? P90 below the dashed threshold means at least 90\% attainment. Llama-3 70B.\par}
 \vspace{0.02cm}
@@ -348,7 +281,7 @@ TPOT attainment $\ge 90\%$\par}
 \slidenote{Secs.~6.1--6.2, Fig.~13a}{\nav{B16}{8B Timelines}}
 \end{frame}
 
-\begin{frame}[t,label=M13]{Q3: Does Capacity Track Load and CI?}
+\begin{frame}[t,label=M12]{Q3: Does Capacity Track Load and CI?}
 \vspace{0.02cm}
 {\small Llama-3 70B, multi-turn. Normalized CI and request rate, carbon per prompt, and the chosen cache size.\par}
 \vspace{0.02cm}
@@ -358,7 +291,7 @@ TPOT attainment $\ge 90\%$\par}
 \slidenote{Sec.~6.2, Fig.~14a}{\nav{B17}{Document Timeline}}
 \end{frame}
 
-\begin{frame}[t,label=M14]{Q4: Does Adaptive Sizing Help?}
+\begin{frame}[t,label=M13]{Q4: Does Adaptive Sizing Help?}
 \vspace{0.04cm}
 {\small Ablation: LMCache's LRU plus GreenCache's adaptive capacity (``LRU + Optimal''), versus Full Cache. ES grid average CI, 124\,gCO$_2$e/kWh. Llama-3 70B.\par}
 \vspace{0.04cm}
@@ -370,7 +303,7 @@ TPOT attainment $\ge 90\%$\par}
 \slidenote{Sec.~6.3.1, Fig.~15}{\nav{B09}{Profiling Heatmaps}}
 \end{frame}
 
-\begin{frame}[t,label=M15]{Q4: Does LCS Improve Token Reuse?}
+\begin{frame}[t,label=M14]{Q4: Does LCS Improve Token Reuse?}
 \vspace{0.04cm}
 {\small Hit rate $=$ reused input tokens / total input tokens. Not the fraction of requests that hit. Llama-3 70B.\par}
 \vspace{0.08cm}
@@ -393,7 +326,7 @@ Size & \multicolumn{3}{c}{ShareGPT} & \multicolumn{3}{c}{TriviaQA $\alpha=0.4$} 
 \slidenote{Sec.~6.3.2, Table~3}{\nav{B13}{Score Formulas}}
 \end{frame}
 
-\begin{frame}[t,label=M16]{Conclusion and Limitations}
+\begin{frame}[t,label=M15]{Conclusion and Limitations}
 \vspace{0.06cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
@@ -424,7 +357,7 @@ Size & \multicolumn{3}{c}{ShareGPT} & \multicolumn{3}{c}{TriviaQA $\alpha=0.4$} 
 \toprule
 Topic & What is here & Jump\\
 \midrule
-A. Motivation & Grids, latency, context length, embodied carbon, Equations~(1)--(5) & \nav{B01}{Open A}\\[0.18cm]
+A. Motivation & KV reuse, grids, latency, embodied carbon, Equations~(1)--(5) & \nav{B00}{Open A}\\[0.18cm]
 B. Method & Profiles, ILP, SLO numbers, predictors, LCS formulas & \nav{B09}{Open B}\\[0.18cm]
 C. Evidence & Measurement boundary, 8B results, document timeline, solver time & \nav{B14}{Open C}\\[0.18cm]
 D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits & \nav{B19}{Open D}\\
@@ -434,7 +367,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
 {\small\raggedright
-\textbf{Is it a simulator?} \nav{M09}{M09} \nav{B14}{Notes}\par
+\textbf{Is it a simulator?} \nav{M08}{M08} \nav{B14}{Notes}\par
 \vspace{0.08cm}
 \textbf{Full ILP and SLOs} \nav{B10}{Eq.~6} \nav{B11}{Thresholds}\par}
 \end{column}
@@ -445,10 +378,30 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \textbf{What we would not claim} \nav{B23}{Limits}\par}
 \end{column}
 \end{columns}
-\back{M16}
+\back{M15}
 \end{frame}
 
 \section{Background}
+\begin{frame}[t,label=B00]{Why Cache Repeated Context?}
+\vspace{0.06cm}
+{\small Multi-turn chats and document questions resend a shared context. A hit reloads KV instead of recomputing that prefill.\par}
+\vspace{0.06cm}
+{\centering\gcimg{01}{2.55cm}\par}
+\vspace{0.08cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+\point{What a hit saves}{Existing context is loaded from storage and stitched with the new tokens. Prefill of the repeated context is skipped.}
+\point{What a hit does not save}{Autoregressive decode FLOPs remain. Decode latency can still fall because continuous batching waits less.}
+\end{column}
+\begin{column}{0.49\textwidth}
+\point{ShareGPT, Llama-3 70B, 4$\times$ L40}{Average prompt-processing TTFT is 1.7\,s. Loading the previous context's KV averages 0.03\,s.}
+\point{How to read those two times}{They are not the same work item, and they are not an end-to-end speedup of one request.}
+\end{column}
+\end{columns}
+\slidenote{Sec.~2.2, Fig.~1}{\nav{B02}{Latency Detail} \nav{B03}{Context Length}}
+\back{M02}
+\end{frame}
+
 \begin{frame}[t,label=B01]{Which Grids, and How Fast Does CI Move?}
 \vspace{0.04cm}
 {\centering\gcpart{02}{3.35cm}{0 0 0 12.04bp}\par}
@@ -457,7 +410,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \point{One CISO day}{Fig.~2b is 6 July 2022. Generation and CI move together. GreenCache's hourly decision uses this kind of variation, via CarbonCast and EnsembleCI.}
 \point{Crop note}{The supplied Fig.~2 PNG has a few orphan pixels from a cut-off title. This slide drops the top 16\,px. Axes, CI labels, and the legend are unchanged.\par}
 \slidenote{Sec.~2.3, Fig.~2}{}
-\back[\nav{B02}{Next}]{M05}
+\back[\nav{B02}{Next}]{M03}
 \end{frame}
 
 \begin{frame}[t,label=B02]{Where Does Caching Change Latency?}
@@ -468,7 +421,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \point{Why decode moves at all}{Fig.~3b: caching does not remove decode computation. It shortens the wait in continuous batching.}
 \point{Setup for this section}{Llama-3 70B, ShareGPT, the Table~1 server, LMCache on 16\,TB, cache warmed with 200k prompts, 500 prompts recorded.\par}
 \slidenote{Sec.~3.1.1, Fig.~3}{}
-\back[\nav{B03}{Next}]{M03}
+\par\nav{B00}{KV Reuse}\hfill\nav{B03}{Next}\ \nav{INDEX}{Discussion Index}
 \end{frame}
 
 \begin{frame}[t,label=B03]{How Long Is the Repeated Context?}
@@ -479,7 +432,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \point{TriviaQA}{The reused context is the document. Average document length in the paper's discussion is 5880 tokens.}
 \point{Design consequence}{Takeaway~1: longer contexts should be preferred when the cache cannot hold everything. LCS later puts token volume in the score.\par}
 \slidenote{Sec.~3.1.1, Fig.~4}{}
-\back[\nav{B04}{Next}]{M03}
+\par\nav{B00}{KV Reuse}\hfill\nav{B04}{Next}\ \nav{INDEX}{Discussion Index}
 \end{frame}
 
 \begin{frame}[t,label=B04]{What Does Request Rate Change?}
@@ -490,7 +443,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \point{Carbon follows the same direction}{Takeaway~2 and Fig.~7a: at low rate the SSD's embodied carbon can dominate; at high rate the avoided energy dominates.}
 \point{SLO coupling}{A busy hour may need a large cache to keep attainment, even if that hour's CI is low.\par}
 \slidenote{Sec.~3.1.2, Fig.~5}{}
-\back[\nav{B05}{Next}]{M04}
+\back[\nav{B05}{Next}]{M02}
 \end{frame}
 
 \begin{frame}[t,label=B05]{Does a Bigger Cache Always Raise the Hit Rate?}
@@ -501,7 +454,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \point{Diminishing hits}{Latency and speedup improve with size, then the hit-rate gain slows. Takeaway~3: larger is better for latency, not linearly, and not automatically for carbon.}
 \point{Hand-off to carbon}{Fig.~7b then shows the embodied share rising with those same sizes.\par}
 \slidenote{Sec.~3.1.3, Fig.~6}{}
-\back[\nav{B06}{Next}]{M05}
+\back[\nav{B06}{Next}]{M03}
 \end{frame}
 
 \begin{frame}[t,label=B06]{Table 1: Embodied Carbon on This Server}
@@ -522,7 +475,7 @@ Storage & up to 16\,TB SSD & up to 480\,kgCO$_2$e\\
 \point{Scope}{Prior studies are cited for SSDs exceeding 75\% of datacenter-server embodied carbon. That citation is not a measurement of every server.}
 \point{Accounting choice}{Only the allocated SSD capacity is charged, for the fraction of lifetime it is reserved. Default lifetime is 5 years unless a sensitivity slide says otherwise.\par}
 \slidenote{Sec.~2.3, Table~1. Sum checked against the stated 76.6\%.}{}
-\back[\nav{M04}{Main \ref*{M04}} \nav{B07}{Next}]{M02}
+\back[\nav{M02}{Main \ref*{M02}} \nav{B07}{Next}]{M04}
 \end{frame}
 
 \begin{frame}[t,label=B07]{Carbon Accounting, Equations (1)--(5)}
@@ -545,7 +498,7 @@ C = E\times\mathrm{CI} + \frac{T}{\mathrm{LT}}\left(C_{e,\mathrm{Cache}}+C_{e,\m
 \point{What caching changes}{It can lower $E$ and $T$. It raises $S_{\mathrm{Alloc}}$. Equation~(5) is the tradeoff GreenCache searches.}
 \point{Unit carbon}{Table~1's 480\,kgCO$_2$e over 16\,TB is 30\,kgCO$_2$e/TB. Fig.~20 then varies that assumption from 30 to 90.\par}
 \slidenote{Secs.~2.3, 3.2.1, Eqs.~(1)--(5)}{}
-\back[\nav{M04}{Main \ref*{M04}} \nav{B08}{Next}]{M02}
+\back[\nav{M02}{Main \ref*{M02}} \nav{B08}{Next}]{M04}
 \end{frame}
 
 \begin{frame}[t,label=B08]{Load and CI Push Capacity in Opposite Ways}
@@ -562,7 +515,7 @@ C = E\times\mathrm{CI} + \frac{T}{\mathrm{LT}}\left(C_{e,\mathrm{Cache}}+C_{e,\m
 \end{column}
 \end{columns}
 \slidenote{Sec.~4.1, Fig.~9}{}
-\back[\nav{B09}{Next}]{M05}
+\back[\nav{B09}{Next}]{M03}
 \end{frame}
 
 \section{Method}
@@ -574,7 +527,7 @@ C = E\times\mathrm{CI} + \frac{T}{\mathrm{LT}}\left(C_{e,\mathrm{Cache}}+C_{e,\m
 \point{Read the colors carefully}{TTFT and TPOT: lower is better. The carbon-savings panel is higher-better. The paper defines that ratio as no-cache over cached, so a value \textbf{above 1 is a benefit}. This is the opposite direction from Fig.~8, where a ratio below 1 is a reduction.}
 \point{The pattern used by the solver}{Large caches help latency, especially at higher rate. At low rate a large cache can sit below 1 on the savings panel.\par}
 \slidenote{Sec.~5.2, Fig.~11}{}
-\back[\nav{M14}{Main \ref*{M14}} \nav{B10}{Next}]{M06}
+\back[\nav{M13}{Main \ref*{M13}} \nav{B10}{Next}]{M05}
 \end{frame}
 
 \begin{frame}[t,label=B10]{Equation (6): Capacity ILP}
@@ -602,7 +555,7 @@ C = E\times\mathrm{CI} + \frac{T}{\mathrm{LT}}\left(C_{e,\mathrm{Cache}}+C_{e,\m
 \point{Not one probability}{The two sums are separate constraints. A request can meet TTFT and miss TPOT.}
 \point{Scope of the objective}{The carbon sum is written on prefill time. Cache size does not cut decode FLOPs; it changes decode delay through the batch. Solver: PuLP + CBC. Average decision time 7.03\,s.\par}
 \slidenote{Sec.~5.4, Table~2, Eq.~(6), Sec.~6.4}{}
-\back[\nav{M07}{Main \ref*{M07}} \nav{B11}{Next}]{M06}
+\back[\nav{M06}{Main \ref*{M06}} \nav{B11}{Next}]{M05}
 \end{frame}
 
 \begin{frame}[t,label=B11]{SLO Thresholds and Decision Granularity}
@@ -623,7 +576,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{How attainment is shown}{$\rho=0.9$. A P90 curve under the threshold is the paper's picture of at least 90\% attainment.}
 \point{Search space}{Integer TB steps, CI treated as constant inside each hour, profiles taken after LCS warm-up. The paper proves NP-hardness by reduction to 0--1 Knapsack and then says the 1\,TB grid makes the actual search small.\par}
 \slidenote{Secs.~5.4, 6.1, Fig.~13}{}
-\back[\nav{M10}{Main \ref*{M10}} \nav{B12}{Next}]{M07}
+\back[\nav{M09}{Main \ref*{M09}} \nav{B12}{Next}]{M06}
 \end{frame}
 
 \begin{frame}[t,label=B12]{Load Forecast and Carbon-Intensity Forecast}
@@ -633,7 +586,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Errors, Sec.~6.5}{Load MAPE 4.3\%. CI MAPE: FR 12.7\%, FI 15.3\%, ES 11.3\%, CISO 6.8\%. Median context-length gap versus the profile: 5.78\% (multi-turn) and 1.13\% (document).}
 \point{Effect on the carbon result}{Relative to an ideal run with ground truth, CI error trims 0.0064\% of the savings on average, adding load error trims 0.20\%, and adding profiler mismatch trims 0.79\%.\par}
 \slidenote{Secs.~5.3, 6.1, 6.5}{}
-\back[\nav{B13}{Next}]{M07}
+\back[\nav{B13}{Next}]{M06}
 \end{frame}
 
 \begin{frame}[t,label=B13]{LCS Scores for the Two Tasks}
@@ -662,7 +615,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Eviction}{Lowest score leaves first, until the allocated size is met. Enlarging allocates more cloud SSD; shrinking releases the freed capacity.}
 \point{Still a proxy}{None of (7)--(9) multiplies by the current CI. CI affects the capacity decision. The score ranks entries inside the chosen capacity.\par}
 \slidenote{Sec.~5.5, Eqs.~(7)--(9)}{}
-\back[\nav{M15}{Main \ref*{M15}} \nav{B14}{Next}]{M08}
+\back[\nav{M14}{Main \ref*{M14}} \nav{B14}{Next}]{M07}
 \end{frame}
 
 \section{Evaluation}
@@ -673,7 +626,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Time and grid}{Azure LLM inference trace, downscaled so the peak fits this server's sustainable throughput. Main carbon run uses variable CI on 6 July 2022. Ablations and SSD sensitivities use the ES average, 124\,gCO$_2$e/kWh, and fixed rates of 1.5 prompts/s (multi-turn) or 0.2 (document) where Sec.~6.6 says so.}
 \point{Power}{CPU: RAPL. GPU: pyNVML at 1\,ms. SSD and DRAM: specification power, because those parts expose no direct measurement interface in the paper.\par}
 \slidenote{Secs.~3, 5.2, 6.1, 6.6}{}
-\back[\nav{B15}{Next}]{M09}
+\back[\nav{B15}{Next}]{M08}
 \end{frame}
 
 \begin{frame}[t,label=B15]{Figure 12b: Llama-3 8B Carbon}
@@ -686,7 +639,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Do not stack this on the 70B bars}{8B uses 2$\times$ L40, BF16, and an 8\,TB maximum. 70B uses 4$\times$ L40, INT8, and 16\,TB.}
 \point{Legend}{The strip above is the original Fig.~12 legend: gray No Cache, green GreenCache, tan Full Cache. Blue numbers are cache size in TB.\par}
 \slidenote{Sec.~6.2, Fig.~12b. Legend viewport is the original top strip.}{}
-\back[\nav{B16}{Next}]{M11}
+\back[\nav{B16}{Next}]{M10}
 \end{frame}
 
 \begin{frame}[t,label=B16]{Figure 13b: Llama-3 8B SLO Timelines}
@@ -699,7 +652,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Document TTFT is unresolved}{The text sets 2.5\,s. The dashed line in these document panels is at 4.0\,s. TPOT in the figure is drawn at 0.15\,s.}
 \point{Reading P90}{Staying under the dashed line is the paper's $\ge 90\%$ attainment test. The 70B half of this figure is on the main slide.\par}
 \slidenote{Secs.~6.1--6.2, Fig.~13b}{}
-\back[\nav{B17}{Next}]{M12}
+\back[\nav{B17}{Next}]{M11}
 \end{frame}
 
 \begin{frame}[t,label=B17]{Figure 14b: Document Timeline, $\alpha=0.4$}
@@ -712,7 +665,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Less room to shrink}{When the SLO already needs a large cache, embodied-carbon savings get smaller. That is why this task saves less than multi-turn at the same hours of high load.}
 \point{Legend}{Red CI, dashed orange request rate, brown Full Cache CO$_2$, dashed green GreenCache CO$_2$, blue bars cache size in TB. The FR 15.1\% / 25.3\% numbers belong to multi-turn, Fig.~14a, not to this panel.\par}
 \slidenote{Sec.~6.2, Fig.~14}{}
-\back[\nav{B18}{Next}]{M13}
+\back[\nav{B18}{Next}]{M12}
 \end{frame}
 
 \begin{frame}[t,label=B18]{Solver Time per Resize}
@@ -723,7 +676,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Why that is acceptable in the paper}{The default resize interval is one hour, and the workloads are long-running. 7.03\,s is overhead of the controller, not of the token path.}
 \point{Not free in a faster loop}{Fig.~18 shows that resizing much faster than the hourly CI trace does not buy much carbon, while much slower resizing gives savings back.\par}
 \slidenote{Sec.~6.4, Fig.~16}{}
-\back[\nav{B19}{Next}]{M07}
+\back[\nav{B19}{Next}]{M06}
 \end{frame}
 
 \section{Sensitivity}
@@ -735,7 +688,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Magnitudes}{Averages reported in Sec.~6.5: 0.0064\%, 0.20\%, and 0.79\%. Load error moves the chosen size, so it matters more than its MAPE suggests. Profiler error weighs more on FR and FI, where embodied carbon is a larger share.}
 \point{Limit of the claim}{``Low impact'' is this comparison on Llama-3 70B and these four grids. It is not a bound for every forecast model.\par}
 \slidenote{Sec.~6.5, Fig.~17}{}
-\back[\nav{B20}{Next}]{M07}
+\back[\nav{B20}{Next}]{M06}
 \end{frame}
 
 \begin{frame}[t,label=B20]{How Often Should the Cache Resize?}
@@ -746,7 +699,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Long intervals}{The solver must pick a size that protects the SLO for the whole interval, so it holds a larger cache and gives back savings. The drop is steepest for document QA at $\alpha=0.4$, the case that already wants a large cache.}
 \point{Shorter than one hour}{CarbonCast CI is hourly. Sub-hour decisions reuse that hour's CI. They stay close to the 1-hour result.\par}
 \slidenote{Sec.~6.6.1, Fig.~18}{}
-\back[\nav{B21}{Next}]{M07}
+\back[\nav{B21}{Next}]{M06}
 \end{frame}
 
 \begin{frame}[t,label=B21]{SSD Lifetime Changes the Embodied Weight}
@@ -757,7 +710,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Direction}{A 3-year life raises amortized SSD carbon, so shrinking the cache is worth more: the paper reports up to 11.9\% savings in this study. A longer life makes the same resize less valuable.}
 \point{Markers}{The figure includes No Cache and a Fail-SLO marker. A low bar that fails the SLO is not counted as the GreenCache result.\par}
 \slidenote{Sec.~6.6.2, Fig.~19}{}
-\back[\nav{B22}{Next}]{M16}
+\back[\nav{B22}{Next}]{M15}
 \end{frame}
 
 \begin{frame}[t,label=B22]{SSD Embodied Carbon Is an Assumption}
@@ -768,7 +721,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Reported end point}{At 90\,kgCO$_2$e/TB, GreenCache's saving versus the full cache reaches up to 25\% in this sensitivity. Heavier SSD carbon makes the adaptive shrink more valuable.}
 \point{What this does not measure}{The bars are the accounting model under a changed emission factor. They are not a second hardware campaign.\par}
 \slidenote{Sec.~6.6.3, Fig.~20, Table~1}{}
-\back[\nav{B23}{Next}]{M16}
+\back[\nav{B23}{Next}]{M15}
 \end{frame}
 
 \begin{frame}[t,label=B23]{Limits, and What We Would Not Claim}
@@ -778,7 +731,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{MoE, from the authors' discussion}{Mixture-of-experts models can cut activated compute while leaving KV storage in place, which would make the SSD term relatively larger. The experiments themselves are dense Llama-3, not MoE runs.}
 \point{Possible extension / our interpretation}{A carbon-aware decision about how much fast memory to provision could inform HBM or HBF hierarchy design. Nothing in this paper measures HBM or HBF, and the 15.1\% result does not transfer to that hardware.\par}
 \slidenote{Sec.~7. The HBF sentence is our research note.}{}
-\back{M16}
+\back{M15}
 \end{frame}
 
 \end{document}

@@ -1,8 +1,8 @@
 {
   "pdf_pages": 40,
-  "main_pages": 16,
-  "backup_pages_including_index": 24,
-  "internal_links_checked": 190,
+  "main_pages": 15,
+  "backup_pages_including_index": 25,
+  "internal_links_checked": 193,
   "figures_matched_by_pixel_hash": 20,
   "whitespace": [
     {
@@ -13,82 +13,82 @@
     {
       "page": 2,
       "label": "M02",
-      "lower_empty_ratio": 0.448
+      "lower_empty_ratio": 0.838
     },
     {
       "page": 3,
       "label": "M03",
-      "lower_empty_ratio": 0.827
+      "lower_empty_ratio": 0.875
     },
     {
       "page": 4,
       "label": "M04",
-      "lower_empty_ratio": 0.855
+      "lower_empty_ratio": 0.865
     },
     {
       "page": 5,
       "label": "M05",
-      "lower_empty_ratio": 0.831
+      "lower_empty_ratio": 0.58
     },
     {
       "page": 6,
       "label": "M06",
-      "lower_empty_ratio": 0.58
+      "lower_empty_ratio": 0.921
     },
     {
       "page": 7,
       "label": "M07",
-      "lower_empty_ratio": 0.877
+      "lower_empty_ratio": 0.53
     },
     {
       "page": 8,
       "label": "M08",
-      "lower_empty_ratio": 0.53
+      "lower_empty_ratio": 0.501
     },
     {
       "page": 9,
       "label": "M09",
-      "lower_empty_ratio": 0.501
+      "lower_empty_ratio": 0.669
     },
     {
       "page": 10,
       "label": "M10",
-      "lower_empty_ratio": 0.669
+      "lower_empty_ratio": 0.877
     },
     {
       "page": 11,
       "label": "M11",
-      "lower_empty_ratio": 0.877
+      "lower_empty_ratio": 0.53
     },
     {
       "page": 12,
       "label": "M12",
-      "lower_empty_ratio": 0.53
+      "lower_empty_ratio": 0.889
     },
     {
       "page": 13,
       "label": "M13",
-      "lower_empty_ratio": 0.889
+      "lower_empty_ratio": 0.883
     },
     {
       "page": 14,
       "label": "M14",
-      "lower_empty_ratio": 0.883
+      "lower_empty_ratio": 0.877
     },
     {
       "page": 15,
       "label": "M15",
-      "lower_empty_ratio": 0.877
-    },
-    {
-      "page": 16,
-      "label": "M16",
       "lower_empty_ratio": 0.653
     },
     {
-      "page": 17,
+      "page": 16,
       "label": "INDEX",
       "lower_empty_ratio": 0.915
+    },
+    {
+      "page": 17,
+      "label": "B00",
+      "lower_empty_ratio": 0.83
     },
     {
       "page": 18,
@@ -98,12 +98,12 @@
     {
       "page": 19,
       "label": "B02",
-      "lower_empty_ratio": 0.886
+      "lower_empty_ratio": 0.883
     },
     {
       "page": 20,
       "label": "B03",
-      "lower_empty_ratio": 0.881
+      "lower_empty_ratio": 0.88
     },
     {
       "page": 21,
@@ -143,7 +143,7 @@
     {
       "page": 28,
       "label": "B11",
-      "lower_empty_ratio": 0.877
+      "lower_empty_ratio": 0.878
     },
     {
       "page": 29,
@@ -215,82 +215,82 @@
     {
       "page": 2,
       "label": "M02",
-      "title": "What Does GreenCache Do?"
+      "title": "Why Do We Need GreenCache?"
     },
     {
       "page": 3,
       "label": "M03",
-      "title": "Why Cache Repeated Context?"
+      "title": "Why Is a Fixed Cache Size Suboptimal?"
     },
     {
       "page": 4,
       "label": "M04",
-      "title": "Why Isn't More Cache Always Greener?"
+      "title": "What Does GreenCache Optimize?"
     },
     {
       "page": 5,
       "label": "M05",
-      "title": "Why Must Cache Size Adapt?"
+      "title": "How Does GreenCache Work?"
     },
     {
       "page": 6,
       "label": "M06",
-      "title": "How Does GreenCache Work?"
+      "title": "How Is Cache Capacity Selected?"
     },
     {
       "page": 7,
       "label": "M07",
-      "title": "How Is Cache Capacity Selected?"
+      "title": "What Does LCS Evict?"
     },
     {
       "page": 8,
       "label": "M08",
-      "title": "What Does LCS Evict?"
+      "title": "Real Prototype, Traces, or a Simulator?"
     },
     {
       "page": 9,
       "label": "M09",
-      "title": "Real Prototype, Traces, or a Simulator?"
+      "title": "What Are the Evaluation Settings?"
     },
     {
       "page": 10,
       "label": "M10",
-      "title": "What Are the Evaluation Settings?"
+      "title": "Q1: Does GreenCache Reduce Carbon?"
     },
     {
       "page": 11,
       "label": "M11",
-      "title": "Q1: Does GreenCache Reduce Carbon?"
+      "title": "Q2: Does GreenCache Still Meet SLOs?"
     },
     {
       "page": 12,
       "label": "M12",
-      "title": "Q2: Does GreenCache Still Meet SLOs?"
+      "title": "Q3: Does Capacity Track Load and CI?"
     },
     {
       "page": 13,
       "label": "M13",
-      "title": "Q3: Does Capacity Track Load and CI?"
+      "title": "Q4: Does Adaptive Sizing Help?"
     },
     {
       "page": 14,
       "label": "M14",
-      "title": "Q4: Does Adaptive Sizing Help?"
+      "title": "Q4: Does LCS Improve Token Reuse?"
     },
     {
       "page": 15,
       "label": "M15",
-      "title": "Q4: Does LCS Improve Token Reuse?"
-    },
-    {
-      "page": 16,
-      "label": "M16",
       "title": "Conclusion and Limitations"
     },
     {
-      "page": 17,
+      "page": 16,
       "label": "INDEX",
       "title": "Discussion Index"
+    },
+    {
+      "page": 17,
+      "label": "B00",
+      "title": "Why Cache Repeated Context?"
     },
     {
       "page": 18,
@@ -410,37 +410,27 @@
   ],
   "figures": [
     {
-      "page": 3,
-      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig01.png",
+      "page": 2,
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig07.png",
       "bbox": [
-        92.1,
-        61.2,
-        361.5,
-        141.9
+        99.3,
+        57.7,
+        354.2,
+        152.7
       ]
     },
     {
-      "page": 4,
-      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig07.png",
+      "page": 3,
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig08.png",
       "bbox": [
-        83.0,
+        108.2,
         57.7,
-        370.6,
-        164.9
+        345.4,
+        134.2
       ]
     },
     {
       "page": 5,
-      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig08.png",
-      "bbox": [
-        79.6,
-        46.8,
-        373.9,
-        141.7
-      ]
-    },
-    {
-      "page": 6,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig10.png",
       "bbox": [
         33.4,
@@ -450,7 +440,7 @@
       ]
     },
     {
-      "page": 11,
+      "page": 10,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
       "bbox": [
         62.8,
@@ -460,7 +450,7 @@
       ]
     },
     {
-      "page": 11,
+      "page": 10,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
       "bbox": [
         106.9,
@@ -470,7 +460,7 @@
       ]
     },
     {
-      "page": 12,
+      "page": 11,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
       "bbox": [
         115.1,
@@ -480,7 +470,7 @@
       ]
     },
     {
-      "page": 12,
+      "page": 11,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
       "bbox": [
         97.4,
@@ -490,7 +480,7 @@
       ]
     },
     {
-      "page": 13,
+      "page": 12,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
       "bbox": [
         88.8,
@@ -500,7 +490,7 @@
       ]
     },
     {
-      "page": 13,
+      "page": 12,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig14.png",
       "bbox": [
         105.2,
@@ -510,13 +500,23 @@
       ]
     },
     {
-      "page": 14,
+      "page": 13,
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig15.png",
       "bbox": [
         86.1,
         60.5,
         367.4,
         158.3
+      ]
+    },
+    {
+      "page": 17,
+      "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig01.png",
+      "bbox": [
+        106.2,
+        61.2,
+        347.3,
+        133.4
       ]
     },
     {
@@ -705,7 +705,7 @@
       "from_page": 1,
       "from_label": "M01",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 1,
@@ -717,6 +717,12 @@
       "from_page": 1,
       "from_label": "M01",
       "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 2,
+      "from_label": "M02",
+      "destination": "B00",
       "to_page": 17
     },
     {
@@ -741,391 +747,403 @@
       "from_page": 2,
       "from_label": "M02",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 3,
       "from_label": "M03",
-      "destination": "B02",
-      "to_page": 19
-    },
-    {
-      "from_page": 3,
-      "from_label": "M03",
-      "destination": "B03",
-      "to_page": 20
-    },
-    {
-      "from_page": 3,
-      "from_label": "M03",
-      "destination": "Navigation1",
-      "to_page": 1
-    },
-    {
-      "from_page": 3,
-      "from_label": "M03",
-      "destination": "INDEX",
-      "to_page": 17
-    },
-    {
-      "from_page": 4,
-      "from_label": "M04",
-      "destination": "B06",
-      "to_page": 23
-    },
-    {
-      "from_page": 4,
-      "from_label": "M04",
-      "destination": "B07",
-      "to_page": 24
-    },
-    {
-      "from_page": 4,
-      "from_label": "M04",
-      "destination": "Navigation1",
-      "to_page": 1
-    },
-    {
-      "from_page": 4,
-      "from_label": "M04",
-      "destination": "INDEX",
-      "to_page": 17
-    },
-    {
-      "from_page": 5,
-      "from_label": "M05",
       "destination": "B01",
       "to_page": 18
     },
     {
-      "from_page": 5,
-      "from_label": "M05",
+      "from_page": 3,
+      "from_label": "M03",
       "destination": "B08",
       "to_page": 25
     },
     {
-      "from_page": 5,
-      "from_label": "M05",
+      "from_page": 3,
+      "from_label": "M03",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 5,
-      "from_label": "M05",
+      "from_page": 3,
+      "from_label": "M03",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 6,
-      "from_label": "M06",
+      "from_page": 4,
+      "from_label": "M04",
+      "destination": "B06",
+      "to_page": 23
+    },
+    {
+      "from_page": 4,
+      "from_label": "M04",
+      "destination": "B07",
+      "to_page": 24
+    },
+    {
+      "from_page": 4,
+      "from_label": "M04",
+      "destination": "Navigation1",
+      "to_page": 1
+    },
+    {
+      "from_page": 4,
+      "from_label": "M04",
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 5,
+      "from_label": "M05",
       "destination": "B09",
       "to_page": 26
     },
     {
-      "from_page": 6,
-      "from_label": "M06",
+      "from_page": 5,
+      "from_label": "M05",
       "destination": "B10",
       "to_page": 27
     },
     {
-      "from_page": 6,
-      "from_label": "M06",
+      "from_page": 5,
+      "from_label": "M05",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 6,
-      "from_label": "M06",
+      "from_page": 5,
+      "from_label": "M05",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 7,
-      "from_label": "M07",
+      "from_page": 6,
+      "from_label": "M06",
       "destination": "B10",
       "to_page": 27
     },
     {
-      "from_page": 7,
-      "from_label": "M07",
+      "from_page": 6,
+      "from_label": "M06",
       "destination": "B11",
       "to_page": 28
     },
     {
-      "from_page": 7,
-      "from_label": "M07",
+      "from_page": 6,
+      "from_label": "M06",
       "destination": "B12",
       "to_page": 29
     },
     {
-      "from_page": 7,
-      "from_label": "M07",
+      "from_page": 6,
+      "from_label": "M06",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 7,
-      "from_label": "M07",
+      "from_page": 6,
+      "from_label": "M06",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 8,
-      "from_label": "M08",
+      "from_page": 7,
+      "from_label": "M07",
       "destination": "B13",
       "to_page": 30
     },
     {
-      "from_page": 8,
-      "from_label": "M08",
+      "from_page": 7,
+      "from_label": "M07",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 8,
-      "from_label": "M08",
+      "from_page": 7,
+      "from_label": "M07",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 9,
-      "from_label": "M09",
+      "from_page": 8,
+      "from_label": "M08",
       "destination": "B14",
       "to_page": 31
     },
     {
-      "from_page": 9,
-      "from_label": "M09",
+      "from_page": 8,
+      "from_label": "M08",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 9,
-      "from_label": "M09",
+      "from_page": 8,
+      "from_label": "M08",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 10,
-      "from_label": "M10",
+      "from_page": 9,
+      "from_label": "M09",
       "destination": "B11",
       "to_page": 28
     },
     {
-      "from_page": 10,
-      "from_label": "M10",
+      "from_page": 9,
+      "from_label": "M09",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 10,
-      "from_label": "M10",
+      "from_page": 9,
+      "from_label": "M09",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 11,
-      "from_label": "M11",
+      "from_page": 10,
+      "from_label": "M10",
       "destination": "B15",
       "to_page": 32
     },
     {
-      "from_page": 11,
-      "from_label": "M11",
+      "from_page": 10,
+      "from_label": "M10",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 11,
-      "from_label": "M11",
+      "from_page": 10,
+      "from_label": "M10",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 12,
-      "from_label": "M12",
+      "from_page": 11,
+      "from_label": "M11",
       "destination": "B16",
       "to_page": 33
     },
     {
-      "from_page": 12,
-      "from_label": "M12",
+      "from_page": 11,
+      "from_label": "M11",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 12,
-      "from_label": "M12",
+      "from_page": 11,
+      "from_label": "M11",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 13,
-      "from_label": "M13",
+      "from_page": 12,
+      "from_label": "M12",
       "destination": "B17",
       "to_page": 34
     },
     {
-      "from_page": 13,
-      "from_label": "M13",
+      "from_page": 12,
+      "from_label": "M12",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 13,
-      "from_label": "M13",
+      "from_page": 12,
+      "from_label": "M12",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 14,
-      "from_label": "M14",
+      "from_page": 13,
+      "from_label": "M13",
       "destination": "B09",
       "to_page": 26
     },
     {
-      "from_page": 14,
-      "from_label": "M14",
+      "from_page": 13,
+      "from_label": "M13",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 14,
-      "from_label": "M14",
+      "from_page": 13,
+      "from_label": "M13",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 15,
-      "from_label": "M15",
+      "from_page": 14,
+      "from_label": "M14",
       "destination": "B13",
       "to_page": 30
     },
     {
-      "from_page": 15,
-      "from_label": "M15",
+      "from_page": 14,
+      "from_label": "M14",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 15,
-      "from_label": "M15",
+      "from_page": 14,
+      "from_label": "M14",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
-      "from_page": 16,
-      "from_label": "M16",
+      "from_page": 15,
+      "from_label": "M15",
       "destination": "B23",
       "to_page": 40
     },
     {
-      "from_page": 16,
-      "from_label": "M16",
+      "from_page": 15,
+      "from_label": "M15",
       "destination": "Navigation1",
       "to_page": 1
     },
     {
-      "from_page": 16,
-      "from_label": "M16",
+      "from_page": 15,
+      "from_label": "M15",
       "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 16,
+      "from_label": "INDEX",
+      "destination": "B00",
       "to_page": 17
     },
     {
-      "from_page": 17,
-      "from_label": "INDEX",
-      "destination": "B01",
-      "to_page": 18
-    },
-    {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B09",
       "to_page": 26
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B14",
       "to_page": 31
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B19",
       "to_page": 36
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
-      "destination": "M09",
-      "to_page": 9
+      "destination": "M08",
+      "to_page": 8
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B14",
       "to_page": 31
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B10",
       "to_page": 27
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B11",
       "to_page": 28
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B15",
       "to_page": 32
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B17",
       "to_page": 34
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
       "destination": "B23",
       "to_page": 40
     },
     {
-      "from_page": 17,
+      "from_page": 16,
       "from_label": "INDEX",
-      "destination": "M16",
+      "destination": "M15",
+      "to_page": 15
+    },
+    {
+      "from_page": 16,
+      "from_label": "INDEX",
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 16,
+      "from_label": "INDEX",
+      "destination": "Navigation16",
+      "to_page": 16
+    },
+    {
+      "from_page": 16,
+      "from_label": "INDEX",
+      "destination": "INDEX",
       "to_page": 16
     },
     {
       "from_page": 17,
-      "from_label": "INDEX",
-      "destination": "INDEX",
-      "to_page": 17
+      "from_label": "B00",
+      "destination": "B02",
+      "to_page": 19
     },
     {
       "from_page": 17,
-      "from_label": "INDEX",
+      "from_label": "B00",
+      "destination": "B03",
+      "to_page": 20
+    },
+    {
+      "from_page": 17,
+      "from_label": "B00",
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 17,
+      "from_label": "B00",
+      "destination": "INDEX",
+      "to_page": 16
+    },
+    {
+      "from_page": 17,
+      "from_label": "B00",
       "destination": "Navigation17",
       "to_page": 17
     },
     {
       "from_page": 17,
-      "from_label": "INDEX",
+      "from_label": "B00",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 18,
       "from_label": "B01",
-      "destination": "M05",
-      "to_page": 5
+      "destination": "M03",
+      "to_page": 3
     },
     {
       "from_page": 18,
@@ -1137,25 +1155,25 @@
       "from_page": 18,
       "from_label": "B01",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 18,
       "from_label": "B01",
-      "destination": "Navigation18",
-      "to_page": 18
+      "destination": "Navigation17",
+      "to_page": 17
     },
     {
       "from_page": 18,
       "from_label": "B01",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 19,
       "from_label": "B02",
-      "destination": "M03",
-      "to_page": 3
+      "destination": "B00",
+      "to_page": 17
     },
     {
       "from_page": 19,
@@ -1167,25 +1185,25 @@
       "from_page": 19,
       "from_label": "B02",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 19,
       "from_label": "B02",
-      "destination": "Navigation18",
-      "to_page": 18
+      "destination": "Navigation17",
+      "to_page": 17
     },
     {
       "from_page": 19,
       "from_label": "B02",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 20,
       "from_label": "B03",
-      "destination": "M03",
-      "to_page": 3
+      "destination": "B00",
+      "to_page": 17
     },
     {
       "from_page": 20,
@@ -1197,25 +1215,25 @@
       "from_page": 20,
       "from_label": "B03",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 20,
       "from_label": "B03",
-      "destination": "Navigation18",
-      "to_page": 18
+      "destination": "Navigation17",
+      "to_page": 17
     },
     {
       "from_page": 20,
       "from_label": "B03",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 21,
       "from_label": "B04",
-      "destination": "M04",
-      "to_page": 4
+      "destination": "M02",
+      "to_page": 2
     },
     {
       "from_page": 21,
@@ -1227,25 +1245,25 @@
       "from_page": 21,
       "from_label": "B04",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 21,
       "from_label": "B04",
-      "destination": "Navigation18",
-      "to_page": 18
+      "destination": "Navigation17",
+      "to_page": 17
     },
     {
       "from_page": 21,
       "from_label": "B04",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 22,
       "from_label": "B05",
-      "destination": "M05",
-      "to_page": 5
+      "destination": "M03",
+      "to_page": 3
     },
     {
       "from_page": 22,
@@ -1257,31 +1275,31 @@
       "from_page": 22,
       "from_label": "B05",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 22,
       "from_label": "B05",
-      "destination": "Navigation18",
-      "to_page": 18
+      "destination": "Navigation17",
+      "to_page": 17
     },
     {
       "from_page": 22,
       "from_label": "B05",
       "destination": "INDEX",
-      "to_page": 17
-    },
-    {
-      "from_page": 23,
-      "from_label": "B06",
-      "destination": "M02",
-      "to_page": 2
+      "to_page": 16
     },
     {
       "from_page": 23,
       "from_label": "B06",
       "destination": "M04",
       "to_page": 4
+    },
+    {
+      "from_page": 23,
+      "from_label": "B06",
+      "destination": "M02",
+      "to_page": 2
     },
     {
       "from_page": 23,
@@ -1293,31 +1311,31 @@
       "from_page": 23,
       "from_label": "B06",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 23,
       "from_label": "B06",
-      "destination": "Navigation18",
-      "to_page": 18
+      "destination": "Navigation17",
+      "to_page": 17
     },
     {
       "from_page": 23,
       "from_label": "B06",
       "destination": "INDEX",
-      "to_page": 17
-    },
-    {
-      "from_page": 24,
-      "from_label": "B07",
-      "destination": "M02",
-      "to_page": 2
+      "to_page": 16
     },
     {
       "from_page": 24,
       "from_label": "B07",
       "destination": "M04",
       "to_page": 4
+    },
+    {
+      "from_page": 24,
+      "from_label": "B07",
+      "destination": "M02",
+      "to_page": 2
     },
     {
       "from_page": 24,
@@ -1329,25 +1347,25 @@
       "from_page": 24,
       "from_label": "B07",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 24,
       "from_label": "B07",
-      "destination": "Navigation18",
-      "to_page": 18
+      "destination": "Navigation17",
+      "to_page": 17
     },
     {
       "from_page": 24,
       "from_label": "B07",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 25,
       "from_label": "B08",
-      "destination": "M05",
-      "to_page": 5
+      "destination": "M03",
+      "to_page": 3
     },
     {
       "from_page": 25,
@@ -1359,31 +1377,31 @@
       "from_page": 25,
       "from_label": "B08",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 25,
       "from_label": "B08",
-      "destination": "Navigation18",
-      "to_page": 18
+      "destination": "Navigation17",
+      "to_page": 17
     },
     {
       "from_page": 25,
       "from_label": "B08",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 26,
       "from_label": "B09",
-      "destination": "M06",
-      "to_page": 6
+      "destination": "M05",
+      "to_page": 5
     },
     {
       "from_page": 26,
       "from_label": "B09",
-      "destination": "M14",
-      "to_page": 14
+      "destination": "M13",
+      "to_page": 13
     },
     {
       "from_page": 26,
@@ -1395,7 +1413,7 @@
       "from_page": 26,
       "from_label": "B09",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 26,
@@ -1407,19 +1425,19 @@
       "from_page": 26,
       "from_label": "B09",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
+    },
+    {
+      "from_page": 27,
+      "from_label": "B10",
+      "destination": "M05",
+      "to_page": 5
     },
     {
       "from_page": 27,
       "from_label": "B10",
       "destination": "M06",
       "to_page": 6
-    },
-    {
-      "from_page": 27,
-      "from_label": "B10",
-      "destination": "M07",
-      "to_page": 7
     },
     {
       "from_page": 27,
@@ -1431,7 +1449,7 @@
       "from_page": 27,
       "from_label": "B10",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 27,
@@ -1443,19 +1461,19 @@
       "from_page": 27,
       "from_label": "B10",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 28,
       "from_label": "B11",
-      "destination": "M07",
-      "to_page": 7
+      "destination": "M06",
+      "to_page": 6
     },
     {
       "from_page": 28,
       "from_label": "B11",
-      "destination": "M10",
-      "to_page": 10
+      "destination": "M09",
+      "to_page": 9
     },
     {
       "from_page": 28,
@@ -1467,7 +1485,7 @@
       "from_page": 28,
       "from_label": "B11",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 28,
@@ -1479,13 +1497,13 @@
       "from_page": 28,
       "from_label": "B11",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 29,
       "from_label": "B12",
-      "destination": "M07",
-      "to_page": 7
+      "destination": "M06",
+      "to_page": 6
     },
     {
       "from_page": 29,
@@ -1497,7 +1515,7 @@
       "from_page": 29,
       "from_label": "B12",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 29,
@@ -1509,19 +1527,19 @@
       "from_page": 29,
       "from_label": "B12",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 30,
       "from_label": "B13",
-      "destination": "M08",
-      "to_page": 8
+      "destination": "M07",
+      "to_page": 7
     },
     {
       "from_page": 30,
       "from_label": "B13",
-      "destination": "M15",
-      "to_page": 15
+      "destination": "M14",
+      "to_page": 14
     },
     {
       "from_page": 30,
@@ -1533,7 +1551,7 @@
       "from_page": 30,
       "from_label": "B13",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 30,
@@ -1545,13 +1563,13 @@
       "from_page": 30,
       "from_label": "B13",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 31,
       "from_label": "B14",
-      "destination": "M09",
-      "to_page": 9
+      "destination": "M08",
+      "to_page": 8
     },
     {
       "from_page": 31,
@@ -1563,7 +1581,7 @@
       "from_page": 31,
       "from_label": "B14",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 31,
@@ -1575,13 +1593,13 @@
       "from_page": 31,
       "from_label": "B14",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 32,
       "from_label": "B15",
-      "destination": "M11",
-      "to_page": 11
+      "destination": "M10",
+      "to_page": 10
     },
     {
       "from_page": 32,
@@ -1593,7 +1611,7 @@
       "from_page": 32,
       "from_label": "B15",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 32,
@@ -1605,13 +1623,13 @@
       "from_page": 32,
       "from_label": "B15",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 33,
       "from_label": "B16",
-      "destination": "M12",
-      "to_page": 12
+      "destination": "M11",
+      "to_page": 11
     },
     {
       "from_page": 33,
@@ -1623,7 +1641,7 @@
       "from_page": 33,
       "from_label": "B16",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 33,
@@ -1635,13 +1653,13 @@
       "from_page": 33,
       "from_label": "B16",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 34,
       "from_label": "B17",
-      "destination": "M13",
-      "to_page": 13
+      "destination": "M12",
+      "to_page": 12
     },
     {
       "from_page": 34,
@@ -1653,7 +1671,7 @@
       "from_page": 34,
       "from_label": "B17",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 34,
@@ -1665,13 +1683,13 @@
       "from_page": 34,
       "from_label": "B17",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 35,
       "from_label": "B18",
-      "destination": "M07",
-      "to_page": 7
+      "destination": "M06",
+      "to_page": 6
     },
     {
       "from_page": 35,
@@ -1683,7 +1701,7 @@
       "from_page": 35,
       "from_label": "B18",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 35,
@@ -1695,13 +1713,13 @@
       "from_page": 35,
       "from_label": "B18",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 36,
       "from_label": "B19",
-      "destination": "M07",
-      "to_page": 7
+      "destination": "M06",
+      "to_page": 6
     },
     {
       "from_page": 36,
@@ -1713,7 +1731,7 @@
       "from_page": 36,
       "from_label": "B19",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 36,
@@ -1725,13 +1743,13 @@
       "from_page": 36,
       "from_label": "B19",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 37,
       "from_label": "B20",
-      "destination": "M07",
-      "to_page": 7
+      "destination": "M06",
+      "to_page": 6
     },
     {
       "from_page": 37,
@@ -1743,7 +1761,7 @@
       "from_page": 37,
       "from_label": "B20",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 37,
@@ -1755,13 +1773,13 @@
       "from_page": 37,
       "from_label": "B20",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 38,
       "from_label": "B21",
-      "destination": "M16",
-      "to_page": 16
+      "destination": "M15",
+      "to_page": 15
     },
     {
       "from_page": 38,
@@ -1773,7 +1791,7 @@
       "from_page": 38,
       "from_label": "B21",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 38,
@@ -1785,13 +1803,13 @@
       "from_page": 38,
       "from_label": "B21",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 39,
       "from_label": "B22",
-      "destination": "M16",
-      "to_page": 16
+      "destination": "M15",
+      "to_page": 15
     },
     {
       "from_page": 39,
@@ -1803,7 +1821,7 @@
       "from_page": 39,
       "from_label": "B22",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 39,
@@ -1815,19 +1833,19 @@
       "from_page": 39,
       "from_label": "B22",
       "destination": "INDEX",
-      "to_page": 17
-    },
-    {
-      "from_page": 40,
-      "from_label": "B23",
-      "destination": "M16",
       "to_page": 16
     },
     {
       "from_page": 40,
       "from_label": "B23",
+      "destination": "M15",
+      "to_page": 15
+    },
+    {
+      "from_page": 40,
+      "from_label": "B23",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     },
     {
       "from_page": 40,
@@ -1839,7 +1857,7 @@
       "from_page": 40,
       "from_label": "B23",
       "destination": "INDEX",
-      "to_page": 17
+      "to_page": 16
     }
   ]
 }
