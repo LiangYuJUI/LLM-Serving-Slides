@@ -88,7 +88,7 @@ def validate(render_dir):
     claims = {
         'M04': ['90%', 'amortized', 'separate fraction'],
         'B00': ['1.7', '0.03', 'not an end-to-end'],
-        'M02': ['manufacturing', 'electricity', 'allocation time', 'low request rates'],
+        'M02': ['manufacturing', 'electricity', 'allocation time', 'low request rates', 'shared across more prompts'],
         'M03': ['below 1', 'Above 1', '16.5%', '7.5%'],
         'M07': ['Lowest score', 'not a measured'],
         'M08': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],

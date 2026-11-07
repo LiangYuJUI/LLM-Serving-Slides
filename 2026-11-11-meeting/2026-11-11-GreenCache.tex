@@ -102,11 +102,12 @@ National Taiwan University / Academia Sinica
 \vspace{0.04cm}
 {\small Reusing KV from SSD saves prefill computation, but adds storage carbon.\par}
 \vspace{0.02cm}
-{\centering\gcimg{07}{3.15cm}\par}
+{\centering\gcimg{07}{3.05cm}\par}
 \vspace{0.04cm}
 \point{Embodied carbon}{Hardware manufacturing emissions, amortized over hardware allocation time.}
 \point{Operational carbon}{Emissions from serving electricity: energy use $\times$ grid carbon intensity.}
-\point{Trend in Fig.~7(a)}{At low request rates, SSD embodied carbon outweighs the operational savings. As the rate increases, caching becomes more carbon-efficient.}
+\point{Trend in Fig.~7(a)}{Cache embodied carbon per prompt drops most visibly as request rate rises: the same allocated SSD cost is shared across more prompts.}
+\point{Why it matters}{At low request rates, SSD embodied carbon outweighs operational savings. More requests dilute this cost; manufacturing emissions themselves do not decrease.}
 \vspace{0.06cm}
 {\small\textbf{More KV caching is not always more carbon-efficient.}\par}
 \slidenote{Secs.~2.3, 3.2; Fig.~7}{\nav{B00}{KV Reuse} \nav{B06}{Table 1} \nav{B07}{Equations}}
