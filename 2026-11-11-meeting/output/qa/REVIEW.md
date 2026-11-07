@@ -16,6 +16,9 @@ All 20 embedded figures match the supplied With-Caption PNGs by pixel hash. The 
 
 ## Layout
 
+- The cover follows the Helix cover hierarchy: deck label, large left-aligned paper title, subtitle, authors and venue, then unboxed meeting details.
+- Blue slide-title and content-box backgrounds now match the page background throughout the deck. Source figure colors remain intact. The updated cover and all-page montages were inspected after rebuilding.
+
 - PDF 2, 6, 7, 9, 10, and 16 use the page as cards or a figure-plus-steps row rather than one block stuck under the title.
 - PDF 3 and 15 still have some open space under a short figure and a compact table. The text and source line sit with the content; the gap is the remainder of a 16:9 frame, not a clipped figure.
 - Buttons sit on the source line. They do not cover axis labels on the inspected result pages.
