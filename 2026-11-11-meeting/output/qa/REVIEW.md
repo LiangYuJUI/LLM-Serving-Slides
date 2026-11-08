@@ -18,8 +18,8 @@
 
 - Local PDF: two clean pdfLaTeX passes; no Overfull, undefined-reference, or LaTeX warnings.
 - Extracted Overleaf ZIP: two passes; all 47 rendered pages, text, and link targets match the local PDF.
-- 270 internal links resolve to real destinations; every backup remains reachable and main-to-backup return links pass.
-- The four Main LCS slides have all 12 directed cross-links. B13 and B25 return to all four Main pages. M12 links to B26, and B26 returns to M09–M12. The index also opens B26.
+- 261 internal links resolve to real destinations; every backup remains reachable and main-to-backup return links pass.
+- M12 retains 3 directed links to M09–M11; their removed link rows remain absent. B13 and B25 return to all four Main pages. M12 links to B26, and B26 returns to M09–M12. The index also opens B26.
 - Validator checks actual PDF destinations for pages 9–12, 20, 34, 46, and 47. Main labels match page numbers. All 45 Table 3 values are checked on B26. M12 is checked for the 4 TB TriviaQA α=0.7 result only: 23%, 26%, 35%.
 - All 20 embedded paper figures retain their source pixel hashes.
 
@@ -30,3 +30,6 @@
 - Reuse requires matching retained KV; new input tokens still require computation.
 - Solver sets capacity; LCS selects replacements. Releasing allocated SSD changes amortized accounting, not historical manufacturing emissions, and does not move all SSD KV into GPU HBM.
 - TTFT/TPOT attainment sums remain separate. The unresolved 8B document TTFT threshold and HBF interpretation remain identified in their original content.
+
+
+- Restored M09–M11 exactly from the saved styling: four variable panels on M09; two stacked variable panels and bottom conclusion panels on M10/M11. Removed link rows and requested redundant notes remain absent. All other 43 PDF pages are pixel-identical to the pre-restoration PDF. The remaining 261 links, Table 3 values, and standalone ZIP build pass validation.

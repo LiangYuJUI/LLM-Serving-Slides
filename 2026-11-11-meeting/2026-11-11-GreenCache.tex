@@ -96,6 +96,16 @@ S^{*}=\arg\min_{S\in\mathcal{S}}\widehat{C}_{\mathrm{total}}(S)
 \institute{National Taiwan University / Academia Sinica}
 \date{11 Nov 2026}
 
+\newcommand{\lcsvariable}[4]{%
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.14cm]{#1}%
+\begin{minipage}[t][2.45cm][t]{\dimexpr\linewidth-0.28cm\relax}
+{\small\bfseries\color{Accent}#2}\par\vspace{0.08cm}
+\begin{minipage}[t][0.65cm][t]{\linewidth}{\footnotesize\bfseries #3}\end{minipage}\par
+\vspace{0.08cm}
+{\footnotesize\raggedright #4\par}
+\end{minipage}
+\end{beamercolorbox}}
+
 \begin{document}
 \section{Main}
 
@@ -251,124 +261,119 @@ TTFT and TPOT are evaluated separately.\par}
 \end{frame}
 
 \begin{frame}[t,label=M09]{How Does LCS Rank KV Cache Entries?}
-\vspace{0.04cm}
+\vspace{0.12cm}
 {\footnotesize\textbf{Solver chooses capacity $\rightarrow$ Cache Manager resizes $\rightarrow$ LCS ranks entries for eviction}\par}
-\vspace{0.05cm}
+\vspace{0.15cm}
 {\footnotesize Solver selects SSD capacity; Cache Manager allocates or releases it; LCS chooses entries to evict when reclaiming space.\par}
-\vspace{0.10cm}
+\vspace{0.32cm}
 {\centering\LARGE $\displaystyle \mathrm{Score}=\frac{\#\mathrm{Token}\times\#\mathrm{Hit}}{\mathrm{Size}\times\mathrm{Age}}$\quad{\small Eq.~(7)}\par}
-\vspace{0.18cm}
+\vspace{0.40cm}
+\setbeamercolor{bluebox}{fg=Ink,bg=AccentBlue!10}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.24\textwidth}
-{\footnotesize\bfseries\color{Accent}\#Token --- Accumulated Hit Tokens}\par
-{\footnotesize Total tokens successfully reused from the entry. More reused tokens mean more avoided prefill computation.\par}
+\begin{column}{0.23\textwidth}
+\lcsvariable{mintbox}{\#Token}{Accumulated Hit Tokens}{Total tokens reused from this entry. More reuse means more avoided prefill computation.}
 \end{column}
-\begin{column}{0.24\textwidth}
-{\footnotesize\bfseries\color{Accent}\#Hit --- Cache Hit Count}\par
-{\footnotesize Number of times the entry is reused. More hits suggest higher future reuse potential.\par}
+\begin{column}{0.23\textwidth}
+\lcsvariable{bluebox}{\#Hit}{Cache Hit Count}{Times this entry is reused. More hits suggest higher future reuse potential.}
 \end{column}
-\begin{column}{0.24\textwidth}
-{\footnotesize\bfseries\color{Accent}Size --- Storage Footprint}\par
-{\footnotesize SSD space occupied by the entry. Larger entries consume more storage capacity.\par}
+\begin{column}{0.23\textwidth}
+\lcsvariable{lilacbox}{Size}{Storage Footprint}{SSD space occupied by the entry. Larger entries consume more storage capacity.}
 \end{column}
-\begin{column}{0.24\textwidth}
-{\footnotesize\bfseries\color{Accent}Age --- Time in Storage}\par
-{\footnotesize How long the entry has remained stored. Older entries receive a larger score penalty.\par}
+\begin{column}{0.23\textwidth}
+\lcsvariable{mintbox}{Age}{Time in Storage}{Time this entry has remained stored. Older entries receive a larger score penalty.}
 \end{column}
 \end{columns}
-\vspace{0.16cm}
+\vspace{0.25cm}
 {\centering\small\bfseries\color{Accent}Lower LCS Score $\rightarrow$ Higher Eviction Priority\par}
-{\footnotesize Eq.~(7): general design principle, not measured CO$_2$. Eqs.~(8)--(9): workload-specific implementations.\par}
-\vspace{0.08cm}
-{\footnotesize\textbf{Grow:} Allocate additional SSD; later requests gradually warm the cache.\\
-\textbf{Shrink:} Evict lowest-score entries to the target size, then release spare capacity.\par}
-\vspace{0.10cm}
-{\footnotesize\hyperlink{M10}{\textbf{Eq. (8): Multi-turn Conversation}}\quad
-\hyperlink{M11}{\textbf{Eq. (9): Document QA}}\quad
-\hyperlink{M12}{\textbf{FIFO vs. LRU vs. LCS Results}}\par}
+\vspace{0.12cm}
 \slidenote{Sec.~5.5, Eq.~(7)}{}
 \end{frame}
 
 \begin{frame}[t,label=M10]{How Does LCS Work for Multi-Turn Conversations?}
-\vspace{0.06cm}
+\vspace{0.14cm}
+\setbeamercolor{bluebox}{fg=Ink,bg=AccentBlue!10}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.55\textwidth}
+\begin{column}{0.54\textwidth}
 {\small\bfseries\color{Accent}ShareGPT: task-specific Equation (8)}\par
 \vspace{0.12cm}
-{\large $\displaystyle \mathrm{Score}_{\mathrm{chat}}=\frac{\mathrm{CurTurn}\times\#\mathrm{AccuToken}}{\mathrm{Size}\times\mathrm{Age}}$\par}
-\vspace{0.18cm}
-{\footnotesize\textbf{CurTurn} --- Current conversation turn index. Later turns typically rely on longer prior contexts; deeper conversations are favored, all else equal.\par}
-\vspace{0.12cm}
-{\footnotesize\textbf{\#AccuToken} --- Accumulated reused tokens across turns. More accumulated reuse means more avoided prefill computation.\par}
-\vspace{0.12cm}
-{\footnotesize\textbf{Size / Age} --- The same storage-footprint and time-in-storage penalties as Equation (7).\par}
+{\Large $\displaystyle \mathrm{Score}_{\mathrm{chat}}=\frac{\mathrm{CurTurn}\times\#\mathrm{AccuToken}}{\mathrm{Size}\times\mathrm{Age}}$\par}
+\vspace{0.10cm}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.10cm]{bluebox}
+{\small\bfseries\color{Accent}CurTurn}\par\vspace{0.08cm}
+{\footnotesize Current conversation turn index. Later turns typically rely on longer prior contexts; deeper conversations are favored, all else equal.\par}
+\end{beamercolorbox}
+\vspace{0.08cm}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.10cm]{lilacbox}
+{\small\bfseries\color{Accent}\#AccuToken}\par\vspace{0.08cm}
+{\footnotesize Accumulated reused tokens across turns. More accumulated reuse means more avoided prefill computation.\par}
+\end{beamercolorbox}
 \end{column}
-\begin{column}{0.43\textwidth}
+\begin{column}{0.42\textwidth}
 {\centering\small\bfseries\color{Accent}History KV reuse across turns\par}
-\vspace{0.06cm}
+\vspace{0.24cm}
 \centering
-\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center},box/.style={draw=Accent,rounded corners=2pt,text width=5.4cm,minimum height=0.76cm}]
+\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center},box/.style={draw=Accent,rounded corners=2pt,text width=5.4cm,minimum height=0.9cm}]
 \node[box] (t1) at (0,0) {\textbf{Turn 1}\\Build reusable history KV};
-\node[box] (t2) at (0,-1.12) {\textbf{Turn 2}\\Reuse matching prior-context KV};
-\node[box] (t3) at (0,-2.24) {\textbf{Turn 3}\\Reuse a longer matching history};
+\node[box] (t2) at (0,-1.25) {\textbf{Turn 2}\\Reuse matching prior-context KV};
+\node[box] (t3) at (0,-2.5) {\textbf{Turn 3}\\Reuse a longer matching history};
 \draw[->,thick,Accent] (t1) -- (t2);
 \draw[->,thick,Accent] (t2) -- (t3);
 \end{tikzpicture}\par
-\vspace{0.08cm}
+\vspace{0.14cm}
 {\scriptsize Reuse requires matching, retained KV. New tokens still need computation; hits are not guaranteed.\par}
 \end{column}
 \end{columns}
-\vspace{0.15cm}
-{\footnotesize\textbf{Conversation-specific LCS prioritizes conversation depth and accumulated token reuse.}\par}
-\vspace{0.08cm}
-{\scriptsize Scores are proxies, not gCO$_2$e; they do not multiply by current CI. No separate Eq.~(7) vs.~(8) vs.~(9) ablation is reported.\par}
+\vfill
+\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.10cm]{mintbox}
+{\centering\small\bfseries Conversation-specific LCS prioritizes conversation depth and accumulated token reuse.\par}
+\end{beamercolorbox}
 \vspace{0.12cm}
-{\footnotesize\hyperlink{M09}{\textbf{Back to General LCS}}\quad
-\hyperlink{M11}{\textbf{Document QA Score}}\quad
-\hyperlink{M12}{\textbf{LCS Evaluation}}\quad\hyperlink{B13}{\textbf{Detailed Multi-turn Example}}\par}
 \slidenote{Sec.~5.5, Eq.~(8); Sec.~6.3.2}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
 \begin{frame}[t,label=M11]{How Does LCS Work for Document QA?}
-\vspace{0.06cm}
+\vspace{0.10cm}
+\setbeamercolor{bluebox}{fg=Ink,bg=AccentBlue!10}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.55\textwidth}
+\begin{column}{0.54\textwidth}
 {\small\bfseries\color{Accent}TriviaQA: task-specific Equation (9)}\par
 \vspace{0.12cm}
-{\large $\displaystyle \mathrm{Score}_{\mathrm{doc}}=\frac{\#\mathrm{Hit}\times\mathrm{AccuDocLen}}{\mathrm{Size}\times\mathrm{Age}}$\par}
-\vspace{0.18cm}
-{\footnotesize\textbf{\#Hit} --- Document cache hits across questions. Frequently reused documents receive higher priority.\par}
-\vspace{0.12cm}
-{\footnotesize\textbf{AccuDocLen} --- Accumulated length of reused document content. More reused document context means more avoided prefill work.\par}
-\vspace{0.12cm}
-{\footnotesize\textbf{Size / Age} --- The same storage-footprint and time-in-storage penalties as Equation (7).\par}
+{\Large $\displaystyle \mathrm{Score}_{\mathrm{doc}}=\frac{\#\mathrm{Hit}\times\mathrm{AccuDocLen}}{\mathrm{Size}\times\mathrm{Age}}$\par}
+\vspace{0.10cm}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.10cm]{bluebox}
+{\small\bfseries\color{Accent}\#Hit}\par\vspace{0.08cm}
+{\footnotesize Document cache hits across questions. Frequently reused documents receive higher priority.\par}
+\end{beamercolorbox}
+\vspace{0.08cm}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.10cm]{lilacbox}
+{\small\bfseries\color{Accent}AccuDocLen}\par\vspace{0.08cm}
+{\footnotesize Accumulated length of reused document content. More reused document context means more avoided prefill work.\par}
+\end{beamercolorbox}
 \end{column}
-\begin{column}{0.43\textwidth}
+\begin{column}{0.42\textwidth}
 {\centering\small\bfseries\color{Accent}One document, multiple questions\par}
-\vspace{0.06cm}
+\vspace{0.24cm}
 \centering
 \begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\footnotesize,align=center}]
 \node[draw=Accent,rounded corners=2pt,text width=4.8cm,minimum height=1cm] (doc) at (0,0) {\textbf{Shared Document}\\Cached Document KV};
-\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q1) at (-2,-2) {Question 1};
-\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q2) at (0,-2) {Question 2};
-\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q3) at (2,-2) {Question 3};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q1) at (-2,-2.5) {Question 1};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q2) at (0,-2.5) {Question 2};
+\node[draw=Divider,text width=1.55cm,minimum height=0.7cm] (q3) at (2,-2.5) {Question 3};
 \draw[->,thick,Accent] (doc.south) -- (q1.north);
 \draw[->,thick,Accent] (doc.south) -- (q2.north);
 \draw[->,thick,Accent] (doc.south) -- (q3.north);
-\node[fill=Paper,inner sep=2pt] at (0,-1.1) {Reuse the same document prefix};
+\node[fill=Paper,inner sep=2pt] at (0,-1.4) {Reuse the same document prefix};
 \end{tikzpicture}\par
 \vspace{0.08cm}
 {\scriptsize Matching retained document KV is reused; each question's new tokens still need computation.\par}
 \end{column}
 \end{columns}
-\vspace{0.15cm}
-{\footnotesize\textbf{Document-specific LCS prioritizes frequently reused documents and accumulated reused content.}\par}
-\vspace{0.08cm}
-{\footnotesize TriviaQA $\alpha=0.4$ and $\alpha=0.7$ both use Eq.~(9): different document-access distributions, not different formulas.\par}
+\vspace{0.10cm}
+\vfill
+\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.10cm]{mintbox}
+{\centering\small\bfseries Document-specific LCS prioritizes frequently reused documents and accumulated reused content.\par}
+\end{beamercolorbox}
 \vspace{0.12cm}
-{\footnotesize\hyperlink{M09}{\textbf{Back to General LCS}}\quad
-\hyperlink{M10}{\textbf{Multi-turn Score}}\quad
-\hyperlink{M12}{\textbf{Replacement Results}}\quad\hyperlink{B25}{\textbf{Detailed Document Example}}\par}
 \slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{INDEX}{Discussion Index}}
 \end{frame}
 
@@ -556,6 +561,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \textbf{8B and the other task} \nav{B15}{Fig.~12} \nav{B17}{Fig.~14b}\par
 \vspace{0.08cm}
 \textbf{LCS:} \nav{M09}{General} \nav{M10}{Chat} \nav{M11}{Doc QA} \nav{M12}{Policies} \nav{B26}{Table 3}\par
+\vspace{0.06cm}\textbf{LCS examples:} \nav{B13}{Multi-turn} \nav{B25}{Document QA}\par
 \vspace{0.08cm}
 \textbf{What we would not claim} \nav{B23}{Limits}\par}
 \end{column}

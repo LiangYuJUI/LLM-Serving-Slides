@@ -101,11 +101,10 @@ def validate(render_dir):
                 'Operational Carbon', 'Embodied Carbon', 'Model Inputs'],
         'M08': ['SLO Constraints', 'Equation (6)', '5.4.2', 'TTFT Attainment',
                 'TPOT Attainment', 'Feasible Cache Sizes', 'mathematical constraints'],
-        'M09': ['Solver chooses capacity', 'Accumulated Hit Tokens', 'Time in Storage', 'Higher Eviction Priority',
-                'not measured', 'Grow:', 'Shrink:'],
-        'M10': ['CurTurn', 'AccuToken', 'ShareGPT', 'hits are not guaranteed', 'No separate'],
+        'M09': ['Solver chooses capacity', 'Accumulated Hit Tokens', 'Time in Storage', 'Higher Eviction Priority'],
+        'M10': ['CurTurn', 'AccuToken', 'ShareGPT', 'hits are not guaranteed', 'Conversation-specific LCS prioritizes'],
         'B13': ['Hypothetical', 'CurTurn', 'AccuToken', 'Evict A first', 'heuristic'],
-        'M11': ['AccuDocLen', 'TriviaQA', '0.4', '0.7', 'not different formulas'],
+        'M11': ['AccuDocLen', 'TriviaQA', 'Document-specific LCS prioritizes'],
         'B25': ['Hypothetical', 'AccuDocLen', 'Evict A first', 'Access skew'],
         'M13': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
         'M15': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
@@ -124,9 +123,9 @@ def validate(render_dir):
         content = ' '.join(doc[expected[label]].get_text().split())
         for needle in needles:
             assert needle in content, (label, needle)
-    # All four methodology/result pages link directly to every other page.
+    # M09–M11 omit their link rows; M12 retains links to all three.
     lcs_labels = ['M09', 'M10', 'M11', 'M12']
-    for origin in lcs_labels:
+    for origin in lcs_labels[3:]:
         for target in set(lcs_labels) - {origin}:
             assert expected[target] in graph[expected[origin]], (origin, target)
     assert [expected[k] for k in lcs_labels] == [8, 9, 10, 11]
@@ -214,7 +213,7 @@ def validate(render_dir):
         'main_pages': main_count,
         'backup_pages_including_index': len(doc) - main_count,
         'internal_links_checked': len(links),
-        'lcs_cross_links_checked': 12,
+        'lcs_cross_links_checked': 3,
         'table3_values_checked': 45,
         'figures_matched_by_pixel_hash': len(used),
         'whitespace': whitespace,
