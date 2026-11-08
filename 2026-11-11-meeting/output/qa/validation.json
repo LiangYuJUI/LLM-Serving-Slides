@@ -2,7 +2,7 @@
   "pdf_pages": 48,
   "main_pages": 19,
   "backup_pages_including_index": 29,
-  "internal_links_checked": 273,
+  "internal_links_checked": 274,
   "backup_navigation_audit": [
     {
       "label": "B00",
@@ -182,6 +182,7 @@
       "discussion_index": true,
       "cross_links": [
         "B15",
+        "M14",
         "Navigation35"
       ]
     },
@@ -403,12 +404,12 @@
     {
       "page": 13,
       "label": "M13",
-      "lower_empty_ratio": 0.501
+      "lower_empty_ratio": 0.376
     },
     {
       "page": 14,
       "label": "M14",
-      "lower_empty_ratio": 0.669
+      "lower_empty_ratio": 0.508
     },
     {
       "page": 15,
@@ -513,7 +514,7 @@
     {
       "page": 35,
       "label": "B14",
-      "lower_empty_ratio": 0.951
+      "lower_empty_ratio": 0.917
     },
     {
       "page": 36,
@@ -645,12 +646,12 @@
     {
       "page": 13,
       "label": "M13",
-      "title": "Real Prototype, Traces, or a Simulator?"
+      "title": "Real Prototype or Simulator?"
     },
     {
       "page": 14,
       "label": "M14",
-      "title": "What Are the Evaluation Settings?"
+      "title": "How Is GreenCache Evaluated?"
     },
     {
       "page": 15,
@@ -2301,6 +2302,12 @@
       "from_label": "B14",
       "destination": "M13",
       "to_page": 13
+    },
+    {
+      "from_page": 35,
+      "from_label": "B14",
+      "destination": "M14",
+      "to_page": 14
     },
     {
       "from_page": 35,

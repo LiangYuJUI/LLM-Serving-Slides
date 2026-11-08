@@ -404,44 +404,64 @@ Token-level hit rate = reused input tokens / total input tokens.\par}
 \slidenote{Section 6.3.2, Table 3.}{\nav{B26}{Full Table 3}}
 \end{frame}
 
-\begin{frame}[t,label=M13]{Real Prototype, Traces, or a Simulator?}
-\vspace{0.06cm}
+\begin{frame}[t,label=M13]{Real Prototype or Simulator?}
+\vspace{0.28cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.32\textwidth}
-\card{mintbox}{Actual hardware}{GreenCache is built on LMCache, which uses vLLM and continuous batching. Llama-3 70B: 4$\times$ L40, INT8, up to 16\,TB SSD. Llama-3 8B: 2$\times$ L40, BF16, up to 8\,TB. The Table~1 platform has 512\,GB DDR4.}
+\card{mintbox}{\begin{minipage}[t][0.55cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright A. Real GPU Prototype\end{minipage}}{\begin{minipage}[t][1.95cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright
+Built on \textbf{LMCache + vLLM} with continuous batching, using NVIDIA L40 GPUs.
+\end{minipage}}
 \end{column}
 \begin{column}{0.32\textwidth}
-\card{bluebox}{Replayed workload}{ShareGPT and TriviaQA supply text and reuse. Arrivals are Poisson, with rates taken from the Azure LLM trace and scaled to this machine. CI comes from CarbonCast for FR, FI, ES, and CISO.}
+\card{bluebox}{\begin{minipage}[t][0.55cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright B. Trace-Driven Evaluation\end{minipage}}{\begin{minipage}[t][1.95cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright
+\textbf{ShareGPT / TriviaQA} workloads, Azure-based request arrivals, and CarbonCast carbon intensity.
+\end{minipage}}
 \end{column}
 \begin{column}{0.32\textwidth}
-\card{lilacbox}{Carbon model}{CPU power from RAPL and GPU power from pyNVML, every 1\,ms. SSD and DRAM power come from specifications. Embodied carbon is an ACT-style accounting model, amortized over allocation time.}
+\card{lilacbox}{\begin{minipage}[t][0.55cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright C. Power Measurement \& Carbon Modeling\end{minipage}}{\begin{minipage}[t][1.95cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright
+\textbf{CPU/GPU power measured}. SSD/DRAM power from specifications; embodied carbon modeled and amortized.
+\end{minipage}}
 \end{column}
 \end{columns}
-\vspace{0.12cm}
-\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.14cm]{mintbox}
-{\small No standalone GPU-serving simulator is reported. GreenCache extends LMCache/vLLM and evaluates measured serving behavior with realistic traces and carbon models.\par}
+\vspace{0.35cm}
+\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.18cm]{mintbox}
+{\small\bfseries\color{Accent}Key Takeaway}\par\vspace{0.08cm}
+{\small No standalone GPU-serving simulator is reported. GreenCache combines real serving measurements, trace-driven workloads, and carbon models.\par}
 \end{beamercolorbox}
-\vspace{0.08cm}
-{\footnotesize Resizing allocates or releases cloud SSD capacity. It is not a measurement of physically installing or removing drives, and it is not a direct measurement of factory emissions at each resize.\par}
+\vspace{0.22cm}
 \slidenote{Secs.~5.2--5.4, 6.1}{\nav{B14}{Measurement Notes}}
 \end{frame}
 
-\begin{frame}[t,label=M14]{What Are the Evaluation Settings?}
+\begin{frame}[t,label=M14]{How Is GreenCache Evaluated?}
+\vspace{0.06cm}
+\card{bluebox}{A. Models \& Workloads}{Llama-3 8B / 70B with ShareGPT and \hyperlink{B27}{\textcolor{Accent}{\underline{TriviaQA}}} workloads.}
 \vspace{0.08cm}
+{\small\bfseries\color{Accent}B. Three Strategies Compared}\par
+\vspace{0.04cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
-\card{bluebox}{Models}{Llama-3 70B (INT8, 4$\times$ L40) and Llama-3 8B (BF16, 2$\times$ L40). Different GPU counts and precisions, so the two models are not an apples-to-apples pair. Context window 8k tokens; longer context is truncated.}
-\vspace{0.10cm}
-\card{lilacbox}{Workloads}{ShareGPT multi-turn conversation. \hyperlink{B27}{\textcolor{Accent}{\underline{TriviaQA}}} document comprehension at Zipf skewness $\alpha=0.4$ and $\alpha=0.7$. Hourly CI and hourly cache decisions.}
+\begin{column}{0.32\textwidth}
+\card{bluebox}{No Cache}{\begin{minipage}[t][0.50cm][t]{\dimexpr\linewidth-0.18cm\relax}No context caching\end{minipage}}
 \end{column}
-\begin{column}{0.49\textwidth}
-\card{mintbox}{Baselines}{\textbf{No Cache:} vLLM, no context cache. \textbf{Full Cache:} the maximum configured capacity. \textbf{GreenCache:} adaptive capacity plus LCS. Full Cache and GreenCache share the same maximum.}
-\vspace{0.10cm}
-\card{bluebox}{Metrics}{Total carbon per prompt. TTFT and TPOT SLO attainment, shown as P90 against the threshold. Cache capacity over the day. Token-level cache hit rate in the replacement study.}
+\begin{column}{0.32\textwidth}
+\card{lilacbox}{Full Cache}{\begin{minipage}[t][0.50cm][t]{\dimexpr\linewidth-0.18cm\relax}Maximum configured capacity\end{minipage}}
+\end{column}
+\begin{column}{0.32\textwidth}
+\card{mintbox}{GreenCache}{\begin{minipage}[t][0.50cm][t]{\dimexpr\linewidth-0.18cm\relax}Adaptive capacity + LCS\end{minipage}}
 \end{column}
 \end{columns}
-\vspace{0.12cm}
-{\small Target attainment is 90\% for TTFT and, separately, 90\% for TPOT. Threshold values and the trace-scaling procedure are in the backup.\par}
+\vspace{0.08cm}
+{\footnotesize Full Cache and GreenCache share the same maximum capacity.\par}
+\vspace{0.08cm}
+{\small\bfseries\color{Accent}C. Evaluation Metrics}\par
+\vspace{0.06cm}
+{\small Total carbon per prompt\quad$\cdot$\quad TTFT / TPOT SLO attainment\quad$\cdot$\quad Allocated cache capacity\par}
+{\footnotesize TTFT and TPOT each require 90\% attainment, separately.\par}
+\vspace{0.04cm}
+\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.14cm]{mintbox}
+{\small\bfseries\color{Accent}Key Question}\par\vspace{0.05cm}
+{\small Can adaptive cache sizing reduce total carbon while satisfying serving latency SLOs?\par}
+\end{beamercolorbox}
+\vspace{0.06cm}
 \slidenote{Sec.~6.1}{\nav{B11}{SLO Thresholds}}
 \end{frame}
 
@@ -859,8 +879,9 @@ C & 4 & 600 & 2 & 2 & $4\times600/(2\times2)=600$\\
 \point{Requests}{Profiling prompts and evaluation prompts are disjoint. ShareGPT cache warm-up: 200k prompts. TriviaQA: 50k. The profiler then runs 500 prompts. Zipf $\alpha=0.4$: about 10\% of documents get about 25\% of prompts. $\alpha=0.7$: about 10\% get about 50\%.}
 \point{Time and grid}{Azure LLM inference trace, downscaled so the peak fits this server's sustainable throughput. Main carbon run uses variable CI on 6 July 2022. Ablations and SSD sensitivities use the ES average, 124\,gCO$_2$e/kWh, and fixed rates of 1.5 prompts/s (multi-turn) or 0.2 (document) where Sec.~6.6 says so.}
 \point{Power}{CPU: RAPL. GPU: pyNVML at 1\,ms. SSD and DRAM: specification power, because those parts expose no direct measurement interface in the paper.\par}
+\point{Context limit}{Both models use an 8k-token context window; extra context is truncated.}
 \slidenote{Secs.~3, 5.2, 6.1, 6.6}{}
-\back[\nav{B15}{Next}]{M13}
+\back[\nav{M14}{Evaluation}\ \nav{B15}{Next}]{M13}
 \end{frame}
 
 \begin{frame}[t,label=B15]{Figure 12b: Llama-3 8B Carbon}

@@ -141,7 +141,14 @@ def validate(render_dir):
         'B13': ['Hypothetical', 'CurTurn', 'AccuToken', 'Evict A first', 'heuristic'],
         'M11': ['AccuDocLen', 'TriviaQA', 'Document-specific LCS prioritizes'],
         'B25': ['Hypothetical', 'AccuDocLen', 'Evict A first', 'Access skew'],
-        'M13': ['No standalone GPU-serving simulator', 'LMCache', 'RAPL', 'pyNVML'],
+        'M13': ['No standalone GPU-serving simulator', 'LMCache + vLLM',
+                'continuous batching', 'L40', 'CarbonCast', 'CPU/GPU power measured',
+                'specifications', 'modeled and amortized'],
+        'M14': ['No context caching', 'Maximum configured capacity',
+                'Adaptive capacity + LCS', 'same maximum capacity',
+                'Total carbon per prompt', 'Allocated cache capacity',
+                '90% attainment, separately', 'Key Question'],
+        'B14': ['RAPL', 'pyNVML', '1 ms', '8k-token', 'truncated'],
         'M15': ['12.6%', '9.4%', '5.6%', 'not the FR-only'],
         'M16': ['2.5', '15', 'not viable'],
         'M17': ['15.1%', '25.3%', '15 TB'],
@@ -163,6 +170,16 @@ def validate(render_dir):
         content = ' '.join(doc[expected[label]].get_text().split())
         for needle in needles:
             assert needle in content, (label, needle)
+    # Main pages explain the study; technical setup remains in backups.
+    for label, omitted in {
+        'M13': ['RAPL', 'pyNVML', '512', 'INT8', 'BF16', '1 ms'],
+        'M14': ['INT8', 'BF16', '8k', '0.4', '0.7', 'Token-level'],
+    }.items():
+        content = ' '.join(doc[expected[label]].get_text().split())
+        assert not any(term in content for term in omitted), (label, 'detail leaked into main')
+    for origin, target in [('M13', 'B14'), ('B14', 'M13'), ('B14', 'M14'),
+                           ('M14', 'B11'), ('B11', 'M14')]:
+        assert expected[target] in graph[expected[origin]], (origin, target)
     # Anchor workload checks to the supplied paper, not just copied slide claims.
     paper_path = ROOT / 'GreenCache-Research-Meeting-2026-11-11/GreenCache-Carbon-Aware-KV-Caching-SIGMETRICS2026.pdf'
     with fitz.open(paper_path) as paper:

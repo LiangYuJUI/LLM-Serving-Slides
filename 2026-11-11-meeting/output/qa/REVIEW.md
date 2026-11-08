@@ -18,7 +18,7 @@
 
 - Local PDF: two clean pdfLaTeX passes; no Overfull, undefined-reference, or LaTeX warnings.
 - Extracted Overleaf ZIP: two passes; all 48 rendered pages, text, and link targets match the local PDF.
-- 273 internal links resolve to real destinations; every backup remains reachable and main-to-backup return links pass.
+- 274 internal links resolve to real destinations; every backup remains reachable and main-to-backup return links pass.
 - All 28 backups have a standard visible Back to Main button and a separate body Discussion Index button. The validator intersects their text boxes with actual PDF link annotation rectangles and resolves destinations. Footer links alone cannot pass.
 - B02 and B03 now return to M02 while keeping KV Reuse / Next. B13 returns to M10; B25 to M11; B26 and B27 to M12. Existing LCS cross-links remain.
 - M12 → B27 → M12 and M12 → B26 → M12 pass. M11, M14, B25, B26, and INDEX → B27 pass, as do all B27 cross-links. `navigation-audit.md` records every backup's page, primary main, and other links.
@@ -43,3 +43,15 @@
 - The new page is B27, between B25 and B26. B00–B26 labels remain unchanged, as does Main order.
 
 - Pixel comparison against the pre-edit PDF: the 16 Main pages other than M11, M12, and M14 are identical above the page-count footer. All pages necessarily update the total count from 47 to 48. Other backup changes are the requested standard return-button wording, with local navigation changes on B02, B03, B13, B25, and B26.
+
+## M13 / M14 simplification
+
+- Baseline: bda7c5915442e63cf6ed145660bbf6ebd218cf6c. Only M13, M14, and B14 changed in the PDF; all other 45 pages are pixel-identical, including M09–M12, B27, and the index.
+- M13 now presents real GPU serving, trace-driven evaluation, and measured power versus modeled carbon in three aligned cards, followed by a Key Takeaway. CPU/GPU measurement, specification-based SSD/DRAM power, and amortized embodied carbon remain distinct.
+- M14 emphasizes the three strategies side by side. It retains the common maximum capacity and separate 90% TTFT/TPOT attainment requirements, with a Key Question below the metrics.
+- Text extraction before the source line (including titles) falls from 164 to 70 words on M13 (57.3%), and from 138 to 84 on M14 (39.1%). No smaller font was introduced to fit the content.
+- Existing technical detail remains in B06/B07/B11/B14/B15/B23/B24/B27. The only newly preserved setup detail is the 8k context limit and truncation in B14, verified against §6.1 on paper PDF page 15. B14 also links back to M14.
+- Inspected rendered M13, M14, and B14. Cards, text, sources, and navigation fit without overlap or clipping. Before/after comparisons are `main-13-before-after.png` and `main-14-before-after.png`.
+- Local PDF and independently extracted Overleaf ZIP each compile twice without Overfull, undefined references, or LaTeX warnings. All 48 pages have matching renders, text, and link targets between builds.
+- Validator passes 274 PDF links, all 28 backup return/index buttons, all 45 Table 3 values, and all 20 original image pixel hashes. Explicit checks cover M13 ↔ B14, M14 ↔ B11, M14 ↔ B27, and B14 → M14. RAPL/pyNVML assertions now apply to B14, and checks reject detailed setup leaking back into M13/M14.
+- No unresolved issues introduced by this edit. Previously documented paper ambiguities remain unchanged.

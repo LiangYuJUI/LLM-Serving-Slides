@@ -27,8 +27,8 @@
 | M10 / 10 | How Does LCS Work for Multi-Turn Conversations? | Eq. (8) + KV reuse diagram | 1, 20 |
 | M11 / 11 | How Does LCS Work for Document QA? | Eq. (9) + KV reuse diagram | 1, 20, 47 |
 | M12 / 12 | Why Use LCS Instead of FIFO or LRU? | FIFO / LRU / LCS comparison; 4 TB example | 1, 20, 47, 48 |
-| M13 / 13 | Real Prototype, Traces, or a Simulator? | — | 1, 20, 35 |
-| M14 / 14 | What Are the Evaluation Settings? | — | 1, 20, 32, 47 |
+| M13 / 13 | Real Prototype or Simulator? | — | 1, 20, 35 |
+| M14 / 14 | How Is GreenCache Evaluated? | — | 1, 20, 32, 47 |
 | M15 / 15 | Q1: Does GreenCache Reduce Carbon? | Fig. 12 | 1, 20, 36 |
 | M16 / 16 | Q2: Does GreenCache Still Meet SLOs? | Fig. 13 | 1, 20, 37 |
 | M17 / 17 | Q3: Does Capacity Track Load and CI? | Fig. 14 | 1, 20, 38 |
@@ -58,7 +58,7 @@ Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）
 | 32 | B11 | Exact SLO Constraints | 6, 8, 14, 20, 30, 33 |
 | 33 | B12 | Load Forecast and Carbon-Intensity Forecast | 5, 7, 20, 30, 34 |
 | 34 | B13 | Detailed Multi-turn LCS Example | 9, 10, 11, 12, 20, 30 |
-| 35 | B14 | What Is Measured, Replayed, and Modeled? | 13, 20, 35, 36 |
+| 35 | B14 | What Is Measured, Replayed, and Modeled? | 13, 14, 20, 35, 36 |
 | 36 | B15 | Figure 12b: Llama-3 8B Carbon | 15, 20, 35, 37 |
 | 37 | B16 | Figure 13b: Llama-3 8B SLO Timelines | 16, 20, 35, 38 |
 | 38 | B17 | Figure 14b: Document Timeline, $\alpha=0.4$ | 17, 20, 35, 39 |
@@ -142,11 +142,26 @@ M10 and M11 share formula position, font size, and column layout. Their diagrams
 
 ## Prototype, traces, and the carbon model
 
-PDF 13 是這題的回答。
+M13 **Real Prototype or Simulator?** 以三個卡片說明真實 GPU prototype、trace-driven evaluation，以及量測與碳模型的分工。CPU/GPU power 是量測，SSD/DRAM power 來自規格，embodied carbon 則以攤提模型估計。結論保留「沒有報告獨立 GPU-serving simulator」，Measurement Notes 連到 B14。
 
-- **實際系統：** GreenCache 建在 LMCache 上，LMCache 使用 vLLM 與 continuous batching。沒有論文句子說作者開發或改造了一個獨立的 GPU serving simulator。
-- **工作負載：** ShareGPT 與 TriviaQA 提供內容與重用；到達過程是 Poisson，速率來自 Azure LLM trace，並縮放到這台機器的可持續吞吐量。CI 來自 CarbonCast，經既有的 EnsembleCI 預測。
-- **碳會計：** CPU 用 RAPL、GPU 用 pyNVML（1 ms）。SSD 與 DRAM 功率來自規格，不是元件級實測。Embodied carbon 是 ACT 一類的攤提模型。雲端 resize 是分配與釋放容量，不是每次增減硬碟時量到的製造碳排。
+M14 **How Is GreenCache Evaluated?** 聚焦模型／workload、橫向排列的 No Cache／Full Cache／GreenCache，以及 carbon per prompt、TTFT／TPOT SLO attainment、allocated cache capacity。Full Cache 與 GreenCache 使用相同容量上限，TTFT／TPOT 各自要求 90%。TriviaQA 連到 B27，SLO Thresholds 連到 B11。
+
+細節保留於既有 Backup，避免重複：
+
+| 細節 | Backup |
+|---|---|
+| 512 GB DDR4、硬體與 embodied carbon | B06 |
+| 碳會計與攤提 | B07、B23 |
+| SLO thresholds 與各自的 attainment constraints | B11 |
+| RAPL、pyNVML、1 ms、trace scaling；新增 8k context window 與截斷 | B14 |
+| GPU 數量、INT8／BF16、8 TB／16 TB | B15、B24 |
+| 每小時決策與容量粒度 | B24 |
+| TriviaQA Zipf、Poisson arrivals、warm-up | B27 |
+| Token-level hit rate replacement study | M12、B26 |
+
+B14 保留返回 M13，並新增 Evaluation → M14。未增加頁面。
+
+[Slide 13 前後對照](output/qa/main-13-before-after.png) · [Slide 14 前後對照](output/qa/main-14-before-after.png)
 
 ## 編譯
 
@@ -166,7 +181,7 @@ python3 -m venv /tmp/greencache-qa
 ## QA
 
 - 本地兩次與 ZIP 獨立兩次編譯通過，最終 log 沒有 Overfull、undefined reference 或 Warning。
-- 48 頁、273 個內部連結、20 張來源圖的像素雜湊都通過。Main 19 頁，Discussion / Backup 29 頁。28 張 Backup 的可見 Back to Main 與 Discussion Index 按鈕均以 PDF annotations 驗證；M12 ↔ B27 與 M12 ↔ B26 通過。Table 3 的 45 個數值未變。
+- 48 頁、274 個內部連結、20 張來源圖的像素雜湊都通過。Main 19 頁，Discussion / Backup 29 頁。28 張 Backup 的可見 Back to Main 與 Discussion Index 按鈕均以 PDF annotations 驗證；M12 ↔ B27 與 M12 ↔ B26 通過。Table 3 的 45 個數值未變。
 - [逐頁導覽稽核](output/qa/navigation-audit.md) 列出每張 Backup 的 PDF 頁碼、主要 Main 目的地與交叉連結。Validator 從 frame labels 推導頁碼，不以總共 48 頁的固定清單判斷。
 - [Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)、[逐頁 PNG](output/qa/pages/)、[機器紀錄](output/qa/validation.json)、[視覺紀錄](output/qa/REVIEW.md)。
 

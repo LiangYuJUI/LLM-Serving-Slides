@@ -18,7 +18,7 @@ Generated from LaTeX frames and verified PDF link annotations.
 | B11 | 32 | M08 | Yes | Yes | B12, M06, M14, Navigation30 |
 | B12 | 33 | M05 | Yes | Yes | B13, M07, Navigation30 |
 | B13 | 34 | M10 | Yes | Yes | M09, M11, M12, Navigation30 |
-| B14 | 35 | M13 | Yes | Yes | B15, Navigation35 |
+| B14 | 35 | M13 | Yes | Yes | B15, M14, Navigation35 |
 | B15 | 36 | M15 | Yes | Yes | B16, Navigation35 |
 | B16 | 37 | M16 | Yes | Yes | B17, Navigation35 |
 | B17 | 38 | M17 | Yes | Yes | B18, Navigation35 |
