@@ -189,3 +189,4 @@ python3 -m venv /tmp/greencache-qa
 
 Slide 9–11 已還原為先前確認的色塊排版：M09 四個變數色塊；M10／M11 各有兩個上下變數色塊與底部結論色塊。指定的連結列、Size／Age 重複說明、proxy／ablation 句與 TriviaQA 分布註記維持刪除。
 
+Slide 9–11 的公式字體各縮小一級，保留已確認的變數色塊與結論。Slide 12 和 B26 維持策略比較與完整 Table 3 的分工。

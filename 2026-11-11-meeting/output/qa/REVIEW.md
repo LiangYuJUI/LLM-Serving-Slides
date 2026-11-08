@@ -33,3 +33,5 @@
 
 
 - Restored M09–M11 exactly from the saved styling: four variable panels on M09; two stacked variable panels and bottom conclusion panels on M10/M11. Removed link rows and requested redundant notes remain absent. All other 43 PDF pages are pixel-identical to the pre-restoration PDF. The remaining 261 links, Table 3 values, and standalone ZIP build pass validation.
+
+- Formula-size refinement: only M09 changes from LARGE to Large, and M10/M11 from Large to large. Their text and panels remain intact. All other 44 pages, including M12 and B26, are pixel-identical to the preceding PDF. Revalidated 47 pages, 261 links, all 45 Table 3 values, and independent ZIP compilation.
