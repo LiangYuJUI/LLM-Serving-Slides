@@ -55,3 +55,15 @@
 - Local PDF and independently extracted Overleaf ZIP each compile twice without Overfull, undefined references, or LaTeX warnings. All 48 pages have matching renders, text, and link targets between builds.
 - Validator passes 274 PDF links, all 28 backup return/index buttons, all 45 Table 3 values, and all 20 original image pixel hashes. Explicit checks cover M13 ↔ B14, M14 ↔ B11, M14 ↔ B27, and B14 → M14. RAPL/pyNVML assertions now apply to B14, and checks reject detailed setup leaking back into M13/M14.
 - No unresolved issues introduced by this edit. Previously documented paper ambiguities remain unchanged.
+
+- M14 heading refinement: A/B/C now all use the same small bold Accent font, verified from PDF spans. Reduced top spacing by 0.04 cm to preserve page fit; build and navigation validation pass.
+
+- M15 interpretation refinement: removed explicit reduction percentages from the main text while preserving the original Figure 12a and caption. Three concise takeaways distinguish savings versus Full Cache, prefix reuse opportunities, and No Cache carbon versus latency feasibility. Source numbers remain documented in README. Build and validator pass (48 pages, 274 links); all other 47 pages are pixel-identical to the immediately preceding PDF.
+
+- M16 now summarizes No Cache SLO failures and GreenCache using Full Cache latency headroom to reduce capacity and carbon while meeting SLOs in the plotted experiments. Removed threshold enumeration (retained in B11), preserved separate TTFT/TPOT interpretation, Figure 13a/caption, source, and B16 navigation. Build and validation pass (48 pages, 274 links); other 47 pages are pixel-identical to the preceding PDF.
+
+- M17 now uses qualitative interpretation: lower per-prompt carbon versus Full Cache in the shown timelines; load and CI jointly influence capacity under SLO constraints, without claiming monotonic savings. Original Figure 14a/caption and links remain. Verified §6.1–6.2: Figure 12 averages the dynamic evaluation, while Figure 14 exposes timelines; neither uses fixed CI/request-rate inputs. Build and validator pass (48 pages, 274 links); other 47 pages are pixel-identical to the preceding PDF.
+
+- M18 states the ablation takeaway without the 10.3% / 6.6–9.9% figures: even without LCS, adaptive capacity still reduces carbon versus Full Cache, and the effect is clearer at low load because the cache needed to meet the SLO is smaller. Capacity adjustment contributes; LCS is not claimed to have no further value. Those percentages remain in the README source table. Figure 15, the ES-grid setup, and the B09 link stay.
+
+- M19 drops the Limitations card and stacks Problem, Contribution, Evidence, and Future work full width from top to bottom. Future work is ours: capacity decisions across regional data centers, and HBM–HBF as cache tiers. GreenCache does not evaluate either. Trace length, amortized embodied carbon, sensitivity, and dense Llama-3 remain on B23.

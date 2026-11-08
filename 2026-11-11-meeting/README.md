@@ -33,7 +33,7 @@
 | M16 / 16 | Q2: Does GreenCache Still Meet SLOs? | Fig. 13 | 1, 20, 37 |
 | M17 / 17 | Q3: Does Capacity Track Load and CI? | Fig. 14 | 1, 20, 38 |
 | M18 / 18 | Q4: Does Adaptive Sizing Help? | Fig. 15 | 1, 20, 30 |
-| M19 / 19 | Conclusion and Limitations | — | 1, 20, 44 |
+| M19 / 19 | Conclusion | — | 1, 20, 44 |
 
 Slide 5、6 採相同 60% / 38% 左右欄：完整 Figure 10（含原 caption）尺寸與位置相同，右側分別介紹 monitoring / prediction 與 optimization / execution。兩頁底部均標示 hourly resizing、1 TB granularity，以及最佳化期間持續 serving。Slide 7、8 使用同一條概念式摘要 \(S^*=\arg\min_{S\in\mathcal S}\widehat C_{\mathrm{total}}(S)\)，並標明它不是 Equation (6)。變數與輸入連到 B10、B07、B12、B24；SLO 連到 B11；容量域與 §5.4.2 假設連到 B24 與 B09。PuLP/CBC 與完整 Equation (6) 在 B10；TTFT/TPOT 的 binary indicators 與門檻在 B11；1 TB 粒度、70B 16 TB、8B 8 TB、每小時決策與 profiling 假設在 B24。
 
@@ -194,17 +194,19 @@ python3 -m venv /tmp/greencache-qa
 5. 流程是 profile、forecast、ILP、resize + LCS。服務路徑仍是 LMCache / vLLM。
 6. TTFT 與 TPOT 是兩條各自 90% 的 attainment，不是一個聯合機率。
 7. 沒有獨立 GPU simulator。硬體是真的，到達與 CI 是 trace，碳排是會計模型。
-8. 70B 相對 Full Cache 的三個 workload 平均是 12.6%、9.4%、5.6%。15.1% / 25.3% 只屬於 FR、multi-turn。
-9. 碳排下降時 P90 仍在作者的門檻下。No Cache 常常過不了 SLO。
-10. 容量會隨負載與 CI 變。LCS 的 hit rate 是 token 比例。4 TB、TriviaQA α=0.7：FIFO 23%、LRU 26%、LCS 35%，比 LRU 高 9 個百分點。完整 Table 3 在 B26，不直接等於減碳。
-11. 限制是 trace 長度、攤提假設、工作負載與 SLO。HBF 是我們的延伸問題，不是這篇的實驗結果。
+8. M15 以定性解讀取代文字中的實驗百分比：自適應容量比 Full Cache 省碳；prefix 重用有助抵銷快取成本，但不保證更大的減碳幅度。α=0.4 的 No Cache 較低，仍需由下一頁確認延遲 SLO。
+9. M16：No Cache 常超過延遲 SLO；GreenCache 利用 Full Cache 的延遲餘裕，以略高但仍達標的延遲，換取較小容量與較低總碳排。此結論限於圖中實驗，不限縮為高 CI 地區的效果。
+10. M15 是動態 CI 與 Azure request-rate trace 下的平均碳排；M17 展開 multi-turn 的日內時間序列。容量共同受負載、CI 與 SLO 約束影響，較高 CI 或負載不保證更大減碳幅度。LCS 的 hit rate 是 token 比例。4 TB、TriviaQA α=0.7：FIFO 23%、LRU 26%、LCS 35%，比 LRU 高 9 個百分點。完整 Table 3 在 B26，不直接等於減碳。
+11. M19 由上到下是 Problem、Contribution、Evidence、Future work。Future work 是我們的計畫：跨地區資料中心，以及把 HBM–HBF 當成 cache 層。論文沒有評估這兩項。Trace、攤提與 dense Llama-3 的限制留在 B23。
 
 ## Unresolved
 
 - Section 6.1 寫 Llama-3 8B document TTFT SLO 為 2.5 s。Fig. 13 該面板的虛線畫在 4.0 s。PDF 30 與 35 同時保留兩種說法，沒有代作者選一個。
-- Section 6.2 先給出 70B 的 12.6% / 9.4% / 5.6%，後面又說高 skewness 的節省更高。數字句與這句方向不一致。簡報採用帶 respectively 的三個百分比，不用後面那句。
+- Section 6.2 先給出 70B 的 12.6% / 9.4% / 5.6%，後面又說高 skewness 的節省更高。數字句與這句方向不一致。README 的來源對照保留帶 respectively 的三個百分比；M15 不再列出這些百分比，也不宣稱較高 skewness 必然減碳更多。
 - Fig. 2 的 PNG 頂端有幾個被切掉的標題像素。PDF 20 去掉上方約 16 px。座標軸、CI 數字與 legend 仍在。
 
 Slide 9–11 已還原為先前確認的色塊排版：M09 四個變數色塊；M10／M11 各有兩個上下變數色塊與底部結論色塊。Size／Age 重複說明與 proxy／ablation 句維持刪除；TriviaQA 分布解說集中在新增 B27。
 
 Slide 9–11 的公式字體各縮小一級，保留已確認的變數色塊與結論。Slide 12 和 B26 維持策略比較與完整 Table 3 的分工。
+
+M18 的結論：即使不使用 LCS，GreenCache 的自適應容量決策仍能相對 Full Cache 降低碳排；在本實驗中，低負載時效果較明顯，因為滿足 SLO 所需的 cache 較小。這說明容量調整本身有貢獻，但不代表 LCS 沒有額外價值。原圖、設定與來源保留，百分比仍在來源對照表。

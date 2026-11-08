@@ -409,32 +409,32 @@
     {
       "page": 14,
       "label": "M14",
-      "lower_empty_ratio": 0.508
+      "lower_empty_ratio": 0.514
     },
     {
       "page": 15,
       "label": "M15",
-      "lower_empty_ratio": 0.877
+      "lower_empty_ratio": 0.881
     },
     {
       "page": 16,
       "label": "M16",
-      "lower_empty_ratio": 0.53
+      "lower_empty_ratio": 0.42
     },
     {
       "page": 17,
       "label": "M17",
-      "lower_empty_ratio": 0.889
+      "lower_empty_ratio": 0.872
     },
     {
       "page": 18,
       "label": "M18",
-      "lower_empty_ratio": 0.883
+      "lower_empty_ratio": 0.878
     },
     {
       "page": 19,
       "label": "M19",
-      "lower_empty_ratio": 0.653
+      "lower_empty_ratio": 0.41
     },
     {
       "page": 20,
@@ -559,7 +559,7 @@
     {
       "page": 44,
       "label": "B23",
-      "lower_empty_ratio": 0.909
+      "lower_empty_ratio": 0.906
     },
     {
       "page": 45,
@@ -676,7 +676,7 @@
     {
       "page": 19,
       "label": "M19",
-      "title": "Conclusion and Limitations"
+      "title": "Conclusion"
     },
     {
       "page": 20,
@@ -870,9 +870,9 @@
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
       "bbox": [
         62.8,
-        57.2,
+        59.4,
         390.8,
-        274.4
+        276.6
       ]
     },
     {
@@ -880,9 +880,9 @@
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig12.png",
       "bbox": [
         106.9,
-        15.8,
+        18.0,
         346.6,
-        174.6
+        176.8
       ]
     },
     {
@@ -890,9 +890,9 @@
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
       "bbox": [
         115.1,
-        57.7,
+        57.2,
         338.5,
-        203.4
+        202.9
       ]
     },
     {
@@ -900,9 +900,9 @@
       "file": "GreenCache-Research-Meeting-2026-11-11/With-Caption/CacheYourPromptWhenItsGreen_Fig13.png",
       "bbox": [
         97.4,
-        -24.9,
+        -25.4,
         356.2,
-        143.9
+        143.4
       ]
     },
     {

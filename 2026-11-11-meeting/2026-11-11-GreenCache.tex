@@ -433,8 +433,8 @@ Built on \textbf{LMCache + vLLM} with continuous batching, using NVIDIA L40 GPUs
 \end{frame}
 
 \begin{frame}[t,label=M14]{How Is GreenCache Evaluated?}
-\vspace{0.06cm}
-\card{bluebox}{A. Models \& Workloads}{Llama-3 8B / 70B with ShareGPT and \hyperlink{B27}{\textcolor{Accent}{\underline{TriviaQA}}} workloads.}
+\vspace{0.02cm}
+\card{bluebox}{\small A. Models \& Workloads}{Llama-3 8B / 70B with ShareGPT and \hyperlink{B27}{\textcolor{Accent}{\underline{TriviaQA}}} workloads.}
 \vspace{0.08cm}
 {\small\bfseries\color{Accent}B. Three Strategies Compared}\par
 \vspace{0.04cm}
@@ -467,35 +467,35 @@ Built on \textbf{LMCache + vLLM} with continuous batching, using NVIDIA L40 GPUs
 
 \begin{frame}[t,label=M15]{Q1: Does GreenCache Reduce Carbon?}
 \vspace{0.02cm}
-{\small Question: can adaptive capacity beat a fixed full cache on total carbon? Bars: No Cache, GreenCache, Full Cache. Blue labels are the GreenCache size in TB. Llama-3 70B.\par}
+{\small Llama-3 70B across four grids. Lower bars mean lower total carbon per prompt; blue labels show cache size (TB).\par}
 \vspace{0.02cm}
 {\centering\gcpart{12}{3.70cm}{0 462.78bp 0 0}\par\vspace{0.02cm}\gcpart{12}{0.32cm}{0 0 0 843.64bp}\par}
 \vspace{0.04cm}
-{\small Versus \textbf{Full Cache}, averaged over FR, FI, ES, and CISO: multi-turn \textbf{12.6\%}, document $\alpha=0.4$ \textbf{9.4\%}, document $\alpha=0.7$ \textbf{5.6\%}. These are not the FR-only 15.1\%.\par}
-\vspace{0.02cm}
-{\small\textbf{GreenCache lowers carbon by provisioning less cache when full capacity is unnecessary.} No Cache is sometimes lower still, and the next slide shows why that is not an acceptable point.\par}
+{\small\textbf{Adaptive sizing saves carbon versus Full Cache} by avoiding unnecessary cache capacity.\par}
+\vspace{0.05cm}
+{\small\textbf{Prefix reuse helps offset cache costs}, but more reuse does not guarantee larger carbon savings.\par}
+\vspace{0.05cm}
+{\small\textbf{No Cache is lower for $\alpha=0.4$}, but it must also meet latency SLOs. The next slide checks this tradeoff.\par}
 \slidenote{Sec.~6.2, Fig.~12a}{\nav{B15}{Llama-3 8B}}
 \end{frame}
 
 \begin{frame}[t,label=M16]{Q2: Does GreenCache Still Meet SLOs?}
 \vspace{0.02cm}
-{\small Question: is the carbon saving bought with unacceptable latency? P90 below the dashed threshold means at least 90\% attainment. Llama-3 70B.\par}
+{\small Llama-3 70B. P90 below the dashed threshold means at least 90\% attainment, checked separately for TTFT and TPOT.\par}
 \vspace{0.02cm}
 {\centering\gcpart{13}{2.60cm}{0 435.69bp 0 0}\par\vspace{0.02cm}\gcpart{13}{0.32cm}{0 0 0 833.90bp}\par}
 \vspace{0.04cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.33\textwidth}
-\card{bluebox}{Thresholds}{Multi-turn TTFT 2.5\,s, TPOT 0.2\,s. Document TTFT is 15\,s. Fig.~13 keeps the 0.2\,s TPOT line.}
+\begin{column}{0.49\textwidth}
+\card{lilacbox}{No Cache}{Often exceeds latency SLOs. Lower carbon alone does not make it a feasible alternative.}
 \end{column}
-\begin{column}{0.33\textwidth}
-\card{mintbox}{GreenCache}{P90 sits slightly above Full Cache and stays under both lines in these plots.}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{lilacbox}{No Cache}{P90 crosses the lines often, so the lower-carbon point is not viable.}
+\begin{column}{0.49\textwidth}
+\card{mintbox}{GreenCache}{Slightly higher latency than Full Cache, but still meets the SLOs in these experiments.}
 \end{column}
 \end{columns}
-\vspace{0.06cm}
-{\small\textbf{Lower carbon counts only when the serving constraints hold.}\par}
+\vspace{0.10cm}
+{\small\textbf{GreenCache uses Full Cache's latency headroom} to reduce cache capacity and total carbon while keeping SLOs satisfied.\par}
+\vspace{0.08cm}
 \slidenote{Secs.~6.1--6.2, Fig.~13a}{\nav{B16}{8B Timelines}}
 \end{frame}
 
@@ -505,7 +505,11 @@ Built on \textbf{LMCache + vLLM} with continuous batching, using NVIDIA L40 GPUs
 \vspace{0.02cm}
 {\centering\gcpart{14}{4.30cm}{0 605.06bp 0 0}\par\vspace{0.02cm}\gcpart{14}{0.32cm}{0 0 0 1151.11bp}\par}
 \vspace{0.04cm}
-{\small On \textbf{FR, multi-turn, versus Full Cache}: average reduction \textbf{15.1\%}, maximum \textbf{25.3\%}. At 12\,AM the paper reports 15\,TB less SSD than Full Cache. High load still pushes capacity up. CISO, the higher-CI grid, keeps more cache.\par}
+{\small\textbf{Adaptive capacity generally lowers carbon per prompt versus Full Cache} in these timelines.\par}
+\vspace{0.03cm}
+{\small Higher load can require more cache to meet SLOs; higher CI makes avoided computation more valuable.\par}
+\vspace{0.03cm}
+{\small\textbf{Savings depend on the joint tradeoff}, not simply on higher CI or a higher request rate.\par}
 \slidenote{Sec.~6.2, Fig.~14a}{\nav{B17}{Document Timeline}}
 \end{frame}
 
@@ -514,35 +518,25 @@ Built on \textbf{LMCache + vLLM} with continuous batching, using NVIDIA L40 GPUs
 {\small Ablation: LMCache's LRU plus GreenCache's adaptive capacity (``LRU + Optimal''), versus Full Cache. ES grid average CI, 124\,gCO$_2$e/kWh. Llama-3 70B.\par}
 \vspace{0.04cm}
 {\centering\gcimg{15}{3.45cm}\par}
-\vspace{0.04cm}
-\point{Capacity alone}{Without LCS, resizing still beats Full Cache: up to 10.3\% on multi-turn, and 6.6--9.9\% on document QA.}
-\point{Load eats the margin}{The solver grows the cache to hold the SLO. ``Optimal'' means the profiled adaptive size, not a global-optimum proof.}
-\point{Next}{Whether LCS improves token reuse is a separate measurement.\par}
+\vspace{0.10cm}
+{\small\textbf{Even without LCS, GreenCache's adaptive capacity decision still reduces carbon versus Full Cache.} In this experiment, the effect is clearer at low load, because the cache needed to meet the SLO is smaller.\par}
+\vspace{0.08cm}
+{\small\textbf{Capacity adjustment itself contributes.} This does not mean LCS has no additional value.\par}
 \slidenote{Sec.~6.3.1, Fig.~15}{\nav{B09}{Profiling Heatmaps}}
 \end{frame}
 
 
 
-\begin{frame}[t,label=M19]{Conclusion and Limitations}
-\vspace{0.06cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
+\begin{frame}[t,label=M19]{Conclusion}
+\vspace{0.04cm}
 \card{bluebox}{1. Problem}{Context caching trades avoided prefill for provisioned SSD. Total carbon includes both terms.}
-\vspace{0.06cm}
+\vspace{0.14cm}
 \card{mintbox}{2. Contribution}{Profiling, load and CI forecasts, an ILP capacity choice, and LCS, under separate TTFT and TPOT attainments.}
-\vspace{0.06cm}
+\vspace{0.14cm}
 \card{bluebox}{3. Evidence}{Versus Full Cache, studied settings cut carbon while P90 stays inside the authors' thresholds. 15.1\% / 25.3\% is FR, Llama-3 70B, multi-turn.}
-\end{column}
-\begin{column}{0.49\textwidth}
-\card{lilacbox}{4. Limitations}{The public Azure trace covers about one week. Embodied carbon is amortized cloud allocation, not a factory measurement at each resize. Results move with reuse, CI, SSD assumptions, and SLOs. Experiments use dense Llama-3.}
-\vspace{0.06cm}
-\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.13cm]{mintbox}
-{\scriptsize\bfseries\color{Accent}POSSIBLE EXTENSION / OUR INTERPRETATION}\par\vspace{0.7mm}
-{\small The same capacity question --- how much fast storage is worth its embodied carbon under an SLO --- can motivate later HBM/HBF hierarchy studies. GreenCache does not evaluate HBF hardware.\par}
-\end{beamercolorbox}
-\end{column}
-\end{columns}
-\slidenote{Secs.~6--7, 9. Extension is ours, not an author result.}{\nav{B23}{Limits and HBF}}
+\vspace{0.14cm}
+\card{mintbox}{4. Future work}{Consider data centers in different regions, and HBM--HBF as cache tiers under the same SLO and embodied-carbon tradeoff. Our plan; GreenCache does not evaluate either.}
+\slidenote{Secs.~6--7. Future work is ours, not an author result.}{\nav{B23}{Limits and HBF}}
 \end{frame}
 
 \section{Index}
@@ -984,7 +978,7 @@ C & 4 & 600 & 2 & 2 & $4\times600/(2\times2)=600$\\
 \point{Trace}{Section~7: the public Azure LLM trace covers about one week. A stronger load model would need a longer trace. The authors treat the predictor as replaceable.}
 \point{Embodied carbon}{SSD is charged by allocated capacity and time under amortized accounting. Releasing capacity does not erase manufacturing emissions; the paper assumes others can use that capacity.}
 \point{MoE, from the authors' discussion}{Mixture-of-experts models can cut activated compute while leaving KV storage in place, which would make the SSD term relatively larger. The experiments themselves are dense Llama-3, not MoE runs.}
-\point{Possible extension / our interpretation}{A carbon-aware decision about how much fast memory to provision could inform HBM or HBF hierarchy design. Nothing in this paper measures HBM or HBF, and the 15.1\% result does not transfer to that hardware.\par}
+\point{Future work, ours}{The same capacity question could be asked across data centers in different regions, and HBM--HBF could be treated as cache tiers. Nothing in this paper measures multi-region placement, HBM, or HBF, and the 15.1\% result does not transfer to that hardware.\par}
 \point{Eviction boundary}{Discarding SSD KV entries does not move all KV back into GPU HBM. Solver sets capacity; LCS selects replacements.}
 \slidenote{Secs.~5.5, 7. The HBF sentence is our research note.}{}
 \back{M19}
