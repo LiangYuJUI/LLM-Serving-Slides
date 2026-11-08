@@ -26,7 +26,7 @@
 | M09 / 9 | How Does LCS Rank KV Cache Entries? | Eq. (7) | 1, 20 |
 | M10 / 10 | How Does LCS Work for Multi-Turn Conversations? | Eq. (8) + KV reuse diagram | 1, 20 |
 | M11 / 11 | How Does LCS Work for Document QA? | Eq. (9) + KV reuse diagram | 1, 20 |
-| M12 / 12 | Why Use LCS Instead of FIFO or LRU? | FIFO / LRU / LCS comparison; 4 TB example | 1, 9, 10, 11, 20, 47 |
+| M12 / 12 | Why Use LCS Instead of FIFO or LRU? | FIFO / LRU / LCS comparison; 4 TB example | 1, 20, 47 |
 | M13 / 13 | Real Prototype, Traces, or a Simulator? | — | 1, 20, 35 |
 | M14 / 14 | What Are the Evaluation Settings? | — | 1, 20, 32 |
 | M15 / 15 | Q1: Does GreenCache Reduce Carbon? | Fig. 12 | 1, 20, 36 |
@@ -113,7 +113,7 @@ Fig. 7 保留完整原圖與 caption：第 2 頁聚焦 (a) 的負載比較。第
 | Detailed document scoring example | B25 / 46 | Three hypothetical documents; hit count vs. reused tokens vs. size |
 | Full Table 3 | B26 / 47 | §6.3.2; Llama-3 70B; all 45 token-level hit rates. Not a direct CO₂ measurement |
 
-M09–M11 omit their redundant link rows. M12 links to M09–M11 and B26. B13 and B25 link back to M09–M12. B26 links back to M09–M12. The index is PDF 20 and also opens B26. [Main 9–12 screenshot](output/qa/lcs-main-09-12.png).
+M09–M11 omit their redundant link rows. M12 uses a single lower-right Full Table 3 tag linking to B26. B13 and B25 link back to M09–M12. B26 links back to M09–M12. The index is PDF 20 and also opens B26. [Main 9–12 screenshot](output/qa/lcs-main-09-12.png).
 
 M10 and M11 share formula position, font size, and column layout. Their diagrams illustrate matching retained KV reuse, not unconditional hits. Age means time in storage. Scores are heuristics, not measured gCO₂e, and do not multiply by current CI. The paper reports no independent Eq. (7)/(8)/(9) ablation. Grow/shrink changes allocation under amortized carbon accounting; eviction does not transfer all SSD KV back to GPU HBM.
 
@@ -164,7 +164,7 @@ python3 -m venv /tmp/greencache-qa
 ## QA
 
 - 本地兩次與 ZIP 獨立兩次編譯通過，最終 log 沒有 Overfull、undefined reference 或 Warning。
-- 47 頁、261 個內部連結、20 張來源圖的像素雜湊都通過。Main 19 頁，Discussion / Backup 28 頁。Main 可以點到全部 Backup，Backup 能回到對應 Main。M12 的 Full Table 3 連到 B26；B26 回到 M09–M12。
+- 47 頁、258 個內部連結、20 張來源圖的像素雜湊都通過。Main 19 頁，Discussion / Backup 28 頁。Main 可以點到全部 Backup，Backup 能回到對應 Main。M12 的 Full Table 3 連到 B26；B26 回到 M09–M12。
 - [Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)、[逐頁 PNG](output/qa/pages/)、[機器紀錄](output/qa/validation.json)、[視覺紀錄](output/qa/REVIEW.md)。
 
 ## Main speaking points

@@ -2,8 +2,8 @@
   "pdf_pages": 47,
   "main_pages": 19,
   "backup_pages_including_index": 28,
-  "internal_links_checked": 261,
-  "lcs_cross_links_checked": 3,
+  "internal_links_checked": 258,
+  "lcs_cross_links_checked": 0,
   "table3_values_checked": 45,
   "figures_matched_by_pixel_hash": 20,
   "whitespace": [
@@ -65,7 +65,7 @@
     {
       "page": 12,
       "label": "M12",
-      "lower_empty_ratio": 0.897
+      "lower_empty_ratio": 0.91
     },
     {
       "page": 13,
@@ -1112,24 +1112,6 @@
       "from_label": "M11",
       "destination": "INDEX",
       "to_page": 20
-    },
-    {
-      "from_page": 12,
-      "from_label": "M12",
-      "destination": "M09",
-      "to_page": 9
-    },
-    {
-      "from_page": 12,
-      "from_label": "M12",
-      "destination": "M10",
-      "to_page": 10
-    },
-    {
-      "from_page": 12,
-      "from_label": "M12",
-      "destination": "M11",
-      "to_page": 11
     },
     {
       "from_page": 12,

@@ -391,21 +391,17 @@ TTFT and TPOT are evaluated separately.\par}
 \end{tabularx}\par}
 \vspace{0.34cm}
 {\scriptsize\color{Muted}Inferred from each mechanism; not a separately measured failure case.\par}
-\vspace{0.10cm}
+\vspace{0.23cm}
 {\footnotesize\textbf{Representative result.}\enspace Llama-3 70B;\ TriviaQA, $\alpha=0.7$;\ cache size 4\,TB;\ metric: token-level cache hit rate.\par}
-\vspace{0.05cm}
+\vspace{0.20cm}
 {\centering\large\textbf{FIFO: 23\%}\hspace{0.85cm}\textbf{LRU: 26\%}\hspace{0.85cm}\textbf{\textcolor{Accent}{LCS: 35\%}}\par}
-\vspace{0.03cm}
+\vspace{0.20cm}
 {\centering\small\bfseries\textcolor{Accent}{LCS improves token-level cache hit rate by 9 percentage points over LRU.}\par}
-\vspace{0.02cm}
-{\footnotesize LCS is especially useful when cache capacity is limited.\\
+\vspace{0.20cm}
+{\footnotesize LCS is especially useful when cache capacity is limited.\\[0.12cm]
 Token-level hit rate = reused input tokens / total input tokens.\par}
-\vspace{0.05cm}
-{\footnotesize\hyperlink{M09}{\textbf{General LCS Score}}\quad
-\hyperlink{M10}{\textbf{Multi-turn Score}}\quad
-\hyperlink{M11}{\textbf{Document QA Score}}\quad
-\hyperlink{B26}{\textbf{\textcolor{Accent}{\underline{Full Table 3}}}}\par}
-\slidenote{Section 6.3.2, Table 3.}{}
+\vspace{0.20cm}
+\slidenote{Section 6.3.2, Table 3.}{\nav{B26}{Full Table 3}}
 \end{frame}
 
 \begin{frame}[t,label=M13]{Real Prototype, Traces, or a Simulator?}

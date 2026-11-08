@@ -123,11 +123,8 @@ def validate(render_dir):
         content = ' '.join(doc[expected[label]].get_text().split())
         for needle in needles:
             assert needle in content, (label, needle)
-    # M09–M11 omit their link rows; M12 retains links to all three.
+    # Main LCS pages omit cross-link rows; M12 uses one B26 source-line tag.
     lcs_labels = ['M09', 'M10', 'M11', 'M12']
-    for origin in lcs_labels[3:]:
-        for target in set(lcs_labels) - {origin}:
-            assert expected[target] in graph[expected[origin]], (origin, target)
     assert [expected[k] for k in lcs_labels] == [8, 9, 10, 11]
     assert expected['INDEX'] == 19 and expected['B13'] == 33
     assert text.count(r'\begin{tabular}{@{}lccccccccc@{}}') == 1
@@ -213,7 +210,7 @@ def validate(render_dir):
         'main_pages': main_count,
         'backup_pages_including_index': len(doc) - main_count,
         'internal_links_checked': len(links),
-        'lcs_cross_links_checked': 3,
+        'lcs_cross_links_checked': 0,
         'table3_values_checked': 45,
         'figures_matched_by_pixel_hash': len(used),
         'whitespace': whitespace,

@@ -18,8 +18,8 @@
 
 - Local PDF: two clean pdfLaTeX passes; no Overfull, undefined-reference, or LaTeX warnings.
 - Extracted Overleaf ZIP: two passes; all 47 rendered pages, text, and link targets match the local PDF.
-- 261 internal links resolve to real destinations; every backup remains reachable and main-to-backup return links pass.
-- M12 retains 3 directed links to M09–M11; their removed link rows remain absent. B13 and B25 return to all four Main pages. M12 links to B26, and B26 returns to M09–M12. The index also opens B26.
+- 258 internal links resolve to real destinations; every backup remains reachable and main-to-backup return links pass.
+- Main LCS pages omit cross-link rows; M12 retains one lower-right Full Table 3 tag linking to B26. B13 and B25 return to all four Main pages. M12 links to B26, and B26 returns to M09–M12. The index also opens B26.
 - Validator checks actual PDF destinations for pages 9–12, 20, 34, 46, and 47. Main labels match page numbers. All 45 Table 3 values are checked on B26. M12 is checked for the 4 TB TriviaQA α=0.7 result only: 23%, 26%, 35%.
 - All 20 embedded paper figures retain their source pixel hashes.
 
@@ -32,6 +32,8 @@
 - TTFT/TPOT attainment sums remain separate. The unresolved 8B document TTFT threshold and HBF interpretation remain identified in their original content.
 
 
-- Restored M09–M11 exactly from the saved styling: four variable panels on M09; two stacked variable panels and bottom conclusion panels on M10/M11. Removed link rows and requested redundant notes remain absent. All other 43 PDF pages are pixel-identical to the pre-restoration PDF. The remaining 261 links, Table 3 values, and standalone ZIP build pass validation.
+- Restored M09–M11 exactly from the saved styling: four variable panels on M09; two stacked variable panels and bottom conclusion panels on M10/M11. Removed link rows and requested redundant notes remain absent. All other 43 PDF pages are pixel-identical to the pre-restoration PDF. The remaining 258 links, Table 3 values, and standalone ZIP build pass validation.
 
-- Formula-size refinement: only M09 changes from LARGE to Large, and M10/M11 from Large to large. Their text and panels remain intact. All other 44 pages, including M12 and B26, are pixel-identical to the preceding PDF. Revalidated 47 pages, 261 links, all 45 Table 3 values, and independent ZIP compilation.
+- Formula-size refinement: only M09 changes from LARGE to Large, and M10/M11 from Large to large. Their text and panels remain intact. All other 44 pages, including M12 and B26, are pixel-identical to the preceding PDF. Revalidated 47 pages, 258 links, all 45 Table 3 values, and independent ZIP compilation.
+
+- M12 spacing refinement: increased gaps between the mechanism note, setup, representative values, conclusion, and metric definition; source and Full Table 3 tag remain clear of the footer.
