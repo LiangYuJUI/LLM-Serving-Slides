@@ -61,7 +61,7 @@
 \newcommand{\hint}[1]{{\scriptsize\color{Muted}#1}}
 % Source line sits under the content. No \vfill: empty lower halves are a layout bug.
 \newcommand{\slidenote}[2]{\par\vspace{0.04cm}{\scriptsize\color{Muted}Source: GreenCache, #1}\hfill #2\par}
-\newcommand{\back}[2][]{\par\vspace{0.02cm}\nav{#2}{Main \ref*{#2}}\ #1\hfill\nav{INDEX}{Discussion Index}}
+\newcommand{\back}[2][]{\par\vspace{0.02cm}\nav{#2}{Back to Main \ref*{#2}}\ #1\hfill\nav{INDEX}{Discussion Index}}
 \newcommand{\point}[2]{\par\vspace{0.02cm}\textbf{\color{Accent}#1}\quad{\small #2}\par}
 % Shared by the two solver slides so the summary formula has one position and size.
 \newcommand{\solverhead}{%
@@ -374,7 +374,7 @@ TTFT and TPOT are evaluated separately.\par}
 {\centering\small\bfseries Document-specific LCS prioritizes frequently reused documents and accumulated reused content.\par}
 \end{beamercolorbox}
 \vspace{0.12cm}
-\slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{INDEX}{Discussion Index}}
+\slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{B27}{TriviaQA Workload / Zipf $\alpha$}}
 \end{frame}
 
 \begin{frame}[t,label=M12]{Why Use LCS Instead of FIFO or LRU?}
@@ -392,7 +392,7 @@ TTFT and TPOT are evaluated separately.\par}
 \vspace{0.34cm}
 {\scriptsize\color{Muted}Inferred from each mechanism; not a separately measured failure case.\par}
 \vspace{0.23cm}
-{\footnotesize\textbf{Representative result.}\enspace Llama-3 70B;\ TriviaQA, $\alpha=0.7$;\ cache size 4\,TB;\ metric: token-level cache hit rate.\par}
+{\footnotesize\textbf{Representative result.}\enspace Llama-3 70B;\ \hyperlink{B27}{\textcolor{Accent}{\underline{TriviaQA, $\alpha=0.7$}}};\ cache size 4\,TB;\ metric: token-level cache hit rate.\par}
 \vspace{0.20cm}
 {\centering\large\textbf{FIFO: 23\%}\hspace{0.85cm}\textbf{LRU: 26\%}\hspace{0.85cm}\textbf{\textcolor{Accent}{LCS: 35\%}}\par}
 \vspace{0.20cm}
@@ -432,7 +432,7 @@ Token-level hit rate = reused input tokens / total input tokens.\par}
 \begin{column}{0.49\textwidth}
 \card{bluebox}{Models}{Llama-3 70B (INT8, 4$\times$ L40) and Llama-3 8B (BF16, 2$\times$ L40). Different GPU counts and precisions, so the two models are not an apples-to-apples pair. Context window 8k tokens; longer context is truncated.}
 \vspace{0.10cm}
-\card{lilacbox}{Workloads}{ShareGPT multi-turn conversation. TriviaQA document comprehension at Zipf skewness $\alpha=0.4$ and $\alpha=0.7$. Hourly CI and hourly cache decisions.}
+\card{lilacbox}{Workloads}{ShareGPT multi-turn conversation. \hyperlink{B27}{\textcolor{Accent}{\underline{TriviaQA}}} document comprehension at Zipf skewness $\alpha=0.4$ and $\alpha=0.7$. Hourly CI and hourly cache decisions.}
 \end{column}
 \begin{column}{0.49\textwidth}
 \card{mintbox}{Baselines}{\textbf{No Cache:} vLLM, no context cache. \textbf{Full Cache:} the maximum configured capacity. \textbf{GreenCache:} adaptive capacity plus LCS. Full Cache and GreenCache share the same maximum.}
@@ -558,6 +558,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \vspace{0.08cm}
 \textbf{LCS:} \nav{M09}{General} \nav{M10}{Chat} \nav{M11}{Doc QA} \nav{M12}{Policies} \nav{B26}{Table 3}\par
 \vspace{0.06cm}\textbf{LCS examples:} \nav{B13}{Multi-turn} \nav{B25}{Document QA}\par
+\vspace{0.06cm}\nav{B27}{TriviaQA / Zipf Workload}\par
 \vspace{0.08cm}
 \textbf{What we would not claim} \nav{B23}{Limits}\par}
 \end{column}
@@ -605,7 +606,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \point{Why decode moves at all}{Fig.~3b: caching does not remove decode computation. It shortens the wait in continuous batching.}
 \point{Setup for this section}{Llama-3 70B, ShareGPT, the Table~1 server, LMCache on 16\,TB, cache warmed with 200k prompts, 500 prompts recorded.\par}
 \slidenote{Sec.~3.1.1, Fig.~3}{}
-\par\nav{B00}{KV Reuse}\hfill\nav{B03}{Next}\ \nav{INDEX}{Discussion Index}
+\back[\nav{B00}{KV Reuse}\ \nav{B03}{Next}]{M02}
 \end{frame}
 
 \begin{frame}[t,label=B03]{How Long Is the Repeated Context?}
@@ -616,7 +617,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \point{TriviaQA}{The reused context is the document. Average document length in the paper's discussion is 5880 tokens.}
 \point{Design consequence}{Takeaway~1: longer contexts should be preferred when the cache cannot hold everything. LCS later puts token volume in the score.\par}
 \slidenote{Sec.~3.1.1, Fig.~4}{}
-\par\nav{B00}{KV Reuse}\hfill\nav{B04}{Next}\ \nav{INDEX}{Discussion Index}
+\back[\nav{B00}{KV Reuse}\ \nav{B04}{Next}]{M02}
 \end{frame}
 
 \begin{frame}[t,label=B04]{What Does Request Rate Change?}
@@ -847,8 +848,8 @@ C & 4 & 600 & 2 & 2 & $4\times600/(2\times2)=600$\\
 \vspace{0.04cm}
 {\footnotesize This is a heuristic, not measured CO$_2$. Use consistent units; the example does not predict a real workload's hit rate.\par}
 \vspace{0.04cm}
-{\footnotesize\hyperlink{M10}{\textbf{Back to M10}}\quad\hyperlink{M09}{\textbf{General LCS M09}}\quad\hyperlink{M11}{\textbf{Document QA M11}}\quad\hyperlink{M12}{\textbf{Policies M12}}\par}
-\slidenote{Sec.~5.5, Eq.~(8). Numerical example is illustrative.}{\nav{INDEX}{Discussion Index}}
+\slidenote{Sec.~5.5, Eq.~(8). Numerical example is illustrative.}{}
+\back[\nav{M09}{General LCS}\ \nav{M11}{Document QA}\ \nav{M12}{Policies}]{M10}
 \end{frame}
 
 \section{Evaluation}
@@ -1008,8 +1009,69 @@ C & 4 & 3000 & 2 & 2 & $4\times3000/(2\times2)=3000$\\
 \vspace{0.04cm}
 {\footnotesize The score is a heuristic, not measured CO$_2$ or a token-level hit-rate percentage.\par}
 \vspace{0.04cm}
-{\footnotesize\hyperlink{M11}{\textbf{Back to M11}}\quad\hyperlink{M09}{\textbf{General LCS M09}}\quad\hyperlink{M10}{\textbf{Multi-turn M10}}\quad\hyperlink{M12}{\textbf{Policies M12}}\par}
-\slidenote{Sec.~5.5, Eq.~(9); Sec.~6.1. Numerical example is illustrative.}{\nav{INDEX}{Discussion Index}}
+\slidenote{Sec.~5.5, Eq.~(9); Sec.~6.1. Numerical example is illustrative.}{}
+\back[\nav{M09}{General LCS}\ \nav{M10}{Multi-turn}\ \nav{M12}{Policies}\ \nav{B27}{Access Skew Details}]{M11}
+\end{frame}
+
+\begin{frame}[t,label=B27]{How Is the TriviaQA Workload Generated?}
+\vspace{0.03cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+{\small\bfseries\color{Accent}TriviaQA: document question answering}\par
+{\footnotesize A QA dataset used to model document comprehension. Multiple requests can ask about the same document.\par}
+\vspace{0.02cm}
+{\centering\footnotesize
+\begin{tikzpicture}[x=1cm,y=1cm, every node/.style={font=\footnotesize}]
+\node[fill=SoftMint,rounded corners,align=center,inner sep=5pt] (d) at (0,0) {Shared document\\Cached document KV};
+\node (q1) at (3,0.42) {Question 1};
+\node (q2) at (3,0) {Question 2};
+\node (q3) at (3,-0.42) {Question 3};
+\draw[->,Accent] (d.east) -- (q1.west);
+\draw[->,Accent] (d.east) -- (q2.west);
+\draw[->,Accent] (d.east) -- (q3.west);
+\end{tikzpicture}\par}
+{\footnotesize Reuse requires a matching, retained document prefix. New question tokens still need prefill.\par
+\textbf{A cache hit is not guaranteed.}\par}
+\end{column}
+\begin{column}{0.49\textwidth}
+{\small\bfseries\color{Accent}Zipf: unequal document popularity}\par
+{\footnotesize Original document visits are nearly uniform. The authors add Zipf skew to concentrate requests on popular documents.\par}
+\vspace{0cm}
+{\footnotesize\textbf{Top 10\% of documents: share of prompts}\par}
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[anchor=west,font=\footnotesize] at (0,0.35) {$\alpha=0.4$: lower skewness};
+\fill[Divider] (0,0) rectangle (5,0.18);
+\fill[AccentBlue] (0,0) rectangle (1.25,0.18);
+\node[anchor=west,font=\footnotesize] at (5.05,0.09) {$\sim$25\%};
+\node[anchor=west,font=\footnotesize] at (0,-0.32) {$\alpha=0.7$: higher skewness};
+\fill[Divider] (0,-0.67) rectangle (5,-0.49);
+\fill[Accent] (0,-0.67) rectangle (2.5,-0.49);
+\node[anchor=west,font=\footnotesize] at (5.05,-0.58) {$\sim$50\%};
+\end{tikzpicture}\par
+{\scriptsize Paper's approximate access shares (Sec.~6.1).\par}
+\end{column}
+\end{columns}
+\vspace{0.02cm}
+{\centering\small\bfseries\color{Accent}Higher $\alpha$ $\rightarrow$ more concentrated accesses $\rightarrow$ greater KV reuse opportunities.\par}
+\vspace{0.02cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+{\small\bfseries\color{Accent}Request generation and warm-up}\par
+{\footnotesize Poisson prompt arrivals; time-varying rates follow a scaled Azure LLM trace. Initialize the document cache with \textbf{50k prompts}. Profiling and evaluation use \textbf{distinct prompt sets}.\par}
+\vspace{0.02cm}
+{\scriptsize Here $\alpha$ controls document-access skew, not arrival rate, cache size, or carbon intensity.\par}
+\end{column}
+\begin{column}{0.49\textwidth}
+{\small\bfseries\color{Accent}Same LCS, different access distribution}\par
+{\footnotesize Both settings use task-specific \textbf{Equation (9)}. Only document access distribution differs. Concentrated reuse can raise token-level hit rates.\par}
+\vspace{0.02cm}
+{\footnotesize\textbf{Table 3: Llama-3 70B, fixed 4 TB, LCS}\\
+$\alpha=0.4$: \textbf{14\%}\quad $\alpha=0.7$: \textbf{35\%}\par}
+{\scriptsize Token-level hit rates do not directly give carbon reduction.\par}
+\end{column}
+\end{columns}
+\slidenote{Secs.~5.5, 6.1, 6.3.2; Eq.~(9); Table~3.}{}
+\back[\nav{M11}{Document QA Method}\ \nav{M14}{Experimental Settings}\ \nav{B25}{LCS Document Example}\ \nav{B26}{Full Table 3}]{M12}
 \end{frame}
 
 \begin{frame}[t,label=B26]{Full Replacement Policy Comparison --- Table 3}
@@ -1030,7 +1092,7 @@ Size & \multicolumn{3}{c}{\textbf{ShareGPT}} & \multicolumn{3}{c}{\textbf{Trivia
 16 & 0.52 & 0.69 & 0.71 & 0.31 & 0.32 & 0.33 & 0.47 & 0.52 & 0.52\\
 \bottomrule
 \end{tabular}\par}
-\vspace{0.07cm}
+\vspace{0.03cm}
 {\footnotesize\textbf{\textcolor{Accent}{1. Limited Capacity}}\par}
 {\scriptsize At 4\,TB, LCS improves token-level cache hit rate across all three workloads.\par}
 {\scriptsize ShareGPT: LRU 0.21 $\rightarrow$ LCS 0.28.\quad
@@ -1045,12 +1107,9 @@ Example: TriviaQA $\alpha=0.7$, LRU = LCS = 0.52.\par}
 {\scriptsize LCS prioritizes entries with higher reuse potential per storage footprint, using age as an additional penalty.\\
 Higher token-level hit rate means more input tokens are reused from cache, potentially avoiding repeated prefill computation.\\
 This table does not directly measure CO$_2$ savings.\par}
-\vspace{0.06cm}
-{\footnotesize\hyperlink{M12}{\textbf{Main M12: Policy Comparison}}\quad
-\hyperlink{M09}{\textbf{General LCS}}\quad
-\hyperlink{M10}{\textbf{Multi-turn}}\quad
-\hyperlink{M11}{\textbf{Document QA}}\par}
-\slidenote{Section 6.3.2, Table 3.}{\nav{INDEX}{Discussion Index}}
+\vspace{0cm}
+\slidenote{Section 6.3.2, Table 3.}{}
+\back[\nav{M09}{General LCS}\ \nav{M10}{Multi-turn}\ \nav{M11}{Document QA}\ \nav{B27}{TriviaQA $\alpha$ Explained}]{M12}
 \end{frame}
 
 \end{document}

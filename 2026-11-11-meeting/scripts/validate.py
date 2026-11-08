@@ -35,9 +35,12 @@ def validate(render_dir):
     main_count = expected['INDEX']
     assert main_count == 19, main_count
     assert [frames[i][0] for i in range(main_count)] == [f'M{i:02}' for i in range(1, 20)]
-    assert len(doc) == 47, len(doc)
-    assert expected['B25'] == 45, expected['B25']
-    assert expected['B26'] == 46, expected['B26']
+    assert len(expected) == len(frames), 'Duplicate frame labels'
+    assert all(re.fullmatch(r'(?:M|B)\d{2}|INDEX', label) for label in expected)
+    assert expected['B25'] < expected['B27'] < expected['B26']
+    for target in re.findall(r'\\(?:hyperlink|nav)\{([^}]+)\}', text):
+        if '#' not in target:
+            assert target in expected, ('missing source target', target)
     section_starts = []
     page_count = 0
     for token in re.finditer(r'\\section\{|\\begin\{frame\}', text):
@@ -74,6 +77,38 @@ def validate(render_dir):
         # Cropped figures keep the full PNG in the content stream, so the
         # reported image box is not the visible clip. Button clearance is
         # checked visually; this loop only rejects buttons that leave the page.
+    # Require visible body buttons and verify the annotations over their text.
+    # The footer index alone is deliberately insufficient.
+    def visible_link(label, words, target):
+        page = doc[expected[label]]
+        hits = page.search_for(words)
+        boxes = [fitz.Rect(link['from']) for link in page.get_links()
+                 if link.get('nameddest') == target]
+        return any(box.intersects(hit) and hit.y1 < page.rect.height - 14
+                   for box in boxes for hit in hits)
+
+    backup_audit = []
+    for label, title, body in frames:
+        if not label.startswith('B'):
+            continue
+        match = re.search(r'\\back(?:\[.*?\])?\{(M\d+)\}', body, re.S)
+        assert match, (label, 'missing standard back macro')
+        primary = match[1]
+        assert primary in expected, (label, primary)
+        assert visible_link(label, 'Back to Main', primary), (label, 'visible main return')
+        assert visible_link(label, 'Discussion Index', 'INDEX'), (label, 'visible index button')
+        targets = sorted({x['destination'] for x in links if x['from_label'] == label}
+                         - {primary, 'INDEX'})
+        backup_audit.append(dict(label=label, page=expected[label] + 1,
+                                 primary_main=primary, back_to_main=True,
+                                 discussion_index=True, cross_links=targets))
+    for origin, target in [('M12', 'B27'), ('B27', 'M12'), ('M12', 'B26'),
+                           ('B26', 'M12'), ('M11', 'B27'), ('M14', 'B27'),
+                           ('B25', 'B27'), ('B26', 'B27'), ('INDEX', 'B27')]:
+        assert expected[target] in graph[expected[origin]], (origin, target)
+    assert visible_link('M12', 'TriviaQA', 'B27')
+    for target in ['M11', 'M14', 'B25', 'B26', 'INDEX']:
+        assert expected[target] in graph[expected['B27']], target
     # Every backup page is reachable from a main slide without section-nav links.
     reached = set(range(main_count))
     pending = list(reached)
@@ -112,6 +147,11 @@ def validate(render_dir):
         'M17': ['15.1%', '25.3%', '15 TB'],
         'M12': ['How Does It Work?', 'Potential Problem', '23%', '26%', '35%',
                 '9 percentage points', 'reused input tokens', 'Full Table 3'],
+        'B27': ['nearly uniform', '0.4', '0.7', '25%', '50%', 'Top 10%',
+                '50k prompts', 'Poisson', 'scaled Azure LLM trace', 'distinct prompt sets',
+                'Equation (9)', '14%', '35%', 'fixed 4 TB', 'not guaranteed',
+                'New question tokens still need prefill', 'not arrival rate',
+                'do not directly give carbon reduction'],
         'B26': ['Limited Capacity', 'Abundant Capacity', 'Interpretation', 'does not directly measure'],
         'M19': ['OUR INTERPRETATION', 'does not evaluate HBF'],
         'B09': ['above 1 is a benefit', 'opposite direction'],
@@ -123,7 +163,18 @@ def validate(render_dir):
         content = ' '.join(doc[expected[label]].get_text().split())
         for needle in needles:
             assert needle in content, (label, needle)
-    # Main LCS pages omit cross-link rows; M12 uses one B26 source-line tag.
+    # Anchor workload checks to the supplied paper, not just copied slide claims.
+    paper_path = ROOT / 'GreenCache-Research-Meeting-2026-11-11/GreenCache-Carbon-Aware-KV-Caching-SIGMETRICS2026.pdf'
+    with fitz.open(paper_path) as paper:
+        evidence = ' '.join(' '.join(page.get_text().split()) for page in paper)
+    for needle in ['50k prompts', 'distinct sets of prompts', 'Poisson distributions',
+                   'almost uniform number of visits per document', 'downscale the request rate']:
+        assert needle in evidence, ('paper workload evidence', needle)
+    assert re.search(r'0\.4.*?25.*?0\.7.*?50', evidence)
+    b27 = ' '.join(doc[expected['B27']].get_text().split())
+    assert re.search(r'0\.4: lower skewness.*?25%.*?0\.7: higher skewness.*?50%', b27)
+    assert re.search(r'0\.4: 14%.*?0\.7: 35%', b27)
+    # Keep the existing LCS method and full Table 3 navigation.
     lcs_labels = ['M09', 'M10', 'M11', 'M12']
     assert [expected[k] for k in lcs_labels] == [8, 9, 10, 11]
     assert expected['INDEX'] == 19 and expected['B13'] == 33
@@ -210,7 +261,7 @@ def validate(render_dir):
         'main_pages': main_count,
         'backup_pages_including_index': len(doc) - main_count,
         'internal_links_checked': len(links),
-        'lcs_cross_links_checked': 0,
+        'backup_navigation_audit': backup_audit,
         'table3_values_checked': 45,
         'figures_matched_by_pixel_hash': len(used),
         'whitespace': whitespace,
@@ -219,6 +270,13 @@ def validate(render_dir):
         'figures': occurrences,
         'links': links,
     }
+    audit_lines = ['# Backup navigation audit', '',
+                   'Generated from LaTeX frames and verified PDF link annotations.', '',
+                   '| Backup | PDF | Primary main | Back to Main | Discussion Index | Cross-links |',
+                   '|---|---|---|---|---|---|']
+    for row in backup_audit:
+        audit_lines.append(f"| {row['label']} | {row['page']} | {row['primary_main']} | Yes | Yes | {', '.join(row['cross_links'])} |")
+    (qa / 'navigation-audit.md').write_text('\n'.join(audit_lines) + '\n')
     (qa / 'validation.json').write_text(json.dumps(report, indent=2) + '\n')
     empty_mains = [row for row in whitespace if row['page'] <= main_count and row['lower_empty_ratio'] > 0.72]
     print(f'PASS: {len(doc)} pages, {len(links)} links, {len(used)} figure hashes.')

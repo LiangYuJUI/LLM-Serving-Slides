@@ -1,9 +1,342 @@
 {
-  "pdf_pages": 47,
+  "pdf_pages": 48,
   "main_pages": 19,
-  "backup_pages_including_index": 28,
-  "internal_links_checked": 258,
-  "lcs_cross_links_checked": 0,
+  "backup_pages_including_index": 29,
+  "internal_links_checked": 273,
+  "backup_navigation_audit": [
+    {
+      "label": "B00",
+      "page": 21,
+      "primary_main": "M02",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B02",
+        "B03",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B01",
+      "page": 22,
+      "primary_main": "M03",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B02",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B02",
+      "page": 23,
+      "primary_main": "M02",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B00",
+        "B03",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B03",
+      "page": 24,
+      "primary_main": "M02",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B00",
+        "B04",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B04",
+      "page": 25,
+      "primary_main": "M02",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B05",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B05",
+      "page": 26,
+      "primary_main": "M03",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B06",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B06",
+      "page": 27,
+      "primary_main": "M04",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B07",
+        "M02",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B07",
+      "page": 28,
+      "primary_main": "M04",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B08",
+        "M02",
+        "M07",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B08",
+      "page": 29,
+      "primary_main": "M03",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B09",
+        "Navigation21"
+      ]
+    },
+    {
+      "label": "B09",
+      "page": 30,
+      "primary_main": "M05",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B10",
+        "M08",
+        "M18",
+        "Navigation30"
+      ]
+    },
+    {
+      "label": "B10",
+      "page": 31,
+      "primary_main": "M07",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B11",
+        "B18",
+        "M06",
+        "M08",
+        "Navigation30"
+      ]
+    },
+    {
+      "label": "B11",
+      "page": 32,
+      "primary_main": "M08",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B12",
+        "M06",
+        "M14",
+        "Navigation30"
+      ]
+    },
+    {
+      "label": "B12",
+      "page": 33,
+      "primary_main": "M05",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B13",
+        "M07",
+        "Navigation30"
+      ]
+    },
+    {
+      "label": "B13",
+      "page": 34,
+      "primary_main": "M10",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "M09",
+        "M11",
+        "M12",
+        "Navigation30"
+      ]
+    },
+    {
+      "label": "B14",
+      "page": 35,
+      "primary_main": "M13",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B15",
+        "Navigation35"
+      ]
+    },
+    {
+      "label": "B15",
+      "page": 36,
+      "primary_main": "M15",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B16",
+        "Navigation35"
+      ]
+    },
+    {
+      "label": "B16",
+      "page": 37,
+      "primary_main": "M16",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B17",
+        "Navigation35"
+      ]
+    },
+    {
+      "label": "B17",
+      "page": 38,
+      "primary_main": "M17",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B18",
+        "Navigation35"
+      ]
+    },
+    {
+      "label": "B18",
+      "page": 39,
+      "primary_main": "M06",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B19",
+        "Navigation35"
+      ]
+    },
+    {
+      "label": "B19",
+      "page": 40,
+      "primary_main": "M06",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B20",
+        "Navigation40"
+      ]
+    },
+    {
+      "label": "B20",
+      "page": 41,
+      "primary_main": "M06",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B21",
+        "Navigation40"
+      ]
+    },
+    {
+      "label": "B21",
+      "page": 42,
+      "primary_main": "M19",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B22",
+        "Navigation40"
+      ]
+    },
+    {
+      "label": "B22",
+      "page": 43,
+      "primary_main": "M19",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B23",
+        "Navigation40"
+      ]
+    },
+    {
+      "label": "B23",
+      "page": 44,
+      "primary_main": "M19",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "Navigation40"
+      ]
+    },
+    {
+      "label": "B24",
+      "page": 45,
+      "primary_main": "M07",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "M08",
+        "Navigation45"
+      ]
+    },
+    {
+      "label": "B25",
+      "page": 46,
+      "primary_main": "M11",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B27",
+        "M09",
+        "M10",
+        "M12",
+        "Navigation45"
+      ]
+    },
+    {
+      "label": "B27",
+      "page": 47,
+      "primary_main": "M12",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B25",
+        "B26",
+        "M11",
+        "M14",
+        "Navigation45"
+      ]
+    },
+    {
+      "label": "B26",
+      "page": 48,
+      "primary_main": "M12",
+      "back_to_main": true,
+      "discussion_index": true,
+      "cross_links": [
+        "B27",
+        "M09",
+        "M10",
+        "M11",
+        "Navigation45"
+      ]
+    }
+  ],
   "table3_values_checked": 45,
   "figures_matched_by_pixel_hash": 20,
   "whitespace": [
@@ -60,12 +393,12 @@
     {
       "page": 11,
       "label": "M11",
-      "lower_empty_ratio": 0.486
+      "lower_empty_ratio": 0.479
     },
     {
       "page": 12,
       "label": "M12",
-      "lower_empty_ratio": 0.91
+      "lower_empty_ratio": 0.908
     },
     {
       "page": 13,
@@ -105,42 +438,42 @@
     {
       "page": 20,
       "label": "INDEX",
-      "lower_empty_ratio": 0.83
+      "lower_empty_ratio": 0.809
     },
     {
       "page": 21,
       "label": "B00",
-      "lower_empty_ratio": 0.83
+      "lower_empty_ratio": 0.829
     },
     {
       "page": 22,
       "label": "B01",
-      "lower_empty_ratio": 0.869
+      "lower_empty_ratio": 0.864
     },
     {
       "page": 23,
       "label": "B02",
-      "lower_empty_ratio": 0.883
+      "lower_empty_ratio": 0.875
     },
     {
       "page": 24,
       "label": "B03",
-      "lower_empty_ratio": 0.88
+      "lower_empty_ratio": 0.869
     },
     {
       "page": 25,
       "label": "B04",
-      "lower_empty_ratio": 0.849
+      "lower_empty_ratio": 0.845
     },
     {
       "page": 26,
       "label": "B05",
-      "lower_empty_ratio": 0.873
+      "lower_empty_ratio": 0.868
     },
     {
       "page": 27,
       "label": "B06",
-      "lower_empty_ratio": 0.898
+      "lower_empty_ratio": 0.894
     },
     {
       "page": 28,
@@ -150,42 +483,42 @@
     {
       "page": 29,
       "label": "B08",
-      "lower_empty_ratio": 0.929
+      "lower_empty_ratio": 0.924
     },
     {
       "page": 30,
       "label": "B09",
-      "lower_empty_ratio": 0.847
+      "lower_empty_ratio": 0.843
     },
     {
       "page": 31,
       "label": "B10",
-      "lower_empty_ratio": 0.848
+      "lower_empty_ratio": 0.843
     },
     {
       "page": 32,
       "label": "B11",
-      "lower_empty_ratio": 0.868
+      "lower_empty_ratio": 0.864
     },
     {
       "page": 33,
       "label": "B12",
-      "lower_empty_ratio": 0.927
+      "lower_empty_ratio": 0.923
     },
     {
       "page": 34,
       "label": "B13",
-      "lower_empty_ratio": 0.855
+      "lower_empty_ratio": 0.858
     },
     {
       "page": 35,
       "label": "B14",
-      "lower_empty_ratio": 0.955
+      "lower_empty_ratio": 0.951
     },
     {
       "page": 36,
       "label": "B15",
-      "lower_empty_ratio": 0.868
+      "lower_empty_ratio": 0.867
     },
     {
       "page": 37,
@@ -195,52 +528,57 @@
     {
       "page": 38,
       "label": "B17",
-      "lower_empty_ratio": 0.834
+      "lower_empty_ratio": 0.829
     },
     {
       "page": 39,
       "label": "B18",
-      "lower_empty_ratio": 0.857
+      "lower_empty_ratio": 0.853
     },
     {
       "page": 40,
       "label": "B19",
-      "lower_empty_ratio": 0.874
+      "lower_empty_ratio": 0.872
     },
     {
       "page": 41,
       "label": "B20",
-      "lower_empty_ratio": 0.881
+      "lower_empty_ratio": 0.879
     },
     {
       "page": 42,
       "label": "B21",
-      "lower_empty_ratio": 0.86
+      "lower_empty_ratio": 0.856
     },
     {
       "page": 43,
       "label": "B22",
-      "lower_empty_ratio": 0.862
+      "lower_empty_ratio": 0.857
     },
     {
       "page": 44,
       "label": "B23",
-      "lower_empty_ratio": 0.914
+      "lower_empty_ratio": 0.909
     },
     {
       "page": 45,
       "label": "B24",
-      "lower_empty_ratio": 0.845
+      "lower_empty_ratio": 0.84
     },
     {
       "page": 46,
       "label": "B25",
-      "lower_empty_ratio": 0.854
+      "lower_empty_ratio": 0.856
     },
     {
       "page": 47,
+      "label": "B27",
+      "lower_empty_ratio": 0.823
+    },
+    {
+      "page": 48,
       "label": "B26",
-      "lower_empty_ratio": 0.857
+      "lower_empty_ratio": 0.869
     }
   ],
   "frames": [
@@ -476,6 +814,11 @@
     },
     {
       "page": 47,
+      "label": "B27",
+      "title": "How Is the TriviaQA Workload Generated?"
+    },
+    {
+      "page": 48,
       "label": "B26",
       "title": "Full Replacement Policy Comparison --- Table 3"
     }
@@ -1098,8 +1441,8 @@
     {
       "from_page": 11,
       "from_label": "M11",
-      "destination": "INDEX",
-      "to_page": 20
+      "destination": "B27",
+      "to_page": 47
     },
     {
       "from_page": 11,
@@ -1116,8 +1459,14 @@
     {
       "from_page": 12,
       "from_label": "M12",
-      "destination": "B26",
+      "destination": "B27",
       "to_page": 47
+    },
+    {
+      "from_page": 12,
+      "from_label": "M12",
+      "destination": "B26",
+      "to_page": 48
     },
     {
       "from_page": 12,
@@ -1148,6 +1497,12 @@
       "from_label": "M13",
       "destination": "INDEX",
       "to_page": 20
+    },
+    {
+      "from_page": 14,
+      "from_label": "M14",
+      "destination": "B27",
+      "to_page": 47
     },
     {
       "from_page": 14,
@@ -1375,7 +1730,7 @@
       "from_page": 20,
       "from_label": "INDEX",
       "destination": "B26",
-      "to_page": 47
+      "to_page": 48
     },
     {
       "from_page": 20,
@@ -1388,6 +1743,12 @@
       "from_label": "INDEX",
       "destination": "B25",
       "to_page": 46
+    },
+    {
+      "from_page": 20,
+      "from_label": "INDEX",
+      "destination": "B27",
+      "to_page": 47
     },
     {
       "from_page": 20,
@@ -1488,6 +1849,12 @@
     {
       "from_page": 23,
       "from_label": "B02",
+      "destination": "M02",
+      "to_page": 2
+    },
+    {
+      "from_page": 23,
+      "from_label": "B02",
       "destination": "B00",
       "to_page": 21
     },
@@ -1514,6 +1881,12 @@
       "from_label": "B02",
       "destination": "INDEX",
       "to_page": 20
+    },
+    {
+      "from_page": 24,
+      "from_label": "B03",
+      "destination": "M02",
+      "to_page": 2
     },
     {
       "from_page": 24,
@@ -2274,6 +2647,12 @@
     {
       "from_page": 46,
       "from_label": "B25",
+      "destination": "B27",
+      "to_page": 47
+    },
+    {
+      "from_page": 46,
+      "from_label": "B25",
       "destination": "INDEX",
       "to_page": 20
     },
@@ -2291,42 +2670,96 @@
     },
     {
       "from_page": 47,
-      "from_label": "B26",
+      "from_label": "B27",
       "destination": "M12",
       "to_page": 12
     },
     {
       "from_page": 47,
-      "from_label": "B26",
-      "destination": "M09",
-      "to_page": 9
-    },
-    {
-      "from_page": 47,
-      "from_label": "B26",
-      "destination": "M10",
-      "to_page": 10
-    },
-    {
-      "from_page": 47,
-      "from_label": "B26",
+      "from_label": "B27",
       "destination": "M11",
       "to_page": 11
     },
     {
       "from_page": 47,
-      "from_label": "B26",
+      "from_label": "B27",
+      "destination": "M14",
+      "to_page": 14
+    },
+    {
+      "from_page": 47,
+      "from_label": "B27",
+      "destination": "B25",
+      "to_page": 46
+    },
+    {
+      "from_page": 47,
+      "from_label": "B27",
+      "destination": "B26",
+      "to_page": 48
+    },
+    {
+      "from_page": 47,
+      "from_label": "B27",
       "destination": "INDEX",
       "to_page": 20
     },
     {
       "from_page": 47,
-      "from_label": "B26",
+      "from_label": "B27",
       "destination": "Navigation45",
       "to_page": 45
     },
     {
       "from_page": 47,
+      "from_label": "B27",
+      "destination": "INDEX",
+      "to_page": 20
+    },
+    {
+      "from_page": 48,
+      "from_label": "B26",
+      "destination": "M12",
+      "to_page": 12
+    },
+    {
+      "from_page": 48,
+      "from_label": "B26",
+      "destination": "M09",
+      "to_page": 9
+    },
+    {
+      "from_page": 48,
+      "from_label": "B26",
+      "destination": "M10",
+      "to_page": 10
+    },
+    {
+      "from_page": 48,
+      "from_label": "B26",
+      "destination": "M11",
+      "to_page": 11
+    },
+    {
+      "from_page": 48,
+      "from_label": "B26",
+      "destination": "B27",
+      "to_page": 47
+    },
+    {
+      "from_page": 48,
+      "from_label": "B26",
+      "destination": "INDEX",
+      "to_page": 20
+    },
+    {
+      "from_page": 48,
+      "from_label": "B26",
+      "destination": "Navigation45",
+      "to_page": 45
+    },
+    {
+      "from_page": 48,
       "from_label": "B26",
       "destination": "INDEX",
       "to_page": 20
