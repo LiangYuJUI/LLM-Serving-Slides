@@ -226,3 +226,25 @@ Baseline：`dfd9923a09d2b68ffb83df3f48745a8b200f6fa0`。開始前已 `git fetch 
 - [Build validation](output/qa/build-validation.json) 記錄本地／獨立 ZIP 的文字、像素、連結目標、矩形及按鈕文字 parity，並以 SHA-256 綁定當次 source/PDF/ZIP；validator 拒絕過期 build。[Baseline preservation](output/qa/baseline-preservation.json) 記錄 20 張原圖像素雜湊、數學式不變及逐頁像素差異。
 
 Validator regression tests：移除 M10 範例入口、把 M11 的 Eq. (9) 入口錯接到仍有效的 B27、移除 B09 → M18 返回連結，三種錯誤均被攔下。
+
+## Research Direction — independent cover + six content slides
+
+**Power-Aware HBM/HBF Co-Design for Disaggregated MoE Serving**，2026 年 11 月 11 日，約 6–8 分鐘。新增不編號的獨立封面，PDF 共 7 頁；正文獨立從 1/6 編到 6/6；最後一頁是 13 項 Related Work Comparison Matrix。這是研究提案，沒有已驗證的多 GPU HBF 節能結論。11 月 18 日 MemExplorer 僅作下週預告，本目錄沒有新增該報告。
+
+- [Standalone PDF](output/pdf/2026-11-11-Research-Direction.pdf)
+- [Beamer source](2026-11-11-Research-Direction.tex)
+- [Overleaf ZIP](output/overleaf/Research-Direction.zip) — `main.tex`, pdfLaTeX，編譯兩次
+- [繁體中文逐頁講稿與教授問答](2026-11-11-Research-Direction-Script.md)
+- [Specification and claim/source register](2026-11-11-Research-Direction-SPEC.md)
+- [Rendered montage](output/qa/research-direction-montage.png)
+- [QA report](output/qa/research-direction-validation.md)
+- [Machine-readable build checks](output/qa/research-direction-build.json)
+- [Complete comparison matrix in Notion, §5.3](https://app.notion.com/p/412c9399c91881fa90a4c56a96ce42d6)
+
+獨立建置指令（需 pdfLaTeX、Python 3、PyMuPDF、Pillow）：
+
+```bash
+python3 scripts/build_research_direction.py
+```
+
+此腳本只建置 Research Direction，驗證封面加六頁正文與頁碼、乾淨目錄解壓編譯 Overleaf ZIP、比較文字／像素／連結、產生逐頁圖與 montage。GreenCache 的 source、48 頁 PDF、ZIP、圖檔及原建置／驗證流程保持不變。Oak TPOT 數字已對照研究紀錄，未在此次製作重跑或重新取得 raw receipts；不確定文獻分類保留 Needs verification。

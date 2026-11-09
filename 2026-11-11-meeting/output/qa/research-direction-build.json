@@ -1,0 +1,18 @@
+{
+  "head": "96881bc80eff943d05056844550029e6451c9f5e",
+  "pages": 7,
+  "content_slides": 6,
+  "unnumbered_cover": true,
+  "local_passes": 2,
+  "extracted_zip_passes": 2,
+  "warnings": [],
+  "zip_parity": {
+    "text": true,
+    "pixels": true,
+    "links": true
+  },
+  "page_numbering": "Unnumbered cover; content 1/6 through 6/6",
+  "existing_files_preserved": 110,
+  "pdf_sha256": "85d7b0775c26c88f028833c66821f11472b9af2f6757ccc59f2b6d7f86b11d27",
+  "zip_sha256": "3183fda13fb134dff70ff0dc754abd6d9a410a92b0a4b825045b09c82c78aca4"
+}
