@@ -25,12 +25,17 @@ def main():
 
 def validate(render_dir):
     text = TEX.read_text()
+    build_report = json.loads((ROOT / 'output/qa/build-validation.json').read_text())
+    for key, path in [('pdf_sha256', PDF), ('source_sha256', TEX),
+                      ('zip_sha256', ROOT / 'output/overleaf/GreenCache.zip')]:
+        assert build_report[key] == hashlib.sha256(path.read_bytes()).hexdigest(), ('stale build', key)
     frames = re.findall(
         r'\\begin\{frame\}\[(?:t|c),label=([^]]+)\](?:\{([^\n]+?)\})?(.*?)\\end\{frame\}',
         text, re.S)
     # Title frame has no brace title; the regex still captures it via the optional group.
     doc = fitz.open(PDF)
-    assert len(frames) == len(doc), (len(frames), len(doc))
+    assert len(frames) == len(doc) == 48, (len(frames), len(doc))
+    assert sum(label.startswith('B') for label, _, _ in frames) == 28
     expected = {label: i for i, (label, _, _) in enumerate(frames)}
     main_count = expected['INDEX']
     assert main_count == 19, main_count
@@ -95,10 +100,10 @@ def validate(render_dir):
         assert match, (label, 'missing standard back macro')
         primary = match[1]
         assert primary in expected, (label, primary)
-        assert visible_link(label, 'Back to Main', primary), (label, 'visible main return')
+        assert visible_link(label, f'Back to Main {int(primary[1:])}', primary), (label, 'visible main return')
         assert visible_link(label, 'Discussion Index', 'INDEX'), (label, 'visible index button')
         targets = sorted({x['destination'] for x in links if x['from_label'] == label}
-                         - {primary, 'INDEX'})
+                         - {primary, 'INDEX'} - {k for k in destinations if k.startswith('Navigation')})
         backup_audit.append(dict(label=label, page=expected[label] + 1,
                                  primary_main=primary, back_to_main=True,
                                  discussion_index=True, cross_links=targets))
@@ -109,6 +114,51 @@ def validate(render_dir):
     assert visible_link('M12', 'TriviaQA', 'B27')
     for target in ['M11', 'M14', 'B25', 'B26', 'INDEX']:
         assert expected[target] in graph[expected['B27']], target
+    # Human-reviewed contracts freeze every visible Main -> Backup entry, not
+    # merely destination existence. Updating copy requires a semantic review.
+    contracts = json.loads((ROOT / 'scripts/navigation-contracts.json').read_text())
+    normalize = lambda value: ' '.join(value.split())
+    actual_entries = []
+    navigation_audit = []
+    for i, (label, title, _) in enumerate(frames):
+        page_links = doc[i].get_links()
+        for j, link in enumerate(page_links):
+            for other in page_links[j + 1:]:
+                overlap = fitz.Rect(link['from']) & fitz.Rect(other['from'])
+                assert overlap.get_area() < 0.1, (label, 'overlapping click areas', link, other)
+            target = link.get('nameddest', '')
+            words = normalize(doc[i].get_textbox(link['from']))
+            if label.startswith('B') and target.startswith('M'):
+                number = int(target[1:])
+                assert re.search(rf'(?:Back to )?Main {number}(?![0-9])', words), (label, target, words)
+                assert visible_link(label, words, target), (label, target, 'invisible return')
+            if i < main_count and target.startswith('B'):
+                actual_entries.append((label, words, target))
+    assert Counter(actual_entries) == Counter((r['source'], r['text'], r['target']) for r in contracts), 'Navigation contract drift'
+    for row in contracts:
+        origin, target = row['source'], row['target']
+        assert visible_link(origin, row['text'], target), row
+        content = normalize(doc[expected[target]].get_text())
+        for needle in row['target_evidence']:
+            assert needle in content, (target, 'semantic evidence missing', needle)
+        backup = next(r for r in backup_audit if r['label'] == target)
+        return_text = (f"Back to Main {int(origin[1:])}" if backup['primary_main'] == origin
+                       else f"Main {int(origin[1:])}")
+        assert visible_link(target, return_text, origin), (origin, target, 'visible return missing')
+        navigation_audit.append(dict(row, source_question=frames[expected[origin]][1],
+                                     primary_return=backup['primary_main'],
+                                     other_return_links=[k for k in backup['cross_links'] if k.startswith('M')],
+                                     visible_return=True, semantic_mismatch=False))
+    assert visible_link('INDEX', 'Go to Conclusion (M19)', 'M19')
+    assert 'Back to Main' not in doc[expected['INDEX']].get_text()
+    required = {('M09','B13'), ('M09','B25'), ('M10','B13'), ('M11','B25'),
+                ('M11','B27'), ('M12','B26'), ('M12','B27'), ('M18','B09'),
+                ('M06','B18'), ('M06','B20'), ('M19','B23')}
+    assert required <= {(r['source'], r['target']) for r in contracts}
+    assert 'Task-specific extensions' in doc[expected['M09']].get_text()
+    assert 'LCS (Ours)' not in ''.join(p.get_text() for p in doc)
+    assert 'LCS (GreenCache)' in normalize(doc[expected['M12']].get_text())
+    indirect_backups = sorted({label for label in expected if label.startswith('B')} - {r['target'] for r in contracts})
     # Every backup page is reachable from a main slide without section-nav links.
     reached = set(range(main_count))
     pending = list(reached)
@@ -267,7 +317,7 @@ def validate(render_dir):
         w, h = im.size
         # Content band below the title and above the footer.
         band = im.crop((0, int(h * 0.58), w, int(h * 0.90)))
-        pixels = list(band.getdata())
+        pixels = list(band.get_flattened_data() if hasattr(band, 'get_flattened_data') else band.getdata())
         empty = sum(1 for r, g, b in pixels if r > 248 and g > 248 and b > 246)
         ratio = empty / len(pixels)
         whitespace.append({'page': i + 1, 'label': frames[i][0], 'lower_empty_ratio': round(ratio, 3)})
@@ -286,7 +336,16 @@ def validate(render_dir):
         canvas.save(qa / f'{name}.jpg', quality=92)
     report = {
         'pdf_pages': len(doc),
+        'build_validation': build_report,
         'main_pages': main_count,
+        'index_pages': 1,
+        'backup_pages': len(backup_audit),
+        'broken_links': 0,
+        'overlapping_link_rectangles': 0,
+        'main_backup_entries': len(navigation_audit),
+        'main_backup_pairs': len({(r['source'], r['target']) for r in contracts}),
+        'main_backup_semantic_audit': navigation_audit,
+        'backups_without_direct_main_entry': indirect_backups,
         'backup_pages_including_index': len(doc) - main_count,
         'internal_links_checked': len(links),
         'backup_navigation_audit': backup_audit,
@@ -304,6 +363,16 @@ def validate(render_dir):
                    '|---|---|---|---|---|---|']
     for row in backup_audit:
         audit_lines.append(f"| {row['label']} | {row['page']} | {row['primary_main']} | Yes | Yes | {', '.join(row['cross_links'])} |")
+    audit_lines += ['', '## Main Source → Backup → Primary Return → Other Return Links', '',
+                    'Every row is a visible PDF entry (including repeated destinations). All have a visible return to the source Main. Main question comes from the unchanged frame title. Direct means a matching supplement, not necessarily the same experiment. Background entries are explicitly scoped. No unresolved semantic mismatch.', '',
+                    '| Main source / research question | Visible entry | Backup | Supplement / evidence | Alignment | Primary return | Other Main returns | Visible source return |',
+                    '|---|---|---|---|---|---|---|---|']
+    for row in navigation_audit:
+        audit_lines.append(f"| {row['source']}: {row['source_question']} | {row['text']} | {row['target']} | {row['supplement']} | {row['relationship']} | {row['primary_return']} | {', '.join(row['other_return_links']) or '-'} | Yes |")
+    audit_lines += ['', f"Entries: {len(navigation_audit)}; distinct Main/Backup pairs: {report['main_backup_pairs']}; internal PDF links: {len(links)}; broken links: 0.", '',
+                    'No direct Main entry (reachable via Index and Backup navigation): ' + ', '.join(indirect_backups) + '.', '',
+                    'M09 examples instantiate task-specific Eq. (8)/(9), not standalone Eq. (7) experiments. M18 → B09 is Figure 11 profiling background; Figure 15 ablation stays on M18. B25 is scoring; B27 is workload generation. B23 explicitly separates our future work from GreenCache results.', '',
+                    'Contracts: `scripts/navigation-contracts.json`. The validator checks exact entry text inside compiled PDF annotations, destination labels/pages, target evidence, numbered visible returns, and non-overlapping click rectangles. Semantic interpretation remains a human-reviewed contract, not an automatic proof of scientific meaning.']
     (qa / 'navigation-audit.md').write_text('\n'.join(audit_lines) + '\n')
     (qa / 'validation.json').write_text(json.dumps(report, indent=2) + '\n')
     empty_mains = [row for row in whitespace if row['page'] <= main_count and row['lower_empty_ratio'] > 0.72]

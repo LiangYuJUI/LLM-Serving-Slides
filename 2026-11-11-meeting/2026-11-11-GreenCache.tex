@@ -225,7 +225,7 @@ TTFT and TPOT are evaluated separately.\par}
 \end{columns}
 \vspace{0.06cm}
 {\footnotesize Hourly resizing, 1\,TB granularity. Serving continues during optimization.\par}
-\slidenote{Secs.~5.4--5.5, 6.1, 6.4; Fig.~10}{\nav{M07}{Solver} \nav{B10}{Full ILP} \nav{B11}{SLO Numbers}}
+\slidenote{Secs.~5.4--5.5, 6.1, 6.4; Fig.~10}{\nav{M07}{Solver} \nav{B10}{Full ILP} \nav{B11}{SLO Numbers} \nav{B18}{Solver Time} \nav{B20}{Resize Interval}}
 \end{frame}
 \endgroup
 
@@ -286,7 +286,7 @@ TTFT and TPOT are evaluated separately.\par}
 \vspace{0.25cm}
 {\centering\small\bfseries\color{Accent}Lower LCS Score $\rightarrow$ Higher Eviction Priority\par}
 \vspace{0.12cm}
-\slidenote{Sec.~5.5, Eq.~(7)}{}
+\slidenote{Sec.~5.5, Eq.~(7). Task-specific extensions:}{\nav{B13}{Multi-turn Example} \nav{B25}{Document QA Example}}
 \end{frame}
 
 \begin{frame}[t,label=M10]{How Does LCS Work for Multi-Turn Conversations?}
@@ -328,7 +328,7 @@ TTFT and TPOT are evaluated separately.\par}
 {\centering\small\bfseries Conversation-specific LCS prioritizes conversation depth and accumulated token reuse.\par}
 \end{beamercolorbox}
 \vspace{0.12cm}
-\slidenote{Sec.~5.5, Eq.~(8); Sec.~6.3.2}{\nav{INDEX}{Discussion Index}}
+\slidenote{Sec.~5.5, Eq.~(8); Sec.~6.3.2}{\nav{B13}{Worked Example (Eq. 8)} \nav{INDEX}{Discussion Index}}
 \end{frame}
 
 \begin{frame}[t,label=M11]{How Does LCS Work for Document QA?}
@@ -374,7 +374,7 @@ TTFT and TPOT are evaluated separately.\par}
 {\centering\small\bfseries Document-specific LCS prioritizes frequently reused documents and accumulated reused content.\par}
 \end{beamercolorbox}
 \vspace{0.12cm}
-\slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{B27}{TriviaQA Workload / Zipf $\alpha$}}
+\slidenote{Sec.~5.5, Eq.~(9); Secs.~6.1, 6.3.2}{\nav{B25}{Worked Example (Eq. 9)} \nav{B27}{TriviaQA Workload / Zipf $\alpha$}}
 \end{frame}
 
 \begin{frame}[t,label=M12]{Why Use LCS Instead of FIFO or LRU?}
@@ -386,7 +386,7 @@ TTFT and TPOT are evaluated separately.\par}
 \midrule
 \textbf{FIFO} & Evicts the earliest inserted cache entry. & Ignores reuse frequency and value; frequently reused entries may be evicted simply because they are old.\\[0.08cm]
 \textbf{LRU} & Evicts the least recently accessed entry. & Does not directly consider reused token volume, hit frequency, or storage footprint.\\[0.08cm]
-\textbf{\textcolor{Accent}{LCS (Ours)}} & Ranks entries by reused tokens, hit count, size, and age. & Uses a heuristic proxy rather than measuring actual CO$_2$ savings per entry.\\
+\textbf{\textcolor{Accent}{LCS (GreenCache)}} & Ranks entries by reused tokens, hit count, size, and age. & Uses a heuristic proxy rather than measuring actual CO$_2$ savings per entry.\\
 \bottomrule
 \end{tabularx}\par}
 \vspace{0.34cm}
@@ -522,7 +522,7 @@ Built on \textbf{LMCache + vLLM} with continuous batching, using NVIDIA L40 GPUs
 {\small\textbf{Even without LCS, GreenCache's adaptive capacity decision still reduces carbon versus Full Cache.} In this experiment, the effect is clearer at low load, because the cache needed to meet the SLO is smaller.\par}
 \vspace{0.08cm}
 {\small\textbf{Capacity adjustment itself contributes.} This does not mean LCS has no additional value.\par}
-\slidenote{Sec.~6.3.1, Fig.~15}{\nav{B09}{Profiling Heatmaps}}
+\slidenote{Sec.~6.3.1, Fig.~15}{\nav{B09}{Capacity Profiling (Background)}}
 \end{frame}
 
 
@@ -536,7 +536,7 @@ Built on \textbf{LMCache + vLLM} with continuous batching, using NVIDIA L40 GPUs
 \card{bluebox}{3. Evidence}{Versus Full Cache, studied settings cut carbon while P90 stays inside the authors' thresholds. 15.1\% / 25.3\% is FR, Llama-3 70B, multi-turn.}
 \vspace{0.14cm}
 \card{mintbox}{4. Future work}{Consider data centers in different regions, and HBM--HBF as cache tiers under the same SLO and embodied-carbon tradeoff. Our plan; GreenCache does not evaluate either.}
-\slidenote{Secs.~6--7. Future work is ours, not an author result.}{\nav{B23}{Limits and HBF}}
+\slidenote{Secs.~6--7. Future work is ours, not an author result.}{\nav{B23}{Limits / Our Future Work}}
 \end{frame}
 
 \section{Index}
@@ -548,10 +548,10 @@ Built on \textbf{LMCache + vLLM} with continuous batching, using NVIDIA L40 GPUs
 \toprule
 Topic & What is here & Jump\\
 \midrule
-A. Motivation & KV reuse, grids, latency, embodied carbon, Equations~(1)--(5) & \nav{B00}{Open A}\\[0.18cm]
-B. Method & Solver variables, Equation~(6), assumptions, LCS & \nav{B09}{Open B}\\[0.18cm]
-C. Evidence & Measurement boundary, 8B results, document timeline, solver time & \nav{B14}{Open C}\\[0.18cm]
-D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits & \nav{B19}{Open D}\\
+A. Motivation & KV reuse, grids, latency, embodied carbon, Equations~(1)--(5) & \mbox{\nav{B00}{Open A}}\\[0.18cm]
+B. Method & Solver variables, Equation~(6), assumptions, LCS & \mbox{\nav{B09}{Open B}}\\[0.18cm]
+C. Evidence & Measurement boundary, 8B results, document timeline, solver time & \mbox{\nav{B14}{Open C}}\\[0.18cm]
+D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits & \mbox{\nav{B19}{Open D}}\\
 \bottomrule
 \end{tabularx}
 \vspace{0.16cm}
@@ -577,7 +577,7 @@ D. Sensitivity & Forecast error, resize interval, SSD life, SSD carbon, limits &
 \textbf{What we would not claim} \nav{B23}{Limits}\par}
 \end{column}
 \end{columns}
-\back{M19}
+\par\vspace{0.02cm}\nav{M19}{Go to Conclusion (M19)}\hfill\nav{INDEX}{Discussion Index}
 \end{frame}
 
 \section{Background}
@@ -674,7 +674,7 @@ Storage & up to 16\,TB SSD & up to 480\,kgCO$_2$e\\
 \point{Scope}{Prior studies are cited for SSDs exceeding 75\% of datacenter-server embodied carbon. That citation is not a measurement of every server.}
 \point{Accounting choice}{Only the allocated SSD capacity is charged, for the fraction of lifetime it is reserved. Default lifetime is 5 years unless a sensitivity slide says otherwise.\par}
 \slidenote{Sec.~2.3, Table~1. Sum checked against the stated 76.6\%.}{}
-\back[\nav{M02}{Main \ref*{M02}} \nav{B07}{Next}]{M04}
+\back[\nav{M02}{Main 2 (Motivation)} \nav{B07}{Next}]{M04}
 \end{frame}
 
 \begin{frame}[t,label=B07]{Carbon Accounting, Equations (1)--(5)}
@@ -697,7 +697,7 @@ C = E\times\mathrm{CI} + \frac{T}{\mathrm{LT}}\left(C_{e,\mathrm{Cache}}+C_{e,\m
 \point{What caching changes}{It can lower $E$ and $T$. It raises $S_{\mathrm{Alloc}}$. Equation~(5) is the tradeoff GreenCache searches.}
 \point{Unit carbon}{Table~1's 480\,kgCO$_2$e over 16\,TB is 30\,kgCO$_2$e/TB. Fig.~20 then varies that assumption from 30 to 90.\par}
 \slidenote{Secs.~2.3, 3.2.1, Eqs.~(1)--(5)}{}
-\back[\nav{M02}{Main \ref*{M02}} \nav{M07}{Solver} \nav{B08}{Next}]{M04}
+\back[\nav{M02}{Main 2 (Motivation)} \nav{M07}{Main 7 (Solver)} \nav{B08}{Next}]{M04}
 \end{frame}
 
 \begin{frame}[t,label=B08]{Load and CI Push Capacity in Opposite Ways}
@@ -725,8 +725,8 @@ C = E\times\mathrm{CI} + \frac{T}{\mathrm{LT}}\left(C_{e,\mathrm{Cache}}+C_{e,\m
 \point{Axes}{Llama-3 70B, ES grid. (a) ShareGPT multi-turn. (b) TriviaQA, $\alpha=0.4$. Rows are cache size; columns are request rate.}
 \point{Read the colors carefully}{TTFT and TPOT: lower is better. The carbon-savings panel is higher-better. The paper defines that ratio as no-cache over cached, so a value \textbf{above 1 is a benefit}. This is the opposite direction from Fig.~8, where a ratio below 1 is a reduction.}
 \point{The pattern used by the solver}{Large caches help latency, especially at higher rate. At low rate a large cache can sit below 1 on the savings panel.\par}
-\slidenote{Sec.~5.2, Fig.~11}{}
-\back[\nav{M18}{Main \ref*{M18}} \nav{M08}{Solver} \nav{B10}{Next}]{M05}
+\slidenote{Sec.~5.2, Fig.~11 (profiling background); Fig.~15 ablation is on M18.}{}
+\back[\nav{M18}{Main 18 (Ablation)} \nav{M08}{Main 8 (Constraints)} \nav{B10}{Next}]{M05}
 \end{frame}
 
 \begin{frame}[t,label=B10]{Full ILP and Variables}
@@ -779,7 +779,7 @@ $N$ & Requests in the service & $\mathrm{LT_{comp}}$ & Lifetime of SSD, GPU, CPU
 {\scriptsize\textbf{\color{Accent}Objective.}\; Prefill carbon; the TPOT SLO carries decode latency.\quad
 \textbf{\color{Accent}Solver.}\; PuLP + COIN-OR CBC, average 7.03\,s.\par}
 \slidenote{Sec.~5.4, Table~2, Eq.~(6), Sec.~6.4}{}
-\back[\nav{M06}{Arch.} \nav{M08}{Constraints} \nav{B11}{SLOs} \nav{B18}{Time}]{M07}
+\back[\nav{M06}{Main 6 (Execution)} \nav{M08}{Main 8 (Constraints)} \nav{B11}{SLOs} \nav{B18}{Time}]{M07}
 \end{frame}
 
 \begin{frame}[t,label=B11]{Exact SLO Constraints}
@@ -822,7 +822,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \vspace{0.06cm}
 {\scriptsize\textbf{\color{Accent}Unresolved 8B document TTFT.}\; Section~6.1 relaxes that threshold to 2.5\,s. The dashed line on that Fig.~13 panel is drawn at 4.0\,s. Both are shown; this deck does not pick one. A P90 curve under the drawn threshold is the paper's picture of at least 90\% attainment.\par}
 \slidenote{Sec.~5.4, Eq.~(6), Sec.~6.1, Fig.~13}{}
-\back[\nav{M06}{Arch.} \nav{M14}{Settings} \nav{B12}{Next}]{M08}
+\back[\nav{M06}{Main 6 (Execution)} \nav{M14}{Main 14 (Evaluation)} \nav{B12}{Next}]{M08}
 \end{frame}
 
 \begin{frame}[t,label=B12]{Load Forecast and Carbon-Intensity Forecast}
@@ -833,7 +833,7 @@ Document & Llama-3 8B & see note & 0.15\,s line in Fig.~13\\
 \point{Effect on the carbon result}{Relative to an ideal run with ground truth, CI error trims 0.0064\% of the savings on average, adding load error trims 0.20\%, and adding profiler mismatch trims 0.79\%.\par}
 \point{Scope of optimality}{Best profiled candidate under forecasts and SLOs; forecast and profile errors can change the choice.}
 \slidenote{Secs.~5.3, 5.4, 6.1, 6.5}{}
-\back[\nav{M07}{Solver} \nav{B13}{Next}]{M05}
+\back[\nav{M07}{Main 7 (Solver)} \nav{B13}{Next}]{M05}
 \end{frame}
 
 \begin{frame}[t,label=B13]{Detailed Multi-turn LCS Example}
@@ -863,7 +863,7 @@ C & 4 & 600 & 2 & 2 & $4\times600/(2\times2)=600$\\
 {\footnotesize This is a heuristic, not measured CO$_2$. Use consistent units; the example does not predict a real workload's hit rate.\par}
 \vspace{0.04cm}
 \slidenote{Sec.~5.5, Eq.~(8). Numerical example is illustrative.}{}
-\back[\nav{M09}{General LCS}\ \nav{M11}{Document QA}\ \nav{M12}{Policies}]{M10}
+\back[\nav{M09}{Main 9 (General LCS)}\ \nav{M11}{Main 11 (Doc QA)}\ \nav{M12}{Main 12 (Policies)}]{M10}
 \end{frame}
 
 \section{Evaluation}
@@ -875,7 +875,7 @@ C & 4 & 600 & 2 & 2 & $4\times600/(2\times2)=600$\\
 \point{Power}{CPU: RAPL. GPU: pyNVML at 1\,ms. SSD and DRAM: specification power, because those parts expose no direct measurement interface in the paper.\par}
 \point{Context limit}{Both models use an 8k-token context window; extra context is truncated.}
 \slidenote{Secs.~3, 5.2, 6.1, 6.6}{}
-\back[\nav{M14}{Evaluation}\ \nav{B15}{Next}]{M13}
+\back[\nav{M14}{Main 14 (Evaluation)}\ \nav{B15}{Next}]{M13}
 \end{frame}
 
 \begin{frame}[t,label=B15]{Figure 12b: Llama-3 8B Carbon}
@@ -994,7 +994,7 @@ C & 4 & 600 & 2 & 2 & $4\times600/(2\times2)=600$\\
 \point{What can move the choice}{Load prediction, CI prediction, and profiling error can change the selected capacity relative to a ground-truth run. Section~6.5 measures that effect on carbon savings.}
 \point{Why the search stays small}{Section~A reduces the general form to 0--1 Knapsack, so the unrestricted problem is NP-hard. This instance stays small because the candidates are the 1\,TB grid over a finite hourly horizon.\par}
 \slidenote{Secs.~5.4.2--5.4.3, 6.1, 6.5; Sec.~A}{}
-\back[\nav{M08}{Main \ref*{M08}}]{M07}
+\back[\nav{M08}{Main 8 (Constraints)}]{M07}
 \end{frame}
 
 
@@ -1025,7 +1025,7 @@ C & 4 & 3000 & 2 & 2 & $4\times3000/(2\times2)=3000$\\
 {\footnotesize The score is a heuristic, not measured CO$_2$ or a token-level hit-rate percentage.\par}
 \vspace{0.04cm}
 \slidenote{Sec.~5.5, Eq.~(9); Sec.~6.1. Numerical example is illustrative.}{}
-\back[\nav{M09}{General LCS}\ \nav{M10}{Multi-turn}\ \nav{M12}{Policies}\ \nav{B27}{Access Skew Details}]{M11}
+\back[\nav{M09}{Main 9 (General LCS)}\ \nav{M10}{Main 10 (Multi-turn)}\ \nav{M12}{Main 12 (Policies)}\ \nav{B27}{Access Skew Details}]{M11}
 \end{frame}
 
 \begin{frame}[t,label=B27]{How Is the TriviaQA Workload Generated?}
@@ -1086,7 +1086,7 @@ $\alpha=0.4$: \textbf{14\%}\quad $\alpha=0.7$: \textbf{35\%}\par}
 \end{column}
 \end{columns}
 \slidenote{Secs.~5.5, 6.1, 6.3.2; Eq.~(9); Table~3.}{}
-\back[\nav{M11}{Document QA Method}\ \nav{M14}{Experimental Settings}\ \nav{B25}{LCS Document Example}\ \nav{B26}{Full Table 3}]{M12}
+\back[\nav{M11}{Main 11 (Doc QA)}\ \nav{M14}{Main 14 (Evaluation)}\ \nav{B25}{LCS Document Example}\ \nav{B26}{Full Table 3}]{M12}
 \end{frame}
 
 \begin{frame}[t,label=B26]{Full Replacement Policy Comparison --- Table 3}
@@ -1124,7 +1124,7 @@ Higher token-level hit rate means more input tokens are reused from cache, poten
 This table does not directly measure CO$_2$ savings.\par}
 \vspace{0cm}
 \slidenote{Section 6.3.2, Table 3.}{}
-\back[\nav{M09}{General LCS}\ \nav{M10}{Multi-turn}\ \nav{M11}{Document QA}\ \nav{B27}{TriviaQA $\alpha$ Explained}]{M12}
+\back[\nav{M09}{Main 9 (General LCS)}\ \nav{M10}{Main 10 (Multi-turn)}\ \nav{M11}{Main 11 (Doc QA)}\ \nav{B27}{TriviaQA $\alpha$ Explained}]{M12}
 \end{frame}
 
 \end{document}

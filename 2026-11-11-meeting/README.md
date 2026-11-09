@@ -20,12 +20,12 @@
 | M03 / 3 | Why Is a Fixed Cache Size Suboptimal? | Fig. 8 | 1, 20, 22, 29 |
 | M04 / 4 | What Does GreenCache Optimize? | 最佳化目標 + SLO | 1, 20, 27, 28 |
 | M05 / 5 | How Does GreenCache Work? (1/2): Monitoring & Prediction | Fig. 10 | 1, 20, 30, 33 |
-| M06 / 6 | How Does GreenCache Work? (2/2): Optimization & Execution | Fig. 10 | 1, 7, 20, 31, 32 |
+| M06 / 6 | How Does GreenCache Work? (2/2): Optimization & Execution | Fig. 10 | 1, 7, 20, 31, 32, 39, 41 |
 | M07 / 7 | How Does the Solver Decide? (1/2): Variables & Inputs | 概念式摘要公式 | 1, 20, 28, 31, 33, 45 |
 | M08 / 8 | How Does the Solver Decide? (2/2): Constraints | 同一公式 + Eq. (6) / §5.4.2 | 1, 20, 30, 31, 32, 45 |
-| M09 / 9 | How Does LCS Rank KV Cache Entries? | Eq. (7) | 1, 20 |
-| M10 / 10 | How Does LCS Work for Multi-Turn Conversations? | Eq. (8) + KV reuse diagram | 1, 20 |
-| M11 / 11 | How Does LCS Work for Document QA? | Eq. (9) + KV reuse diagram | 1, 20, 47 |
+| M09 / 9 | How Does LCS Rank KV Cache Entries? | Eq. (7) | 1, 20, 34, 46 |
+| M10 / 10 | How Does LCS Work for Multi-Turn Conversations? | Eq. (8) + KV reuse diagram | 1, 20, 34 |
+| M11 / 11 | How Does LCS Work for Document QA? | Eq. (9) + KV reuse diagram | 1, 20, 46, 47 |
 | M12 / 12 | Why Use LCS Instead of FIFO or LRU? | FIFO / LRU / LCS comparison; 4 TB example | 1, 20, 47, 48 |
 | M13 / 13 | Real Prototype or Simulator? | — | 1, 20, 35 |
 | M14 / 14 | How Is GreenCache Evaluated? | — | 1, 20, 32, 47 |
@@ -172,6 +172,7 @@ python3 -m venv /tmp/greencache-qa
 /tmp/greencache-qa/bin/pip install pymupdf pillow
 /tmp/greencache-qa/bin/python scripts/build.py
 /tmp/greencache-qa/bin/python scripts/validate.py
+/tmp/greencache-qa/bin/python scripts/test_navigation.py
 ```
 
 `build.py` 在本目錄編譯兩次，寫出 PDF 與 Overleaf ZIP，再把 ZIP 解到暫存目錄編譯兩次，並比對文字、像素與連結目標。ZIP 入口是 `main.tex`，compiler 選 **pdfLaTeX**。圖檔是 20 張未改像素的 With-Caption PNG，路徑與原始碼中的相對路徑一致。
@@ -181,8 +182,8 @@ python3 -m venv /tmp/greencache-qa
 ## QA
 
 - 本地兩次與 ZIP 獨立兩次編譯通過，最終 log 沒有 Overfull、undefined reference 或 Warning。
-- 48 頁、274 個內部連結、20 張來源圖的像素雜湊都通過。Main 19 頁，Discussion / Backup 29 頁。28 張 Backup 的可見 Back to Main 與 Discussion Index 按鈕均以 PDF annotations 驗證；M12 ↔ B27 與 M12 ↔ B26 通過。Table 3 的 45 個數值未變。
-- [逐頁導覽稽核](output/qa/navigation-audit.md) 列出每張 Backup 的 PDF 頁碼、主要 Main 目的地與交叉連結。Validator 從 frame labels 推導頁碼，不以總共 48 頁的固定清單判斷。
+- 48 頁、280 個內部連結、20 張來源圖的像素雜湊都通過。Main 19 頁，Discussion / Backup 29 頁。28 張 Backup 的可見 Back to Main 與 Discussion Index 按鈕均以 PDF annotations 驗證；M12 ↔ B27 與 M12 ↔ B26 通過。Table 3 的 45 個數值未變。
+- [逐頁導覽稽核](output/qa/navigation-audit.md) 列出每張 Backup 的 PDF 頁碼、主要 Main 目的地與交叉連結。Validator 從 frame labels 推導目的頁，並鎖定 19 Main + 1 Index + 28 Backup = 48 頁結構。
 - [Main montage](output/qa/main-montage.jpg)、[Backup montage](output/qa/backup-montage.jpg)、[逐頁 PNG](output/qa/pages/)、[機器紀錄](output/qa/validation.json)、[視覺紀錄](output/qa/REVIEW.md)。
 
 ## Main speaking points
@@ -201,12 +202,27 @@ python3 -m venv /tmp/greencache-qa
 
 ## Unresolved
 
-- Section 6.1 寫 Llama-3 8B document TTFT SLO 為 2.5 s。Fig. 13 該面板的虛線畫在 4.0 s。PDF 30 與 35 同時保留兩種說法，沒有代作者選一個。
+- Section 6.1 寫 Llama-3 8B document TTFT SLO 為 2.5 s。Fig. 13 該面板的虛線畫在 4.0 s。PDF 32（B11）與 37（B16） 同時保留兩種說法，沒有代作者選一個。
 - Section 6.2 先給出 70B 的 12.6% / 9.4% / 5.6%，後面又說高 skewness 的節省更高。數字句與這句方向不一致。README 的來源對照保留帶 respectively 的三個百分比；M15 不再列出這些百分比，也不宣稱較高 skewness 必然減碳更多。
-- Fig. 2 的 PNG 頂端有幾個被切掉的標題像素。PDF 20 去掉上方約 16 px。座標軸、CI 數字與 legend 仍在。
+- Fig. 2 的 PNG 頂端有幾個被切掉的標題像素。PDF 22（B01）去掉上方約 16 px。座標軸、CI 數字與 legend 仍在。
 
 Slide 9–11 已還原為先前確認的色塊排版：M09 四個變數色塊；M10／M11 各有兩個上下變數色塊與底部結論色塊。Size／Age 重複說明與 proxy／ablation 句維持刪除；TriviaQA 分布解說集中在新增 B27。
 
 Slide 9–11 的公式字體各縮小一級，保留已確認的變數色塊與結論。Slide 12 和 B26 維持策略比較與完整 Table 3 的分工。
 
 M18 的結論：即使不使用 LCS，GreenCache 的自適應容量決策仍能相對 Full Cache 降低碳排；在本實驗中，低負載時效果較明顯，因為滿足 SLO 所需的 cache 較小。這說明容量調整本身有貢獻，但不代表 LCS 沒有額外價值。原圖、設定與來源保留，百分比仍在來源對照表。
+
+## Final Main–Backup navigation alignment
+
+Baseline：`dfd9923a09d2b68ffb83df3f48745a8b200f6fa0`。開始前已 `git fetch origin`，HEAD 與最新 origin/main 相同，working tree 乾淨。本次沒有新增頁面或改寫研究內容。
+
+- M09 → B13 / B25：標示為 Eq. (7) 的 task-specific extensions；M10 → B13 是 Eq. (8) worked example，M11 → B25 是 Eq. (9) worked example。M11 → B27 的 TriviaQA workload / Zipf 入口保留。
+- M06 增加 Solver Time → B18、Resize Interval → B20，全部放在既有 source/navigation 區，未縮小正文或公式。
+- M18 → B09 改為 `Capacity Profiling (Background)`；B09 來源列說明 Figure 11 是 profiling background，Figure 15 ablation 在 M18。M12 改為 `LCS (GreenCache)`；M19 → B23 改為 `Limits / Our Future Work`。
+- 28 張 Backup 均保留 `Back to Main N` 與 Discussion Index。既有 Main 快捷連結改成編號與主題，例如 `Main 18 (Ablation)`；Index 使用 `Go to Conclusion (M19)`。
+- 46 個可點擊 Backup 入口、36 組不同 Main → Backup 對應，全部有可見的來源 Main 返回連結。無未解決語意不一致。B02–B05、B19、B21、B22 沒有 Main 直接入口，可經 Index 與 Backup 串接到達；它們並非只能由 Index 單一路徑開啟。
+- Index 表格的 Open A–D 原有點擊範圍略有重疊，局部 `mbox` 修正 annotation 範圍，視覺排版不變。所有 280 個內部連結均有效且點擊矩形互不重疊。
+- [Navigation contracts](scripts/navigation-contracts.json) 記錄每個入口的可見文字、目標、知識補充與直接／背景關聯；validator 比對編譯後 PDF annotation、文字、目標頁與可見返回按鈕。新增或改名入口時須同步人工覆核此檔。
+- [Build validation](output/qa/build-validation.json) 記錄本地／獨立 ZIP 的文字、像素、連結目標、矩形及按鈕文字 parity，並以 SHA-256 綁定當次 source/PDF/ZIP；validator 拒絕過期 build。[Baseline preservation](output/qa/baseline-preservation.json) 記錄 20 張原圖像素雜湊、數學式不變及逐頁像素差異。
+
+Validator regression tests：移除 M10 範例入口、把 M11 的 Eq. (9) 入口錯接到仍有效的 B27、移除 B09 → M18 返回連結，三種錯誤均被攔下。

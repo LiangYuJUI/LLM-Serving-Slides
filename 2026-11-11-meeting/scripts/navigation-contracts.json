@@ -1,0 +1,534 @@
+[
+  {
+    "source": "M02",
+    "text": "KV Reuse",
+    "target": "B00",
+    "relationship": "direct",
+    "supplement": "KV reuse and prefill/load latency example; not end-to-end speedup.",
+    "target_evidence": [
+      "1.7",
+      "0.03"
+    ]
+  },
+  {
+    "source": "M02",
+    "text": "Table 1",
+    "target": "B06",
+    "relationship": "direct",
+    "supplement": "Table 1 hardware embodied carbon and allocation accounting.",
+    "target_evidence": [
+      "76.6%",
+      "480"
+    ]
+  },
+  {
+    "source": "M02",
+    "text": "Equations",
+    "target": "B07",
+    "relationship": "direct",
+    "supplement": "Operational and amortized embodied carbon, Equations (1)-(5).",
+    "target_evidence": [
+      "Equation",
+      "carbon"
+    ]
+  },
+  {
+    "source": "M03",
+    "text": "Grid CI",
+    "target": "B01",
+    "relationship": "direct",
+    "supplement": "Grid carbon-intensity differences and temporal variation.",
+    "target_evidence": [
+      "carbon"
+    ]
+  },
+  {
+    "source": "M03",
+    "text": "Adapt Illustration",
+    "target": "B08",
+    "relationship": "direct",
+    "supplement": "Conceptual load/CI capacity illustration, not measured ablation.",
+    "target_evidence": [
+      "illustration",
+      "forecast"
+    ]
+  },
+  {
+    "source": "M04",
+    "text": "Embodied Carbon",
+    "target": "B06",
+    "relationship": "direct",
+    "supplement": "Table 1 hardware embodied carbon and allocation accounting.",
+    "target_evidence": [
+      "76.6%",
+      "480"
+    ]
+  },
+  {
+    "source": "M04",
+    "text": "Carbon Model",
+    "target": "B07",
+    "relationship": "direct",
+    "supplement": "Operational and amortized embodied carbon, Equations (1)-(5).",
+    "target_evidence": [
+      "Equation",
+      "carbon"
+    ]
+  },
+  {
+    "source": "M05",
+    "text": "Profiles",
+    "target": "B09",
+    "relationship": "direct",
+    "supplement": "Figure 11 request-rate/capacity profiling heatmaps and feasibility background.",
+    "target_evidence": [
+      "Fig. 11",
+      "profiling background",
+      "Fig. 15 ablation is on M18"
+    ]
+  },
+  {
+    "source": "M05",
+    "text": "Predictors",
+    "target": "B12",
+    "relationship": "direct",
+    "supplement": "Load and CI predictors supplying solver inputs; not all profiling/feedback details.",
+    "target_evidence": [
+      "SARIMA",
+      "EnsembleCI"
+    ]
+  },
+  {
+    "source": "M06",
+    "text": "Full ILP",
+    "target": "B10",
+    "relationship": "direct",
+    "supplement": "Full Equation (6), decision variables and carbon objective.",
+    "target_evidence": [
+      "Eq. (6)",
+      "PuLP",
+      "CBC"
+    ]
+  },
+  {
+    "source": "M06",
+    "text": "SLO Numbers",
+    "target": "B11",
+    "relationship": "direct",
+    "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+    "target_evidence": [
+      "90%",
+      "4.0"
+    ]
+  },
+  {
+    "source": "M06",
+    "text": "Solver Time",
+    "target": "B18",
+    "relationship": "direct",
+    "supplement": "Controller solve time per resize, not token-path latency.",
+    "target_evidence": [
+      "7.03",
+      "controller"
+    ]
+  },
+  {
+    "source": "M06",
+    "text": "Resize Interval",
+    "target": "B20",
+    "relationship": "direct",
+    "supplement": "Resize-interval sensitivity relative to the hourly default.",
+    "target_evidence": [
+      "15",
+      "30",
+      "hour"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "1. Decision Variable — S",
+    "target": "B10",
+    "relationship": "direct",
+    "supplement": "Full Equation (6), decision variables and carbon objective.",
+    "target_evidence": [
+      "Eq. (6)",
+      "PuLP",
+      "CBC"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "2. Candidate Set — S",
+    "target": "B24",
+    "relationship": "direct",
+    "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+    "target_evidence": [
+      "1 TB",
+      "warm-up",
+      "constant"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "3. Operational Carbon",
+    "target": "B07",
+    "relationship": "direct",
+    "supplement": "Operational and amortized embodied carbon, Equations (1)-(5).",
+    "target_evidence": [
+      "Equation",
+      "carbon"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "4. Embodied Carbon",
+    "target": "B10",
+    "relationship": "direct",
+    "supplement": "Full Equation (6), decision variables and carbon objective.",
+    "target_evidence": [
+      "Eq. (6)",
+      "PuLP",
+      "CBC"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "5. Model Inputs",
+    "target": "B12",
+    "relationship": "background",
+    "supplement": "Load and CI predictors supplying solver inputs; not all profiling/feedback details.",
+    "target_evidence": [
+      "SARIMA",
+      "EnsembleCI"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "Variables",
+    "target": "B10",
+    "relationship": "direct",
+    "supplement": "Full Equation (6), decision variables and carbon objective.",
+    "target_evidence": [
+      "Eq. (6)",
+      "PuLP",
+      "CBC"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "Carbon",
+    "target": "B07",
+    "relationship": "direct",
+    "supplement": "Operational and amortized embodied carbon, Equations (1)-(5).",
+    "target_evidence": [
+      "Equation",
+      "carbon"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "Inputs",
+    "target": "B12",
+    "relationship": "background",
+    "supplement": "Load and CI predictors supplying solver inputs; not all profiling/feedback details.",
+    "target_evidence": [
+      "SARIMA",
+      "EnsembleCI"
+    ]
+  },
+  {
+    "source": "M07",
+    "text": "Candidates",
+    "target": "B24",
+    "relationship": "direct",
+    "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+    "target_evidence": [
+      "1 TB",
+      "warm-up",
+      "constant"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "1. TTFT Attainment",
+    "target": "B11",
+    "relationship": "direct",
+    "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+    "target_evidence": [
+      "90%",
+      "4.0"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "2. TPOT Attainment",
+    "target": "B11",
+    "relationship": "direct",
+    "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+    "target_evidence": [
+      "90%",
+      "4.0"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "3. Feasible Cache Sizes",
+    "target": "B24",
+    "relationship": "direct",
+    "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+    "target_evidence": [
+      "1 TB",
+      "warm-up",
+      "constant"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "4. Decision Interval",
+    "target": "B24",
+    "relationship": "direct",
+    "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+    "target_evidence": [
+      "1 TB",
+      "warm-up",
+      "constant"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "5. Profile-Based Feasibility",
+    "target": "B09",
+    "relationship": "background",
+    "supplement": "Figure 11 request-rate/capacity profiling heatmaps and feasibility background.",
+    "target_evidence": [
+      "Fig. 11",
+      "profiling background",
+      "Fig. 15 ablation is on M18"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "SLO Constraints",
+    "target": "B11",
+    "relationship": "direct",
+    "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+    "target_evidence": [
+      "90%",
+      "4.0"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "Assumptions",
+    "target": "B24",
+    "relationship": "direct",
+    "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+    "target_evidence": [
+      "1 TB",
+      "warm-up",
+      "constant"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "Full ILP",
+    "target": "B10",
+    "relationship": "direct",
+    "supplement": "Full Equation (6), decision variables and carbon objective.",
+    "target_evidence": [
+      "Eq. (6)",
+      "PuLP",
+      "CBC"
+    ]
+  },
+  {
+    "source": "M08",
+    "text": "Profiles",
+    "target": "B09",
+    "relationship": "background",
+    "supplement": "Figure 11 request-rate/capacity profiling heatmaps and feasibility background.",
+    "target_evidence": [
+      "Fig. 11",
+      "profiling background",
+      "Fig. 15 ablation is on M18"
+    ]
+  },
+  {
+    "source": "M09",
+    "text": "Multi-turn Example",
+    "target": "B13",
+    "relationship": "direct",
+    "supplement": "Hypothetical task-specific Eq. (8) arithmetic; not an Eq. (7) experiment.",
+    "target_evidence": [
+      "Eq. (8)",
+      "Hypothetical",
+      "Evict A first"
+    ]
+  },
+  {
+    "source": "M09",
+    "text": "Document QA Example",
+    "target": "B25",
+    "relationship": "direct",
+    "supplement": "Hypothetical task-specific Eq. (9) scoring; not workload-generation evidence.",
+    "target_evidence": [
+      "Eq. (9)",
+      "Hypothetical",
+      "Evict A first"
+    ]
+  },
+  {
+    "source": "M10",
+    "text": "Worked Example (Eq. 8)",
+    "target": "B13",
+    "relationship": "direct",
+    "supplement": "Hypothetical task-specific Eq. (8) arithmetic; not an Eq. (7) experiment.",
+    "target_evidence": [
+      "Eq. (8)",
+      "Hypothetical",
+      "Evict A first"
+    ]
+  },
+  {
+    "source": "M11",
+    "text": "Worked Example (Eq. 9)",
+    "target": "B25",
+    "relationship": "direct",
+    "supplement": "Hypothetical task-specific Eq. (9) scoring; not workload-generation evidence.",
+    "target_evidence": [
+      "Eq. (9)",
+      "Hypothetical",
+      "Evict A first"
+    ]
+  },
+  {
+    "source": "M11",
+    "text": "TriviaQA Workload / Zipf α",
+    "target": "B27",
+    "relationship": "direct",
+    "supplement": "TriviaQA Zipf skew, arrivals, warm-up and distinction from LCS scoring.",
+    "target_evidence": [
+      "Zipf",
+      "Poisson",
+      "50k prompts",
+      "Equation (9)"
+    ]
+  },
+  {
+    "source": "M12",
+    "text": "TriviaQA, α = 0.7;",
+    "target": "B27",
+    "relationship": "direct",
+    "supplement": "TriviaQA Zipf skew, arrivals, warm-up and distinction from LCS scoring.",
+    "target_evidence": [
+      "Zipf",
+      "Poisson",
+      "50k prompts",
+      "Equation (9)"
+    ]
+  },
+  {
+    "source": "M12",
+    "text": "Full Table 3",
+    "target": "B26",
+    "relationship": "direct",
+    "supplement": "Complete 45-value Table 3 token-hit-rate comparison; not carbon reduction.",
+    "target_evidence": [
+      "Table 3",
+      "does not directly measure"
+    ]
+  },
+  {
+    "source": "M13",
+    "text": "Measurement Notes",
+    "target": "B14",
+    "relationship": "direct",
+    "supplement": "Prototype measurement and trace methodology.",
+    "target_evidence": [
+      "RAPL",
+      "pyNVML",
+      "1 ms"
+    ]
+  },
+  {
+    "source": "M14",
+    "text": "TriviaQA",
+    "target": "B27",
+    "relationship": "direct",
+    "supplement": "TriviaQA Zipf skew, arrivals, warm-up and distinction from LCS scoring.",
+    "target_evidence": [
+      "Zipf",
+      "Poisson",
+      "50k prompts",
+      "Equation (9)"
+    ]
+  },
+  {
+    "source": "M14",
+    "text": "SLO Thresholds",
+    "target": "B11",
+    "relationship": "direct",
+    "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+    "target_evidence": [
+      "90%",
+      "4.0"
+    ]
+  },
+  {
+    "source": "M15",
+    "text": "Llama-3 8B",
+    "target": "B15",
+    "relationship": "direct",
+    "supplement": "Llama-3 8B carbon results, with different hardware/configuration.",
+    "target_evidence": [
+      "8B",
+      "BF16"
+    ]
+  },
+  {
+    "source": "M16",
+    "text": "8B Timelines",
+    "target": "B16",
+    "relationship": "direct",
+    "supplement": "Llama-3 8B TTFT/TPOT time series and threshold discrepancy.",
+    "target_evidence": [
+      "8B",
+      "TTFT",
+      "TPOT"
+    ]
+  },
+  {
+    "source": "M17",
+    "text": "Document Timeline",
+    "target": "B17",
+    "relationship": "direct",
+    "supplement": "Document-QA carbon/capacity timeline, complementing multi-turn.",
+    "target_evidence": [
+      "document",
+      "16"
+    ]
+  },
+  {
+    "source": "M18",
+    "text": "Capacity Profiling (Background)",
+    "target": "B09",
+    "relationship": "background",
+    "supplement": "Figure 11 request-rate/capacity profiling heatmaps and feasibility background.",
+    "target_evidence": [
+      "Fig. 11",
+      "profiling background",
+      "Fig. 15 ablation is on M18"
+    ]
+  },
+  {
+    "source": "M19",
+    "text": "Limits / Our Future Work",
+    "target": "B23",
+    "relationship": "direct",
+    "supplement": "Paper limitations and explicitly our cross-region/HBM-HBF future work.",
+    "target_evidence": [
+      "Future work, ours",
+      "Nothing in this paper measures multi-region"
+    ]
+  }
+]

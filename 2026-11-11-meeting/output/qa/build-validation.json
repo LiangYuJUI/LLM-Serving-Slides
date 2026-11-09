@@ -1,0 +1,17 @@
+{
+  "pdf_sha256": "77b5cac543cf86c519329741141acbbe4b03726ffab4ffead1519f95fadfbab2",
+  "zip_sha256": "6faf771b476c4be46e6c6193ccb83340e060463b2d68445c3d1e843e81b3acf1",
+  "source_sha256": "476e6cedb3e88a4255da6253cc885890080f3622d53d6202c6981d0baee2595c",
+  "local_passes": 2,
+  "standalone_zip_passes": 2,
+  "pages": 48,
+  "parity": {
+    "text": true,
+    "pixels": true,
+    "destinations": true,
+    "annotation_rectangles": true,
+    "annotation_text": true
+  },
+  "local_warnings": [],
+  "standalone_zip_warnings": []
+}

@@ -1,8 +1,909 @@
 {
   "pdf_pages": 48,
+  "build_validation": {
+    "pdf_sha256": "77b5cac543cf86c519329741141acbbe4b03726ffab4ffead1519f95fadfbab2",
+    "zip_sha256": "6faf771b476c4be46e6c6193ccb83340e060463b2d68445c3d1e843e81b3acf1",
+    "source_sha256": "476e6cedb3e88a4255da6253cc885890080f3622d53d6202c6981d0baee2595c",
+    "local_passes": 2,
+    "standalone_zip_passes": 2,
+    "pages": 48,
+    "parity": {
+      "text": true,
+      "pixels": true,
+      "destinations": true,
+      "annotation_rectangles": true,
+      "annotation_text": true
+    },
+    "local_warnings": [],
+    "standalone_zip_warnings": []
+  },
   "main_pages": 19,
+  "index_pages": 1,
+  "backup_pages": 28,
+  "broken_links": 0,
+  "overlapping_link_rectangles": 0,
+  "main_backup_entries": 46,
+  "main_backup_pairs": 36,
+  "main_backup_semantic_audit": [
+    {
+      "source": "M02",
+      "text": "KV Reuse",
+      "target": "B00",
+      "relationship": "direct",
+      "supplement": "KV reuse and prefill/load latency example; not end-to-end speedup.",
+      "target_evidence": [
+        "1.7",
+        "0.03"
+      ],
+      "source_question": "Why Do We Need GreenCache?",
+      "primary_return": "M02",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M02",
+      "text": "Table 1",
+      "target": "B06",
+      "relationship": "direct",
+      "supplement": "Table 1 hardware embodied carbon and allocation accounting.",
+      "target_evidence": [
+        "76.6%",
+        "480"
+      ],
+      "source_question": "Why Do We Need GreenCache?",
+      "primary_return": "M04",
+      "other_return_links": [
+        "M02"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M02",
+      "text": "Equations",
+      "target": "B07",
+      "relationship": "direct",
+      "supplement": "Operational and amortized embodied carbon, Equations (1)-(5).",
+      "target_evidence": [
+        "Equation",
+        "carbon"
+      ],
+      "source_question": "Why Do We Need GreenCache?",
+      "primary_return": "M04",
+      "other_return_links": [
+        "M02",
+        "M07"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M03",
+      "text": "Grid CI",
+      "target": "B01",
+      "relationship": "direct",
+      "supplement": "Grid carbon-intensity differences and temporal variation.",
+      "target_evidence": [
+        "carbon"
+      ],
+      "source_question": "Why Is a Fixed Cache Size Suboptimal?",
+      "primary_return": "M03",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M03",
+      "text": "Adapt Illustration",
+      "target": "B08",
+      "relationship": "direct",
+      "supplement": "Conceptual load/CI capacity illustration, not measured ablation.",
+      "target_evidence": [
+        "illustration",
+        "forecast"
+      ],
+      "source_question": "Why Is a Fixed Cache Size Suboptimal?",
+      "primary_return": "M03",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M04",
+      "text": "Embodied Carbon",
+      "target": "B06",
+      "relationship": "direct",
+      "supplement": "Table 1 hardware embodied carbon and allocation accounting.",
+      "target_evidence": [
+        "76.6%",
+        "480"
+      ],
+      "source_question": "What Does GreenCache Optimize?",
+      "primary_return": "M04",
+      "other_return_links": [
+        "M02"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M04",
+      "text": "Carbon Model",
+      "target": "B07",
+      "relationship": "direct",
+      "supplement": "Operational and amortized embodied carbon, Equations (1)-(5).",
+      "target_evidence": [
+        "Equation",
+        "carbon"
+      ],
+      "source_question": "What Does GreenCache Optimize?",
+      "primary_return": "M04",
+      "other_return_links": [
+        "M02",
+        "M07"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M05",
+      "text": "Profiles",
+      "target": "B09",
+      "relationship": "direct",
+      "supplement": "Figure 11 request-rate/capacity profiling heatmaps and feasibility background.",
+      "target_evidence": [
+        "Fig. 11",
+        "profiling background",
+        "Fig. 15 ablation is on M18"
+      ],
+      "source_question": "How Does GreenCache Work? (1/2): Monitoring \\& Prediction",
+      "primary_return": "M05",
+      "other_return_links": [
+        "M08",
+        "M18"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M05",
+      "text": "Predictors",
+      "target": "B12",
+      "relationship": "direct",
+      "supplement": "Load and CI predictors supplying solver inputs; not all profiling/feedback details.",
+      "target_evidence": [
+        "SARIMA",
+        "EnsembleCI"
+      ],
+      "source_question": "How Does GreenCache Work? (1/2): Monitoring \\& Prediction",
+      "primary_return": "M05",
+      "other_return_links": [
+        "M07"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M06",
+      "text": "Full ILP",
+      "target": "B10",
+      "relationship": "direct",
+      "supplement": "Full Equation (6), decision variables and carbon objective.",
+      "target_evidence": [
+        "Eq. (6)",
+        "PuLP",
+        "CBC"
+      ],
+      "source_question": "How Does GreenCache Work? (2/2): Optimization \\& Execution",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M06",
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M06",
+      "text": "SLO Numbers",
+      "target": "B11",
+      "relationship": "direct",
+      "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+      "target_evidence": [
+        "90%",
+        "4.0"
+      ],
+      "source_question": "How Does GreenCache Work? (2/2): Optimization \\& Execution",
+      "primary_return": "M08",
+      "other_return_links": [
+        "M06",
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M06",
+      "text": "Solver Time",
+      "target": "B18",
+      "relationship": "direct",
+      "supplement": "Controller solve time per resize, not token-path latency.",
+      "target_evidence": [
+        "7.03",
+        "controller"
+      ],
+      "source_question": "How Does GreenCache Work? (2/2): Optimization \\& Execution",
+      "primary_return": "M06",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M06",
+      "text": "Resize Interval",
+      "target": "B20",
+      "relationship": "direct",
+      "supplement": "Resize-interval sensitivity relative to the hourly default.",
+      "target_evidence": [
+        "15",
+        "30",
+        "hour"
+      ],
+      "source_question": "How Does GreenCache Work? (2/2): Optimization \\& Execution",
+      "primary_return": "M06",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "1. Decision Variable \u2014 S",
+      "target": "B10",
+      "relationship": "direct",
+      "supplement": "Full Equation (6), decision variables and carbon objective.",
+      "target_evidence": [
+        "Eq. (6)",
+        "PuLP",
+        "CBC"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M06",
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "2. Candidate Set \u2014 S",
+      "target": "B24",
+      "relationship": "direct",
+      "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+      "target_evidence": [
+        "1 TB",
+        "warm-up",
+        "constant"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "3. Operational Carbon",
+      "target": "B07",
+      "relationship": "direct",
+      "supplement": "Operational and amortized embodied carbon, Equations (1)-(5).",
+      "target_evidence": [
+        "Equation",
+        "carbon"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M04",
+      "other_return_links": [
+        "M02",
+        "M07"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "4. Embodied Carbon",
+      "target": "B10",
+      "relationship": "direct",
+      "supplement": "Full Equation (6), decision variables and carbon objective.",
+      "target_evidence": [
+        "Eq. (6)",
+        "PuLP",
+        "CBC"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M06",
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "5. Model Inputs",
+      "target": "B12",
+      "relationship": "background",
+      "supplement": "Load and CI predictors supplying solver inputs; not all profiling/feedback details.",
+      "target_evidence": [
+        "SARIMA",
+        "EnsembleCI"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M05",
+      "other_return_links": [
+        "M07"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "Variables",
+      "target": "B10",
+      "relationship": "direct",
+      "supplement": "Full Equation (6), decision variables and carbon objective.",
+      "target_evidence": [
+        "Eq. (6)",
+        "PuLP",
+        "CBC"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M06",
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "Carbon",
+      "target": "B07",
+      "relationship": "direct",
+      "supplement": "Operational and amortized embodied carbon, Equations (1)-(5).",
+      "target_evidence": [
+        "Equation",
+        "carbon"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M04",
+      "other_return_links": [
+        "M02",
+        "M07"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "Inputs",
+      "target": "B12",
+      "relationship": "background",
+      "supplement": "Load and CI predictors supplying solver inputs; not all profiling/feedback details.",
+      "target_evidence": [
+        "SARIMA",
+        "EnsembleCI"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M05",
+      "other_return_links": [
+        "M07"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M07",
+      "text": "Candidates",
+      "target": "B24",
+      "relationship": "direct",
+      "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+      "target_evidence": [
+        "1 TB",
+        "warm-up",
+        "constant"
+      ],
+      "source_question": "How Does the Solver Decide? (1/2): Variables \\& Inputs",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "1. TTFT Attainment",
+      "target": "B11",
+      "relationship": "direct",
+      "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+      "target_evidence": [
+        "90%",
+        "4.0"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M08",
+      "other_return_links": [
+        "M06",
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "2. TPOT Attainment",
+      "target": "B11",
+      "relationship": "direct",
+      "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+      "target_evidence": [
+        "90%",
+        "4.0"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M08",
+      "other_return_links": [
+        "M06",
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "3. Feasible Cache Sizes",
+      "target": "B24",
+      "relationship": "direct",
+      "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+      "target_evidence": [
+        "1 TB",
+        "warm-up",
+        "constant"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "4. Decision Interval",
+      "target": "B24",
+      "relationship": "direct",
+      "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+      "target_evidence": [
+        "1 TB",
+        "warm-up",
+        "constant"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "5. Profile-Based Feasibility",
+      "target": "B09",
+      "relationship": "background",
+      "supplement": "Figure 11 request-rate/capacity profiling heatmaps and feasibility background.",
+      "target_evidence": [
+        "Fig. 11",
+        "profiling background",
+        "Fig. 15 ablation is on M18"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M05",
+      "other_return_links": [
+        "M08",
+        "M18"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "SLO Constraints",
+      "target": "B11",
+      "relationship": "direct",
+      "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+      "target_evidence": [
+        "90%",
+        "4.0"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M08",
+      "other_return_links": [
+        "M06",
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "Assumptions",
+      "target": "B24",
+      "relationship": "direct",
+      "supplement": "Discrete capacity domain, configured maxima and hourly/profile assumptions.",
+      "target_evidence": [
+        "1 TB",
+        "warm-up",
+        "constant"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "Full ILP",
+      "target": "B10",
+      "relationship": "direct",
+      "supplement": "Full Equation (6), decision variables and carbon objective.",
+      "target_evidence": [
+        "Eq. (6)",
+        "PuLP",
+        "CBC"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M07",
+      "other_return_links": [
+        "M06",
+        "M08"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M08",
+      "text": "Profiles",
+      "target": "B09",
+      "relationship": "background",
+      "supplement": "Figure 11 request-rate/capacity profiling heatmaps and feasibility background.",
+      "target_evidence": [
+        "Fig. 11",
+        "profiling background",
+        "Fig. 15 ablation is on M18"
+      ],
+      "source_question": "How Does the Solver Decide? (2/2): Constraints",
+      "primary_return": "M05",
+      "other_return_links": [
+        "M08",
+        "M18"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M09",
+      "text": "Multi-turn Example",
+      "target": "B13",
+      "relationship": "direct",
+      "supplement": "Hypothetical task-specific Eq. (8) arithmetic; not an Eq. (7) experiment.",
+      "target_evidence": [
+        "Eq. (8)",
+        "Hypothetical",
+        "Evict A first"
+      ],
+      "source_question": "How Does LCS Rank KV Cache Entries?",
+      "primary_return": "M10",
+      "other_return_links": [
+        "M09",
+        "M11",
+        "M12"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M09",
+      "text": "Document QA Example",
+      "target": "B25",
+      "relationship": "direct",
+      "supplement": "Hypothetical task-specific Eq. (9) scoring; not workload-generation evidence.",
+      "target_evidence": [
+        "Eq. (9)",
+        "Hypothetical",
+        "Evict A first"
+      ],
+      "source_question": "How Does LCS Rank KV Cache Entries?",
+      "primary_return": "M11",
+      "other_return_links": [
+        "M09",
+        "M10",
+        "M12"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M10",
+      "text": "Worked Example (Eq. 8)",
+      "target": "B13",
+      "relationship": "direct",
+      "supplement": "Hypothetical task-specific Eq. (8) arithmetic; not an Eq. (7) experiment.",
+      "target_evidence": [
+        "Eq. (8)",
+        "Hypothetical",
+        "Evict A first"
+      ],
+      "source_question": "How Does LCS Work for Multi-Turn Conversations?",
+      "primary_return": "M10",
+      "other_return_links": [
+        "M09",
+        "M11",
+        "M12"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M11",
+      "text": "Worked Example (Eq. 9)",
+      "target": "B25",
+      "relationship": "direct",
+      "supplement": "Hypothetical task-specific Eq. (9) scoring; not workload-generation evidence.",
+      "target_evidence": [
+        "Eq. (9)",
+        "Hypothetical",
+        "Evict A first"
+      ],
+      "source_question": "How Does LCS Work for Document QA?",
+      "primary_return": "M11",
+      "other_return_links": [
+        "M09",
+        "M10",
+        "M12"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M11",
+      "text": "TriviaQA Workload / Zipf \u03b1",
+      "target": "B27",
+      "relationship": "direct",
+      "supplement": "TriviaQA Zipf skew, arrivals, warm-up and distinction from LCS scoring.",
+      "target_evidence": [
+        "Zipf",
+        "Poisson",
+        "50k prompts",
+        "Equation (9)"
+      ],
+      "source_question": "How Does LCS Work for Document QA?",
+      "primary_return": "M12",
+      "other_return_links": [
+        "M11",
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M12",
+      "text": "TriviaQA, \u03b1 = 0.7;",
+      "target": "B27",
+      "relationship": "direct",
+      "supplement": "TriviaQA Zipf skew, arrivals, warm-up and distinction from LCS scoring.",
+      "target_evidence": [
+        "Zipf",
+        "Poisson",
+        "50k prompts",
+        "Equation (9)"
+      ],
+      "source_question": "Why Use LCS Instead of FIFO or LRU?",
+      "primary_return": "M12",
+      "other_return_links": [
+        "M11",
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M12",
+      "text": "Full Table 3",
+      "target": "B26",
+      "relationship": "direct",
+      "supplement": "Complete 45-value Table 3 token-hit-rate comparison; not carbon reduction.",
+      "target_evidence": [
+        "Table 3",
+        "does not directly measure"
+      ],
+      "source_question": "Why Use LCS Instead of FIFO or LRU?",
+      "primary_return": "M12",
+      "other_return_links": [
+        "M09",
+        "M10",
+        "M11"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M13",
+      "text": "Measurement Notes",
+      "target": "B14",
+      "relationship": "direct",
+      "supplement": "Prototype measurement and trace methodology.",
+      "target_evidence": [
+        "RAPL",
+        "pyNVML",
+        "1 ms"
+      ],
+      "source_question": "Real Prototype or Simulator?",
+      "primary_return": "M13",
+      "other_return_links": [
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M14",
+      "text": "TriviaQA",
+      "target": "B27",
+      "relationship": "direct",
+      "supplement": "TriviaQA Zipf skew, arrivals, warm-up and distinction from LCS scoring.",
+      "target_evidence": [
+        "Zipf",
+        "Poisson",
+        "50k prompts",
+        "Equation (9)"
+      ],
+      "source_question": "How Is GreenCache Evaluated?",
+      "primary_return": "M12",
+      "other_return_links": [
+        "M11",
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M14",
+      "text": "SLO Thresholds",
+      "target": "B11",
+      "relationship": "direct",
+      "supplement": "Separate TTFT/TPOT attainment and numeric thresholds; paper discrepancy retained.",
+      "target_evidence": [
+        "90%",
+        "4.0"
+      ],
+      "source_question": "How Is GreenCache Evaluated?",
+      "primary_return": "M08",
+      "other_return_links": [
+        "M06",
+        "M14"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M15",
+      "text": "Llama-3 8B",
+      "target": "B15",
+      "relationship": "direct",
+      "supplement": "Llama-3 8B carbon results, with different hardware/configuration.",
+      "target_evidence": [
+        "8B",
+        "BF16"
+      ],
+      "source_question": "Q1: Does GreenCache Reduce Carbon?",
+      "primary_return": "M15",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M16",
+      "text": "8B Timelines",
+      "target": "B16",
+      "relationship": "direct",
+      "supplement": "Llama-3 8B TTFT/TPOT time series and threshold discrepancy.",
+      "target_evidence": [
+        "8B",
+        "TTFT",
+        "TPOT"
+      ],
+      "source_question": "Q2: Does GreenCache Still Meet SLOs?",
+      "primary_return": "M16",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M17",
+      "text": "Document Timeline",
+      "target": "B17",
+      "relationship": "direct",
+      "supplement": "Document-QA carbon/capacity timeline, complementing multi-turn.",
+      "target_evidence": [
+        "document",
+        "16"
+      ],
+      "source_question": "Q3: Does Capacity Track Load and CI?",
+      "primary_return": "M17",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M18",
+      "text": "Capacity Profiling (Background)",
+      "target": "B09",
+      "relationship": "background",
+      "supplement": "Figure 11 request-rate/capacity profiling heatmaps and feasibility background.",
+      "target_evidence": [
+        "Fig. 11",
+        "profiling background",
+        "Fig. 15 ablation is on M18"
+      ],
+      "source_question": "Q4: Does Adaptive Sizing Help?",
+      "primary_return": "M05",
+      "other_return_links": [
+        "M08",
+        "M18"
+      ],
+      "visible_return": true,
+      "semantic_mismatch": false
+    },
+    {
+      "source": "M19",
+      "text": "Limits / Our Future Work",
+      "target": "B23",
+      "relationship": "direct",
+      "supplement": "Paper limitations and explicitly our cross-region/HBM-HBF future work.",
+      "target_evidence": [
+        "Future work, ours",
+        "Nothing in this paper measures multi-region"
+      ],
+      "source_question": "Conclusion",
+      "primary_return": "M19",
+      "other_return_links": [],
+      "visible_return": true,
+      "semantic_mismatch": false
+    }
+  ],
+  "backups_without_direct_main_entry": [
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B19",
+    "B21",
+    "B22"
+  ],
   "backup_pages_including_index": 29,
-  "internal_links_checked": 274,
+  "internal_links_checked": 280,
   "backup_navigation_audit": [
     {
       "label": "B00",
@@ -12,8 +913,7 @@
       "discussion_index": true,
       "cross_links": [
         "B02",
-        "B03",
-        "Navigation21"
+        "B03"
       ]
     },
     {
@@ -23,8 +923,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B02",
-        "Navigation21"
+        "B02"
       ]
     },
     {
@@ -35,8 +934,7 @@
       "discussion_index": true,
       "cross_links": [
         "B00",
-        "B03",
-        "Navigation21"
+        "B03"
       ]
     },
     {
@@ -47,8 +945,7 @@
       "discussion_index": true,
       "cross_links": [
         "B00",
-        "B04",
-        "Navigation21"
+        "B04"
       ]
     },
     {
@@ -58,8 +955,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B05",
-        "Navigation21"
+        "B05"
       ]
     },
     {
@@ -69,8 +965,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B06",
-        "Navigation21"
+        "B06"
       ]
     },
     {
@@ -81,8 +976,7 @@
       "discussion_index": true,
       "cross_links": [
         "B07",
-        "M02",
-        "Navigation21"
+        "M02"
       ]
     },
     {
@@ -94,8 +988,7 @@
       "cross_links": [
         "B08",
         "M02",
-        "M07",
-        "Navigation21"
+        "M07"
       ]
     },
     {
@@ -105,8 +998,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B09",
-        "Navigation21"
+        "B09"
       ]
     },
     {
@@ -118,8 +1010,7 @@
       "cross_links": [
         "B10",
         "M08",
-        "M18",
-        "Navigation30"
+        "M18"
       ]
     },
     {
@@ -132,8 +1023,7 @@
         "B11",
         "B18",
         "M06",
-        "M08",
-        "Navigation30"
+        "M08"
       ]
     },
     {
@@ -145,8 +1035,7 @@
       "cross_links": [
         "B12",
         "M06",
-        "M14",
-        "Navigation30"
+        "M14"
       ]
     },
     {
@@ -157,8 +1046,7 @@
       "discussion_index": true,
       "cross_links": [
         "B13",
-        "M07",
-        "Navigation30"
+        "M07"
       ]
     },
     {
@@ -170,8 +1058,7 @@
       "cross_links": [
         "M09",
         "M11",
-        "M12",
-        "Navigation30"
+        "M12"
       ]
     },
     {
@@ -182,8 +1069,7 @@
       "discussion_index": true,
       "cross_links": [
         "B15",
-        "M14",
-        "Navigation35"
+        "M14"
       ]
     },
     {
@@ -193,8 +1079,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B16",
-        "Navigation35"
+        "B16"
       ]
     },
     {
@@ -204,8 +1089,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B17",
-        "Navigation35"
+        "B17"
       ]
     },
     {
@@ -215,8 +1099,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B18",
-        "Navigation35"
+        "B18"
       ]
     },
     {
@@ -226,8 +1109,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B19",
-        "Navigation35"
+        "B19"
       ]
     },
     {
@@ -237,8 +1119,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B20",
-        "Navigation40"
+        "B20"
       ]
     },
     {
@@ -248,8 +1129,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B21",
-        "Navigation40"
+        "B21"
       ]
     },
     {
@@ -259,8 +1139,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B22",
-        "Navigation40"
+        "B22"
       ]
     },
     {
@@ -270,8 +1149,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "B23",
-        "Navigation40"
+        "B23"
       ]
     },
     {
@@ -280,9 +1158,7 @@
       "primary_main": "M19",
       "back_to_main": true,
       "discussion_index": true,
-      "cross_links": [
-        "Navigation40"
-      ]
+      "cross_links": []
     },
     {
       "label": "B24",
@@ -291,8 +1167,7 @@
       "back_to_main": true,
       "discussion_index": true,
       "cross_links": [
-        "M08",
-        "Navigation45"
+        "M08"
       ]
     },
     {
@@ -305,8 +1180,7 @@
         "B27",
         "M09",
         "M10",
-        "M12",
-        "Navigation45"
+        "M12"
       ]
     },
     {
@@ -319,8 +1193,7 @@
         "B25",
         "B26",
         "M11",
-        "M14",
-        "Navigation45"
+        "M14"
       ]
     },
     {
@@ -333,8 +1206,7 @@
         "B27",
         "M09",
         "M10",
-        "M11",
-        "Navigation45"
+        "M11"
       ]
     }
   ],
@@ -369,7 +1241,7 @@
     {
       "page": 6,
       "label": "M06",
-      "lower_empty_ratio": 0.882
+      "lower_empty_ratio": 0.864
     },
     {
       "page": 7,
@@ -384,17 +1256,17 @@
     {
       "page": 9,
       "label": "M09",
-      "lower_empty_ratio": 0.391
+      "lower_empty_ratio": 0.358
     },
     {
       "page": 10,
       "label": "M10",
-      "lower_empty_ratio": 0.421
+      "lower_empty_ratio": 0.412
     },
     {
       "page": 11,
       "label": "M11",
-      "lower_empty_ratio": 0.479
+      "lower_empty_ratio": 0.463
     },
     {
       "page": 12,
@@ -429,17 +1301,17 @@
     {
       "page": 18,
       "label": "M18",
-      "lower_empty_ratio": 0.878
+      "lower_empty_ratio": 0.871
     },
     {
       "page": 19,
       "label": "M19",
-      "lower_empty_ratio": 0.41
+      "lower_empty_ratio": 0.408
     },
     {
       "page": 20,
       "label": "INDEX",
-      "lower_empty_ratio": 0.809
+      "lower_empty_ratio": 0.804
     },
     {
       "page": 21,
@@ -474,7 +1346,7 @@
     {
       "page": 27,
       "label": "B06",
-      "lower_empty_ratio": 0.894
+      "lower_empty_ratio": 0.886
     },
     {
       "page": 28,
@@ -489,32 +1361,32 @@
     {
       "page": 30,
       "label": "B09",
-      "lower_empty_ratio": 0.843
+      "lower_empty_ratio": 0.822
     },
     {
       "page": 31,
       "label": "B10",
-      "lower_empty_ratio": 0.843
+      "lower_empty_ratio": 0.83
     },
     {
       "page": 32,
       "label": "B11",
-      "lower_empty_ratio": 0.864
+      "lower_empty_ratio": 0.852
     },
     {
       "page": 33,
       "label": "B12",
-      "lower_empty_ratio": 0.923
+      "lower_empty_ratio": 0.917
     },
     {
       "page": 34,
       "label": "B13",
-      "lower_empty_ratio": 0.858
+      "lower_empty_ratio": 0.854
     },
     {
       "page": 35,
       "label": "B14",
-      "lower_empty_ratio": 0.917
+      "lower_empty_ratio": 0.911
     },
     {
       "page": 36,
@@ -564,22 +1436,22 @@
     {
       "page": 45,
       "label": "B24",
-      "lower_empty_ratio": 0.84
+      "lower_empty_ratio": 0.833
     },
     {
       "page": 46,
       "label": "B25",
-      "lower_empty_ratio": 0.856
+      "lower_empty_ratio": 0.853
     },
     {
       "page": 47,
       "label": "B27",
-      "lower_empty_ratio": 0.823
+      "lower_empty_ratio": 0.824
     },
     {
       "page": 48,
       "label": "B26",
-      "lower_empty_ratio": 0.869
+      "lower_empty_ratio": 0.867
     }
   ],
   "frames": [
@@ -1268,6 +2140,18 @@
     {
       "from_page": 6,
       "from_label": "M06",
+      "destination": "B18",
+      "to_page": 39
+    },
+    {
+      "from_page": 6,
+      "from_label": "M06",
+      "destination": "B20",
+      "to_page": 41
+    },
+    {
+      "from_page": 6,
+      "from_label": "M06",
       "destination": "Navigation1",
       "to_page": 1
     },
@@ -1412,6 +2296,18 @@
     {
       "from_page": 9,
       "from_label": "M09",
+      "destination": "B13",
+      "to_page": 34
+    },
+    {
+      "from_page": 9,
+      "from_label": "M09",
+      "destination": "B25",
+      "to_page": 46
+    },
+    {
+      "from_page": 9,
+      "from_label": "M09",
       "destination": "Navigation1",
       "to_page": 1
     },
@@ -1424,6 +2320,12 @@
     {
       "from_page": 10,
       "from_label": "M10",
+      "destination": "B13",
+      "to_page": 34
+    },
+    {
+      "from_page": 10,
+      "from_label": "M10",
       "destination": "INDEX",
       "to_page": 20
     },
@@ -1438,6 +2340,12 @@
       "from_label": "M10",
       "destination": "INDEX",
       "to_page": 20
+    },
+    {
+      "from_page": 11,
+      "from_label": "M11",
+      "destination": "B25",
+      "to_page": 46
     },
     {
       "from_page": 11,

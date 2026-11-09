@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Compile GreenCache twice, package the Overleaf ZIP, and compile that ZIP twice."""
 from pathlib import Path
+import hashlib
+import json
 import re
 import shutil
 import subprocess
@@ -26,14 +28,14 @@ def compile_twice(directory, source, output):
     errors = re.findall(r'^.*(?:Overfull|undefined|not found|Warning).*$', log, re.M)
     if errors:
         raise RuntimeError('\n'.join(errors[:80]))
-    return output / (Path(source).stem + '.pdf')
+    return output / (Path(source).stem + '.pdf'), re.findall(r'^.*(?:Underfull|Overfull|undefined|Warning).*$', log, re.M)
 
 
 def main():
     output = ROOT / 'output'
     with tempfile.TemporaryDirectory(prefix='greencache-build-') as tmp:
         temp = Path(tmp)
-        pdf = compile_twice(ROOT, SOURCE.name, temp / 'local')
+        pdf, local_warnings = compile_twice(ROOT, SOURCE.name, temp / 'local')
         (output / 'pdf').mkdir(parents=True, exist_ok=True)
         shutil.copy2(pdf, output / 'pdf' / '2026-11-11-GreenCache.pdf')
         (output / 'overleaf').mkdir(parents=True, exist_ok=True)
@@ -51,7 +53,7 @@ def main():
         with zipfile.ZipFile(archive) as z:
             assert z.testzip() is None
             z.extractall(extracted)
-        standalone = compile_twice(extracted, 'main.tex', extracted / 'build')
+        standalone, zip_warnings = compile_twice(extracted, 'main.tex', extracted / 'build')
         import pymupdf as fitz
         local, remote = fitz.open(pdf), fitz.open(standalone)
         assert len(local) == len(remote)
@@ -60,7 +62,21 @@ def main():
             assert a.get_pixmap().digest == b.get_pixmap().digest, index
             assert [(x.get('nameddest'), x.get('page')) for x in a.get_links()] == [
                 (x.get('nameddest'), x.get('page')) for x in b.get_links()], index
+        # Match click geometry and the visible text covered by each annotation too.
+        def annotations(page):
+            return [(x.get('nameddest'), x.get('page'), tuple(x['from']),
+                     page.get_textbox(x['from'])) for x in page.get_links()]
+        assert all(annotations(a) == annotations(b) for a, b in zip(local, remote))
         pages = len(local)
+        qa = output / 'qa'
+        qa.mkdir(parents=True, exist_ok=True)
+        report = dict(pdf_sha256=hashlib.sha256(pdf.read_bytes()).hexdigest(),
+                      zip_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),
+                      source_sha256=hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
+                      local_passes=2, standalone_zip_passes=2, pages=pages,
+                      parity=dict(text=True, pixels=True, destinations=True, annotation_rectangles=True, annotation_text=True),
+                      local_warnings=local_warnings, standalone_zip_warnings=zip_warnings)
+        (qa / 'build-validation.json').write_text(json.dumps(report, indent=2) + '\n')
         local.close()
         remote.close()
         print(f'PASS: local 2 passes; extracted ZIP 2 passes; {pages} identical rendered pages.')

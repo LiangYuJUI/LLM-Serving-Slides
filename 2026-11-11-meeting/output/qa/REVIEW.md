@@ -1,69 +1,46 @@
-# Visual and scientific QA — 2026-11-11 GreenCache
+# Visual and scientific QA — final Main–Backup alignment
 
-## Page order and layout
+## Baseline and scope
 
-- 19 Main pages + 29 Discussion/Backup pages (including the index) = 48 pages.
-- PDF 9 / M09: general Eq. (7), all variable meanings, lower score means earlier eviction, compact grow/shrink operations, and task-specific implementation distinction.
-- PDF 10 / M10: ShareGPT Eq. (8), conversation depth and accumulated token reuse, three-turn history-KV diagram.
-- PDF 11 / M11: TriviaQA Eq. (9), document hit count and accumulated reused document length, shared-prefix KV diagram. Both alpha settings use Eq. (9).
-- M10 and M11 use identical left/right column widths, formula font size, and formula position.
-- PDF 12 / M12 compares FIFO, LRU, and LCS by mechanism, limitation, and one representative result: Llama-3 70B, TriviaQA α=0.7, 4 TB, token-level hit rate 23% / 26% / 35%. The +9 percentage-point finding is LCS minus LRU, not a relative improvement and not carbon reduction. FIFO/LRU limitations are inferred from the mechanism. Full Table 3 is the clickable link to B26.
-- PDF 13–18 retain the prototype, settings, and four experiment pages. Conclusion is PDF 19. No experiment page was removed.
-- Discussion Index is PDF 20. B13 is PDF 34; B25 is PDF 46; B27 is PDF 47; B26 is PDF 48. B13 and B25 remain hypothetical scoring examples and link to M09–M12. B26 holds the only full Table 3 and links back to M09–M12.
-- B13 examples yield 200, 400, 600; B25 examples yield 1000, 2000, 3000. All use consistent GiB/hour units and evict A first. These are illustrative calculations, not paper experiments.
-- PDF 8 separates two groups. Group A is the Equation (6) attainment sums. Group B is labeled as the §5.4.2 modeling assumptions and states that Equation (6) does not list that group as mathematical constraints.
-- Inspected M11, M12, M14, INDEX, B02, B03, B13, B25, B27, and B26 at full rendered size. Text, bars, tables, source lines, and buttons are legible without clipping or overlap. See `navigation-review.png` and page PNGs.
+Baseline and fetched origin/main: `dfd9923a09d2b68ffb83df3f48745a8b200f6fa0`. Initial working tree was clean. Only `2026-11-11-meeting/` changed. The final deck retains 19 Main slides, 1 Discussion Index, and 28 Backup slides: 48 pages, original frame order and labels.
 
-## Build and navigation validation
+## Final navigation and semantic review
 
-- Local PDF: two clean pdfLaTeX passes; no Overfull, undefined-reference, or LaTeX warnings.
-- Extracted Overleaf ZIP: two passes; all 48 rendered pages, text, and link targets match the local PDF.
-- 274 internal links resolve to real destinations; every backup remains reachable and main-to-backup return links pass.
-- All 28 backups have a standard visible Back to Main button and a separate body Discussion Index button. The validator intersects their text boxes with actual PDF link annotation rectangles and resolves destinations. Footer links alone cannot pass.
-- B02 and B03 now return to M02 while keeping KV Reuse / Next. B13 returns to M10; B25 to M11; B26 and B27 to M12. Existing LCS cross-links remain.
-- M12 → B27 → M12 and M12 → B26 → M12 pass. M11, M14, B25, B26, and INDEX → B27 pass, as do all B27 cross-links. `navigation-audit.md` records every backup's page, primary main, and other links.
-- Frame labels are unique, all internal targets exist, and PDF destinations match frame-derived page numbers. Table 3 retains all 45 independently transcribed values. The 48-page total is a build result, not a hard-coded validator list.
-- All 20 embedded paper figures retain their source pixel hashes.
+- 280 internal PDF links, 0 broken destinations, 0 overlapping click rectangles. Destinations match frame-derived pages. No fixed link-count acceptance condition.
+- 46 clickable Main → Backup entries form 36 distinct pairs. Every entry has a visible return to its source Main. All 28 backups retain a numbered primary Back to Main and a body Discussion Index button.
+- Shared Backup shortcuts now say Main N (topic). The index explicitly says Go to Conclusion (M19). Existing valid cross-links remain.
+- M09 links to B13 / B25 as task-specific extensions of Eq. (7). M10 → B13 is the Eq. (8) hypothetical worked example; M11 → B25 is the Eq. (9) hypothetical worked example. These are not paper measurements or independent Eq. (7) experiments.
+- M11 → B27 remains workload/Zipf background distinct from B25 scoring. M12 → B26 is full Table 3; M12 → B27 explains the workload used by its representative result. M13 → B14 covers measurement; M14 → B11 / B27 covers SLO thresholds and workloads.
+- M18 → B09 says Capacity Profiling (Background). B09 names Fig. 11 as profiling background and points out that the Fig. 15 ablation is on M18. No ablation page was added.
+- M12 labels the policy LCS (GreenCache). M19 → B23 says Limits / Our Future Work. The remaining “ours/our” wording correctly identifies our research direction. Original figure wording is untouched.
+- M06 has both Solver Time → B18 and Resize Interval → B20. B19, B21, B22 remain accessible through Index/Backup navigation. B02–B05 also have no direct Main entry. No page is unreachable, and none of these is exclusively reachable from Index alone.
+- `navigation-audit.md` lists every entry, source question, target evidence, direct/background relation and primary/other returns. `scripts/navigation-contracts.json` is a human-reviewed semantic contract checked against actual PDF annotations and visible text; it does not claim automated scientific understanding.
 
-## Scientific boundaries
+## Build and preservation
 
-- Eq. (7) is the general principle; ShareGPT uses Eq. (8), both TriviaQA skewness settings use Eq. (9). No independent Eq. (7)/(8)/(9) ablation is claimed.
-- Age is time in storage. Scores are heuristics, not measured CO2, and do not directly multiply by current CI.
-- Reuse requires matching retained KV; new input tokens still require computation.
-- Solver sets capacity; LCS selects replacements. Releasing allocated SSD changes amortized accounting, not historical manufacturing emissions, and does not move all SSD KV into GPU HBM.
-- TTFT/TPOT attainment sums remain separate. The unresolved 8B document TTFT threshold and HBF interpretation remain identified in their original content.
+- Local pdfLaTeX: two passes. Independently extracted Overleaf ZIP: two passes. Both final logs have zero Overfull, Underfull, undefined-reference or LaTeX warnings.
+- All 48 pages match across builds in text, rendered pixels, hyperlink destinations, annotation rectangles and annotation text. `build-validation.json` records SHA-256 of source, PDF and ZIP; `validation.json` embeds that report and rejects stale builds.
+- All 20 supplied figure RGB pixel hashes equal the Git baseline and the embedded PDF images match the sources. Original figures, captions and source credits remain.
+- All math expressions, including Eq. (6)–(9), are byte-identical to baseline. Full Table 3 retains all 45 independently checked values on B26 / PDF 48.
+- Baseline comparison: 28 pages are pixel-identical. Changed pages are 6, 9–12, 18–20, 27–28, 30–35, 45–48, exactly the navigation/label changes. `baseline-preservation.json` records this comparison.
 
+## Visual QA
 
-## TriviaQA source verification
+Regenerated all 48 page PNGs, both montages, and `navigation-review.png` with the 15 required review pages. Inspected all changed pages at full rendered size: M06, M09, M10, M11, M12, M18, M19, Index, B06, B07, B09, B10, B11, B12, B13, B14, B24, B25, B27, B26. Reviewed the overall Main/Backup montage for style consistency.
 
-- Read the local paper's PDF pages 15–16 (§5.5 and §6.1) and 19 (§6.3.2, Table 3).
-- Originally near-uniform document visits are skewed with Zipf: α=0.4 gives the top 10% about 25% of prompts; α=0.7 gives about 50%. Bars show these approximate paper shares, with no invented request counts.
-- Poisson arrivals, scaled Azure trace rates, 50k prompt initialization, and distinct profiling/evaluation sets follow §6.1. Zipf α is explicitly separated from arrival-rate parameters, cache capacity, and CI.
-- Both distributions use Eq. (9). Fixed 4 TB Llama-3 70B LCS token hit rates are 14% and 35%. This is not a carbon-reduction calculation or a guaranteed cache hit.
-- The new page is B27, between B25 and B26. B00–B26 labels remain unchanged, as does Main order.
+- Main additions fit the original source/navigation areas. No main-body font or formula size changes; card geometry, figures and scientific content remain in their existing positions.
+- M12 wraps LCS (GreenCache) within its existing policy column; it fits the existing row without changing table geometry.
+- Source lines and buttons remain separate; numbered secondary returns fit on a single line. No clipping, source/navigation overlap or crowding was observed.
+- Index Open A–D had pre-existing annotation overlap caused by table-cell link bounds. Local mbox wrappers constrain clickable bounds without moving the visible table or changing spacing.
+- All click rectangles are on-page and mutually non-overlapping. Visible return text is verified against its actual destination, including primary Main numbers.
+- Lower-page whitespace diagnostics remain informational; the established layout was preserved rather than redesigned.
 
-- Pixel comparison against the pre-edit PDF: the 16 Main pages other than M11, M12, and M14 are identical above the page-count footer. All pages necessarily update the total count from 47 to 48. Other backup changes are the requested standard return-button wording, with local navigation changes on B02, B03, B13, B25, and B26.
+## Validator regression checks
 
-## M13 / M14 simplification
+`python scripts/test_navigation.py`: 3 tests passed. The validator rejects a removed M10 → B13 entry, an Eq. (9) button misrouted to the valid B27 destination, and a removed B09 → M18 visible return. These tests run against temporary PDFs and leave deliverables untouched.
 
-- Baseline: bda7c5915442e63cf6ed145660bbf6ebd218cf6c. Only M13, M14, and B14 changed in the PDF; all other 45 pages are pixel-identical, including M09–M12, B27, and the index.
-- M13 now presents real GPU serving, trace-driven evaluation, and measured power versus modeled carbon in three aligned cards, followed by a Key Takeaway. CPU/GPU measurement, specification-based SSD/DRAM power, and amortized embodied carbon remain distinct.
-- M14 emphasizes the three strategies side by side. It retains the common maximum capacity and separate 90% TTFT/TPOT attainment requirements, with a Key Question below the metrics.
-- Text extraction before the source line (including titles) falls from 164 to 70 words on M13 (57.3%), and from 138 to 84 on M14 (39.1%). No smaller font was introduced to fit the content.
-- Existing technical detail remains in B06/B07/B11/B14/B15/B23/B24/B27. The only newly preserved setup detail is the 8k context limit and truncation in B14, verified against §6.1 on paper PDF page 15. B14 also links back to M14.
-- Inspected rendered M13, M14, and B14. Cards, text, sources, and navigation fit without overlap or clipping. Before/after comparisons are `main-13-before-after.png` and `main-14-before-after.png`.
-- Local PDF and independently extracted Overleaf ZIP each compile twice without Overfull, undefined references, or LaTeX warnings. All 48 pages have matching renders, text, and link targets between builds.
-- Validator passes 274 PDF links, all 28 backup return/index buttons, all 45 Table 3 values, and all 20 original image pixel hashes. Explicit checks cover M13 ↔ B14, M14 ↔ B11, M14 ↔ B27, and B14 → M14. RAPL/pyNVML assertions now apply to B14, and checks reject detailed setup leaking back into M13/M14.
-- No unresolved issues introduced by this edit. Previously documented paper ambiguities remain unchanged.
+## Scientific boundaries and remaining issues
 
-- M14 heading refinement: A/B/C now all use the same small bold Accent font, verified from PDF spans. Reduced top spacing by 0.04 cm to preserve page fit; build and navigation validation pass.
+No unresolved navigation or semantic-alignment issue remains. GreenCache did not evaluate HBF or multi-region placement; cross-region optimization and HBM–HBF tiering remain explicitly our future work. Hypothetical LCS examples are heuristics, not measured carbon or workload hit rates. Higher hit rate is not automatically carbon reduction.
 
-- M15 interpretation refinement: removed explicit reduction percentages from the main text while preserving the original Figure 12a and caption. Three concise takeaways distinguish savings versus Full Cache, prefix reuse opportunities, and No Cache carbon versus latency feasibility. Source numbers remain documented in README. Build and validator pass (48 pages, 274 links); all other 47 pages are pixel-identical to the immediately preceding PDF.
-
-- M16 now summarizes No Cache SLO failures and GreenCache using Full Cache latency headroom to reduce capacity and carbon while meeting SLOs in the plotted experiments. Removed threshold enumeration (retained in B11), preserved separate TTFT/TPOT interpretation, Figure 13a/caption, source, and B16 navigation. Build and validation pass (48 pages, 274 links); other 47 pages are pixel-identical to the preceding PDF.
-
-- M17 now uses qualitative interpretation: lower per-prompt carbon versus Full Cache in the shown timelines; load and CI jointly influence capacity under SLO constraints, without claiming monotonic savings. Original Figure 14a/caption and links remain. Verified §6.1–6.2: Figure 12 averages the dynamic evaluation, while Figure 14 exposes timelines; neither uses fixed CI/request-rate inputs. Build and validator pass (48 pages, 274 links); other 47 pages are pixel-identical to the preceding PDF.
-
-- M18 states the ablation takeaway without the 10.3% / 6.6–9.9% figures: even without LCS, adaptive capacity still reduces carbon versus Full Cache, and the effect is clearer at low load because the cache needed to meet the SLO is smaller. Capacity adjustment contributes; LCS is not claimed to have no further value. Those percentages remain in the README source table. Figure 15, the ES-grid setup, and the B09 link stay.
-
-- M19 drops the Limitations card and stacks Problem, Contribution, Evidence, and Future work full width from top to bottom. Future work is ours: capacity decisions across regional data centers, and HBM–HBF as cache tiers. GreenCache does not evaluate either. Trace length, amortized embodied carbon, sensitivity, and dense Llama-3 remain on B23.
+Existing paper ambiguities are unchanged: §6.1 states a 2.5 s 8B document TTFT threshold while Fig. 13 draws 4.0 s (B11 / PDF 32 and B16 / PDF 37); the §6.2 skewness wording does not align cleanly with its reported averages. The supplied Fig. 2 PNG has a small pre-existing top-edge crop, documented in README. None required changing the research content for this task.
