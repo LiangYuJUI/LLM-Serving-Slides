@@ -1,0 +1,22 @@
+[
+  {"source": "M02", "text": "three models", "target": "B08", "target_evidence": ["Llama-3.1-8B", "Mixtral-8x7B"]},
+  {"source": "M02", "text": "operational carbon", "target": "B02", "target_evidence": ["Scope 2", "PUE"]},
+  {"source": "M03", "text": "Carbon intensity", "target": "B02", "target_evidence": ["Generation-weighted", "order of magnitude"]},
+  {"source": "M04", "text": "Table I", "target": "B01", "target_evidence": ["SLIT", "MOER", "partial"]},
+  {"source": "M05", "text": "SLO violation", "target": "B02", "target_evidence": ["either the TTFT"]},
+  {"source": "M06", "text": "continuous batching", "target": "B05", "target_evidence": ["not a fixed constant"]},
+  {"source": "M07", "text": "analytical model", "target": "B03", "target_evidence": ["piecewise", "MAPE"]},
+  {"source": "M08", "text": "power model", "target": "B03", "target_evidence": ["72"]},
+  {"source": "M09", "text": "Within-node validation", "target": "B04", "target_evidence": ["9.1", "2.5", "within a node"]},
+  {"source": "M10", "text": "Greedy", "target": "B06", "target_evidence": ["Equation (1)", "MOER"]},
+  {"source": "M10", "text": "Facility MILP", "target": "B07", "target_evidence": ["does not power off"]},
+  {"source": "M11", "text": "full ILP", "target": "B06", "target_evidence": ["unimodular"]},
+  {"source": "M12", "text": "shared batch energy", "target": "B07", "target_evidence": ["does not power off", "0.25"]},
+  {"source": "M13", "text": "Table II", "target": "B08", "target_evidence": ["1200", "Simulated"]},
+  {"source": "M14", "text": "baselines", "target": "B08", "target_evidence": ["round-robin", "MOER"]},
+  {"source": "M15", "text": "SLO violation rate", "target": "B02", "target_evidence": ["either the TTFT"]},
+  {"source": "M16", "text": "PUE and CI spread", "target": "B09", "target_evidence": ["1.08", "0.94"]},
+  {"source": "M17", "text": "Polling period", "target": "B09", "target_evidence": ["8.2", "6.5"]},
+  {"source": "M18", "text": "Predicted OSL", "target": "B09", "target_evidence": ["51", "GovReport"]},
+  {"source": "M19", "text": "Limitations", "target": "B10", "target_evidence": ["Multi-turn", "Our direction"]}
+]

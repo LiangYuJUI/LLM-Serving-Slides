@@ -1,0 +1,41 @@
+{
+  "pages": 30,
+  "main_pages": 19,
+  "index_pages": 1,
+  "backup_pages": 10,
+  "links": 128,
+  "contracts": 20,
+  "semantic_mismatch": false,
+  "unreachable": [],
+  "original_png_sha256": {
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig01.png": "2d1892366a92bf189e40bd310e97a926815f4326adccf08c249b641b3b8c0c60",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig02.png": "cd4379b36846603f89b85b618150163e40fc672089cdef75f28ef5eb52f964bf",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig03.png": "51b1fb19dcfc6ca7d32dd252e42ba388ff90acfb8855e6f4ad49908002145965",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig04.png": "16f3c58cf53b43d870bcdd8f699127d2f66c50e2eeb8dfe8743dfbbdb60bcf07",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig05.png": "d97b57e3be8ed570ef5884e494da32cdbd987657f084393289536907a38321eb",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig06.png": "5edcf8ee37cf21d817b5c36a844ec5cdc45852b0eff6e8cf8604c655978e9cb9",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig07.png": "cbea117c2f290f99c87841246763b45f38d257277a14a87ce86ed5efeec742cb",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig01.png": "f013d086a9738c6bdac2dc2e64044dcb6343439fed015f32caec7f69a35bf46d",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig02.png": "c2ce114713e5552433086e7a89c70b05c6b88a6d98b21d01d9b40dd79349d476",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig03.png": "3820818c9013f1ecf08e713e16d4e5f0a226e309c19ab1e5f4bf5a39fcb44719",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig04.png": "0da8895659b3c92d3c926c3fbde460860a700d2f693d1a77765c82f4e34efe24",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig05.png": "02e0f7bf3f766baac106fca829a239229aa63ba6791a6c1f4ecc817d856c5928",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig06.png": "86ab9743adf961bab539167b0160bb1e55ec464e72eb33163be121e8a0a39c94",
+    "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig07.png": "addcc6f4cdfa24a75e4f7de8ea268e51c65c56e01eaefcabd63c83c17e90658b"
+  },
+  "build": {
+    "pdf_sha256": "5345a39a93a1033b8cd655fed81cdb9358f7fd8aae32fde6bbf887482f804b98",
+    "zip_sha256": "fb728cb07648d0df56b297e61751fec62937e5fce98cc6adb6ef8b4a0e8f6d74",
+    "source_sha256": "0d6a0b5e21845fffc3a10dcbc964977dd94e3d8ec61940323c61d8bf57f34531",
+    "local_passes": 2,
+    "standalone_zip_passes": 2,
+    "pages": 30,
+    "parity": {
+      "text": true,
+      "pixels": true,
+      "destinations": true,
+      "annotation_rectangles": true,
+      "annotation_text": true
+    }
+  }
+}
