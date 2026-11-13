@@ -15,28 +15,30 @@
 老師好。今天報告 Penn State 的 Topcu、Cim、Ozturk 和 Kandemir 這篇 preprint，題目是 Dissecting the Carbon–SLO Tension in Geo-Distributed LLM Serving。它問的是：把 request 送到比較綠的資料中心，能不能在 TTFT 和 TPOT 的 SLO 底下真的減碳。
 
 - 怎麼指：停在標題和作者。
-- 下一頁：先介紹這篇做出的 simulator、scheduler 與實驗結果。
+- 下一頁：先說明 carbon-aware routing 的機會，以及為什麼需要更完整的 serving 模型。
 
-## Main 02 — What Does This Paper Do?
+## Main 02 — Why Is Carbon-Aware LLM Routing Challenging?
 
 - 預計：65 秒
-- 論文：Abstract；Section I 的三項 contribution
-- 上一頁：從題目進到他們真正交付的東西。
+- 論文：Section I 與 Table I；Section II；Section III-B、III-C
+- 上一頁：從論文題目進入 carbon-aware routing 的機會與難題。
 
-這篇做三件事。第一，他們做了一個跨地區的 LLM serving simulator，延遲和功率是用 A100 上的 vLLM 量出來再擬合的。第二，他們比較四種愈來愈細的 carbon-aware、SLO-aware 排程，從單筆 request 的 greedy，到會看一整個 batch 的 facility MILP。第三，他們在三個模型、不同負載，以及會看碳和不會看碳的 baseline 上，畫出 carbon 和 SLO 的取捨。
+不同地區的 DC，用電的 CI 不一樣，也會隨時間變。所以把 request 送往 CI 較低的 DC，有機會減少 operational carbon；但總碳排還要看耗能和 PUE。
 
-中間這張卡片是摘要裡的總結，比較基準是 round-robin。Facility MILP 最多可以少掉 60% 的 operational carbon，作者給的平均 SLO violation 是 3%。這兩個數字不要黏在一起聽。60% 是上界，3% 是平均，不是每一個負載都只違規 3%。
+困難是，改變目的地，也會改變 serving 狀態。跨區多了 RTT；request 集中到同一站，可能增加排隊和 GPU 資源競爭。低 CI 本身不代表高延遲，是否符合 SLO 要看當下負載和網路條件。
 
-Takeaway 是：決定 request 去哪個資料中心，會同時改到用電碳排和 token 延遲。CI 最低的站，不一定是還過得了 SLO 的站。
+LLM serving 又是動態的：Continuous Batching 讓 batch size 持續變動；KV Cache 或 batch 空間不足，就得等 admission，拉長 TTFT；Prefill 和 Decode 的延遲與功率特性也不同，還會影響 TPOT。這些因素必須一起考慮。
 
-- 怎麼指：先指標題下的 simulator 副標題，再由左到右說明 Schedulers 和 Frontier，接著指中間的 60% 和 3%，最後停在 Takeaway。operational carbon 和 three models 可以點進 Backup。
-- 下一頁：用 Table I 說明這篇涵蓋了哪些更完整的 serving 因素。
+先前工作各有涵蓋，但沒有把這些影響完整整合。因此作者開發 geo-distributed LLM serving simulator，用真實 A100／vLLM 的量測校準，再模擬不同負載下的 routing。這不是已部署的 16 個實體 DC。
+
+- 怎麼指：由上往下說明 Opportunity、四個 Challenge，再指 Paper's Response 和 Takeaway。
+- 下一頁：用 Table I 具體確認，各篇工作涵蓋了什麼、還缺少什麼。
 
 ## Main 03 — Table I: Scope of Prior Work and This Paper
 
 - 預計：60 秒
 - 論文：Section I，Table I
-- 上一頁：看完這篇的三項貢獻，再用 Table I 說明它與既有工作的差異。
+- 上一頁：前一頁提出 modeling 的必要性，這一頁用 Table I 檢查既有工作的涵蓋範圍。
 
 先看這張 Table I。這篇的重點，是把跨資料中心 LLM serving 的問題考慮得更全面。表格左邊是各篇工作的排程粒度與延遲目標，中間四欄比較 batch-aware latency、power、queueing 和跨區 transfer，最後一欄是它們報告的延遲指標。
 
@@ -51,33 +53,35 @@ Takeaway 是：決定 request 去哪個資料中心，會同時改到用電碳�
 
 - 預計：70 秒
 - 論文：Section I 對 spatial scheduling 的動機；Section II 的 CI 變化
-- 上一頁：摘要說最低 CI 不一定可行，這一頁解釋那個張力。
+- 上一頁：Table I 顯示建模缺口，這一頁用具體 routing 情境解釋它為什麼影響 SLO。
 
-這張圖是概念示意圖，不是他們量到的曲線。Request 先到區域 scheduler。它可以留在本地，CI 比較高，但是排隊短；也可以送到 CI 最低的資料中心，可是那一跳要付 RTT，而且大家若都這樣送，queue 和 batch 會在綠的站長出來。
+這張圖是假設低 CI 站出現壅塞的概念示意圖，不是量測曲線，也不是低 CI 必然造成高延遲。Request 先到區域 scheduler。它可以留在本地，CI 比較高，但是排隊短；也可以送到 CI 最低的資料中心，可是那一跳要付 RTT，而且大家若都這樣送，queue 和 batch 會在綠的站長出來。
 
 論文說 grid 的 carbon intensity 在地區之間、時間之間可以差一個數量級以上。所以把流量送去低 CI 的電網，確實有減碳空間。代價是排隊會拉長 TTFT，decode batch 變大會拉長 TPOT，跨區還要再加網路 RTT。
 
 所以最低 CI 和「還符合 SLO 的指派」是兩個決定。後面的 simulator 就是要把 queue、batch 和 RTT 算進去，而不是只看一張 CI 地圖。
 
 - 怎麼指：從左到右跟著箭頭。上面紫色是低 CI、會擠的站，下面綠色是 CI 較高但排隊較短的站。強調圖上的字是示意。
-- 下一頁：既有的跨區排程少算了什麼。不要說每一篇都少同一件事。
+- 下一頁：回到 Table I 的建模缺口，說明它們如何影響 routing 判斷。
 
 ## Main 05 — What Do Previous Approaches Miss?
 
 - 預計：60 秒
-- 論文：Section I 與 Table I
-- 上一頁：動機有了，接著說明這個缺口為什麼還在。
+- 論文：Section I 與 Table I；Section II；Section III-B、III-C
+- 上一頁：剛才的情境說明，目的地的 batch 和 queue 會改變 SLO feasibility。
 
-Table I 放了六個 carbon-aware 的跨區排程，和這篇對照。缺口不是每一列都一樣。
+回到 Table I，這次看建模缺口會造成什麼判斷問題，不再逐篇比較。
 
-左邊上面：SLIT、Green-LLM、FREESH、MARLIN 多半用 15 分鐘到 1 小時的粗計畫，而且把延遲當成跟當下 batch 無關。MOER 是一筆 request 決定一次，但它根本沒有 latency target。左邊下面：沒有一篇把 prefill 和 decode 的功率完整建模；MOER 在功率那一欄是 partial，其他是沒有。
+第一，若延遲估計與當下負載無關，就看不到 request 加入 batch 之後，TTFT 和 TPOT 怎麼變。原本看似可行的目的地，在流量集中後可能過不了 SLO。
 
-右邊上面：沒有一篇建模「KV 或 batch 位子不夠時，engine 裡的排隊」。轉送延遲則是有人有、有人沒有，FREESH 和 MOER 沒有，另外幾篇有。右邊下面：他們的延遲目標多半是自己定的，例如平均 TTFT、5 秒的 end-to-end，或是 job 的等待時間。這篇用的是 TTFT 和 TPOT，並且對到 MLPerf 的 budget。
+第二，若忽略 Prefill、Decode 和 batch 對功率與時間的影響，就可能估錯能量。碳排還要乘上 CI 與 PUE，所以只比較 CI，無法判定總 operational carbon。
 
-Takeaway：缺的是會跟著負載變的 TTFT 和 TPOT，以及一個有 benchmark 根據的 SLO，不是再多一個碳的訊號。
+第三，即使知道 GPU 執行時間，request 仍可能因為 KV Cache 或 batch 空間不足而等待。遠端 routing 還要再算 RTT，這些都會影響 TTFT。
 
-- 怎麼指：Table I 四個色塊依序。若被問某一列，開 B01，不要在這一頁把六篇都念完。
-- 下一頁：把這篇自己的問題寫成一個決定、一個碳、兩個延遲。
+最後，平均延遲或 GPU job 的等待目標，不能直接當成 TTFT、TPOT 的 SLO。這篇需要把能量和兩個 token latency 一起估計，才能判斷減碳機會是否仍符合 serving 要求。各篇既有工作的例外與部分涵蓋，保留在前面的 Table I。
+
+- 怎麼指：依序指四個區塊，聚焦「忽略這個因素會估錯什麼」。若追問某篇，再開 B01。
+- 下一頁：把這篇自己的問題寫成一個 routing 決定、一個碳排目標、兩個 latency budget。
 
 ## Main 06 — What Is the Carbon–SLO Scheduling Problem?
 
@@ -320,7 +324,7 @@ Figure 7(a) 空心是 oracle，實心是預測。預測是一個兩層 MLP 的�
 
 ### B01 Table I
 
-- 不要說六篇都忽略 queue。Queue 那一欄，先前工作全是沒有；transfer 則是 SLIT、Green-LLM、GCOS、MARLIN 有，FREESH 和 MOER 沒有。
+- 不要說六篇都忽略所有因素。Queue 那一欄，先前工作全是沒有；transfer 則是 SLIT、Green-LLM、GCOS、MARLIN 有，FREESH 和 MOER 沒有。
 - 「負載無關的延遲」那句，Section I 點名的是粗時間尺度的 SLIT、Green-LLM、FREESH、MARLIN。MOER 和 GCOS 不是同一句話。
 - GCOS 的延遲是 GPU job 的等待，不是 TTFT/TPOT。
 

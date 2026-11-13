@@ -1,0 +1,14 @@
+{
+  "original_paper_and_14_pngs_unchanged": true,
+  "unchanged_pages": 27,
+  "changed_pages": [
+    2,
+    4,
+    5,
+    29
+  ],
+  "script_main_headers": 20,
+  "readme_page_and_link_mapping": true,
+  "baseline_commit": "ca4b7cbb728c1f20c3c5a3ab72c87bab1f6cc97c",
+  "pdf_sha256": "fd601c8a9a4639ca368ab72df2c2453dfd55221ac0d307c99e82a34d57b12582"
+}

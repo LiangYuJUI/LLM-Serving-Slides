@@ -87,6 +87,12 @@
 \institute{National Taiwan University / Academia Sinica}
 \date{18 Nov 2026}
 
+\newcommand{\motivationcard}[3]{%
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=0.04cm]{#1}%
+{\scriptsize\bfseries\color{Accent}#2}\par
+{\footnotesize\raggedright #3\par}%
+\end{beamercolorbox}}
+
 \begin{document}
 \section{Summary}
 
@@ -109,26 +115,31 @@ National Taiwan University / Academia Sinica
 \end{frame}
 
 \renewcommand{\slideid}{Main 02 / 20}
-\begin{frame}[t,label=M02]{What Does This Paper Do?}
-\vspace{0.06cm}
-{\small\color{Muted}A geo-distributed LLM serving simulator, calibrated with A100 / vLLM latency and power measurements.\par}
-\vspace{0.30cm}
+\begin{frame}[t,label=M02]{Why Is Carbon-Aware LLM Routing Challenging?}
+\vspace{-0.08cm}
+{\small\color{Muted}Geographic carbon diversity offers savings, but routing changes serving latency and energy.\par}
+\vspace{0.03cm}
+\motivationcard{mintbox}{Opportunity: Geographic Carbon Diversity}{Grid CI varies across regions and time. Routing toward cleaner grids can reduce \kw{B02}{operational carbon}.}
+\vspace{0.03cm}
+{\footnotesize\textbf{\color{Accent}Challenge: LLM Serving Dynamics}\quad Earlier approaches do not jointly capture all four:\par}
+\vspace{0.01cm}
 \begin{columns}[T,onlytextwidth]
-
 \begin{column}{0.49\textwidth}
-\card{bluebox}{Schedulers}{\begin{minipage}[t][1.35cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-Four carbon- and SLO-aware policies, from a per-request heuristic to a batch-level facility MILP.\end{minipage}}
+\motivationcard{lilacbox}{Continuous Batching}{Dynamic batch sizes affect latency and energy.}
+\vspace{0.01cm}
+\motivationcard{lilacbox}{Prefill / Decode}{Inference phases differ in latency and power.}
 \end{column}
 \begin{column}{0.49\textwidth}
-\card{lilacbox}{Frontier}{\begin{minipage}[t][1.35cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-The carbon--SLO tradeoff across \kw{B08}{three models}, loads, and carbon-aware and carbon-blind baselines.\end{minipage}}
+\motivationcard{lilacbox}{Engine Queueing / KV Admission}{Resource contention can increase TTFT.}
+\vspace{0.01cm}
+\motivationcard{lilacbox}{Inter-region RTT}{Remote routing introduces network delay.}
 \end{column}
 \end{columns}
-\vspace{0.08cm}
-\card{bluebox}{Headline result, versus round-robin}{\begin{minipage}[t][1.35cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-Facility MILP reduces \kw{B02}{operational carbon} by \textbf{up to 60\%} relative to round-robin, with the authors' \textbf{average SLO violation of 3\%}. The 60\% is the upper end. The 3\% is an average, not every load.\end{minipage}}
-\takeaway{Where a request is served changes both operational carbon and token latency. The lowest-CI site is not automatically the SLO-feasible site.}
-\slidenote{Abstract; Sec.~I contributions; Sec.~VIII. The 26--60\% conclusion range is on M20.}
+\vspace{0.03cm}
+\motivationcard{bluebox}{Paper's Response: A New Simulator}{An A100/vLLM-calibrated geo-distributed LLM serving simulator for evaluating carbon- and SLO-aware request routing under load-dependent serving dynamics.}
+\vspace{0.01cm}
+\takeaway{The lowest-CI data center is not necessarily the best serving destination: carbon-aware routing must account for load-dependent energy and TTFT/TPOT SLOs.}
+\slidenote{Sec.~I, Table~I; Sec.~II; Sec.~III-B--C. Geo experiments are simulated.}
 \end{frame}
 
 \renewcommand{\slideid}{Main 03 / 20}
@@ -166,7 +177,7 @@ MOER (2026) & Per request & None & $\times$ & $\circ$ & $\times$ & $\times$ & E2
 \renewcommand{\slideid}{Main 04 / 20}
 \begin{frame}[t,label=M04]{Why Not Always Choose the Greenest Datacenter?}
 \vspace{0.02cm}
-{\small\color{Muted}Conceptual schematic, not a measured trace.\par}
+{\small\color{Muted}Illustrative congestion scenario, not a measured trace or an inevitable effect of low CI.\par}
 \vspace{0.02cm}
 \begin{center}
 \vspace{-0.15cm}
@@ -181,7 +192,7 @@ MOER (2026) & Per request & None & $\times$ & $\circ$ & $\times$ & $\times$ & E2
 \end{tikzpicture}
 \vspace{-0.25cm}
 \end{center}
-\point{Carbon opportunity}{\kw{B02}{Carbon intensity} varies by more than an order of magnitude across regions and time. Routing toward a lower-CI grid cuts operational carbon.}
+\point{Carbon opportunity}{\kw{B02}{Carbon intensity} varies by more than an order of magnitude across regions and time. A lower-CI grid offers savings; energy use and PUE also matter.}
 \point{Latency cost}{A crowd of requests raises queueing and TTFT, and a larger decode batch raises TPOT. The remote path also pays network RTT.}
 \takeaway{Minimum CI and the SLO-feasible assignment are different decisions once queueing, batching, and RTT are counted.}
 \slidenote{Sec.~I, paragraphs on spatial scheduling; Sec.~II, CI variation. Source-mix medians are on the backup.}
@@ -190,25 +201,25 @@ MOER (2026) & Per request & None & $\times$ & $\circ$ & $\times$ & $\times$ & E2
 \renewcommand{\slideid}{Main 05 / 20}
 \begin{frame}[t,label=M05]{What Do Previous Approaches Miss?}
 \vspace{0.08cm}
-{\small \kw{B01}{Table I} compares six carbon-aware geo-scheduling studies with this paper. The gaps are not identical for every row.\par}
+{\small \kw{B01}{Table I} shows uneven coverage. The modeling gaps affect routing decisions in different ways.\par}
 \vspace{0.10cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
 \card{lilacbox}{Load-independent latency}{\begin{minipage}[t][1.35cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-Most coarse plans (SLIT, Green-LLM, FREESH, MARLIN) treat latency as independent of the live batch. MOER is per request, but it has no latency target.\end{minipage}}
+A load-independent estimate cannot track TTFT and TPOT as requests join and leave the batch.\end{minipage}}
 \vspace{0.06cm}
 \card{bluebox}{Phase-dependent power}{\begin{minipage}[t][1.12cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-None fully models prefill versus decode power. MOER is marked partial. The others are unmarked.\end{minipage}}
+Ignoring phase and batch can misestimate energy, changing which datacenter appears lowest-carbon.\end{minipage}}
 \end{column}
 \begin{column}{0.49\textwidth}
 \card{lilacbox}{Queue, KV admission, network}{\begin{minipage}[t][1.35cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-None models engine queueing when KV memory or the batch slot is full. FREESH and MOER also omit inter-region transfer; several others include it.\end{minipage}}
+A request may wait for KV memory or a batch slot. Remote RTT adds delay on top of engine queueing.\end{minipage}}
 \vspace{0.06cm}
 \card{bluebox}{Which latency SLO?}{\begin{minipage}[t][1.12cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-Prior targets are mostly self-defined: mean TTFT, a 5\,s end-to-end cap, or job wait. This paper uses TTFT and TPOT against MLPerf budgets.\end{minipage}}
+Mean latency or a job-wait target does not establish per-token SLO feasibility. This paper evaluates TTFT and TPOT against MLPerf budgets.\end{minipage}}
 \end{column}
 \end{columns}
-\takeaway{The open question is load-dependent TTFT and TPOT under a benchmark SLO, not a new carbon signal by itself.}
+\takeaway{Routing needs a joint estimate of load-dependent energy, TTFT, and TPOT to compare carbon savings with SLO feasibility.}
 \slidenote{Sec.~I and Table~I. GCOS is a GPU-job scheduler; its latency column is not a token SLO.}
 \end{frame}
 
@@ -750,7 +761,7 @@ Scheduler knobs & Poll 1\,s (swept 0.5--10\,s). Window 100\,ms or 300 requests. 
 \bpoint{Green-LLM and MOER}{Green-LLM is ported as scheduling decisions only. MOER sends each request to the lowest-CI SLO-feasible datacenter, which is greedy at $\alpha{=}0$.}
 \bpoint{Not a 16-site deployment}{No claim in the PDF says these 16 datacenters were physically built for the experiment.}
 \slidenote{Sec.~V-A, Table~II.}
-\back[\nav{M02}{Main 2} \nav{M15}{Main 15}]{M14}
+\back[\nav{M15}{Main 15}]{M14}
 \end{frame}
 
 \renewcommand{\slideid}{B09}

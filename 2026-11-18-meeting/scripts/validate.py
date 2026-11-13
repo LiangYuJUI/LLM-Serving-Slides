@@ -13,6 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 TEX = ROOT / '2026-11-18-CarbonSLO.tex'
 PDF = ROOT / 'output/pdf/2026-11-18-CarbonSLO.pdf'
 CONTRACTS = ROOT / 'scripts/navigation-contracts.json'
+MAIN_COUNT = 20
+BACKUP_COUNT = 10
+TOTAL_PAGES = MAIN_COUNT + 1 + BACKUP_COUNT
 
 
 def phrase_in(haystack, needle):
@@ -38,12 +41,12 @@ def validate(render_dir):
     assert len(frames) == len(doc), (len(frames), len(doc))
     expected = {label: i for i, (label, _, _) in enumerate(frames)}
     assert len(expected) == len(frames), 'Duplicate frame labels'
-    main_labels = [f'M{i:02d}' for i in range(1, 20)]
-    backup_labels = [f'B{i:02d}' for i in range(1, 11)]
-    assert [frames[i][0] for i in range(19)] == main_labels
-    assert frames[19][0] == 'INDEX'
-    assert [frames[i][0] for i in range(20, 30)] == backup_labels
-    assert len(doc) == 30
+    main_labels = [f'M{i:02d}' for i in range(1, MAIN_COUNT + 1)]
+    backup_labels = [f'B{i:02d}' for i in range(1, BACKUP_COUNT + 1)]
+    assert [frames[i][0] for i in range(MAIN_COUNT)] == main_labels
+    assert frames[MAIN_COUNT][0] == 'INDEX'
+    assert [frames[i][0] for i in range(MAIN_COUNT + 1, TOTAL_PAGES)] == backup_labels
+    assert len(doc) == TOTAL_PAGES
     for target in re.findall(r'\\(?:hyperlink|nav|kw)\{([^}]+)\}', text):
         if target.startswith('#'):
             continue
@@ -58,10 +61,12 @@ def validate(render_dir):
         actual = doc[i].get_links()
         graph[i] = set()
         page_text = doc[i].get_text()
-        if label != 'INDEX':
+        if label not in ('M01', 'INDEX'):
             assert 'Source: Topcu et al.,' in page_text, label
+        if label == 'M01':
+            assert 'Dissecting the Carbon' in page_text and 'arXiv:2610.14571' in page_text
         if label.startswith('M'):
-            assert f'Main {int(label[1:]):02d} / 19' in page_text, label
+            assert f'Main {int(label[1:]):02d} / {MAIN_COUNT}' in page_text, label
         if label.startswith('B'):
             assert label in page_text, label
         for link in actual:
@@ -98,15 +103,29 @@ def validate(render_dir):
     contracts = json.loads(CONTRACTS.read_text())
     full_text = '\n'.join(page.get_text() for page in doc)
     assert 'Figure 8' not in full_text and 'Fig. 8' not in full_text
-    assert 'does not power off' in doc[expected['M12']].get_text()
-    assert '16 physical datacenters' in doc[expected['M09']].get_text()
-    assert 'single-node' in doc[expected['M09']].get_text()
-    assert 'up to 60' in doc[expected['M14']].get_text().lower()
-    assert 'average' in doc[expected['M14']].get_text().lower() or 'average' in doc[expected['M14']].get_text()
-    assert '55' in doc[expected['M14']].get_text()
-    assert 'not an author result' in doc[expected['M19']].get_text()
-    assert 'Go to Conclusion (M19)' in doc[expected['INDEX']].get_text()
+    assert 'does not power off' in doc[expected['M13']].get_text()
+    assert '16 physical datacenters' in doc[expected['M10']].get_text()
+    assert 'single-node' in doc[expected['M10']].get_text()
+    assert 'up to 60' in doc[expected['M15']].get_text().lower()
+    assert 'average' in doc[expected['M15']].get_text().lower() or 'average' in doc[expected['M15']].get_text()
+    assert '55' in doc[expected['M15']].get_text()
+    assert 'not an author result' in doc[expected['M20']].get_text()
+    assert 'Go to Conclusion (M20)' in doc[expected['INDEX']].get_text()
     assert 'Back to Main' not in doc[expected['INDEX']].get_text()
+
+    motivation = ' '.join(doc[expected['M02']].get_text().split())
+    for words in ('Why Is Carbon-Aware LLM Routing Challenging?',
+                  'Geographic carbon diversity offers savings',
+                  'Continuous Batching', 'Engine Queueing / KV Admission',
+                  'Prefill / Decode', 'Inter-region RTT', 'A100/vLLM-calibrated',
+                  'do not jointly capture', 'experiments are simulated', 'TTFT/TPOT SLOs'):
+        assert words in motivation, ('M02 motivation evidence missing', words)
+    for words in ('60%', '3%', 'Facility MILP', 'Greedy', 'Frontier', 'three models'):
+        assert words not in motivation, ('premature M02 methodology/results', words)
+    table = ' '.join(doc[expected['M03']].get_text().split())
+    for words in ('SLIT', 'Green-LLM', 'FREESH', 'GCOS', 'MARLIN', 'MOER',
+                  'This paper', 'partial', 'not applicable'):
+        assert words in table, ('M03 table evidence missing', words)
 
     backup_audit = []
     for label, title, body in frames:
@@ -124,7 +143,7 @@ def validate(render_dir):
                                  discussion_index=True, cross_links=targets))
 
     actual_pairs = []
-    for i, (label, _, _) in enumerate(frames[:19]):
+    for i, (label, _, _) in enumerate(frames[:MAIN_COUNT]):
         for link in doc[i].get_links():
             target = link.get('nameddest', '')
             if target.startswith('B'):
@@ -149,7 +168,7 @@ def validate(render_dir):
             source=origin, text=words, target=target, source_question=frames[expected[origin]][1],
             primary_return=backup['primary_main'], semantic_mismatch=False, visible_return=True))
 
-    reached = set(range(19))
+    reached = set(range(MAIN_COUNT))
     pending = list(reached)
     while pending:
         for target in graph[pending.pop()] - reached:
@@ -157,7 +176,7 @@ def validate(render_dir):
             pending.append(target)
     missing = sorted(set(range(len(doc))) - reached)
     assert not missing, ('unreachable pages', [frames[p][0] for p in missing])
-    for origin in range(19):
+    for origin in range(MAIN_COUNT):
         for target in graph[origin]:
             if target > expected['INDEX']:
                 assert origin in graph[target], ('missing return', frames[origin][0], frames[target][0])
@@ -170,15 +189,15 @@ def validate(render_dir):
         pix.save(path)
         paths.append(path)
     qa = ROOT / 'output/qa'
-    montage(paths[:19], qa / 'main-montage.png', 5)
-    montage(paths[19:], qa / 'backup-montage.png', 4)
+    montage(paths[:MAIN_COUNT], qa / 'main-montage.png', 5)
+    montage(paths[MAIN_COUNT:], qa / 'backup-montage.png', 4)
     originals = {}
     figroot = ROOT / 'CarbonSLO-GeoDistributed-LLM-Serving-2026'
     for folder in ('With-Caption', 'Without-Caption'):
         for image in sorted((figroot / folder).glob('*.png')):
             originals[image.relative_to(ROOT).as_posix()] = hashlib.sha256(image.read_bytes()).hexdigest()
     audit_lines = ['# Navigation audit', '',
-                   'Main is pages 1–19. Discussion index is page 20. Backup is pages 21–30.', '',
+                   'Main is pages 1–20. Discussion index is page 21. Backup is pages 22–31.', '',
                    '| Backup | PDF | Primary return | Other links |',
                    '|---|---:|---|---|']
     for row in backup_audit:
@@ -193,14 +212,15 @@ def validate(render_dir):
         audit_lines.append(f"| {row['source']} | {row['text']} | {row['target']} | {', '.join(evidence)} |")
     (qa / 'navigation-audit.md').write_text('\n'.join(audit_lines) + '\n')
     report = dict(
-        pages=len(doc), main_pages=19, index_pages=1, backup_pages=10,
+        pages=len(doc), main_pages=MAIN_COUNT, index_pages=1, backup_pages=BACKUP_COUNT,
         links=len(links), contracts=len(contracts),
         semantic_mismatch=False, unreachable=[],
         original_png_sha256=originals,
+        original_pdf_sha256=hashlib.sha256((ROOT / 'CarbonSLO-GeoDistributed-LLM-Serving-2026.pdf').read_bytes()).hexdigest(),
         build=build_report)
     (qa / 'validation.json').write_text(json.dumps(report, indent=2) + '\n')
     doc.close()
-    print(f'PASS: 19 main + 1 index + 10 backup, {len(contracts)} semantic links.')
+    print(f'PASS: {MAIN_COUNT} main + 1 index + {BACKUP_COUNT} backup, {len(contracts)} semantic links.')
 
 
 def montage(paths, dest, columns):

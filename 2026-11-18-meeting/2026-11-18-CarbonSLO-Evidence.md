@@ -4,6 +4,16 @@
 
 單位沿用論文的 gCO₂/kWh，不是 GreenCache 的 gCO₂e。這篇的目標是 operational carbon（Scope 2），沒有把 embodied carbon 放進目標函數。
 
+## M02 動機與建模範圍
+
+M02 的敘事依據是 Sec. I（跨區 routing 動機、Table I 與 simulator contribution）、Sec. II（CI、Scope 2、PUE、TTFT／TPOT）、Sec. III-B（A100／vLLM 校準的分階段 latency／energy model）與 Sec. III-C（Continuous Batching、KV admission、queueing 與 RTT）。
+
+- 較低 CI 提供減碳機會，總 operational carbon 仍受耗能與 PUE 影響。
+- 低 CI 不必然代表高延遲；M04 只示意流量集中與遠端 RTT 可能使 SLO 失守的情境。
+- 「未共同涵蓋所有因素」不等於每篇都忽略全部因素。Table I 的 transfer 有例外，MOER 的 power 為 partial，GCOS 的 batch-aware latency 為不適用。
+- Simulator 是作者開發，以真實 A100／vLLM 量測校準；跨 DC 實驗屬模擬，沒有 16 個實體 DC 的部署驗證。
+- M03 保留逐列證據；M05 解釋這些缺漏對 latency、energy 與 SLO feasibility 判斷的影響。
+
 ## 主張與範圍
 
 | 主張 | 條件 | 出處 | 不要說成 |

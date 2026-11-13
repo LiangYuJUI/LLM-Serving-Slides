@@ -1,10 +1,10 @@
 {
-  "pages": 30,
-  "main_pages": 19,
+  "pages": 31,
+  "main_pages": 20,
   "index_pages": 1,
   "backup_pages": 10,
   "links": 128,
-  "contracts": 20,
+  "contracts": 19,
   "semantic_mismatch": false,
   "unreachable": [],
   "original_png_sha256": {
@@ -23,13 +23,14 @@
     "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig06.png": "86ab9743adf961bab539167b0160bb1e55ec464e72eb33163be121e8a0a39c94",
     "CarbonSLO-GeoDistributed-LLM-Serving-2026/Without-Caption/CarbonSLO_Fig07.png": "addcc6f4cdfa24a75e4f7de8ea268e51c65c56e01eaefcabd63c83c17e90658b"
   },
+  "original_pdf_sha256": "5c555f8a277d99001651326c50d7de8c5f5b55928fb35c9eda92f58f5e6d4dd6",
   "build": {
-    "pdf_sha256": "5345a39a93a1033b8cd655fed81cdb9358f7fd8aae32fde6bbf887482f804b98",
-    "zip_sha256": "fb728cb07648d0df56b297e61751fec62937e5fce98cc6adb6ef8b4a0e8f6d74",
-    "source_sha256": "0d6a0b5e21845fffc3a10dcbc964977dd94e3d8ec61940323c61d8bf57f34531",
+    "pdf_sha256": "fd601c8a9a4639ca368ab72df2c2453dfd55221ac0d307c99e82a34d57b12582",
+    "zip_sha256": "96c29e5bce58459a8f631a679daedfb93a6633dc47f607bd2e83799715412421",
+    "source_sha256": "8c2d1d7f82481754256c85ba8fc94cc37fc27d479a5ff1863690e650bb6b1523",
     "local_passes": 2,
     "standalone_zip_passes": 2,
-    "pages": 30,
+    "pages": 31,
     "parity": {
       "text": true,
       "pixels": true,
