@@ -1,6 +1,6 @@
 # 2026-11-18 Research Meeting — Carbon–SLO
 
-**16 頁 Main + 1 頁 Discussion Index + 13 頁 Backup，共 30 頁。** 主動報告約 15 分 10 秒。Main 在前，Backup 在後。Main 可以獨立講完，不依賴 Backup。
+**16 頁 Main + 1 頁 Discussion Index + 13 頁 Backup，共 30 頁。** 主動報告約 15 分 50 秒。Main 在前，Backup 在後。Main 可以獨立講完，不依賴 Backup。
 
 - [PDF](output/pdf/2026-11-18-CarbonSLO.pdf)
 - [Beamer source](2026-11-18-CarbonSLO.tex)
@@ -22,12 +22,12 @@
 | M01 / 1 | Cover | — | 17 |
 | M02 / 2 | Why Is Carbon-Aware LLM Routing Challenging? | 動機與四項 serving 動態 | 19, 28, 29, 30 |
 | M03 / 3 | Table I: Scope of Prior Work and This Paper | Table I 完整比較 | 18 |
-| M04 / 4 | What Is the Carbon–SLO Optimization Goal? | 碳目標與 TTFT／TPOT | 19 |
+| M04 / 4 | What Is the Carbon–SLO Optimization Goal? | 碳目標與 TTFT／TPOT | 17（INDEX） |
 | M05 / 5 | How Does the Geo-Distributed Simulator Work? | Fig. 3 | 22 |
-| M06 / 6 | Real GPUs or a Simulator? How Is It Validated? | — | 21 |
-| M07 / 7 | Which Scheduling Policies Are Proposed? | 四層政策 | 23, 24 |
-| M08 / 8 | How Do Greedy and Standard ILP Work? | Eq. (1)–(2) 摘要 | 23 |
-| M09 / 9 | Why Iterative ILP and Facility MILP? | facility 目標 | 24 |
+| M06 / 6 | How Does the Scheduler Predict SLO Feasibility? | TTFT 估計 | 20, 22, 29 |
+| M07 / 7 | Why Is Greedy Scheduling Not Enough? | Eq. (1) 與 ILP 目標 | 23 |
+| M08 / 8 | How Do Iterative ILP and Facility MILP Improve Scheduling? | 迭代與 facility 目標 | 24 |
+| M09 / 9 | Can We Trust the Geo-Distributed Simulator? | within-node validation | 20, 21 |
 | M10 / 10 | How Is the System Evaluated? | Table II 摘要 | 25 |
 | M11 / 11 | Q1: Carbon without excessive SLO violations? | Fig. 4(a) | 25 |
 | M12 / 12 | Q2: Tail latency under high load | Fig. 4(b) | 19 |
@@ -36,25 +36,25 @@
 | M15 / 15 | Q5: Unknown output length | Fig. 7 | 26 |
 | M16 / 16 | Conclusion | — | 27 |
 
-開場順序：M02 動機 → M03 Table I 缺口 → M04 優化目標 → M05 simulator 架構 → M06 驗證。M02 不提前報告演算法細節或 60%／3% 結果。
+開場順序：M02 動機 → M03 Table I 缺口 → M04 優化目標 → M05 simulator 架構 → M06 估計 → M07–M08 排程 → M09 驗證 → M10 實驗設定。M02 不提前報告演算法細節或 60%／3% 結果。
 
 ## Backup
 
 | PDF | Label | 內容 | 返回 |
 |---|---|---|---|
-| 17 | INDEX | Discussion Index | M06, M09, M11, M12, M16, B01–B13 |
+| 17 | INDEX | Discussion Index | M08, M09, M11, M12, M16, B01–B13 |
 | 18 | B01 | Table I 逐列 | M03 |
-| 19 | B02 | CI、PUE、Scope 2、TTFT、TPOT、SLO | M04；另有 M02, M12 |
-| 20 | B03 | Latency 與 energy 公式 | M02；另有 B11, B12 |
-| 21 | B04 | 19 組 arrival rate 的 within-node validation | M06 |
-| 22 | B05 | Continuous batching、KV、queue | M05 |
-| 23 | B06 | Greedy 與 Standard ILP | M08；另有 M07 |
-| 24 | B07 | Iterative ILP 與 Facility MILP | M09；另有 M07 |
+| 19 | B02 | CI、PUE、Scope 2、TTFT、TPOT、SLO | M12；另有 M02 |
+| 20 | B03 | Latency 與 energy 公式 | M02；另有 B11, B12, M06, M09 |
+| 21 | B04 | 19 組 arrival rate 的 within-node validation | M09 |
+| 22 | B05 | Continuous batching、KV、queue | M05；另有 M06 |
+| 23 | B06 | Greedy 與 Standard ILP | M07 |
+| 24 | B07 | Iterative ILP 與 Facility MILP | M08 |
 | 25 | B08 | Table II、baselines、load label | M10；另有 M11 |
 | 26 | B09 | Fig. 5–7 的數值讀法 | M13；另有 M14, M15 |
 | 27 | B10 | 限制、可重現性、我們的方向 | M16 |
 | 28 | B11 | Figure 1：逐步延遲為何隨負載變 | M02；另有 B03 |
-| 29 | B12 | Figure 2：功率與能量為何要分 phase 與負載 | M02；另有 B03 |
+| 29 | B12 | Figure 2：功率與能量為何要分 phase 與負載 | M02；另有 B03, M06 |
 | 30 | B13 | 最低 CI 站不一定 SLO-feasible 的示意 | M02；另有 B02 |
 
 ## Figure → slide

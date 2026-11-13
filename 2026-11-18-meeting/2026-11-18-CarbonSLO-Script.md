@@ -2,7 +2,7 @@
 
 主動報告只走 Main。Backup 留給教授追問。
 
-總時間 **15 分 10 秒**（910 秒）。時間是照著講的目標，不是每句都要念完；若前面超時，Q3 到 Q5 各收 10 秒，結論仍要留下「這不是作者已經做完的系統」。
+總時間 **15 分 50 秒**（950 秒）。時間是照著講的目標，不是每句都要念完；若前面超時，Q3 到 Q5 各收 10 秒，結論仍要留下「這不是作者已經做完的系統」。
 
 技術詞 TTFT、TPOT、SLO、PUE、RTT、MILP、ILP、CI、KV、continuous batching 保留英文。
 
@@ -59,9 +59,9 @@ LLM serving 又是動態的：Continuous Batching 讓 batch size 持續變動；
 
 中間的式子是在 routing 上最小化 operational carbon：每個 datacenter 的能量乘上那個站的 CI。能量已經乘過那個 DC 的 PUE，不要再乘一次。功率是模型裡的 IT 功率，包含 engine 和 host。
 
-下面兩個不等式是可行性要求：估計的 TTFT 和 TPOT 要落在各自的 budget 裡。這不是說四種演算法解的是同一個嚴格數學規劃。Greedy、ILP、iterative ILP 和 facility MILP 的目標、約束和近似都不一樣，後面才展開。就算估計過了，request 仍可能因為模型誤差、workload 不確定或 routing 限制而違反 SLO。
+下面兩個不等式是估計的 TTFT 和 TPOT，各自要落在那筆 request 的 budget 裡。四種演算法的差別留到後面的方法頁。
 
-- 怎麼指：先指 Decision，再指最小化的式子，然後左右兩個 budget。SLO violation 的連結留給定義追問。
+- 怎麼指：先指 Decision，再指最小化的式子，然後左右兩個 budget。
 - 下一頁：這個目標是在什麼 simulator 裡評估的。
 
 ## Main 05 — How Does the Geo-Distributed Simulator Work?
@@ -76,88 +76,80 @@ DC 裡面，node 之間和 node 裡面都是 round-robin。所以論文把測到
 
 Scheduler 看得到的，是每個 DC 平均過的 batch size、queue 深度、KV 佔用、prefill duty，再加上 CI。
 
-- 怎麼指：左手指著圖上的 1 到 5，右手對應三小段。最後一句停在 Takeaway：區域 scheduler 用週期收集到的負載和碳資訊做 routing。
-- 下一頁：這個 simulator 哪一層是 A100／vLLM 量到的，哪一層只是跨區模擬。
+- 怎麼指：左手指著圖上的 1 到 5，右手對應三小段。最後停在 continuous batching。
+- 下一頁：這份 snapshot 怎麼變成 TTFT、TPOT 和碳成本。
 
-## Main 06 — Real GPUs or a Simulator? How Is It Validated?
-
-- 預計：70 秒
-- 論文：Section V-B；限制在 Section VI
-- 上一頁：simulator 的路徑和 provisioner 講完了，這一頁分清楚哪一層是量到的、哪一層是模擬的。
-
-分成三層。A，真的硬體：A100-40GB、vLLM 0.6.3、FP16，延遲和功率是在這張 GPU 上 profile 的。B，解析擬合：每個模型、每種 tensor parallel，各配一組 prefill 和 decode 的延遲與能量。C，跨區模擬：很多 region、scheduler、queue、RTT 和碳。這一層不是再做一次硬體實驗。
-
-他們有做 within-node 的端到端對照，而且只對 Llama-3.1-8B。三個 data-parallel 的 vLLM engine，19 個 arrival rate，超過四萬筆 request。TPOT 平均誤差低於 5%，TTFT 整體平均誤差 9.1%，GPU energy 和量測差在 2.5% 以內。TTFT 不是全程都是 9.1%：低於飽和 3.5%，overload 5.2%，飽和附近 28.5%，而且是偏高估。
-
-下面紫色的限制請直接念。這是單節點的 inference serving。它不是 16 個實體資料中心已經部署完成的驗證。Mixtral 用 TP=4 時，一個 engine 就佔滿他們那台四張 GPU 的機器，所以 Mixtral 沒有同樣的多 engine 對照。
-
-- 怎麼指：三張卡片很快帶過，數字停在中間藍卡，限制停在紫卡。不要把 2.5% 說成 16 個 DC 的碳排誤差。
-- 下一頁：在這個 simulator 上，他們放了哪四種排程。
-
-## Main 07 — Which Scheduling Policies Are Proposed?
-
-- 預計：50 秒
-- 論文：Section IV 開頭
-- 上一頁：工具可信的範圍講完了，開始看政策本身。
-
-四種政策共用同一個 TTFT、TPOT 估計。差在一次決定幾筆 request，以及 batch 的能量怎麼算。
-
-Greedy 一筆一筆決定，只看當下 snapshot，能量不共享。Standard ILP 對一個 window 做一次聯合指派，但是這一次求解裡負載是凍結的，碳是各筆 request 加總。Iterative ILP 同一個 window 最多重解 3 次，每次把指派投影回 batch 和 queue。Facility MILP 多一個位元，記錄這個 window 有沒有用到該 DC，啟動成本只收一次。
-
-Greedy 的 α 等於 0 就是只看碳，論文說這和 MOER 的決定一樣。他們報告 0、0.5 和 0.9。α 等於 1 會是只看延遲，實驗沒有把 1 放進表。
-
-這四層不是把 ILP 越寫越大。每一層是在補上一層的一個洞：沒有協調、負載估計過期、然後 batch 的固定能量被算了兩次。
-
-- 怎麼指：表格由上到下。α=0 那一行單獨停一下，因為後面圖裡的 MOER 就是它。
-- 下一頁：前兩層的公式，只放教授需要看的那一層。
-
-## Main 08 — How Do Greedy and Standard ILP Work?
-
-- 預計：55 秒
-- 論文：Section IV-A，Equation (1)；Section IV-B，Equation (2)
-- 上一頁：表格有了，這一頁解釋前兩格為什麼不夠。
-
-Greedy 先丟掉過不了 SLO 的 DC，再在剩下的裡面算分數：α 乘正規化延遲，加上 1 減 α 乘正規化 CI。延遲是 TTFT 加上輸出長度乘 TPOT。正規化是除以可行 DC 裡的最大值。分數最低的 DC 收下這筆 request。
-
-它的弱點是同一個 polling 週期裡的 request 會擠向同一站，而各區 scheduler 還看同一份 snapshot，所以一起把那個站推過 SLO。
-
-右邊的 Standard ILP 是把一個 window 裡的 request 一起分配。每筆 request 恰好去一個 DC，每個 DC 收到的筆數不能超過剩下的 batch 位子。單筆的碳是 PUE 乘能量乘 CI。關鍵是：這一解裡面，剩多少位子、延遲估出來是多少，都用解之前的狀態，不會隨著這一窗的指派更新。所以每一筆單獨看都可行的 DC，合在一起仍可能爆掉。
-
-Window 是 100 毫秒，或滿 300 筆就先解。完整的式子和 totally unimodular 那一句在 Backup。
-
-- 怎麼指：左卡的分數，右卡的三個條件。Takeaway 的「frozen」對應右卡最後一句。
-- 下一頁：後兩層改的就是這個凍結，以及能量被重複計算。
-
-## Main 09 — Why Iterative ILP and Facility MILP?
+## Main 06 — How Does the Scheduler Predict SLO Feasibility?
 
 - 預計：65 秒
-- 論文：Section IV-B 與 IV-C
-- 上一頁：Standard ILP 的負載是凍結的，這一頁是他們怎麼補。
+- 論文：Section III-A、III-B；Section IV 開頭的 latency estimator
+- 上一頁：Figure 3 的 provisioner 週期收集狀態。這一頁說明那些數字怎麼變成指派之前的估計。
 
-Iterative ILP 解完一次，就把這個 window 的指派寫回每個 DC 的 batch 和 queue，重算 TTFT 和 TPOT，再解。指派不再變，或做滿 3 次，就停。它補的是負載耦合。碳的算法還是各筆相加。
+Scheduler 拿到的不是每張 GPU 的即時讀數。Polling 週期裡，provisioner 把每個 DC 平均過的 batch size、queue、KV occupancy、prefill duty 和 CI 廣播出去，連同跨區 RTT。
 
-Facility MILP 改的是能量。如果這個 window 有任何一筆 request 用到某個 DC，就付一次啟動碳 \(f_d\)，request 自己只付邊際能量。式子裡的 \(y_d\) 就是「這個 window 用不用這個 DC」。兩筆 request 若共用一個原本閒置的 engine，固定的那一份 step energy 只收一次，不會收兩次。
+TTFT 用的是論文的式子。一項是跨區 RTT，本地就是 0。一項是在那個 DC 等一個 batch 位子的時間，記成 W_d。一項是這筆 prompt 加上已經排在 queue 裡的 token，一起做 prefill 的時間。所以是網路、排隊或 admission、以及 prefill 執行。
 
-請把 Takeaway 念完。它改的是共享 batch 的能量帳。它沒有把資料中心關機，也沒有把 RTT 拿掉。RTT 仍然在 TTFT 的估計裡。
+TPOT 看的是這筆 request 加入之後的 decode step，用投影的 batch 和 KV occupancy。已經在跑的 prefill 會把 decode 拉長，還在 queue 裡的 prefill 則攤到輸出長度上。論文把 duty 的分式斷在行尾，這裡不另寫一條代數式。碳成本用 profile 過的 phase energy 和執行時間，再乘那個 DC 的 PUE 和 CI。四種政策共用這套 serving 估計，但 Facility MILP 後面會多一個共享能量項。估計過了，不代表 SLO 一定守得住。
 
-- 怎麼指：左右兩張卡，然後中間的式子只指 \(f_d y_d\) 和 \(H_d y_d\)。不要說 \(y_d=0\) 代表機房斷電。
-- 下一頁：這些政策是在什麼設定上比的。先把「16 個 DC 是模擬」講清楚。
+- 怎麼指：先指上面四個方塊，再指 TTFT 式子的三項，最後左右兩張卡。
+- 下一頁：有了估計之後，為什麼一筆一筆決定不夠。
+
+## Main 07 — Why Is Greedy Scheduling Not Enough?
+
+- 預計：70 秒
+- 論文：Section IV-A、IV-B，Equation (1) 與 (2)
+- 上一頁：估計已經有了。這一頁比較每筆獨立決定，和同一個 window 一起決定。
+
+上面那一列是進展：Greedy、Standard ILP、Iterative ILP、Facility MILP。每一層針對前一層的一個洞，不是每個負載都嚴格更好。
+
+Greedy 先留下估計上 TTFT 和 TPOT 都過得了的 datacenter，再用 α 把歸一化後的延遲和 CI 加起來，選分數最低的。歸一化是除以這個可行集合裡的最大值。α 等於 0 只看 CI，論文說這和 MOER 一樣。它不是全域 operational carbon 的最小值。同一個 polling period 裡，每筆 request 看的是同一張 snapshot，所以會一起湧向同一個站。不同 region 的 scheduler 也看不到彼此剛送出去的 request。
+
+Standard ILP 把一個 window 的 request 一起指派，最小化各筆的估計碳成本。每一筆要分到一個 DC，每個 DC 還有剩餘的 batch 容量。它能協調同一個 window。可是這一次求解裡，容量和延遲估計是凍結的。Request 落地之後 batch 和 queue 會變，原本各筆分開看可行的站，合在一起可能過不了 SLO。
+
+- 怎麼指：先指進展那一行，再左欄的分數、右欄的最小化。兩個 Limitation 各停一次。
+- 下一頁：凍結的負載，以及被算了兩次的 batch 能量，後面兩種方法怎麼補。
+
+## Main 08 — How Do Iterative ILP and Facility MILP Improve Scheduling?
+
+- 預計：70 秒
+- 論文：Section IV-B 後段與 Section IV-C
+- 上一頁：Standard ILP 能協調一個 window，但負載估計是凍結的，能量仍是各筆相加。
+
+左邊是 Iterative ILP。先解這個 window，把指派投影回每個 DC 的 batch 和 queue，重算 TTFT、TPOT 和可行性，再解一次。指派重複，或做滿 3 次，就停。它補的是負載耦合。代價是一個 window 要解好幾次，排程的 CPU 時間會上去。碳的算法還是各筆相加。
+
+右邊是 Facility MILP。兩筆 request 若進同一個原本閒置的 engine，固定的那一份 step energy 只發生一次。式子是各筆的邊際成本，加上每個 DC 的 f_d 乘上 y_d。y_d 表示這個 window 有沒有用到該 DC，容量也乘上這個位元。這是優化裡的記帳，不是把資料中心斷電，也不是說這些 request 共用全部的 attention 或 KV。
+
+- 怎麼指：左邊順著 1 到 4，右邊只指 f_d y_d。不要把 y_d 等於 0 說成機房關機。
+- 下一頁：這些估計和排程是建在什麼測量上，驗證到哪裡為止。
+
+## Main 09 — Can We Trust the Geo-Distributed Simulator?
+
+- 預計：70 秒
+- 論文：Section V-B；限制在 Section VI。逐步擬合在 Section III-B，不跟這裡的百分比混在一起
+- 上一頁：排程方法講完了。實驗數字之前，先分清楚哪一層是量到的。
+
+分成三層。A，在 A100-40GB、vLLM 0.6.3、FP16 上量延遲和功率。B，每個模型、每種 tensor parallel，各配一組 prefill 和 decode 的延遲與能量。C，跨區模擬：routing、queue、continuous batching、RTT、多個 region 和 CI。這一層不是再做一次硬體實驗。
+
+Within-node 的對照只做 Llama-3.1-8B。三個 data-parallel 的 vLLM engine，19 個 arrival rate，超過四萬筆 request。TTFT 整體平均誤差 9.1%，TPOT 平均誤差低於 5%，GPU energy 和量測差在 2.5% 以內。飽和附近的 TTFT 平均誤差升到 28.5%，而且是偏高估。這是端到端的 within-node 誤差。逐步的 1.7%、3.4%、5.6% 留在公式頁，不要加進 9.1%。
+
+請把邊界念完。驗證對的是單節點 serving 的量測，不是 16 個實體資料中心已經部署。跨區的減碳結果是模擬。
+
+- 怎麼指：三張卡片很快帶過，數字停在中間藍卡，28.5% 和單節點邊界停在紫卡。
+- 下一頁：實驗比的是哪些模型、負載、SLO 和 baseline。
 
 ## Main 10 — How Is the System Evaluated?
 
-- 預計：50 秒
+- 預計：55 秒
 - 論文：Section V-A，Table II
-- 上一頁：方法講完，實驗設定要先把 dense 和 MoE 分開。
+- 上一頁：驗證的邊界講完了。這一頁只說明實驗在比什麼，不再重講校準。
 
-左邊兩個是 dense：Llama-3.1-8B 和 Qwen2.5-7B，TP 等於 1。右邊是 MoE：Mixtral-8x7B，8 個 expert 裡每次 top-2，TP 等於 4。因為 TP=4，Mixtral 每個 DC 的 engine 數只有 dense 的四分之一。到達率也不能直接比：7B 和 8B 的低、中、高是 1200、2400、4000 req/s；Mixtral 是 800、1200、2000。
+左邊兩個是 dense：Llama-3.1-8B 和 Qwen2.5-7B，TP 等於 1。右邊是 MoE：Mixtral-8x7B，8 個 expert 裡每次 top-2，TP 等於 4。因為 TP=4，Mixtral 每個 DC 的 engine 數只有 dense 的四分之一。低、中、高負載不能直接拿 req/s 互比：7B 和 8B 是 1200、2400、4000；Mixtral 是 800、1200、2000。
 
-拓樸是 4 個區域 scheduler 乘 4 個 DC，一共 16 個 DC。RTT 是 85 到 280 毫秒，預設 PUE 1.1。CI 用 Electricity Maps 的一個小時，一次實驗裡保持不變。
+拓樸是 4 個區域 scheduler 乘 4 個 DC，一共 16 個模擬的 DC。SLO 是 TTFT 3 秒；dense 的 TPOT 是 100 毫秒，Mixtral 是 200 毫秒。
 
-不會看碳的 baseline 是 round-robin 和 least-loaded。會看碳的是 Green-LLM，以及 MOER，也就是 α 等於 0 的 greedy。指標是含 idle 和 host 的 operational carbon、SLO violation，再加上 TTFT 的 p50、p90、p99，因為 violation rate 看不出尾巴有多嚴重。
+不會看碳的 baseline 是 round-robin 和 least-loaded。會看碳的是 Green-LLM，以及 MOER，也就是 α 等於 0 的 greedy。指標是含 idle 和 host 的 operational carbon、SLO violation rate，再加上 TTFT 的 p50、p90、p99。Violation rate 不是平均延遲，也不是 throughput。
 
-Takeaway 要留下：這 16 個 DC 是一台伺服器上的模擬角色，不是 16 個已經架好的機房。
-
-- 怎麼指：表格的 Dense / MoE 兩欄，再指 Takeaway。
+- 怎麼指：表格的 Dense / MoE 兩欄，再指 baseline 和指標，最後停在 Takeaway。
 - 下一頁：全篇最重要的結果圖，Figure 4(a)。
 
 ## Main 11 — Q1: Can Carbon Be Reduced Without Excessive SLO Violations?

@@ -103,9 +103,11 @@ def validate(render_dir):
     contracts = json.loads(CONTRACTS.read_text())
     full_text = '\n'.join(page.get_text() for page in doc)
     assert 'Figure 8' not in full_text and 'Fig. 8' not in full_text
-    assert 'does not power off' in doc[expected['M09']].get_text()
-    assert '16 physical datacenters' in doc[expected['M06']].get_text()
-    assert 'single-node' in doc[expected['M06']].get_text()
+    assert 'does not power off' in doc[expected['M08']].get_text()
+    trust = ' '.join(doc[expected['M09']].get_text().split())
+    assert '16 physical datacenters' in trust
+    assert 'single-node' in trust
+    assert 'Which Scheduling Policies Are Proposed' not in full_text
     assert 'up to 60' in doc[expected['M11']].get_text().lower()
     assert 'average' in doc[expected['M11']].get_text().lower() or 'average' in doc[expected['M11']].get_text()
     assert '55' in doc[expected['M11']].get_text()
@@ -113,7 +115,8 @@ def validate(render_dir):
     assert 'Go to Conclusion (M16)' in doc[expected['INDEX']].get_text()
     goal = ' '.join(doc[expected['M04']].get_text().split())
     assert 'Optimization Goal' in goal and 'already includes PUE' in goal
-    assert 'do not share one strict program' in goal
+    assert 'do not share one strict program' not in goal
+    assert 'Minimize operational carbon while keeping' not in goal
     scenario = ' '.join(doc[expected['B13']].get_text().split())
     assert 'not a measured trace' in scenario and 'SLO-feasible' in scenario
     latency = ' '.join(doc[expected['B11']].get_text().split())
