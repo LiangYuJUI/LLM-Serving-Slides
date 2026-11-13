@@ -2,7 +2,7 @@
 
 主動報告只走 Main。Backup 留給教授追問。
 
-總時間 **18 分 05 秒**（1085 秒）。時間是照著講的目標，不是每句都要念完；若前面超時，Q3 到 Q5 各收 10 秒，結論仍要留下「這不是作者已經做完的系統」。
+總時間 **19 分 05 秒**（1145 秒）。時間是照著講的目標，不是每句都要念完；若前面超時，Q3 到 Q5 各收 10 秒，結論仍要留下「這不是作者已經做完的系統」。
 
 技術詞 TTFT、TPOT、SLO、PUE、RTT、MILP、ILP、CI、KV、continuous batching 保留英文。
 
@@ -14,8 +14,8 @@
 
 老師好。今天報告 Penn State 的 Topcu、Cim、Ozturk 和 Kandemir 這篇 preprint，題目是 Dissecting the Carbon–SLO Tension in Geo-Distributed LLM Serving。它問的是：把 request 送到比較綠的資料中心，能不能在 TTFT 和 TPOT 的 SLO 底下真的減碳。
 
-- 怎麼指：停在標題和作者。下方那一行是今天的順序，不必逐項念。
-- 下一頁：先用三十秒說這篇實際做了哪三件事。
+- 怎麼指：停在標題和作者。
+- 下一頁：先介紹這篇做出的 simulator、scheduler 與實驗結果。
 
 ## Main 02 — What Does This Paper Do?
 
@@ -29,10 +29,25 @@
 
 Takeaway 是：決定 request 去哪個資料中心，會同時改到用電碳排和 token 延遲。CI 最低的站，不一定是還過得了 SLO 的站。
 
-- 怎麼指：先左到右三張卡片，再指中間的 60% 和 3%，最後停在 Takeaway。operational carbon 和 three models 可以點進 Backup。
+- 怎麼指：先指標題下的 simulator 副標題，再由左到右說明 Schedulers 和 Frontier，接著指中間的 60% 和 3%，最後停在 Takeaway。operational carbon 和 three models 可以點進 Backup。
+- 下一頁：用 Table I 說明這篇涵蓋了哪些更完整的 serving 因素。
+
+## Main 03 — Table I: Scope of Prior Work and This Paper
+
+- 預計：60 秒
+- 論文：Section I，Table I
+- 上一頁：看完這篇的三項貢獻，再用 Table I 說明它與既有工作的差異。
+
+先看這張 Table I。這篇的重點，是把跨資料中心 LLM serving 的問題考慮得更全面。表格左邊是各篇工作的排程粒度與延遲目標，中間四欄比較 batch-aware latency、power、queueing 和跨區 transfer，最後一欄是它們報告的延遲指標。
+
+看最下面綠色這一列，這篇同時納入 batch 對延遲與功率的影響、engine 裡的排隊，以及跨區傳輸延遲，並用 TTFT、TPOT 對照 MLPerf 的 SLO。這些因素會一起影響 request 能不能送到低碳的資料中心，所以需要放在同一個模型裡評估。
+
+這裡不要解讀成過去的工作全部都沒考慮：有幾篇已經納入 transfer，MOER 的 power 是部分建模，GCOS 的 batch-aware latency 則是不適用。這篇的差別在於把表中這些面向整合起來。
+
+- 怎麼指：先指中間四個比較欄位，再沿著綠色的 This paper 那一列說明；不用逐篇念完。
 - 下一頁：為什麼不能永遠選最綠的站。
 
-## Main 03 — Why Not Always Choose the Greenest Datacenter?
+## Main 04 — Why Not Always Choose the Greenest Datacenter?
 
 - 預計：70 秒
 - 論文：Section I 對 spatial scheduling 的動機；Section II 的 CI 變化
@@ -47,7 +62,7 @@ Takeaway 是：決定 request 去哪個資料中心，會同時改到用電碳�
 - 怎麼指：從左到右跟著箭頭。上面紫色是低 CI、會擠的站，下面綠色是 CI 較高但排隊較短的站。強調圖上的字是示意。
 - 下一頁：既有的跨區排程少算了什麼。不要說每一篇都少同一件事。
 
-## Main 04 — What Do Previous Approaches Miss?
+## Main 05 — What Do Previous Approaches Miss?
 
 - 預計：60 秒
 - 論文：Section I 與 Table I
@@ -64,7 +79,7 @@ Takeaway：缺的是會跟著負載變的 TTFT 和 TPOT，以及一個有 benchm
 - 怎麼指：Table I 四個色塊依序。若被問某一列，開 B01，不要在這一頁把六篇都念完。
 - 下一頁：把這篇自己的問題寫成一個決定、一個碳、兩個延遲。
 
-## Main 05 — What Is the Carbon–SLO Scheduling Problem?
+## Main 06 — What Is the Carbon–SLO Scheduling Problem?
 
 - 預計：55 秒
 - 論文：Section II；Section III-A；Table II 的 budget
@@ -79,7 +94,7 @@ SLO 的定義要講清楚。一筆 request 只要 TTFT 或 TPOT 有一個超過�
 - 怎麼指：先指決策那一句，再指公式，然後左右兩張卡片。either 這個字要停一下。
 - 下一頁：這個問題是在什麼 simulator 裡評估的。
 
-## Main 06 — How Does the Geo-Distributed Simulator Work?
+## Main 07 — How Does the Geo-Distributed Simulator Work?
 
 - 預計：75 秒
 - 論文：Section III-C，Figure 3；Section III-A 的 polling 欄位
@@ -94,7 +109,7 @@ Scheduler 看得到的，是每個 DC 平均過的 batch size、queue 深度、K
 - 怎麼指：左手指著圖上的 1 到 5，右手對應三小段。最後一句停在 Takeaway 的四個狀態。
 - 下一頁：TTFT 和 TPOT 為什麼不能做成常數。
 
-## Main 07 — How Is LLM Serving Latency Modeled?
+## Main 08 — How Is LLM Serving Latency Modeled?
 
 - 預計：55 秒
 - 論文：Section III-B，Figure 1
@@ -107,7 +122,7 @@ Figure 1 有三塊。左邊 prefill：prompt 還短的時候幾乎是平的，�
 - 怎麼指：由左至右 (a)(b)(c)。不必讀 legend 裡每一條線，點出「平、再上升」和「飽和後變陡」。
 - 下一頁：同樣的兩階段，功率長得不一樣，所以能量也不能只用延遲代替。
 
-## Main 08 — How Are Power and Energy Modeled?
+## Main 09 — How Are Power and Energy Modeled?
 
 - 預計：50 秒
 - 論文：Section III-B，Figure 2
@@ -122,7 +137,7 @@ Takeaway：carbon-aware 排程若忽略 phase 和 batch，會把資料中心的�
 - 怎麼指：左圖指 TDP 和 idle，右圖指 decode 隨 batch 上升。72 W 和 300 W 在右邊第三點。
 - 下一頁：這些模型跟真的 GPU 對過沒有。教授若只記一頁，請停在驗證邊界。
 
-## Main 09 — Real GPUs or a Simulator? How Is It Validated?
+## Main 10 — Real GPUs or a Simulator? How Is It Validated?
 
 - 預計：70 秒
 - 論文：Section V-B；限制在 Section VI
@@ -137,7 +152,7 @@ Takeaway：carbon-aware 排程若忽略 phase 和 batch，會把資料中心的�
 - 怎麼指：三張卡片很快帶過，數字停在中間藍卡，限制停在紫卡。不要把 2.5% 說成 16 個 DC 的碳排誤差。
 - 下一頁：在這個 simulator 上，他們放了哪四種排程。
 
-## Main 10 — Which Scheduling Policies Are Proposed?
+## Main 11 — Which Scheduling Policies Are Proposed?
 
 - 預計：50 秒
 - 論文：Section IV 開頭
@@ -154,7 +169,7 @@ Greedy 的 α 等於 0 就是只看碳，論文說這和 MOER 的決定一樣。
 - 怎麼指：表格由上到下。α=0 那一行單獨停一下，因為後面圖裡的 MOER 就是它。
 - 下一頁：前兩層的公式，只放教授需要看的那一層。
 
-## Main 11 — How Do Greedy and Standard ILP Work?
+## Main 12 — How Do Greedy and Standard ILP Work?
 
 - 預計：55 秒
 - 論文：Section IV-A，Equation (1)；Section IV-B，Equation (2)
@@ -171,7 +186,7 @@ Window 是 100 毫秒，或滿 300 筆就先解。完整的式子和 totally uni
 - 怎麼指：左卡的分數，右卡的三個條件。Takeaway 的「frozen」對應右卡最後一句。
 - 下一頁：後兩層改的就是這個凍結，以及能量被重複計算。
 
-## Main 12 — Why Iterative ILP and Facility MILP?
+## Main 13 — Why Iterative ILP and Facility MILP?
 
 - 預計：65 秒
 - 論文：Section IV-B 與 IV-C
@@ -186,7 +201,7 @@ Facility MILP 改的是能量。如果這個 window 有任何一筆 request 用�
 - 怎麼指：左右兩張卡，然後中間的式子只指 \(f_d y_d\) 和 \(H_d y_d\)。不要說 \(y_d=0\) 代表機房斷電。
 - 下一頁：這些政策是在什麼設定上比的。先把「16 個 DC 是模擬」講清楚。
 
-## Main 13 — How Is the System Evaluated?
+## Main 14 — How Is the System Evaluated?
 
 - 預計：50 秒
 - 論文：Section V-A，Table II
@@ -203,7 +218,7 @@ Takeaway 要留下：這 16 個 DC 是一台伺服器上的模擬角色，不是
 - 怎麼指：表格的 Dense / MoE 兩欄，再指 Takeaway。
 - 下一頁：全篇最重要的結果圖，Figure 4(a)。
 
-## Main 14 — Q1: Can Carbon Be Reduced Without Excessive SLO Violations?
+## Main 15 — Q1: Can Carbon Be Reduced Without Excessive SLO Violations?
 
 - 預計：85 秒
 - 論文：Abstract；Section V-C，Figure 4(a)
@@ -220,7 +235,7 @@ Takeaway 要留下：這 16 個 DC 是一台伺服器上的模擬角色，不是
 - 怎麼指：先指兩軸和星星，再指高負載最右邊的點，最後念「How to read the claim」。
 - 下一頁：violation rate 看不出尾巴。Figure 4(b) 把高負載的 TTFT 百分位拆開，而且圖上的百分比不是延遲。
 
-## Main 15 — Q2: What Happens to Tail Latency Under High Load?
+## Main 16 — Q2: What Happens to Tail Latency Under High Load?
 
 - 預計：60 秒
 - 論文：Section V-C，Figure 4(b)
@@ -235,7 +250,7 @@ Mixtral 不一樣。它的 engine 少、輸出比較長。α 等於 0 的 greedy
 - 怎麼指：先指一條橫條上的百分號，說明那是碳。再指 Llama 上 greedy 的短條，和 Mixtral 上 greedy 拉到很右邊的長條。
 - 下一頁：減碳空間從哪裡來。PUE 和 CI 的分散是兩件不同的事。
 
-## Main 16 — Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?
+## Main 17 — Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?
 
 - 預計：55 秒
 - 論文：Section V-C，Figure 5
@@ -250,7 +265,7 @@ Mixtral 不一樣。它的 engine 少、輸出比較長。α 等於 0 的 greedy
 - 怎麼指：左圖看實心點略為上移，右圖看三條線由左下到右上，High 那條最低。13% 用口頭講，不必在圖上找一個沒標數字的點。
 - 下一頁：排程器自己要花多少時間，以及狀態太舊時 SLO 會怎樣。
 
-## Main 17 — Q4: How Important Are Polling, Overhead, and Topology?
+## Main 18 — Q4: How Important Are Polling, Overhead, and Topology?
 
 - 預計：50 秒
 - 論文：Section V-C，Figure 6
@@ -267,7 +282,7 @@ Figure 6 三塊一起看。右邊三句是讀圖，不是另一組實驗。
 - 怎麼指：先指 (a) 的橫軸是毫秒到秒，強調這不是 TTFT。再指 (b) 在 2 秒之後翹起來。(c) 只指星星往右上和往左下的兩步。
 - 下一頁：真正上線時不知道輸出會多長。他們用一個小預測器試過。
 
-## Main 18 — Q5: What If Output Length Is Unknown?
+## Main 19 — Q5: What If Output Length Is Unknown?
 
 - 預計：45 秒
 - 論文：Section IV 為什麼需要 OSL；Section V-C，Figure 7
@@ -282,7 +297,7 @@ Figure 7(a) 空心是 oracle，實心是預測。預測是一個兩層 MLP 的�
 - 怎麼指：(a) 看空心和實心幾乎疊在一起；(b) 看斜線區是 violation 小於 5% 的地方，不要把 cap 64 那個高 violation 點說成也只有 5%。
 - 下一頁：四層結論。最後一層要把「我們想做的」和「他們做完的」分開。
 
-## Main 19 — Conclusion
+## Main 20 — Conclusion
 
 - 預計：50 秒
 - 論文：Section VI 與 Section VIII

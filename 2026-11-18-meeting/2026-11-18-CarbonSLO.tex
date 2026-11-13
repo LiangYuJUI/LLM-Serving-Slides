@@ -11,6 +11,7 @@
 \usepackage{booktabs,tabularx,array}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage{colortbl}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning}
 
@@ -89,39 +90,37 @@
 \begin{document}
 \section{Summary}
 
-\renewcommand{\slideid}{Main 01 / 19}
-\begin{frame}[c,label=M01]{Carbon--SLO at Geo-Scale}
+\renewcommand{\slideid}{Main 01 / 20}
+\begin{frame}[c,label=M01]
 \vspace*{\fill}
 {\LARGE\bfseries Dissecting the Carbon--SLO Tension\par}
 {\LARGE\bfseries in Geo-Distributed LLM Serving\par}
-\bigskip
+\vspace{0.65cm}
 {\large Burak Topcu, Musa Cim, Zuhal Ozturk, Mahmut Taylan Kandemir\par}
+\vspace{0.12cm}
 {\color{Muted}Department of Computer Science and Engineering\\
 The Pennsylvania State University\\
-arXiv:2610.14571 \quad 10 October 2026}\par\bigskip
-\textbf{Research meeting: 18 November 2026}\\
+arXiv:2610.14571 \quad 10 October 2026}\par
+\vspace{0.75cm}
+\textbf{Research meeting: 18 November 2026}\\[0.12cm]
 Yu-Jui Liang\quad Advisor: Hsiang-Yun Cheng\\
 National Taiwan University / Academia Sinica
-\par\vspace{0.35cm}
-{\small\color{Muted}Summary \enspace$\cdot$\enspace Motivation \enspace$\cdot$\enspace Simulator \enspace$\cdot$\enspace Four schedulers \enspace$\cdot$\enspace Five results}
 \par\vfill
-\slidenote{title page.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 02 / 19}
+\renewcommand{\slideid}{Main 02 / 20}
 \begin{frame}[t,label=M02]{What Does This Paper Do?}
 \vspace{0.06cm}
+{\small\color{Muted}A geo-distributed LLM serving simulator, calibrated with A100 / vLLM latency and power measurements.\par}
+\vspace{0.30cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.32\textwidth}
-\card{mintbox}{1. Simulator}{\begin{minipage}[t][1.85cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-A geo-distributed LLM serving simulator, calibrated with A100 / vLLM latency and power measurements.\end{minipage}}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{bluebox}{2. Schedulers}{\begin{minipage}[t][1.85cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
+
+\begin{column}{0.49\textwidth}
+\card{bluebox}{Schedulers}{\begin{minipage}[t][1.35cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
 Four carbon- and SLO-aware policies, from a per-request heuristic to a batch-level facility MILP.\end{minipage}}
 \end{column}
-\begin{column}{0.32\textwidth}
-\card{lilacbox}{3. Frontier}{\begin{minipage}[t][1.85cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
+\begin{column}{0.49\textwidth}
+\card{lilacbox}{Frontier}{\begin{minipage}[t][1.35cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
 The carbon--SLO tradeoff across \kw{B08}{three models}, loads, and carbon-aware and carbon-blind baselines.\end{minipage}}
 \end{column}
 \end{columns}
@@ -129,13 +128,43 @@ The carbon--SLO tradeoff across \kw{B08}{three models}, loads, and carbon-aware 
 \card{bluebox}{Headline result, versus round-robin}{\begin{minipage}[t][1.35cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
 Facility MILP reduces \kw{B02}{operational carbon} by \textbf{up to 60\%} relative to round-robin, with the authors' \textbf{average SLO violation of 3\%}. The 60\% is the upper end. The 3\% is an average, not every load.\end{minipage}}
 \takeaway{Where a request is served changes both operational carbon and token latency. The lowest-CI site is not automatically the SLO-feasible site.}
-\slidenote{Abstract; Sec.~I contributions; Sec.~VIII. The 26--60\% conclusion range is on M19.}
+\slidenote{Abstract; Sec.~I contributions; Sec.~VIII. The 26--60\% conclusion range is on M20.}
+\end{frame}
+
+\renewcommand{\slideid}{Main 03 / 20}
+\begin{frame}[t,label=M03]{Table I: Scope of Prior Work and This Paper}
+\vspace{0.12cm}
+{\fontsize{7}{8.6}\selectfont
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{@{}l >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{2.65cm} c c c c X@{}}
+\toprule
+& \multicolumn{2}{c}{Formulation} & \multicolumn{2}{c}{Batch-aware} & \multicolumn{2}{c}{Overheads} & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Study & Placement & Latency target & Latency & Power & Queue & Transfer & Reported latency \\
+\midrule
+SLIT (2025) & Fixed 15-min plan & Min. TTFT, unbounded & $\times$ & $\times$ & $\times$ & $\checkmark$ & Mean TTFT only \\
+Green-LLM (2025) & Fixed 1-h plan & Mean E2E $\leq$ 5\,s & $\times$ & $\times$ & $\times$ & $\checkmark$ & None (\$ penalty) \\
+FREESH (2025) & Fixed 30-min plan & E2E $\leq 5\times$ profiled & $\times$ & $\times$ & $\times$ & $\times$ & E2E viol., p99 \\
+GCOS (2026) & Per job (GPU-h) & Job wait $\leq$ 10--20\% runtime & -- & $\times$ & $\times$ & $\checkmark$ & Wait violation \\
+MARLIN (2026) & Fixed 15-min plan & Min. TTFT, unbounded & $\times$ & $\times$ & $\times$ & $\checkmark$ & Mean TTFT only \\
+MOER (2026) & Per request & None & $\times$ & $\circ$ & $\times$ & $\times$ & E2E p95 \\
+\rowcolor{SoftMint}
+\textbf{This paper} & Per request and batch & TTFT, TPOT $\leq$ MLPerf & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & SLO attainment, p50/90/99 \\
+\bottomrule
+\end{tabularx}\par}
+\vspace{0.16cm}
+{\scriptsize\color{Muted}$\checkmark$ modeled\qquad $\times$ not modeled\qquad $\circ$ partial\qquad -- not applicable\par}
+\vspace{0.28cm}
+{\small\textbf{\color{Accent}Broader modeling scope}\quad Batch-dependent latency and power, engine queueing, and inter-region transfers under benchmark-based TTFT / TPOT SLOs.\par}
+\vfill
+\slidenote{Sec.~I, Table~I. Labels abbreviated for readability.}
 \end{frame}
 
 \section{Motivation}
 
-\renewcommand{\slideid}{Main 03 / 19}
-\begin{frame}[t,label=M03]{Why Not Always Choose the Greenest Datacenter?}
+\renewcommand{\slideid}{Main 04 / 20}
+\begin{frame}[t,label=M04]{Why Not Always Choose the Greenest Datacenter?}
 \vspace{0.02cm}
 {\small\color{Muted}Conceptual schematic, not a measured trace.\par}
 \vspace{0.02cm}
@@ -158,8 +187,8 @@ Facility MILP reduces \kw{B02}{operational carbon} by \textbf{up to 60\%} relati
 \slidenote{Sec.~I, paragraphs on spatial scheduling; Sec.~II, CI variation. Source-mix medians are on the backup.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 04 / 19}
-\begin{frame}[t,label=M04]{What Do Previous Approaches Miss?}
+\renewcommand{\slideid}{Main 05 / 20}
+\begin{frame}[t,label=M05]{What Do Previous Approaches Miss?}
 \vspace{0.08cm}
 {\small \kw{B01}{Table I} compares six carbon-aware geo-scheduling studies with this paper. The gaps are not identical for every row.\par}
 \vspace{0.10cm}
@@ -185,8 +214,8 @@ Prior targets are mostly self-defined: mean TTFT, a 5\,s end-to-end cap, or job 
 
 \section{Problem}
 
-\renewcommand{\slideid}{Main 05 / 19}
-\begin{frame}[t,label=M05]{What Is the Carbon--SLO Scheduling Problem?}
+\renewcommand{\slideid}{Main 06 / 20}
+\begin{frame}[t,label=M06]{What Is the Carbon--SLO Scheduling Problem?}
 \vspace{0.04cm}
 {\small The decision is which datacenter receives the request. It is not a transfer of layers, KV cache, or MoE experts.\par}
 \vspace{0.02cm}
@@ -214,8 +243,8 @@ A request violates the SLO if \textbf{either} TTFT or TPOT exceeds its budget. M
 
 \section{Simulator}
 
-\renewcommand{\slideid}{Main 06 / 19}
-\begin{frame}[t,label=M06]{How Does the Geo-Distributed Simulator Work?}
+\renewcommand{\slideid}{Main 07 / 20}
+\begin{frame}[t,label=M07]{How Does the Geo-Distributed Simulator Work?}
 \vspace{0.02cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.60\textwidth}
@@ -235,8 +264,8 @@ Inside a datacenter, inter-node and intra-node placement are round-robin. The en
 \slidenote{Sec.~III-C, Fig.~3; Sec.~III-A for the polled fields. Savings are attributed to the regional policy because intra-DC placement is round-robin.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 07 / 19}
-\begin{frame}[t,label=M07]{How Is LLM Serving Latency Modeled?}
+\renewcommand{\slideid}{Main 08 / 20}
+\begin{frame}[t,label=M08]{How Is LLM Serving Latency Modeled?}
 \vspace{0.02cm}
 {\centering\includegraphics[width=\linewidth,height=2.68cm,keepaspectratio]{\wc{01}}\par}
 \vspace{0.01cm}
@@ -247,8 +276,8 @@ Inside a datacenter, inter-node and intra-node placement are round-robin. The en
 \slidenote{Sec.~III-B, Fig.~1. Coefficients and the exact polynomials are on the backup.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 08 / 19}
-\begin{frame}[t,label=M08]{How Are Power and Energy Modeled?}
+\renewcommand{\slideid}{Main 09 / 20}
+\begin{frame}[t,label=M09]{How Are Power and Energy Modeled?}
 \vspace{0.02cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.56\textwidth}
@@ -265,8 +294,8 @@ Inside a datacenter, inter-node and intra-node placement are round-robin. The en
 \slidenote{Sec.~III-B, Fig.~2. Held-out step energy is within 5.6\% MAPE. TDP shown is 400\,W for the A100.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 09 / 19}
-\begin{frame}[t,label=M09]{Real GPUs or a Simulator? How Is It Validated?}
+\renewcommand{\slideid}{Main 10 / 20}
+\begin{frame}[t,label=M10]{Real GPUs or a Simulator? How Is It Validated?}
 \vspace{0.06cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.32\textwidth}
@@ -293,8 +322,8 @@ The check is single-node inference serving. It is not a validation that 16 physi
 
 \section{Method}
 
-\renewcommand{\slideid}{Main 10 / 19}
-\begin{frame}[t,label=M10]{Which Scheduling Policies Are Proposed?}
+\renewcommand{\slideid}{Main 11 / 20}
+\begin{frame}[t,label=M11]{Which Scheduling Policies Are Proposed?}
 \vspace{0.04cm}
 {\small All four share one latency estimator. They differ in how many requests they decide together, and in how they price energy.\par}
 \vspace{0.06cm}
@@ -318,8 +347,8 @@ Iterative ILP & same window, up to 3 solves & re-projected after each solve & st
 \slidenote{Sec.~IV opening and Sec.~IV-A--C. Solver limits: $T_{\max}{=}3$, MILP time limit 0.25\,s, HiGHS.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 11 / 19}
-\begin{frame}[t,label=M11]{How Do Greedy and Standard ILP Work?}
+\renewcommand{\slideid}{Main 12 / 20}
+\begin{frame}[t,label=M12]{How Do Greedy and Standard ILP Work?}
 \vspace{0.04cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
@@ -347,8 +376,8 @@ The \kw{B06}{full ILP} freezes $H_d$ and the latency estimates for that single s
 \slidenote{Sec.~IV-A, Eq.~(1); Sec.~IV-B, Eq.~(2). Window: 100\,ms or 300 requests. The matrix is totally unimodular.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 12 / 19}
-\begin{frame}[t,label=M12]{Why Iterative ILP and Facility MILP?}
+\renewcommand{\slideid}{Main 13 / 20}
+\begin{frame}[t,label=M13]{Why Iterative ILP and Facility MILP?}
 \vspace{0.05cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
@@ -377,8 +406,8 @@ Add a one-time carbon $f_d$ if datacenter $d$ receives any request in the window
 
 \section{Experiments}
 
-\renewcommand{\slideid}{Main 13 / 19}
-\begin{frame}[t,label=M13]{How Is the System Evaluated?}
+\renewcommand{\slideid}{Main 14 / 20}
+\begin{frame}[t,label=M14]{How Is the System Evaluated?}
 \vspace{0.04cm}
 {\centering\scriptsize
 \setlength{\tabcolsep}{5pt}
@@ -401,8 +430,8 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 \slidenote{Sec.~V-A, Table~II. Load labels: low / moderate / high are under 15\%, 15--40\%, and above 40\% of batch capacity under round-robin.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 14 / 19}
-\begin{frame}[t,label=M14]{Q1: Can Carbon Be Reduced Without Excessive SLO Violations?}
+\renewcommand{\slideid}{Main 15 / 20}
+\begin{frame}[t,label=M15]{Q1: Can Carbon Be Reduced Without Excessive SLO Violations?}
 \vspace{0.01cm}
 {\centering\scriptsize Figure 4(a), Topcu et al. Y: carbon saving versus round-robin. X: fraction of requests missing TTFT or TPOT.\par}
 \vspace{0.01cm}
@@ -414,8 +443,8 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 \slidenote{Abstract; Sec.~V-C, Fig.~4(a). Moderate-load $\alpha{=}0$: up to 6.9\% violation on dense models and 44.8\% on Mixtral.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 15 / 19}
-\begin{frame}[t,label=M15]{Q2: What Happens to Tail Latency Under High Load?}
+\renewcommand{\slideid}{Main 16 / 20}
+\begin{frame}[t,label=M16]{Q2: What Happens to Tail Latency Under High Load?}
 \vspace{0.01cm}
 {\centering\scriptsize Figure 4(b), Topcu et al., high load only. Bars are TTFT from p50 to p99. The printed percentages are carbon savings versus RR, not latency.\par}
 \vspace{0.01cm}
@@ -427,8 +456,8 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 \slidenote{Sec.~V-C, Fig.~4(b). Iterative ILP p99 TTFT reaches 7.5\,s on the dense models, from repeated solves.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 16 / 19}
-\begin{frame}[t,label=M16]{Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?}
+\renewcommand{\slideid}{Main 17 / 20}
+\begin{frame}[t,label=M17]{Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?}
 \vspace{0.02cm}
 {\centering\scriptsize Figure 5, Topcu et al. (a)~high-load PUE. (b)~facility MILP across CI hours. Open versus filled markers in (a): uniform PUE 1.1 versus real per-DC PUE.\par}
 \vspace{0.02cm}
@@ -446,8 +475,8 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 \slidenote{Sec.~V-C, Fig.~5. The 13\% Llama point at high load and the lowest CV is outside the conclusion's 26--60\% summary.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 17 / 19}
-\begin{frame}[t,label=M17]{Q4: How Important Are Polling, Overhead, and Topology?}
+\renewcommand{\slideid}{Main 18 / 20}
+\begin{frame}[t,label=M18]{Q4: How Important Are Polling, Overhead, and Topology?}
 \vspace{0.01cm}
 {\centering\scriptsize Figure 6, Topcu et al. (a)~scheduler CPU time at high load. (b)~facility-MILP SLO violation at moderate load. (c)~Llama, high load.\par}
 \vspace{0.01cm}
@@ -471,8 +500,8 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 \slidenote{Sec.~V-C, Fig.~6. Asynchronous polling does not consistently beat synchronous polling.}
 \end{frame}
 
-\renewcommand{\slideid}{Main 18 / 19}
-\begin{frame}[t,label=M18]{Q5: What If Output Length Is Unknown?}
+\renewcommand{\slideid}{Main 19 / 20}
+\begin{frame}[t,label=M19]{Q5: What If Output Length Is Unknown?}
 \vspace{0.01cm}
 {\centering\scriptsize Figure 7, Topcu et al. (a)~high load, oracle versus predicted OSL. (b)~Mixtral prompt length as batch capacity grows.\par}
 \vspace{0.01cm}
@@ -498,8 +527,8 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 
 \section{Conclusion}
 
-\renewcommand{\slideid}{Main 19 / 19}
-\begin{frame}[t,label=M19]{Conclusion}
+\renewcommand{\slideid}{Main 20 / 20}
+\begin{frame}[t,label=M20]{Conclusion}
 \vspace{0.02cm}
 \card{bluebox}{1. Problem}{Chasing a lower-CI datacenter moves TTFT and TPOT through queueing, batching, and RTT.}
 \vspace{0.05cm}
@@ -548,13 +577,13 @@ Limits & Reproducibility and claims we would not make & \jlink{B10} \\
 \end{tabularx}\par}
 \vspace{0.08cm}
 {\small
-\textbf{Simulator trust} \nav{M09}{M09} \nav{B04}{B04}
+\textbf{Simulator trust} \nav{M10}{M10} \nav{B04}{B04}
 \quad
-\textbf{Main result} \nav{M14}{M14} \nav{M15}{M15}
+\textbf{Main result} \nav{M15}{M15} \nav{M16}{M16}
 \quad
-\textbf{Method} \nav{M12}{M12} \nav{B07}{B07}\par}
+\textbf{Method} \nav{M13}{M13} \nav{B07}{B07}\par}
 \vspace{0.06cm}
-\nav{M19}{Go to Conclusion (M19)}\hfill\nav{INDEX}{Discussion Index}
+\nav{M20}{Go to Conclusion (M20)}\hfill\nav{INDEX}{Discussion Index}
 \end{frame}
 
 \section{Backup}
@@ -584,7 +613,7 @@ Ours & per request and batch; TTFT and TPOT at MLPerf & yes / yes / yes / yes & 
 \point{Do not flatten the column}{``Most'' of the coarse planners assume load-independent latency. That sentence in Sec.~I cites SLIT, Green-LLM, FREESH, and MARLIN. It is not a claim that MOER or GCOS make the same latency assumption.}
 \point{Transfer is mixed}{Queueing from KV admission is unmarked for every prior row. Inter-region transfer is marked for SLIT, Green-LLM, GCOS, and MARLIN, and unmarked for FREESH and MOER.}
 \slidenote{Sec.~I, Table~I.}
-\back{M04}
+\back{M05}
 \end{frame}
 
 \renewcommand{\slideid}{B02}
@@ -598,7 +627,7 @@ Ours & per request and batch; TTFT and TPOT at MLPerf & yes / yes / yes / yes & 
 \point{SLO violation}{The fraction of requests that miss either the TTFT budget or the TPOT budget. Main study: 3000\,ms / 100\,ms. Mixtral TPOT is 200\,ms. Long and mixed prompts use a 4500\,ms TTFT. MLPerf's single-node TTFT is 2\,s; only TTFT is relaxed.}
 \point{Not this paper's objective}{No embodied-carbon term, no SSD amortization, and no quality-for-carbon trade.}
 \slidenote{Sec.~II; Table~II; Sec.~III-A.}
-\back[\nav{M02}{Main 2} \nav{M03}{Main 3} \nav{M15}{Main 15}]{M05}
+\back[\nav{M02}{Main 2} \nav{M04}{Main 4} \nav{M16}{Main 16}]{M06}
 \end{frame}
 
 \renewcommand{\slideid}{B03}
@@ -631,7 +660,7 @@ E_{\mathrm{dec}}=e^{\mathrm{dec}}_0+e_d B+e_k K .
 \point{Standing power}{Idle engine: about 72\,W per A100. Host: 300\,W, of which the CPU package is about 146\,W under load on their testbed. Calibration: vLLM v0.6.3, FP16, A100, prompts from 32 to 32K tokens.}
 \point{Why decode MAPE is the weaker fit}{Decode steps are tens of milliseconds, so thermal and frequency transients show up. The paper states that limit.}
 \slidenote{Sec.~III-B, Figs.~1--2. Symbols follow the paper's prose; the PDF does not number these displays as equations.}
-\back[\nav{M08}{Main 8}]{M07}
+\back[\nav{M09}{Main 9}]{M08}
 \end{frame}
 
 \renewcommand{\slideid}{B04}
@@ -643,7 +672,7 @@ E_{\mathrm{dec}}=e^{\mathrm{dec}}_0+e_d B+e_k K .
 \point{Independence and energy}{One engine instead of three, at the same per-engine load, changes TPOT by 3.3\%. Simulated GPU energy stays within 2.5\% of the measurement at every rate.}
 \point{Boundary}{Sec.~VI: validation is within a node and for Llama-3.1-8B only. A single Mixtral-8x7B engine at TP=4 already fills the four-GPU node, so Mixtral has no matching multi-engine end-to-end check. Absolute carbon on other GPUs would move. The 16-datacenter experiments remain simulation.}
 \slidenote{Sec.~V-B and Sec.~VI. Step-model MAPE in Sec.~III-B is a separate check from this end-to-end replay.}
-\back{M09}
+\back{M10}
 \end{frame}
 
 \renewcommand{\slideid}{B05}
@@ -656,7 +685,7 @@ E_{\mathrm{dec}}=e^{\mathrm{dec}}_0+e_d B+e_k K .
 \bpoint{TPOT estimate}{$\mathrm{TPOT}_{r,d}=t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T^{\mathrm{pre}}_d/(1-\mathrm{duty}_d)$. The $+1$ is this request. Duty stretches decode by prefills already running.}
 \bpoint{Per-datacenter snapshot}{The provisioner polls batch size, queue tokens, KV occupancy, prefill duty, and CI. The paper uses averages so the poll and the decision stay small.}
 \slidenote{Sec.~III-C and the latency estimator in Sec.~IV. Intra-DC schedulers are round-robin.}
-\back{M06}
+\back{M07}
 \end{frame}
 
 \renewcommand{\slideid}{B06}
@@ -682,7 +711,7 @@ The constraint matrix is totally unimodular, so the LP relaxation is integral. H
 \point{Fallback}{If the solver fails or cannot place a request inside capacity, the scheduler uses the lowest-CI SLO-feasible datacenter with headroom, which is greedy at $\alpha{=}0$, and round-robin if none exists.}
 \point{OSL}{Both TPOT's queued-prefill term and the carbon estimate need the output length. The main experiments use the oracle length. The predicted length is only the Fig.~7 study.}
 \slidenote{Sec.~IV-A--B, Eqs.~(1)--(2); Sec.~V-A fallback and OSL.}
-\back[\nav{M10}{Main 10}]{M11}
+\back[\nav{M11}{Main 11}]{M12}
 \end{frame}
 
 \renewcommand{\slideid}{B07}
@@ -694,7 +723,7 @@ The constraint matrix is totally unimodular, so the LP relaxation is integral. H
 \point{Size of the extra model}{Only $|D|$ new binaries, against $|R|\cdot|D|$ assignment variables. The paper says HiGHS still finishes inside the 0.25\,s limit.}
 \point{Does not power off}{This is an accounting device for shared batch energy inside the window. It does not power off a datacenter building, it does not delete inter-region RTT, and idle engines still remain in the later discussion of engine activation.}
 \slidenote{Sec.~IV-B--C. The engine-activator remark in Sec.~VI is an observation, not a claim that the MILP already implements it.}
-\back[\nav{M10}{Main 10}]{M12}
+\back[\nav{M11}{Main 11}]{M13}
 \end{frame}
 
 \renewcommand{\slideid}{B08}
@@ -721,13 +750,13 @@ Scheduler knobs & Poll 1\,s (swept 0.5--10\,s). Window 100\,ms or 300 requests. 
 \bpoint{Green-LLM and MOER}{Green-LLM is ported as scheduling decisions only. MOER sends each request to the lowest-CI SLO-feasible datacenter, which is greedy at $\alpha{=}0$.}
 \bpoint{Not a 16-site deployment}{No claim in the PDF says these 16 datacenters were physically built for the experiment.}
 \slidenote{Sec.~V-A, Table~II.}
-\back[\nav{M02}{Main 2} \nav{M14}{Main 14}]{M13}
+\back[\nav{M02}{Main 2} \nav{M15}{Main 15}]{M14}
 \end{frame}
 
 \renewcommand{\slideid}{B09}
 \begin{frame}[t,label=B09]{Figure 5--7: Values Behind the Charts}
 \vspace{0.01cm}
-{\scriptsize Panels are on Main 16--18. Savings below are versus round-robin. Sec.~V-C.\par}
+{\scriptsize Panels are on Main 17--19. Savings below are versus round-robin. Sec.~V-C.\par}
 \vspace{0.02cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.49\textwidth}
@@ -742,7 +771,7 @@ Scheduler knobs & Poll 1\,s (swept 0.5--10\,s). Window 100\,ms or 300 requests. 
 \end{column}
 \end{columns}
 \slidenote{Sec.~V-C, Figs.~5--7. Fig.~4(b) labels and the PUE paragraph are both quoted; they are not averaged together.}
-\back[\nav{M17}{Main 17} \nav{M18}{Main 18}]{M16}
+\back[\nav{M18}{Main 18} \nav{M19}{Main 19}]{M17}
 \end{frame}
 
 \renewcommand{\slideid}{B10}
@@ -761,7 +790,7 @@ Scheduler knobs & Poll 1\,s (swept 0.5--10\,s). Window 100\,ms or 300 requests. 
 \end{column}
 \end{columns}
 \slidenote{Sec.~VI and Sec.~VIII. Claude assistance is disclosed by the authors in the acknowledgment; they say the technical claims are theirs.}
-\back{M19}
+\back{M20}
 \end{frame}
 
 \end{document}
