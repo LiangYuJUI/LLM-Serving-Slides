@@ -1,6 +1,6 @@
 # 2026-11-18 Research Meeting — Carbon–SLO
 
-**18 頁 Main + 1 頁 Discussion Index + 12 頁 Backup，共 31 頁。** 主動報告約 17 分 20 秒。Main 在前，Backup 在後。Main 可以獨立講完，不依賴 Backup。
+**16 頁 Main + 1 頁 Discussion Index + 13 頁 Backup，共 30 頁。** 主動報告約 15 分 10 秒。Main 在前，Backup 在後。Main 可以獨立講完，不依賴 Backup。
 
 - [PDF](output/pdf/2026-11-18-CarbonSLO.pdf)
 - [Beamer source](2026-11-18-CarbonSLO.tex)
@@ -15,48 +15,47 @@
 
 ## Main 頁碼與 Backup 對應
 
-「Main 01 / 18」是簡報頁腳上的獨立頁碼。PDF 頁碼是檔案裡的實際順序。每頁頁腳都可進入第 19 頁 Discussion Index；下表列內容中的直接連結。
+「Main 01 / 16」是簡報頁腳上的獨立頁碼。PDF 頁碼是檔案裡的實際順序。每頁頁腳都可進入第 17 頁 Discussion Index；下表列內容中的直接連結。
 
 | Main / PDF | 主題 | 主要圖 | 直接連結 |
 |---|---|---|---|
-| M01 / 1 | Cover | — | 19 |
-| M02 / 2 | Why Is Carbon-Aware LLM Routing Challenging? | 動機與四項 serving 動態 | 21, 30, 31 |
-| M03 / 3 | Table I: Scope of Prior Work and This Paper | Table I 完整比較 | 19（INDEX） |
-| M04 / 4 | Why Not Always Choose the Greenest Datacenter? | 概念示意圖 | 21 |
-| M05 / 5 | What Do Previous Approaches Miss? | 建模缺口對 routing 的影響 | 20 |
-| M06 / 6 | What Is the Carbon–SLO Scheduling Problem? | 碳與 SLO | 21 |
-| M07 / 7 | How Does the Geo-Distributed Simulator Work? | Fig. 3 | 24 |
-| M08 / 8 | Real GPUs or a Simulator? How Is It Validated? | — | 23 |
-| M09 / 9 | Which Scheduling Policies Are Proposed? | 四層政策 | 25, 26 |
-| M10 / 10 | How Do Greedy and Standard ILP Work? | Eq. (1)–(2) 摘要 | 25 |
-| M11 / 11 | Why Iterative ILP and Facility MILP? | facility 目標 | 26 |
-| M12 / 12 | How Is the System Evaluated? | Table II 摘要 | 27 |
-| M13 / 13 | Q1: Carbon without excessive SLO violations? | Fig. 4(a) | 27 |
-| M14 / 14 | Q2: Tail latency under high load | Fig. 4(b) | 21 |
-| M15 / 15 | Q3: PUE and CI spread | Fig. 5 | 28 |
-| M16 / 16 | Q4: Polling, overhead, topology | Fig. 6 | 28 |
-| M17 / 17 | Q5: Unknown output length | Fig. 7 | 28 |
-| M18 / 18 | Conclusion | — | 29 |
+| M01 / 1 | Cover | — | 17 |
+| M02 / 2 | Why Is Carbon-Aware LLM Routing Challenging? | 動機與四項 serving 動態 | 19, 28, 29, 30 |
+| M03 / 3 | Table I: Scope of Prior Work and This Paper | Table I 完整比較 | 18 |
+| M04 / 4 | What Is the Carbon–SLO Optimization Goal? | 碳目標與 TTFT／TPOT | 19 |
+| M05 / 5 | How Does the Geo-Distributed Simulator Work? | Fig. 3 | 22 |
+| M06 / 6 | Real GPUs or a Simulator? How Is It Validated? | — | 21 |
+| M07 / 7 | Which Scheduling Policies Are Proposed? | 四層政策 | 23, 24 |
+| M08 / 8 | How Do Greedy and Standard ILP Work? | Eq. (1)–(2) 摘要 | 23 |
+| M09 / 9 | Why Iterative ILP and Facility MILP? | facility 目標 | 24 |
+| M10 / 10 | How Is the System Evaluated? | Table II 摘要 | 25 |
+| M11 / 11 | Q1: Carbon without excessive SLO violations? | Fig. 4(a) | 25 |
+| M12 / 12 | Q2: Tail latency under high load | Fig. 4(b) | 19 |
+| M13 / 13 | Q3: PUE and CI spread | Fig. 5 | 26 |
+| M14 / 14 | Q4: Polling, overhead, topology | Fig. 6 | 26 |
+| M15 / 15 | Q5: Unknown output length | Fig. 7 | 26 |
+| M16 / 16 | Conclusion | — | 27 |
 
-開場順序：M02 動機與建模需求 → M03 Table I 證據 → M04 routing 情境 → M05 缺漏對決策的影響。M02 不提前報告演算法細節或 60%／3% 結果。
+開場順序：M02 動機 → M03 Table I 缺口 → M04 優化目標 → M05 simulator 架構 → M06 驗證。M02 不提前報告演算法細節或 60%／3% 結果。
 
 ## Backup
 
 | PDF | Label | 內容 | 返回 |
 |---|---|---|---|
-| 19 | INDEX | Discussion Index | M08, M11, M13, M14, M18, B01–B12 |
-| 20 | B01 | Table I 逐列 | M05 |
-| 21 | B02 | CI、PUE、Scope 2、TTFT、TPOT、SLO | M06；另有 M02, M04, M14 |
-| 22 | B03 | Latency 與 energy 公式 | M02；另有 B11, B12 |
-| 23 | B04 | 19 組 arrival rate 的 within-node validation | M08 |
-| 24 | B05 | Continuous batching、KV、queue | M07 |
-| 25 | B06 | Greedy 與 Standard ILP | M10；另有 M09 |
-| 26 | B07 | Iterative ILP 與 Facility MILP | M11；另有 M09 |
-| 27 | B08 | Table II、baselines、load label | M12；另有 M13 |
-| 28 | B09 | Fig. 5–7 的數值讀法 | M15；另有 M16, M17 |
-| 29 | B10 | 限制、可重現性、我們的方向 | M18 |
-| 30 | B11 | Figure 1：逐步延遲為何隨負載變 | M02；另有 B03 |
-| 31 | B12 | Figure 2：功率與能量為何要分 phase 與負載 | M02；另有 B03 |
+| 17 | INDEX | Discussion Index | M06, M09, M11, M12, M16, B01–B13 |
+| 18 | B01 | Table I 逐列 | M03 |
+| 19 | B02 | CI、PUE、Scope 2、TTFT、TPOT、SLO | M04；另有 M02, M12 |
+| 20 | B03 | Latency 與 energy 公式 | M02；另有 B11, B12 |
+| 21 | B04 | 19 組 arrival rate 的 within-node validation | M06 |
+| 22 | B05 | Continuous batching、KV、queue | M05 |
+| 23 | B06 | Greedy 與 Standard ILP | M08；另有 M07 |
+| 24 | B07 | Iterative ILP 與 Facility MILP | M09；另有 M07 |
+| 25 | B08 | Table II、baselines、load label | M10；另有 M11 |
+| 26 | B09 | Fig. 5–7 的數值讀法 | M13；另有 M14, M15 |
+| 27 | B10 | 限制、可重現性、我們的方向 | M16 |
+| 28 | B11 | Figure 1：逐步延遲為何隨負載變 | M02；另有 B03 |
+| 29 | B12 | Figure 2：功率與能量為何要分 phase 與負載 | M02；另有 B03 |
+| 30 | B13 | 最低 CI 站不一定 SLO-feasible 的示意 | M02；另有 B02 |
 
 ## Figure → slide
 
@@ -64,12 +63,12 @@
 |---|---|---|
 | 1 Latency model | B11 | With-Caption 原圖；Main 只留連結 |
 | 2 Power model | B12 | With-Caption 原圖；Main 只留連結 |
-| 3 Simulator | M07 | With-Caption |
-| 4(a) Carbon–SLO | M13 | Without-Caption 的上半，含論文自己的 (a) caption |
-| 4(b) TTFT tail | M14 | Without-Caption 的下半，含 (b) caption |
-| 5 PUE / CI | M15 | 拆成 (a)(b)，兩張都保留座標軸與 legend |
-| 6 Overhead / polling / topology | M16 | Without-Caption 全圖；右側是讀圖 |
-| 7 OSL / prompt length | M17 | Without-Caption 全圖 |
+| 3 Simulator | M05 | With-Caption |
+| 4(a) Carbon–SLO | M11 | Without-Caption 的上半，含論文自己的 (a) caption |
+| 4(b) TTFT tail | M12 | Without-Caption 的下半，含 (b) caption |
+| 5 PUE / CI | M13 | 拆成 (a)(b)，兩張都保留座標軸與 legend |
+| 6 Overhead / polling / topology | M14 | Without-Caption 全圖；右側是讀圖 |
+| 7 OSL / prompt length | M15 | Without-Caption 全圖 |
 
 `figures/crops/` 是原始 Without-Caption PNG 的像素裁切。沒有重繪曲線，也沒有改到 `With-Caption/` 與 `Without-Caption/` 裡的 14 張原圖。論文沒有 Figure 8。
 
@@ -85,7 +84,7 @@ python3 -m venv /tmp/carbonslo-qa
 /tmp/carbonslo-qa/bin/python scripts/test_navigation.py
 ```
 
-`build.py` 在本目錄編譯兩次，寫出 PDF 與 Overleaf ZIP，再把 ZIP 解到暫存目錄編譯兩次，並比對文字、像素與連結。驗證固定為 18 Main、1 Index、12 Backup，共 31 頁，並檢查語意連結、雙向返回、M02 動機內容與 M03 表格完整性。負向測試會刻意刪除／誤導連結及刪除證據，確認 QA 能攔截。ZIP 入口是 `main.tex`，compiler 選 **pdfLaTeX**。
+`build.py` 在本目錄編譯兩次，寫出 PDF 與 Overleaf ZIP，再把 ZIP 解到暫存目錄編譯兩次，並比對文字、像素與連結。驗證固定為 16 Main、1 Index、13 Backup，共 30 頁，並檢查語意連結、雙向返回、M02 動機內容與 M03 表格完整性。負向測試會刻意刪除／誤導連結及刪除證據，確認 QA 能攔截。ZIP 入口是 `main.tex`，compiler 選 **pdfLaTeX**。
 
 ## QA
 

@@ -2,7 +2,7 @@
 
 主動報告只走 Main。Backup 留給教授追問。
 
-總時間 **17 分 20 秒**（1040 秒）。時間是照著講的目標，不是每句都要念完；若前面超時，Q3 到 Q5 各收 10 秒，結論仍要留下「這不是作者已經做完的系統」。
+總時間 **15 分 10 秒**（910 秒）。時間是照著講的目標，不是每句都要念完；若前面超時，Q3 到 Q5 各收 10 秒，結論仍要留下「這不是作者已經做完的系統」。
 
 技術詞 TTFT、TPOT、SLO、PUE、RTT、MILP、ILP、CI、KV、continuous batching 保留英文。
 
@@ -31,7 +31,7 @@ LLM serving 又是動態的：Continuous Batching 讓 batch size 持續變動；
 
 先前工作各有涵蓋，但沒有把這些影響完整整合。因此作者開發 geo-distributed LLM serving simulator，用真實 A100／vLLM 的量測校準，再模擬不同負載下的 routing。這不是已部署的 16 個實體 DC。
 
-- 怎麼指：由上往下說明 Opportunity、四個 Challenge，再指 Paper's Response。Load-dependent Latency 和 Phase-dependent Power 兩條連結留給追問，主動報告不開 B11、B12。
+- 怎麼指：由上往下說明 Opportunity、四個 Challenge，再指 Paper's Response。Load-dependent Latency、Phase-dependent Power 和 Lowest-CI routing 三條連結留給追問，主動報告不開 B11、B12、B13。
 - 下一頁：用 Table I 具體確認，各篇工作涵蓋了什麼、還缺少什麼。
 
 ## Main 03 — Table I: Scope of Prior Work and This Paper
@@ -47,62 +47,28 @@ LLM serving 又是動態的：Continuous Batching 讓 batch size 持續變動；
 這裡不要解讀成過去的工作全部都沒考慮：有幾篇已經納入 transfer，MOER 的 power 是部分建模，GCOS 的 batch-aware latency 則是不適用。這篇的差別在於把表中這些面向整合起來。
 
 - 怎麼指：先指中間四個比較欄位，再沿著綠色的 This paper 那一列說明；不用逐篇念完。
-- 下一頁：為什麼不能永遠選最綠的站。
+- 下一頁：把優化目標寫清楚：送到哪個 DC、最小化 operational carbon、TTFT 和 TPOT 要在 budget 裡。
 
-## Main 04 — Why Not Always Choose the Greenest Datacenter?
-
-- 預計：70 秒
-- 論文：Section I 對 spatial scheduling 的動機；Section II 的 CI 變化
-- 上一頁：Table I 顯示建模缺口，這一頁用具體 routing 情境解釋它為什麼影響 SLO。
-
-這張圖是假設低 CI 站出現壅塞的概念示意圖，不是量測曲線，也不是低 CI 必然造成高延遲。Request 先到區域 scheduler。它可以留在本地，CI 比較高，但是排隊短；也可以送到 CI 最低的資料中心，可是那一跳要付 RTT，而且大家若都這樣送，queue 和 batch 會在綠的站長出來。
-
-論文說 grid 的 carbon intensity 在地區之間、時間之間可以差一個數量級以上。所以把流量送去低 CI 的電網，確實有減碳空間。代價是排隊會拉長 TTFT，decode batch 變大會拉長 TPOT，跨區還要再加網路 RTT。
-
-所以最低 CI 和「還符合 SLO 的指派」是兩個決定。後面的 simulator 就是要把 queue、batch 和 RTT 算進去，而不是只看一張 CI 地圖。
-
-- 怎麼指：從左到右跟著箭頭。上面紫色是低 CI、會擠的站，下面綠色是 CI 較高但排隊較短的站。強調圖上的字是示意。
-- 下一頁：回到 Table I 的建模缺口，說明它們如何影響 routing 判斷。
-
-## Main 05 — What Do Previous Approaches Miss?
-
-- 預計：60 秒
-- 論文：Section I 與 Table I；Section II；Section III-B、III-C
-- 上一頁：剛才的情境說明，目的地的 batch 和 queue 會改變 SLO feasibility。
-
-回到 Table I，這次看建模缺口會造成什麼判斷問題，不再逐篇比較。
-
-第一，若延遲估計與當下負載無關，就看不到 request 加入 batch 之後，TTFT 和 TPOT 怎麼變。原本看似可行的目的地，在流量集中後可能過不了 SLO。
-
-第二，若忽略 Prefill、Decode 和 batch 對功率與時間的影響，就可能估錯能量。碳排還要乘上 CI 與 PUE，所以只比較 CI，無法判定總 operational carbon。
-
-第三，即使知道 GPU 執行時間，request 仍可能因為 KV Cache 或 batch 空間不足而等待。遠端 routing 還要再算 RTT，這些都會影響 TTFT。
-
-最後，平均延遲或 GPU job 的等待目標，不能直接當成 TTFT、TPOT 的 SLO。這篇需要把能量和兩個 token latency 一起估計，才能判斷減碳機會是否仍符合 serving 要求。各篇既有工作的例外與部分涵蓋，保留在前面的 Table I。
-
-- 怎麼指：依序指四個區塊，聚焦「忽略這個因素會估錯什麼」。若追問某篇，再開 B01。
-- 下一頁：把這篇自己的問題寫成一個 routing 決定、一個碳排目標、兩個 latency budget。
-
-## Main 06 — What Is the Carbon–SLO Scheduling Problem?
+## Main 04 — What Is the Carbon–SLO Optimization Goal?
 
 - 預計：55 秒
-- 論文：Section II；Section III-A；Table II 的 budget
-- 上一頁：缺口是 token SLO，這一頁定義他們到底在優化什麼。
+- 論文：Section II；Table II 的 budget
+- 上一頁：Table I 指出既有工作只涵蓋這些 serving 特性的一部分。這一頁先寫下這篇要優化的目標。
 
-決策只有一個：這筆 request 送到哪一個 datacenter。不是把 layer、KV cache 或 MoE expert 搬去另一個站。
+決策是把每一筆 LLM request 指派到一個 datacenter。不是搬 layer，不是把 KV Cache 遷到別的站，也不是放 MoE expert。目標是 operational carbon，不包含 embodied carbon，也不拿模型品質去換碳。
 
-上面的式子是總 operational carbon，每個 DC 的能量乘上那個 DC 的 CI。能量再乘上那個站的 PUE。一個 DC 共用一個 PUE、一個 CI，因為機房共用電網和冷卻。這是 Scope 2 的用電排放。這篇不優化 embodied carbon，也不拿輸出品質去換碳。
+中間的式子是在 routing 上最小化 operational carbon：每個 datacenter 的能量乘上那個站的 CI。能量已經乘過那個 DC 的 PUE，不要再乘一次。功率是模型裡的 IT 功率，包含 engine 和 host。
 
-SLO 的定義要講清楚。一筆 request 只要 TTFT 或 TPOT 有一個超過門檻，就算 violation。主要實驗的門檻是 3 秒和 100 毫秒；Mixtral 的 TPOT 是 200 毫秒。MLPerf 單機的 TTFT 原本是 2 秒，他們只因為跨區轉送把 TTFT 放寬，TPOT 沒有放。
+下面兩個不等式是可行性要求：估計的 TTFT 和 TPOT 要落在各自的 budget 裡。這不是說四種演算法解的是同一個嚴格數學規劃。Greedy、ILP、iterative ILP 和 facility MILP 的目標、約束和近似都不一樣，後面才展開。就算估計過了，request 仍可能因為模型誤差、workload 不確定或 routing 限制而違反 SLO。
 
-- 怎麼指：先指決策那一句，再指公式，然後左右兩張卡片。either 這個字要停一下。
-- 下一頁：這個問題是在什麼 simulator 裡評估的。
+- 怎麼指：先指 Decision，再指最小化的式子，然後左右兩個 budget。SLO violation 的連結留給定義追問。
+- 下一頁：這個目標是在什麼 simulator 裡評估的。
 
-## Main 07 — How Does the Geo-Distributed Simulator Work?
+## Main 05 — How Does the Geo-Distributed Simulator Work?
 
 - 預計：75 秒
 - 論文：Section III-C，Figure 3；Section III-A 的 polling 欄位
-- 上一頁：問題定義完了，開始看他們用什麼系統來回答。
+- 上一頁：優化目標定了，接著看 request 怎麼在 simulator 裡走。
 
 Figure 3 是這一頁的主圖，caption 是論文原圖的。路徑照圖上的編號。1，load generator 用 Poisson 把 request 送到區域 scheduler。2 和 3，scheduler 可以留在本地，或轉給別區；轉出去就要付 RTT，再由對方的 scheduler 放上目標 DC。4 和 5，provisioner 週期性地跟每個 DC 要狀態，再把這份 snapshot 和 RTT 矩陣廣播給所有 scheduler。
 
@@ -110,10 +76,10 @@ DC 裡面，node 之間和 node 裡面都是 round-robin。所以論文把測到
 
 Scheduler 看得到的，是每個 DC 平均過的 batch size、queue 深度、KV 佔用、prefill duty，再加上 CI。
 
-- 怎麼指：左手指著圖上的 1 到 5，右手對應三小段。最後一句停在 Takeaway 的四個狀態。
+- 怎麼指：左手指著圖上的 1 到 5，右手對應三小段。最後一句停在 Takeaway：區域 scheduler 用週期收集到的負載和碳資訊做 routing。
 - 下一頁：這個 simulator 哪一層是 A100／vLLM 量到的，哪一層只是跨區模擬。
 
-## Main 08 — Real GPUs or a Simulator? How Is It Validated?
+## Main 06 — Real GPUs or a Simulator? How Is It Validated?
 
 - 預計：70 秒
 - 論文：Section V-B；限制在 Section VI
@@ -128,7 +94,7 @@ Scheduler 看得到的，是每個 DC 平均過的 batch size、queue 深度、K
 - 怎麼指：三張卡片很快帶過，數字停在中間藍卡，限制停在紫卡。不要把 2.5% 說成 16 個 DC 的碳排誤差。
 - 下一頁：在這個 simulator 上，他們放了哪四種排程。
 
-## Main 09 — Which Scheduling Policies Are Proposed?
+## Main 07 — Which Scheduling Policies Are Proposed?
 
 - 預計：50 秒
 - 論文：Section IV 開頭
@@ -145,7 +111,7 @@ Greedy 的 α 等於 0 就是只看碳，論文說這和 MOER 的決定一樣。
 - 怎麼指：表格由上到下。α=0 那一行單獨停一下，因為後面圖裡的 MOER 就是它。
 - 下一頁：前兩層的公式，只放教授需要看的那一層。
 
-## Main 10 — How Do Greedy and Standard ILP Work?
+## Main 08 — How Do Greedy and Standard ILP Work?
 
 - 預計：55 秒
 - 論文：Section IV-A，Equation (1)；Section IV-B，Equation (2)
@@ -162,7 +128,7 @@ Window 是 100 毫秒，或滿 300 筆就先解。完整的式子和 totally uni
 - 怎麼指：左卡的分數，右卡的三個條件。Takeaway 的「frozen」對應右卡最後一句。
 - 下一頁：後兩層改的就是這個凍結，以及能量被重複計算。
 
-## Main 11 — Why Iterative ILP and Facility MILP?
+## Main 09 — Why Iterative ILP and Facility MILP?
 
 - 預計：65 秒
 - 論文：Section IV-B 與 IV-C
@@ -177,7 +143,7 @@ Facility MILP 改的是能量。如果這個 window 有任何一筆 request 用�
 - 怎麼指：左右兩張卡，然後中間的式子只指 \(f_d y_d\) 和 \(H_d y_d\)。不要說 \(y_d=0\) 代表機房斷電。
 - 下一頁：這些政策是在什麼設定上比的。先把「16 個 DC 是模擬」講清楚。
 
-## Main 12 — How Is the System Evaluated?
+## Main 10 — How Is the System Evaluated?
 
 - 預計：50 秒
 - 論文：Section V-A，Table II
@@ -194,7 +160,7 @@ Takeaway 要留下：這 16 個 DC 是一台伺服器上的模擬角色，不是
 - 怎麼指：表格的 Dense / MoE 兩欄，再指 Takeaway。
 - 下一頁：全篇最重要的結果圖，Figure 4(a)。
 
-## Main 13 — Q1: Can Carbon Be Reduced Without Excessive SLO Violations?
+## Main 11 — Q1: Can Carbon Be Reduced Without Excessive SLO Violations?
 
 - 預計：85 秒
 - 論文：Abstract；Section V-C，Figure 4(a)
@@ -211,7 +177,7 @@ Takeaway 要留下：這 16 個 DC 是一台伺服器上的模擬角色，不是
 - 怎麼指：先指兩軸和星星，再指高負載最右邊的點，最後念「How to read the claim」。
 - 下一頁：violation rate 看不出尾巴。Figure 4(b) 把高負載的 TTFT 百分位拆開，而且圖上的百分比不是延遲。
 
-## Main 14 — Q2: What Happens to Tail Latency Under High Load?
+## Main 12 — Q2: What Happens to Tail Latency Under High Load?
 
 - 預計：60 秒
 - 論文：Section V-C，Figure 4(b)
@@ -226,7 +192,7 @@ Mixtral 不一樣。它的 engine 少、輸出比較長。α 等於 0 的 greedy
 - 怎麼指：先指一條橫條上的百分號，說明那是碳。再指 Llama 上 greedy 的短條，和 Mixtral 上 greedy 拉到很右邊的長條。
 - 下一頁：減碳空間從哪裡來。PUE 和 CI 的分散是兩件不同的事。
 
-## Main 15 — Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?
+## Main 13 — Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?
 
 - 預計：55 秒
 - 論文：Section V-C，Figure 5
@@ -241,7 +207,7 @@ Mixtral 不一樣。它的 engine 少、輸出比較長。α 等於 0 的 greedy
 - 怎麼指：左圖看實心點略為上移，右圖看三條線由左下到右上，High 那條最低。13% 用口頭講，不必在圖上找一個沒標數字的點。
 - 下一頁：排程器自己要花多少時間，以及狀態太舊時 SLO 會怎樣。
 
-## Main 16 — Q4: How Important Are Polling, Overhead, and Topology?
+## Main 14 — Q4: How Important Are Polling, Overhead, and Topology?
 
 - 預計：50 秒
 - 論文：Section V-C，Figure 6
@@ -258,7 +224,7 @@ Figure 6 三塊一起看。右邊三句是讀圖，不是另一組實驗。
 - 怎麼指：先指 (a) 的橫軸是毫秒到秒，強調這不是 TTFT。再指 (b) 在 2 秒之後翹起來。(c) 只指星星往右上和往左下的兩步。
 - 下一頁：真正上線時不知道輸出會多長。他們用一個小預測器試過。
 
-## Main 17 — Q5: What If Output Length Is Unknown?
+## Main 15 — Q5: What If Output Length Is Unknown?
 
 - 預計：45 秒
 - 論文：Section IV 為什麼需要 OSL；Section V-C，Figure 7
@@ -273,7 +239,7 @@ Figure 7(a) 空心是 oracle，實心是預測。預測是一個兩層 MLP 的�
 - 怎麼指：(a) 看空心和實心幾乎疊在一起；(b) 看斜線區是 violation 小於 5% 的地方，不要把 cap 64 那個高 violation 點說成也只有 5%。
 - 下一頁：四層結論。最後一層要把「我們想做的」和「他們做完的」分開。
 
-## Main 18 — Conclusion
+## Main 16 — Conclusion
 
 - 預計：50 秒
 - 論文：Section VI 與 Section VIII
@@ -377,4 +343,10 @@ Figure 7(a) 空心是 oracle，實心是預測。預測是一個兩層 MLP 的�
 - Decode 的 Power 跟著 Batch Size 變，大批次大約到 TDP 的 95%。
 - Energy 是平均 Power 乘上 step 時間。Power 和 Energy 不是同一個量。Idle 大約每張 A100 72 W，host 300 W，都要留在 operational energy 裡。
 - Held-out step-energy MAPE 在 5.6% 以內。這仍是逐步能量的檢查，不能拿來宣稱整個 geo-distributed simulator 已被驗證。
+
+### B13 最低 CI 站不一定可行
+
+- 這是壅塞的概念示意，不是量測 trace，也不是低 CI 必然造成高延遲。主動報告不開這頁。
+- 較低的 CI 是減碳機會。Queue、batch 變大，加上遠端 RTT，可能把 TTFT 和 TPOT 拉過 SLO。
+- 所以 CI 最低的站，不一定是還符合 SLO 的 routing 決定。
 

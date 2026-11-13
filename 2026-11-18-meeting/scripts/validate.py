@@ -13,8 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 TEX = ROOT / '2026-11-18-CarbonSLO.tex'
 PDF = ROOT / 'output/pdf/2026-11-18-CarbonSLO.pdf'
 CONTRACTS = ROOT / 'scripts/navigation-contracts.json'
-MAIN_COUNT = 18
-BACKUP_COUNT = 12
+MAIN_COUNT = 16
+BACKUP_COUNT = 13
 TOTAL_PAGES = MAIN_COUNT + 1 + BACKUP_COUNT
 
 
@@ -103,14 +103,19 @@ def validate(render_dir):
     contracts = json.loads(CONTRACTS.read_text())
     full_text = '\n'.join(page.get_text() for page in doc)
     assert 'Figure 8' not in full_text and 'Fig. 8' not in full_text
-    assert 'does not power off' in doc[expected['M11']].get_text()
-    assert '16 physical datacenters' in doc[expected['M08']].get_text()
-    assert 'single-node' in doc[expected['M08']].get_text()
-    assert 'up to 60' in doc[expected['M13']].get_text().lower()
-    assert 'average' in doc[expected['M13']].get_text().lower() or 'average' in doc[expected['M13']].get_text()
-    assert '55' in doc[expected['M13']].get_text()
-    assert 'not an author result' in doc[expected['M18']].get_text()
-    assert 'Go to Conclusion (M18)' in doc[expected['INDEX']].get_text()
+    assert 'does not power off' in doc[expected['M09']].get_text()
+    assert '16 physical datacenters' in doc[expected['M06']].get_text()
+    assert 'single-node' in doc[expected['M06']].get_text()
+    assert 'up to 60' in doc[expected['M11']].get_text().lower()
+    assert 'average' in doc[expected['M11']].get_text().lower() or 'average' in doc[expected['M11']].get_text()
+    assert '55' in doc[expected['M11']].get_text()
+    assert 'not an author result' in doc[expected['M16']].get_text()
+    assert 'Go to Conclusion (M16)' in doc[expected['INDEX']].get_text()
+    goal = ' '.join(doc[expected['M04']].get_text().split())
+    assert 'Optimization Goal' in goal and 'already includes PUE' in goal
+    assert 'do not share one strict program' in goal
+    scenario = ' '.join(doc[expected['B13']].get_text().split())
+    assert 'not a measured trace' in scenario and 'SLO-feasible' in scenario
     latency = ' '.join(doc[expected['B11']].get_text().split())
     assert 'not full geo-distributed' in latency and 'not fixed constants' in latency
     energy = ' '.join(doc[expected['B12']].get_text().split())
@@ -121,7 +126,7 @@ def validate(render_dir):
     for words in ('Why Is Carbon-Aware LLM Routing Challenging?',
                   'Continuous Batching', 'Engine Queueing / KV Admission',
                   'Prefill / Decode', 'Inter-region RTT (Round-Trip Time)', 'A100/vLLM-calibrated',
-                  'Load-dependent Latency', 'Phase-dependent Power',
+                  'Load-dependent Latency', 'Phase-dependent Power', 'Lowest-CI routing',
                   'do not jointly capture', 'experiments are simulated'):
         assert words in motivation, ('M02 motivation evidence missing', words)
     for words in ('60%', '3%', 'Facility MILP', 'Greedy', 'Frontier', 'three models'):
@@ -203,7 +208,7 @@ def validate(render_dir):
         for image in sorted((figroot / folder).glob('*.png')):
             originals[image.relative_to(ROOT).as_posix()] = hashlib.sha256(image.read_bytes()).hexdigest()
     audit_lines = ['# Navigation audit', '',
-                   'Main is pages 1–18. Discussion index is page 19. Backup is pages 20–31.', '',
+                   'Main is pages 1–16. Discussion index is page 17. Backup is pages 18–30.', '',
                    '| Backup | PDF | Primary return | Other links |',
                    '|---|---:|---|---|']
     for row in backup_audit:

@@ -37,14 +37,14 @@ class NavigationRegressionTests(unittest.TestCase):
 
     def test_missing_table_link(self):
         def mutate(doc):
-            page = doc[doc.resolve_names()['M05']['page']]
+            page = doc[doc.resolve_names()['M03']['page']]
             link = next(x for x in page.get_links() if x.get('nameddest') == 'B01')
             page.delete_link(link)
         self.rejects_pdf_mutation(mutate, 'contract pair drift')
 
     def test_table_link_points_at_limits(self):
         def mutate(doc):
-            page = doc[doc.resolve_names()['M05']['page']]
+            page = doc[doc.resolve_names()['M03']['page']]
             link = next(x for x in page.get_links() if x.get('nameddest') == 'B01')
             doc.xref_set_key(link['xref'], 'A/D', '(B10)')
         self.rejects_pdf_mutation(mutate, 'contract pair drift')

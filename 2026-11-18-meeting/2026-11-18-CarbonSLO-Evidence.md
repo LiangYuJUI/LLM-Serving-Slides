@@ -9,10 +9,10 @@
 M02 的敘事依據是 Sec. I（跨區 routing 動機、Table I 與 simulator contribution）、Sec. II（CI、Scope 2、PUE、TTFT／TPOT）、Sec. III-B（A100／vLLM 校準的分階段 latency／energy model）與 Sec. III-C（Continuous Batching、KV admission、queueing 與 RTT）。
 
 - 較低 CI 提供減碳機會，總 operational carbon 仍受耗能與 PUE 影響。
-- 低 CI 不必然代表高延遲；M04 只示意流量集中與遠端 RTT 可能使 SLO 失守的情境。
-- 「未共同涵蓋所有因素」不等於每篇都忽略全部因素。Table I 的 transfer 有例外，MOER 的 power 為 partial，GCOS 的 batch-aware latency 為不適用。
+- 低 CI 不必然代表高延遲。壅塞示意在 B13，不是量測曲線，也不是低 CI 必然造成高延遲。
+- 「未共同涵蓋所有因素」不等於每篇都忽略全部因素。Table I 的 transfer 有例外，MOER 的 power 為 partial，GCOS 的 batch-aware latency 為不適用。GCOS 的延遲是 GPU job 的等待，不是 token SLO；這句留在 B01。
 - Simulator 是作者開發，以真實 A100／vLLM 量測校準；跨 DC 實驗屬模擬，沒有 16 個實體 DC 的部署驗證。
-- M03 保留逐列證據；M05 解釋這些缺漏對 latency、energy 與 SLO feasibility 判斷的影響。
+- M03 是研究缺口的證據。M04 寫的是概念上的優化目標與 TTFT／TPOT 可行性，不是四種演算法共用的同一個嚴格規劃。PUE 已經在 \(E_d\) 裡，不再乘第二次。
 - Figure 1 與 Figure 2 的讀圖在 B11、B12，不在 Main。逐步 MAPE 與 step-energy MAPE 不是跨區 end-to-end 驗證。Figure 2 是 per-GPU power；TDP 不是每個 step 的固定功耗。Idle 與 host 仍留在 operational energy。多項式仍在 B03。
 
 ## 主張與範圍

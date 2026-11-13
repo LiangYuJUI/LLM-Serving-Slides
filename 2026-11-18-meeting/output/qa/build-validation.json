@@ -1,10 +1,10 @@
 {
-  "pdf_sha256": "5416520b94527bd61b304555ee664894455200cf8a1b373a0f3ec2294225f8ad",
-  "zip_sha256": "18c9f980667751059647da78d2dc3f7b37fc9631c509243abd30c93e0e672f27",
-  "source_sha256": "f7d686112b2a3cd9f09b9304ccab8fd61f818ffe30ee617b3c7539a2ce548fd6",
+  "pdf_sha256": "d3b6e35b67610c48259c6a0734c799a7dd83ed74423b77fc452b58e259631333",
+  "zip_sha256": "4010352a00f4b70638eee139b89f304b3578c3a27064b4968f51986e8c2c966a",
+  "source_sha256": "3d1643ba641a0f28c47aa0e263c0eccd637cbe7a42aabe7509d7e12e38558741",
   "local_passes": 2,
   "standalone_zip_passes": 2,
-  "pages": 31,
+  "pages": 30,
   "parity": {
     "text": true,
     "pixels": true,
