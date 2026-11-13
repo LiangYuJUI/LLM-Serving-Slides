@@ -2,7 +2,7 @@
 
 主動報告只走 Main。Backup 留給教授追問。
 
-總時間 **19 分 05 秒**（1145 秒）。時間是照著講的目標，不是每句都要念完；若前面超時，Q3 到 Q5 各收 10 秒，結論仍要留下「這不是作者已經做完的系統」。
+總時間 **17 分 20 秒**（1040 秒）。時間是照著講的目標，不是每句都要念完；若前面超時，Q3 到 Q5 各收 10 秒，結論仍要留下「這不是作者已經做完的系統」。
 
 技術詞 TTFT、TPOT、SLO、PUE、RTT、MILP、ILP、CI、KV、continuous batching 保留英文。
 
@@ -31,7 +31,7 @@ LLM serving 又是動態的：Continuous Batching 讓 batch size 持續變動；
 
 先前工作各有涵蓋，但沒有把這些影響完整整合。因此作者開發 geo-distributed LLM serving simulator，用真實 A100／vLLM 的量測校準，再模擬不同負載下的 routing。這不是已部署的 16 個實體 DC。
 
-- 怎麼指：由上往下說明 Opportunity、四個 Challenge，再指 Paper's Response 和 Takeaway。
+- 怎麼指：由上往下說明 Opportunity、四個 Challenge，再指 Paper's Response。Load-dependent Latency 和 Phase-dependent Power 兩條連結留給追問，主動報告不開 B11、B12。
 - 下一頁：用 Table I 具體確認，各篇工作涵蓋了什麼、還缺少什麼。
 
 ## Main 03 — Table I: Scope of Prior Work and This Paper
@@ -111,41 +111,13 @@ DC 裡面，node 之間和 node 裡面都是 round-robin。所以論文把測到
 Scheduler 看得到的，是每個 DC 平均過的 batch size、queue 深度、KV 佔用、prefill duty，再加上 CI。
 
 - 怎麼指：左手指著圖上的 1 到 5，右手對應三小段。最後一句停在 Takeaway 的四個狀態。
-- 下一頁：TTFT 和 TPOT 為什麼不能做成常數。
+- 下一頁：這個 simulator 哪一層是 A100／vLLM 量到的，哪一層只是跨區模擬。
 
-## Main 08 — How Is LLM Serving Latency Modeled?
-
-- 預計：55 秒
-- 論文：Section III-B，Figure 1
-- 上一頁：simulator 會問每個 DC 的延遲，這一頁是那個延遲從哪裡來。
-
-Figure 1 有三塊。左邊 prefill：prompt 還短的時候幾乎是平的，過了 knee 之後大致跟 prefill token 數一起長。所以 TTFT 不能查一張固定表。中間 decode：batch 變大時先是次線性，飽和之後會陡起來，而且 KV context 越長越慢。右邊是 held-out 的誤差。這是 A100、vLLM 量測擬合的解析模型。Dense 的 prefill MAPE 在 1.7% 以內，Mixtral prefill 是 4.8%，decode 在 3.4% 以內。
-
-係數沒有放在這頁，Backup 有完整的多項式。這裡只要記住：TTFT 和 TPOT 跟著當下的 batch、queue 和 context 走。排程若把延遲當常數，綠的站和忙的站會排錯。
-
-- 怎麼指：由左至右 (a)(b)(c)。不必讀 legend 裡每一條線，點出「平、再上升」和「飽和後變陡」。
-- 下一頁：同樣的兩階段，功率長得不一樣，所以能量也不能只用延遲代替。
-
-## Main 09 — How Are Power and Energy Modeled?
-
-- 預計：50 秒
-- 論文：Section III-B，Figure 2
-- 上一頁：延遲會隨負載變，碳排還要再乘功率。
-
-Figure 2 的左邊是 prefill。Prompt 一長，功率很快頂到 A100 的 TDP，圖上那條線是 400 W。右邊是 decode，功率跟著 batch size 往上走，對負載敏感得多。能量是這一段的平均功率乘上這一段的時間。一段又快又高功率的 prefill，和一段比較長、功率沒那麼高的 decode，碳排不一樣。
-
-另外兩個不能省略的底：模型載好但沒有 request 時，一張 A100 大約還有 72 W；每個 node 的 host 他們設成 300 W。閒置的 GPU 不是零碳。
-
-Takeaway：carbon-aware 排程若忽略 phase 和 batch，會把資料中心的碳價排錯。
-
-- 怎麼指：左圖指 TDP 和 idle，右圖指 decode 隨 batch 上升。72 W 和 300 W 在右邊第三點。
-- 下一頁：這些模型跟真的 GPU 對過沒有。教授若只記一頁，請停在驗證邊界。
-
-## Main 10 — Real GPUs or a Simulator? How Is It Validated?
+## Main 08 — Real GPUs or a Simulator? How Is It Validated?
 
 - 預計：70 秒
 - 論文：Section V-B；限制在 Section VI
-- 上一頁：模型看起來合理，這一頁分清楚哪一層是量到的、哪一層是模擬的。
+- 上一頁：simulator 的路徑和 provisioner 講完了，這一頁分清楚哪一層是量到的、哪一層是模擬的。
 
 分成三層。A，真的硬體：A100-40GB、vLLM 0.6.3、FP16，延遲和功率是在這張 GPU 上 profile 的。B，解析擬合：每個模型、每種 tensor parallel，各配一組 prefill 和 decode 的延遲與能量。C，跨區模擬：很多 region、scheduler、queue、RTT 和碳。這一層不是再做一次硬體實驗。
 
@@ -156,7 +128,7 @@ Takeaway：carbon-aware 排程若忽略 phase 和 batch，會把資料中心的�
 - 怎麼指：三張卡片很快帶過，數字停在中間藍卡，限制停在紫卡。不要把 2.5% 說成 16 個 DC 的碳排誤差。
 - 下一頁：在這個 simulator 上，他們放了哪四種排程。
 
-## Main 11 — Which Scheduling Policies Are Proposed?
+## Main 09 — Which Scheduling Policies Are Proposed?
 
 - 預計：50 秒
 - 論文：Section IV 開頭
@@ -173,7 +145,7 @@ Greedy 的 α 等於 0 就是只看碳，論文說這和 MOER 的決定一樣。
 - 怎麼指：表格由上到下。α=0 那一行單獨停一下，因為後面圖裡的 MOER 就是它。
 - 下一頁：前兩層的公式，只放教授需要看的那一層。
 
-## Main 12 — How Do Greedy and Standard ILP Work?
+## Main 10 — How Do Greedy and Standard ILP Work?
 
 - 預計：55 秒
 - 論文：Section IV-A，Equation (1)；Section IV-B，Equation (2)
@@ -190,7 +162,7 @@ Window 是 100 毫秒，或滿 300 筆就先解。完整的式子和 totally uni
 - 怎麼指：左卡的分數，右卡的三個條件。Takeaway 的「frozen」對應右卡最後一句。
 - 下一頁：後兩層改的就是這個凍結，以及能量被重複計算。
 
-## Main 13 — Why Iterative ILP and Facility MILP?
+## Main 11 — Why Iterative ILP and Facility MILP?
 
 - 預計：65 秒
 - 論文：Section IV-B 與 IV-C
@@ -205,7 +177,7 @@ Facility MILP 改的是能量。如果這個 window 有任何一筆 request 用�
 - 怎麼指：左右兩張卡，然後中間的式子只指 \(f_d y_d\) 和 \(H_d y_d\)。不要說 \(y_d=0\) 代表機房斷電。
 - 下一頁：這些政策是在什麼設定上比的。先把「16 個 DC 是模擬」講清楚。
 
-## Main 14 — How Is the System Evaluated?
+## Main 12 — How Is the System Evaluated?
 
 - 預計：50 秒
 - 論文：Section V-A，Table II
@@ -222,7 +194,7 @@ Takeaway 要留下：這 16 個 DC 是一台伺服器上的模擬角色，不是
 - 怎麼指：表格的 Dense / MoE 兩欄，再指 Takeaway。
 - 下一頁：全篇最重要的結果圖，Figure 4(a)。
 
-## Main 15 — Q1: Can Carbon Be Reduced Without Excessive SLO Violations?
+## Main 13 — Q1: Can Carbon Be Reduced Without Excessive SLO Violations?
 
 - 預計：85 秒
 - 論文：Abstract；Section V-C，Figure 4(a)
@@ -239,7 +211,7 @@ Takeaway 要留下：這 16 個 DC 是一台伺服器上的模擬角色，不是
 - 怎麼指：先指兩軸和星星，再指高負載最右邊的點，最後念「How to read the claim」。
 - 下一頁：violation rate 看不出尾巴。Figure 4(b) 把高負載的 TTFT 百分位拆開，而且圖上的百分比不是延遲。
 
-## Main 16 — Q2: What Happens to Tail Latency Under High Load?
+## Main 14 — Q2: What Happens to Tail Latency Under High Load?
 
 - 預計：60 秒
 - 論文：Section V-C，Figure 4(b)
@@ -254,7 +226,7 @@ Mixtral 不一樣。它的 engine 少、輸出比較長。α 等於 0 的 greedy
 - 怎麼指：先指一條橫條上的百分號，說明那是碳。再指 Llama 上 greedy 的短條，和 Mixtral 上 greedy 拉到很右邊的長條。
 - 下一頁：減碳空間從哪裡來。PUE 和 CI 的分散是兩件不同的事。
 
-## Main 17 — Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?
+## Main 15 — Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?
 
 - 預計：55 秒
 - 論文：Section V-C，Figure 5
@@ -269,7 +241,7 @@ Mixtral 不一樣。它的 engine 少、輸出比較長。α 等於 0 的 greedy
 - 怎麼指：左圖看實心點略為上移，右圖看三條線由左下到右上，High 那條最低。13% 用口頭講，不必在圖上找一個沒標數字的點。
 - 下一頁：排程器自己要花多少時間，以及狀態太舊時 SLO 會怎樣。
 
-## Main 18 — Q4: How Important Are Polling, Overhead, and Topology?
+## Main 16 — Q4: How Important Are Polling, Overhead, and Topology?
 
 - 預計：50 秒
 - 論文：Section V-C，Figure 6
@@ -286,7 +258,7 @@ Figure 6 三塊一起看。右邊三句是讀圖，不是另一組實驗。
 - 怎麼指：先指 (a) 的橫軸是毫秒到秒，強調這不是 TTFT。再指 (b) 在 2 秒之後翹起來。(c) 只指星星往右上和往左下的兩步。
 - 下一頁：真正上線時不知道輸出會多長。他們用一個小預測器試過。
 
-## Main 19 — Q5: What If Output Length Is Unknown?
+## Main 17 — Q5: What If Output Length Is Unknown?
 
 - 預計：45 秒
 - 論文：Section IV 為什麼需要 OSL；Section V-C，Figure 7
@@ -301,7 +273,7 @@ Figure 7(a) 空心是 oracle，實心是預測。預測是一個兩層 MLP 的�
 - 怎麼指：(a) 看空心和實心幾乎疊在一起；(b) 看斜線區是 violation 小於 5% 的地方，不要把 cap 64 那個高 violation 點說成也只有 5%。
 - 下一頁：四層結論。最後一層要把「我們想做的」和「他們做完的」分開。
 
-## Main 20 — Conclusion
+## Main 18 — Conclusion
 
 - 預計：50 秒
 - 論文：Section VI 與 Section VIII
@@ -389,3 +361,20 @@ Figure 7(a) 空心是 oracle，實心是預測。預測是一個兩層 MLP 的�
 - TP=2 讓 facility MILP 在高負載多 22% 的碳，SLO 也更差。那個比較裡他們偏好 data parallel。
 - 我們的 HBM/HBF、heterogeneous GPU、attention/expert placement 不是他們的結果。
 - 程式在 github.com/topcuburak/carbon-slo-at-geoscale。這次報告沒有重跑。
+
+### B11 Figure 1：逐步延遲
+
+- 這張是論文 Figure 1 原圖，不是重畫的曲線。主動報告不講這頁；被問到「延遲為什麼不能當常數」再開。
+- Prefill 在短 prompt 幾乎是平的，之後才跟著總 prefill token 上升。所以 TTFT 沒有一個固定值。
+- Decode 的 step latency 看 Batch Size 和 KV Cache。飽和之後會陡升。
+- Held-out 的 per-step MAPE：dense Prefill 在 1.7% 以內，Mixtral Prefill 是 4.8%，Decode 在 3.4% 以內。這是逐步模型的誤差，不是整個跨區 simulator 的 end-to-end TTFT／TPOT。
+- 多項式在 B03。這裡不要把逐步 MAPE 說成 16 個資料中心已經被硬體驗證。
+
+### B12 Figure 2：逐步功率與能量
+
+- 這張是論文 Figure 2 原圖。曲線是 per-GPU Power，不是整台 engine 的總功率。
+- Prefill 的 Power 會靠近 A100 的 400 W TDP。TDP 是裝置上限，不是每個 step 都量到的固定功耗。
+- Decode 的 Power 跟著 Batch Size 變，大批次大約到 TDP 的 95%。
+- Energy 是平均 Power 乘上 step 時間。Power 和 Energy 不是同一個量。Idle 大約每張 A100 72 W，host 300 W，都要留在 operational energy 裡。
+- Held-out step-energy MAPE 在 5.6% 以內。這仍是逐步能量的檢查，不能拿來宣稱整個 geo-distributed simulator 已被驗證。
+

@@ -71,6 +71,13 @@ class NavigationRegressionTests(unittest.TestCase):
             page.delete_link(link)
         self.rejects_pdf_mutation(mutate, 'visible return missing')
 
+    def test_latency_link_points_at_power(self):
+        def mutate(doc):
+            page = doc[doc.resolve_names()['M02']['page']]
+            link = next(x for x in page.get_links() if x.get('nameddest') == 'B11')
+            doc.xref_set_key(link['xref'], 'A/D', '(B12)')
+        self.rejects_pdf_mutation(mutate, 'contract pair drift')
+
     def test_missing_motivation_scope(self):
         def mutate(doc):
             page = doc[doc.resolve_names()['M02']['page']]

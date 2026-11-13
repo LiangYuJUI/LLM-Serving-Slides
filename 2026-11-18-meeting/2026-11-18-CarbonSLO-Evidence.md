@@ -13,6 +13,7 @@ M02 的敘事依據是 Sec. I（跨區 routing 動機、Table I 與 simulator co
 - 「未共同涵蓋所有因素」不等於每篇都忽略全部因素。Table I 的 transfer 有例外，MOER 的 power 為 partial，GCOS 的 batch-aware latency 為不適用。
 - Simulator 是作者開發，以真實 A100／vLLM 量測校準；跨 DC 實驗屬模擬，沒有 16 個實體 DC 的部署驗證。
 - M03 保留逐列證據；M05 解釋這些缺漏對 latency、energy 與 SLO feasibility 判斷的影響。
+- Figure 1 與 Figure 2 的讀圖在 B11、B12，不在 Main。逐步 MAPE 與 step-energy MAPE 不是跨區 end-to-end 驗證。Figure 2 是 per-GPU power；TDP 不是每個 step 的固定功耗。Idle 與 host 仍留在 operational energy。多項式仍在 B03。
 
 ## 主張與範圍
 
