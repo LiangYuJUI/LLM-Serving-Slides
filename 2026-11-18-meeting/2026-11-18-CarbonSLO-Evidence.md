@@ -12,16 +12,16 @@ M02 的敘事依據是 Sec. I（跨區 routing 動機、Table I 與 simulator co
 - 低 CI 不必然代表高延遲。壅塞示意在 B13，不是量測曲線，也不是低 CI 必然造成高延遲。
 - 「未共同涵蓋所有因素」不等於每篇都忽略全部因素。Table I 的 transfer 有例外，MOER 的 power 為 partial，GCOS 的 batch-aware latency 為不適用。GCOS 的延遲是 GPU job 的等待，不是 token SLO；這句留在 B01。
 - Simulator 是作者開發，以真實 A100／vLLM 量測校準；跨 DC 實驗屬模擬，沒有 16 個實體 DC 的部署驗證。
-- M03 是研究缺口的證據。M04 只放 request-to-datacenter 的決策、operational carbon，以及 TTFT／TPOT budget。PUE 已經在 \(E_d\) 裡，不再乘第二次。估計在 M06，四種演算法的差異在 M07–M08，驗證邊界在 M09。
+- M03 是研究缺口的證據。M04 只放 request-to-datacenter 的決策、operational carbon，以及 TTFT／TPOT budget。PUE 已經在 \(E_d\) 裡，不再乘第二次。M06 只估計 TTFT／TPOT。Facility MILP 在 M07。其餘三種政策在 M08。驗證邊界在 M09。
 - Figure 1 與 Figure 2 的讀圖在 B11、B12，不在 Main。逐步 MAPE 與 step-energy MAPE 不是跨區 end-to-end 驗證。Figure 2 是 per-GPU power；TDP 不是每個 step 的固定功耗。Idle 與 host 仍留在 operational energy。多項式仍在 B03。
 
 ## M06–M10 估計、排程、驗證、實驗設定
 
 | 頁 | 問題 | 論文依據 | 不要說成 | Backup |
 |---|---|---|---|---|
-| M06 | Snapshot 怎麼變成 TTFT、TPOT 和碳成本 | Sec. IV：\(\mathrm{TTFT}_{r,d}=\mathrm{RTT}(s,s')+W_d+t_{\mathrm{pre}}(\mathrm{ISL}_r+Q_d)\)。\(W_d\) 是等 batch slot。TPOT 用 \(B_d{+}1\) 與 KV，running prefill 會拉長 decode，queued prefill 攤到 OSL。PDF 把 \(1/(1-\mathrm{duty})\) 斷行，主頁不改寫成另一條代數式 | 碳估計本身保證 SLO；四種政策的能量帳完全相同 | B05、B03、B12 |
-| M07 | 為什麼 per-request greedy 不夠 | Eq. (1) 先過可行集 \(\mathcal{F}_r\)，再對延遲與 CI 各除以該集合的最大值。\(\alpha{=}0\) 對上 MOER，不是全域碳最小。Eq. (2) 凍結 \(H_d\) 與延遲估計 | Greedy \(\alpha{=}0\) 解的是全系統 operational carbon | B06 |
-| M08 | 負載耦合與共享 step energy 怎麼補 | 迭代最多 \(T_{\max}{=}3\)，指派重複即停。Facility 目標加 \(\sum f_d y_d\)，容量列改成 \(\sum_r x_{r,d}\le H_d y_d\)。\(f_d\) 是喚醒 engine 的碳，不是機房斷電 | \(y_d{=}0\) 代表資料中心關機；request 共用全部 attention 或 KV | B07 |
+| M06 | Scheduler 怎麼預測 TTFT 與 TPOT | Sec. IV 印出 \(\mathrm{TPOT}=t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T^{\mathrm{pre}}_d/(1-\mathrm{duty}_d)\)。duty 因子只除在 queued-prefill 項上。下一句又說這個因子對應已經在跑的 prefill。主頁不把整個式子寫成一個分數 | 預測通過就等於實測 SLO；duty 與 queued prefill 是同一個量 | B05 |
+| M07 | Facility MILP 怎麼記共享 step energy | Sec. IV-C：\(\min\sum c_{r,d}x_{r,d}+\sum f_d y_d\)，\(\sum_r x_{r,d}\le H_d y_d\)。\(f_d\) 是這個 window 喚醒 engine 的碳。作者評估裡它是整體 carbon–SLO 較好的選項 | \(y_d{=}0\) 代表機房斷電；它包含 Iterative ILP 的負載更新；每個 workload 都最優；共享能量等於共享 attention 或 KV | B07 |
+| M08 | 另外三種政策差在哪 | Eq. (1) 的 \(\alpha{=}0\) 對上 MOER，不是全域 energy\(\times\)CI。Eq. (2) 凍結負載。迭代最多 3 次，能量仍是各筆相加 | 這三個一定逐層支配；Facility MILP 是迭代之後再解一次 MILP | B06、B07 |
 | M09 | Simulator 可以信到哪一層 | Sec. V-B：Llama-3.1-8B，3 個 engine，19 rates，>40K requests。TTFT 平均 9.1%，飽和附近 28.5% 且高估；TPOT 平均 <5%；GPU energy 2.5% 以內。Sec. III-B 的逐步 MAPE 是另一層 | 16 個實體 DC 已部署；把 1.7%／5.6% 和 9.1% 加成同一個誤差 | B04、B03 |
 | M10 | 實驗在比什麼 | Table II：dense TP=1 與 Mixtral TP=4；TTFT 3 s；TPOT 100／200 ms；4×4 個模擬 DC。MOER = greedy \(\alpha{=}0\) | 平均延遲或 throughput 就是 SLO；16 個機房已經架好 | B08 |
 

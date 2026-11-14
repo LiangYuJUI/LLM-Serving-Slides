@@ -77,56 +77,62 @@ DC 裡面，node 之間和 node 裡面都是 round-robin。所以論文把測到
 Scheduler 看得到的，是每個 DC 平均過的 batch size、queue 深度、KV 佔用、prefill duty，再加上 CI。
 
 - 怎麼指：左手指著圖上的 1 到 5，右手對應三小段。最後停在 continuous batching。
-- 下一頁：這份 snapshot 怎麼變成 TTFT、TPOT 和碳成本。
+- 下一頁：這份 snapshot 怎麼變成 TTFT 和 TPOT 的估計。
 
-## Main 06 — How Does the Scheduler Predict SLO Feasibility?
+## Main 06 — How Does the Scheduler Predict TTFT and TPOT?
 
 - 預計：65 秒
-- 論文：Section III-A、III-B；Section IV 開頭的 latency estimator
-- 上一頁：Figure 3 的 provisioner 週期收集狀態。這一頁說明那些數字怎麼變成指派之前的估計。
+- 論文：Section IV 開頭的 latency estimator；逐步模型在 Section III-B，不在這頁展開
+- 上一頁：Figure 3 已經講過 provisioner。這一頁只問那些數字怎麼變成 TTFT 和 TPOT。
 
-Scheduler 拿到的不是每張 GPU 的即時讀數。Polling 週期裡，provisioner 把每個 DC 平均過的 batch size、queue、KV occupancy、prefill duty 和 CI 廣播出去，連同跨區 RTT。
+Scheduler 用的是 polling 得到的 DC 平均：batch size、queue、KV occupancy、prefill duty，再加上 RTT 矩陣。這不是每張 GPU 的即時讀數。估計上過了 SLO，也不等於最後真的過了。
 
-TTFT 用的是論文的式子。一項是跨區 RTT，本地就是 0。一項是在那個 DC 等一個 batch 位子的時間，記成 W_d。一項是這筆 prompt 加上已經排在 queue 裡的 token，一起做 prefill 的時間。所以是網路、排隊或 admission、以及 prefill 執行。
+TTFT 是三項相加。RTT 是跨區傳輸，留在本地就是 0。W_d 是在那個 DC 等一個 batch 位子。後面的 prefill 時間吃的是這筆 prompt，再加上已經排在 queue 裡的 token。碳的算法上一頁的優化目標已經寫過，這裡不再重複。
 
-TPOT 看的是這筆 request 加入之後的 decode step，用投影的 batch 和 KV occupancy。已經在跑的 prefill 會把 decode 拉長，還在 queue 裡的 prefill 則攤到輸出長度上。論文把 duty 的分式斷在行尾，這裡不另寫一條代數式。碳成本用 profile 過的 phase energy 和執行時間，再乘那個 DC 的 PUE 和 CI。四種政策共用這套 serving 估計，但 Facility MILP 後面會多一個共享能量項。估計過了，不代表 SLO 一定守得住。
+TPOT 的印刷式是 decode step 加上一項分數。B 加 1 表示這筆 request 加入投影的 batch，KV 是當下的 occupancy。分子裡的 T pre 是還在 queue 的 prefill，攤到輸出長度上。論文把 1 減 duty 只放在這一項的分母。下一句又說這個因子對應已經在跑的 prefill。所以不要把 duty 和 queued prefill 說成同一個量，也不要把整個式子改寫成一個大分數。
 
-- 怎麼指：先指上面四個方塊，再指 TTFT 式子的三項，最後左右兩張卡。
-- 下一頁：有了估計之後，為什麼一筆一筆決定不夠。
+- 怎麼指：先指上面的流程，再指 TTFT，再指 TPOT。符號細節點進 B05。
+- 下一頁：先看這篇最主要的排程方法，Facility MILP，怎麼處理共享的 step energy。
 
-## Main 07 — Why Is Greedy Scheduling Not Enough?
-
-- 預計：70 秒
-- 論文：Section IV-A、IV-B，Equation (1) 與 (2)
-- 上一頁：估計已經有了。這一頁比較每筆獨立決定，和同一個 window 一起決定。
-
-上面那一列是進展：Greedy、Standard ILP、Iterative ILP、Facility MILP。每一層針對前一層的一個洞，不是每個負載都嚴格更好。
-
-Greedy 先留下估計上 TTFT 和 TPOT 都過得了的 datacenter，再用 α 把歸一化後的延遲和 CI 加起來，選分數最低的。歸一化是除以這個可行集合裡的最大值。α 等於 0 只看 CI，論文說這和 MOER 一樣。它不是全域 operational carbon 的最小值。同一個 polling period 裡，每筆 request 看的是同一張 snapshot，所以會一起湧向同一個站。不同 region 的 scheduler 也看不到彼此剛送出去的 request。
-
-Standard ILP 把一個 window 的 request 一起指派，最小化各筆的估計碳成本。每一筆要分到一個 DC，每個 DC 還有剩餘的 batch 容量。它能協調同一個 window。可是這一次求解裡，容量和延遲估計是凍結的。Request 落地之後 batch 和 queue 會變，原本各筆分開看可行的站，合在一起可能過不了 SLO。
-
-- 怎麼指：先指進展那一行，再左欄的分數、右欄的最小化。兩個 Limitation 各停一次。
-- 下一頁：凍結的負載，以及被算了兩次的 batch 能量，後面兩種方法怎麼補。
-
-## Main 08 — How Do Iterative ILP and Facility MILP Improve Scheduling?
+## Main 07 — How Does Facility MILP Account for Shared Batch Energy?
 
 - 預計：70 秒
-- 論文：Section IV-B 後段與 Section IV-C
-- 上一頁：Standard ILP 能協調一個 window，但負載估計是凍結的，能量仍是各筆相加。
+- 論文：Section IV-C
+- 上一頁：SLO 的估計講完了。這一頁直接講主要方法，不先從 Greedy 講起。
 
-左邊是 Iterative ILP。先解這個 window，把指派投影回每個 DC 的 batch 和 queue，重算 TTFT、TPOT 和可行性，再解一次。指派重複，或做滿 3 次，就停。它補的是負載耦合。代價是一個 window 要解好幾次，排程的 CPU 時間會上去。碳的算法還是各筆相加。
+同一個 inference batch 裡的 request，會共用 engine 某一次 step 的一部分能量。那一份能量有固定的部分，也有跟著負載走的部分。如果每筆 request 都付一次完整成本，固定的那一份就被算了兩次。
 
-右邊是 Facility MILP。兩筆 request 若進同一個原本閒置的 engine，固定的那一份 step energy 只發生一次。式子是各筆的邊際成本，加上每個 DC 的 f_d 乘上 y_d。y_d 表示這個 window 有沒有用到該 DC，容量也乘上這個位元。這是優化裡的記帳，不是把資料中心斷電，也不是說這些 request 共用全部的 attention 或 KV。
+左邊是示意，不是論文裡的一組瓦特數。加成法是 A 付固定成本加自己的邊際，B 再付一次固定成本。Facility 的記法是固定成本只收一次，再加上各自的邊際。這不是說這些 request 共用了全部的 attention，也不是 KV cache 的重用。
 
-- 怎麼指：左邊順著 1 到 4，右邊只指 f_d y_d。不要把 y_d 等於 0 說成機房關機。
+右邊是目標。x 是 request 指派到哪個 DC。y 表示這個 window 有沒有用到那個 DC。c 是邊際碳成本，f 是共享的那一份碳。容量限制乘上 y，所以沒用到的 DC 不會被分到 request。
+
+請把限制念完。它沒有把資料中心斷電，也沒有把 RTT 拿掉。它不是先跑 Iterative ILP 再解一次 MILP。可行性是估計出來的，request 仍可能真的違反 SLO。作者的評估裡，它是整體 carbon–SLO 較好的選項，不是每一個 workload 的最優解。
+
+- 怎麼指：先指左邊兩張卡的固定成本，再指右邊的 f_d y_d。不要把 y 等於 0 說成機房關機。
+- 下一頁：另外三種政策各自補了什麼，又留下什麼。
+
+## Main 08 — How Do the Other Scheduling Policies Differ?
+
+- 預計：70 秒
+- 論文：Section IV-A 到 IV-C
+- 上一頁：Facility MILP 已經說明共享能量怎麼只收一次。這一頁用它當對照，看另外三種方法。
+
+Greedy 一筆一筆決定。它先留下估計上 TTFT 和 TPOT 都過得了的 DC，再用 α 把歸一化後的延遲和 CI 加起來。歸一化是除以這個可行集合的最大值。α 等於 0 只看 CI，論文說這和 MOER 一樣。它不是在最小化全系統的 energy 乘上 CI。同一個 snapshot 上，沒有協調的 request 會擠到同一個站。
+
+Standard ILP 把一個 window 一起指派，最小化各筆的估計碳成本。每一筆一個 DC，而且要落在預測的可行集合和剩餘容量裡。可是這一次求解裡，負載和成本是凍結的。
+
+Iterative ILP 解完就把指派投影回 batch 和 queue，重算 TTFT 和 TPOT，再解。指派重複，或做滿 3 次，就停。它補的是負載估計，能量仍然是各筆相加，而且 solver 時間會增加。
+
+這三個不是一層一定比上一層好。Facility MILP 也不是在這個迭代迴圈後面再加一次。它處理的是共享 batch 能量，前一頁已經講過。
+
+- 怎麼指：三張卡由左到右。最後一句回到 Facility MILP 是另一個政策。
 - 下一頁：這些估計和排程是建在什麼測量上，驗證到哪裡為止。
 
 ## Main 09 — Can We Trust the Geo-Distributed Simulator?
 
 - 預計：70 秒
 - 論文：Section V-B；限制在 Section VI。逐步擬合在 Section III-B，不跟這裡的百分比混在一起
-- 上一頁：排程方法講完了。實驗數字之前，先分清楚哪一層是量到的。
+- 上一頁：另外三種政策和 Facility MILP 的差別講完了。實驗數字之前，先分清楚哪一層是量到的。
 
 分成三層。A，在 A100-40GB、vLLM 0.6.3、FP16 上量延遲和功率。B，每個模型、每種 tensor parallel，各配一組 prefill 和 decode 的延遲與能量。C，跨區模擬：routing、queue、continuous batching、RTT、多個 region 和 CI。這一層不是再做一次硬體實驗。
 

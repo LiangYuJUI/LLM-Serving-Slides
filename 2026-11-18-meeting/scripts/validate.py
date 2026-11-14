@@ -103,7 +103,7 @@ def validate(render_dir):
     contracts = json.loads(CONTRACTS.read_text())
     full_text = '\n'.join(page.get_text() for page in doc)
     assert 'Figure 8' not in full_text and 'Fig. 8' not in full_text
-    assert 'does not power off' in doc[expected['M08']].get_text()
+    assert 'does not power off' in doc[expected['M07']].get_text()
     trust = ' '.join(doc[expected['M09']].get_text().split())
     assert '16 physical datacenters' in trust
     assert 'single-node' in trust

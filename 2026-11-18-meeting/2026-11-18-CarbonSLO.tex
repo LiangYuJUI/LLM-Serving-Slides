@@ -227,104 +227,100 @@ Inside a datacenter, inter-node and intra-node placement are round-robin. The en
 \section{Estimation}
 
 \renewcommand{\slideid}{Main 06 / 16}
-\begin{frame}[t,label=M06]{How Does the Scheduler Predict SLO Feasibility?}
-\vspace{0.01cm}
+\begin{frame}[t,label=M06]{How Does the Scheduler Predict TTFT and TPOT?}
+\vspace{-0.02cm}
 \begin{center}
-\vspace{-0.10cm}
+\vspace{-0.18cm}
 \begin{tikzpicture}[font=\scriptsize, node distance=0.28cm]
-  \node[draw=Accent, fill=SoftLilac, rounded corners=2pt, align=center, inner sep=2.5pt, minimum width=3.15cm, minimum height=0.78cm] (snap) {Provisioner snapshot\\batch, queue, KV, duty, CI};
-  \node[draw=Accent, fill=Paper, rounded corners=2pt, align=center, inner sep=2.5pt, minimum width=2.35cm, minimum height=0.78cm, right=0.32cm of snap] (sch) {Regional\\scheduler};
-  \node[draw=Accent, fill=SoftMint, rounded corners=2pt, align=center, inner sep=2.5pt, minimum width=3.05cm, minimum height=0.78cm, right=0.32cm of sch] (pred) {Predicted TTFT,\\TPOT, and carbon};
-  \node[draw=AccentBlue, fill=SoftMint, rounded corners=2pt, align=center, inner sep=2.5pt, minimum width=2.55cm, minimum height=0.78cm, right=0.32cm of pred] (cand) {SLO-feasible\\datacenters};
+  \node[draw=Accent, fill=SoftLilac, rounded corners=2pt, align=center, inner sep=2pt, minimum width=3.15cm, minimum height=0.64cm] (snap) {Provisioner snapshot\\batch, queue, KV, duty};
+  \node[draw=Accent, fill=Paper, rounded corners=2pt, align=center, inner sep=2pt, minimum width=2.35cm, minimum height=0.64cm, right=0.32cm of snap] (sch) {Regional\\scheduler};
+  \node[draw=Accent, fill=SoftMint, rounded corners=2pt, align=center, inner sep=2pt, minimum width=3.05cm, minimum height=0.64cm, right=0.32cm of sch] (pred) {Predicted\\TTFT and TPOT};
+  \node[draw=AccentBlue, fill=SoftMint, rounded corners=2pt, align=center, inner sep=2pt, minimum width=2.55cm, minimum height=0.64cm, right=0.32cm of pred] (cand) {SLO-feasible\\datacenters};
   \draw[-{Stealth[length=1.6mm]}, thick, Accent] (snap) -- (sch);
   \draw[-{Stealth[length=1.6mm]}, thick, Accent] (sch) -- (pred);
   \draw[-{Stealth[length=1.6mm]}, thick, AccentBlue] (pred) -- (cand);
 \end{tikzpicture}
-\vspace{-0.18cm}
+\vspace{-0.24cm}
 \end{center}
-{\scriptsize Polled DC averages plus the RTT matrix. Not a synchronized per-GPU measurement.\par}
-\vspace{0.05cm}
-{\centering$\mathrm{TTFT}_{r,d}=\mathrm{RTT}(s,s')+W_d+t_{\mathrm{pre}}(\mathrm{ISL}_r+Q_d)$\par}
-\vspace{0.04cm}
-{\scriptsize Network delay, plus the \kw{B05}{queue wait} $W_d$, plus \kw{B03}{prefill time} of this prompt together with queued tokens.\par}
-\vspace{0.07cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
-\card{lilacbox}{TPOT}{Decode step at the projected batch and KV occupancy, with this request included. Running prefills stretch that step. Queued prefill is amortized over the output length.}
-\end{column}
-\begin{column}{0.49\textwidth}
-\card{mintbox}{Carbon cost}{Profiled \kw{B12}{phase energy} and execution time, then that datacenter's PUE and CI. Facility MILP later adds a shared term. The estimate does not certify the SLO.}
-\end{column}
-\end{columns}
-\takeaway{Scheduling first estimates each datacenter's latency and carbon consequences, then chooses how to assign requests.}
-\slidenote{Sec.~IV estimator; Sec.~III-A--B models. TPOT's duty factor is stated in prose in Sec.~IV.}
+{\scriptsize Polled averages plus the RTT matrix. A prediction that passes is not a measured SLO.\par}
+{\centering\setlength{\abovedisplayskip}{2pt}\setlength{\belowdisplayskip}{0pt}%
+{\footnotesize\textbf{\kw{B05}{TTFT}}}\par
+\[
+\widehat{\mathrm{TTFT}}_{r,d}=\mathrm{RTT}(s,s')+W_d+t_{\mathrm{pre}}(\mathrm{ISL}_r+Q_d)
+\]
+{\scriptsize RTT: inter-region delay, zero if local.\ $W_d$: wait for a batch slot.\ $\mathrm{ISL}_r+Q_d$: this prompt plus queued prefill tokens.\par}
+\vspace{0.02cm}
+{\footnotesize\textbf{\kw{B05}{TPOT}}}\par
+\[
+\widehat{\mathrm{TPOT}}_{r,d}=t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+\frac{T_d^{\mathrm{pre}}}{1-\mathrm{duty}_d}
+\]
+{\scriptsize $B_d{+}1$: this request joins the batch.\ $\mathrm{KV}_d$: KV occupancy.\ $T_d^{\mathrm{pre}}$: queued prefill, amortized over the output.\ $\mathrm{duty}_d$: the printed factor divides that queued term.\par}
+\par}
+\takeaway{TTFT captures network, queueing, and prefill delay; TPOT captures decode load and prefill interference.}
+\slidenote{Sec.~IV. The PDF writes $T^{\mathrm{pre}}/(1-\mathrm{duty})$, not a fraction over the whole sum. The next sentence also ties the factor to prefills already running.}
 \end{frame}
 
 \section{Method}
 
 \renewcommand{\slideid}{Main 07 / 16}
-\begin{frame}[t,label=M07]{Why Is Greedy Scheduling Not Enough?}
-\vspace{0.02cm}
-{\scriptsize Greedy $\rightarrow$ Standard ILP $\rightarrow$ Iterative ILP $\rightarrow$ Facility MILP. Each step targets one gap. None dominates at every load.\par}
-\vspace{0.06cm}
+\begin{frame}[t,label=M07]{How Does Facility MILP Account for Shared Batch Energy?}
+\vspace{-0.02cm}
+{\scriptsize Requests that share an inference batch share part of the engine's step energy: a fixed part, plus workload-dependent parts. Adding full per-request costs counts the fixed part twice.\par}
+\vspace{0.03cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
-\card{mintbox}{Greedy: one request}{\begin{minipage}[t][3.55cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright
-Keep SLO-feasible datacenters, then the \kw{B06}{Greedy score}
-\[
-\alpha\,\widehat{\mathrm{Lat}}+(1{-}\alpha)\,\widehat{\mathrm{CI}}.
-\]
-Hats divide by the max over that feasible set. Lowest score wins. $\alpha{=}0$ matches MOER. It is not a global carbon minimum.\par\vspace{0.08cm}
-\textbf{Limitation.} Uncoordinated requests herd onto one site. Concurrent schedulers share one snapshot.\end{minipage}}
+\begin{column}{0.46\textwidth}
+\card{lilacbox}{Additive, illustrative}{Request A pays the fixed step cost plus its own marginal cost. Request B pays that fixed cost again.}
+\vspace{0.05cm}
+\card{mintbox}{Facility-style}{Charge the shared fixed cost once, then each request's marginal cost. Not a measured watt split, and not shared attention or KV reuse.}
 \end{column}
-\begin{column}{0.49\textwidth}
-\card{bluebox}{Standard ILP: one window}{\begin{minipage}[t][3.55cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright
-Assign the window jointly:
+\begin{column}{0.52\textwidth}
+\card{bluebox}{Joint assignment}{\raggedright
+\setlength{\abovedisplayskip}{1pt}\setlength{\belowdisplayskip}{0pt}
 \[
-\min\sum_{r,d} c_{r,d}x_{r,d}.
+\begin{aligned}
+&\min\sum_{r,d}c_{r,d}x_{r,d}+\sum_d f_d y_d\\
+&\sum_r x_{r,d}\le H_d y_d
+\end{aligned}
 \]
-$x_{r,d}$ assigns the request. $c_{r,d}$ is its estimated carbon, $\mathrm{PUE}_d E_{r,d}\mathrm{CI}_d$. One DC per request, and a capacity limit.\par\vspace{0.08cm}
-The \kw{B06}{full ILP} freezes those estimates for the solve.\par\vspace{0.06cm}
-\textbf{Limitation.} Frozen load. Landing together can move the batch and the queue.\end{minipage}}
+$x_{r,d}$: assignment.\ $y_d$: the window uses $d$.\ $c$: marginal carbon.\ $f$: shared carbon.\ $H_d$: remaining slots.\par\vspace{0.04cm}
+Full model: \kw{B07}{shared batch energy}.\par}
 \end{column}
 \end{columns}
-\vspace{0.18cm}
-\takeaway{Standard ILP coordinates requests within a window, but still relies on a fixed load estimate.}
-\slidenote{Sec.~IV-A--B, Eqs.~(1)--(2). Window: 100\,ms or 300 requests.}
+\vspace{-0.02cm}
+{\scriptsize It does not power off a datacenter and does not remove RTT. It is not Iterative ILP followed by another solve. Predicted feasibility can still miss the SLO. The authors' runs favor it overall, not on every workload.\par}
+\vspace{-0.16cm}
+\takeaway{Facility MILP improves carbon-aware routing by jointly allocating requests while charging shared batch energy only once.}
+\slidenote{Sec.~IV-C. $f_d$ is the carbon of waking $d$'s engines for the window.}
 \end{frame}
 
 \renewcommand{\slideid}{Main 08 / 16}
-\begin{frame}[t,label=M08]{How Do Iterative ILP and Facility MILP Improve Scheduling?}
+\begin{frame}[t,label=M08]{How Do the Other Scheduling Policies Differ?}
 \vspace{0.02cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.48\textwidth}
-\card{lilacbox}{Iterative ILP: load coupling}{\begin{minipage}[t][3.15cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright
-\vspace{0.02cm}
-\begin{tikzpicture}[font=\scriptsize, node distance=0.10cm]
-  \node[draw=Accent, fill=SoftLilac, rounded corners=2pt, align=center, inner sep=1.5pt, minimum width=4.7cm] (s) {1. Solve the window};
-  \node[draw=Accent, fill=Paper, rounded corners=2pt, align=center, inner sep=1.5pt, minimum width=4.7cm, below=0.08cm of s] (p) {2. Project batch and queue};
-  \node[draw=Accent, fill=SoftMint, rounded corners=2pt, align=center, inner sep=1.5pt, minimum width=4.7cm, below=0.08cm of p] (u) {3. Update TTFT, TPOT, feasibility};
-  \node[draw=AccentBlue, fill=SoftLilac, rounded corners=2pt, align=center, inner sep=1.5pt, minimum width=4.7cm, below=0.08cm of u] (r) {4. Re-solve, or stop};
-  \draw[-{Stealth[length=1.4mm]}, Accent] (s) -- (p);
-  \draw[-{Stealth[length=1.4mm]}, Accent] (p) -- (u);
-  \draw[-{Stealth[length=1.4mm]}, Accent] (u) -- (r);
-\end{tikzpicture}
-\par\vspace{0.06cm}
-Stop when the assignment repeats or after 3 iterations. Trade-off: more solver time. Carbon stays a sum of request costs.\end{minipage}}
-\end{column}
-\begin{column}{0.50\textwidth}
-\card{mintbox}{Facility MILP: shared batch energy}{\begin{minipage}[t][3.15cm][t]{\dimexpr\linewidth-0.18cm\relax}\raggedright
-Two requests on one idle engine share the fixed step energy. An additive cost charges it twice.
+\begin{column}{0.32\textwidth}
+\card{mintbox}{Greedy}{\raggedright One request.\ \kw{B06}{Greedy score}
 \[
-\min\sum c_{r,d}x_{r,d}+\sum_d f_d y_d
+\alpha\,\widehat{\mathrm{Lat}}+(1{-}\alpha)\,\widehat{\mathrm{CI}}
 \]
-$y_d$ marks that the window uses $d$. $f_d$ is that shared carbon. Capacity becomes $\sum_r x_{r,d}\le H_d y_d$.\par\vspace{0.05cm}
-This \kw{B07}{shared batch energy} term does not power off a datacenter, and it does not mean the requests share all attention or KV.\end{minipage}}
+Hats divide by the feasible-set maximum. $\alpha{=}0$ matches MOER. It does not minimize global energy times CI.\par\vspace{0.04cm}
+Uncoordinated requests can crowd one site from a stale snapshot.\par}
+\end{column}
+\begin{column}{0.32\textwidth}
+\card{bluebox}{Standard ILP}{\raggedright One window, jointly.
+\[
+\min\sum_{r,d}c_{r,d}x_{r,d}
+\]
+One datacenter per request, inside the predicted feasible set, and within remaining capacity. The \kw{B06}{full ILP} freezes load and cost for that one solve.\par}
+\end{column}
+\begin{column}{0.32\textwidth}
+\card{lilacbox}{\kw{B07}{Iterative ILP}}{\raggedright Solve, project batch and queue, recompute TTFT and TPOT, then solve again. Stop on a repeated assignment or after 3 iterations.\par\vspace{0.04cm}
+More solver time. Energy is still a sum of per-request costs.\par}
 \end{column}
 \end{columns}
-\vspace{0.20cm}
-\takeaway{Iterative ILP updates projected load; Facility MILP avoids double-counting shared batch energy.}
-\slidenote{Sec.~IV-B--C. $T_{\max}{=}3$. HiGHS time limit 0.25\,s. $f_d$ is an accounting term.}
+\vspace{0.06cm}
+{\scriptsize Facility MILP is a separate policy. It charges shared batch energy once and does not add this load-update loop. None of the four dominates at every load.\par}
+\takeaway{Greedy cannot coordinate requests; Standard ILP coordinates them but freezes load; Iterative ILP updates load but still prices energy additively.}
+\slidenote{Sec.~IV-A--C. Window: 100\,ms or 300 requests.}
 \end{frame}
 
 \section{Validation}
@@ -542,7 +538,7 @@ Scenario & Lowest-CI routing when the green site is congested & \jlink{B13} \\
 \quad
 \textbf{Main result} \nav{M11}{M11} \nav{M12}{M12}
 \quad
-\textbf{Method} \nav{M08}{M08} \nav{B07}{B07}\par}
+\textbf{Method} \nav{M07}{M07} \nav{B07}{B07}\par}
 \vspace{0.06cm}
 \nav{M16}{Go to Conclusion (M16)}\hfill\nav{INDEX}{Discussion Index}
 \end{frame}
@@ -621,7 +617,7 @@ E_{\mathrm{dec}}=e^{\mathrm{dec}}_0+e_d B+e_k K .
 \point{Standing power}{Idle engine: about 72\,W per A100. Host: 300\,W, of which the CPU package is about 146\,W under load on their testbed. Calibration: vLLM v0.6.3, FP16, A100, prompts from 32 to 32K tokens.}
 \point{Why decode MAPE is the weaker fit}{Decode steps are tens of milliseconds, so thermal and frequency transients show up. The paper states that limit.}
 \slidenote{Sec.~III-B, Figs.~1--2. Symbols follow the paper's prose; the PDF does not number these displays as equations.}
-\back[\nav{B11}{Fig.~1} \nav{B12}{Fig.~2} \nav{M06}{Main 6} \nav{M09}{Main 9}]{M02}
+\back[\nav{B11}{Fig.~1} \nav{B12}{Fig.~2} \nav{M09}{Main 9}]{M02}
 \end{frame}
 
 \renewcommand{\slideid}{B04}
@@ -643,7 +639,7 @@ E_{\mathrm{dec}}=e^{\mathrm{dec}}_0+e_d B+e_k K .
 \bpoint{Engine budgets}{Batch size follows vLLM \texttt{max\_num\_seqs}; the per-step token budget follows \texttt{max\_num\_batched\_tokens}. A long prefill is split across steps and stalls the running decode batch.}
 \bpoint{KV example}{Llama-3.1-8B uses 128\,KiB of KV per token after the weights. Batch capacity is 40 at TP=1, 80 at TP=2, and 400 for Mixtral.}
 \bpoint{TTFT estimate}{Scheduling delay, RTT if remote, wait for a slot, and prefill: $\mathrm{TTFT}_{r,d}=\mathrm{RTT}(s,s')+W_d+t_{\mathrm{pre}}(\mathrm{ISL}_r+Q_d)$.}
-\bpoint{TPOT estimate}{$\mathrm{TPOT}_{r,d}=t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T^{\mathrm{pre}}_d/(1-\mathrm{duty}_d)$. The $+1$ is this request. Duty stretches decode by prefills already running.}
+\bpoint{TPOT estimate}{The PDF writes $\mathrm{TPOT}_{r,d}=t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T^{\mathrm{pre}}_d/(1-\mathrm{duty}_d)$. $B_d{+}1$: this request joins the batch. $\mathrm{KV}_d$: KV occupancy. $T^{\mathrm{pre}}_d$: queued prefill, amortized over the output. The printed factor divides that queued term. The next sentence also says $1/(1-\mathrm{duty}_d)$ is for prefills already running. It is not a fraction over the whole sum.}
 \bpoint{Per-datacenter snapshot}{The provisioner polls batch size, queue tokens, KV occupancy, prefill duty, and CI. The paper uses averages so the poll and the decision stay small.}
 \slidenote{Sec.~III-C and the latency estimator in Sec.~IV. Intra-DC schedulers are round-robin.}
 \back[\nav{M06}{Main 6}]{M05}
@@ -672,7 +668,7 @@ The constraint matrix is totally unimodular, so the LP relaxation is integral. H
 \point{Fallback}{If the solver fails or cannot place a request inside capacity, the scheduler uses the lowest-CI SLO-feasible datacenter with headroom, which is greedy at $\alpha{=}0$, and round-robin if none exists.}
 \point{OSL}{Both TPOT's queued-prefill term and the carbon estimate need the output length. The main experiments use the oracle length. The predicted length is only the Fig.~7 study.}
 \slidenote{Sec.~IV-A--B, Eqs.~(1)--(2); Sec.~V-A fallback and OSL.}
-\back{M07}
+\back{M08}
 \end{frame}
 
 \renewcommand{\slideid}{B07}
@@ -684,7 +680,7 @@ The constraint matrix is totally unimodular, so the LP relaxation is integral. H
 \point{Size of the extra model}{Only $|D|$ new binaries, against $|R|\cdot|D|$ assignment variables. The paper says HiGHS still finishes inside the 0.25\,s limit.}
 \point{Does not power off}{This is an accounting device for shared batch energy inside the window. It does not power off a datacenter building, it does not delete inter-region RTT, and idle engines still remain in the later discussion of engine activation.}
 \slidenote{Sec.~IV-B--C. The engine-activator remark in Sec.~VI is an observation, not a claim that the MILP already implements it.}
-\back{M08}
+\back[\nav{M08}{Main 8}]{M07}
 \end{frame}
 
 \renewcommand{\slideid}{B08}
@@ -786,7 +782,7 @@ Scheduler knobs & Poll 1\,s (swept 0.5--10\,s). Window 100\,ms or 300 requests. 
 {\scriptsize Held-out step-energy MAPE is within 5.6\%. Figure 2 reports per-GPU power. This does not validate the full geo-distributed simulator.\par}
 \takeaway{Phase- and load-dependent energy is necessary for accurate operational-carbon estimation.}
 \slidenote{Sec.~III-B, Fig.~2.}
-\back[\nav{B03}{Formulas (B03)} \nav{M06}{Main 6}]{M02}
+\back[\nav{B03}{Formulas (B03)}]{M02}
 \end{frame}
 
 \renewcommand{\slideid}{B13}
