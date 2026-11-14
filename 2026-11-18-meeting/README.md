@@ -25,16 +25,16 @@
 | M04 / 4 | What Is the Carbon–SLO Optimization Goal? | 碳目標與 TTFT／TPOT | 17（INDEX） |
 | M05 / 5 | How Does the Geo-Distributed Simulator Work? | Fig. 3 | 22 |
 | M06 / 6 | How Does the Scheduler Predict TTFT and TPOT? | TTFT 與 TPOT 估計 | 22 |
-| M07 / 7 | How Does Facility MILP Account for Shared Batch Energy? | 共享 batch 能量 | 24 |
+| M07 / 7 | How Does Facility MILP Route Requests Under SLO Constraints? | 四步指派流程 | 24 |
 | M08 / 8 | How Do the Other Scheduling Policies Differ? | Greedy、ILP、迭代 | 23, 24 |
 | M09 / 9 | Can We Trust the Geo-Distributed Simulator? | within-node validation | 20, 21 |
 | M10 / 10 | How Is the System Evaluated? | Table II 摘要 | 25 |
 | M11 / 11 | Q1: Carbon without excessive SLO violations? | Fig. 4(a) | 25 |
-| M12 / 12 | Q2: Tail latency under high load | Fig. 4(b) | 19 |
+| M12 / 12 | Facility MILP balances TTFT and carbon saving on every model | Fig. 4(b) | 19 |
 | M13 / 13 | Q3: PUE and CI spread | Fig. 5 | 26 |
 | M14 / 14 | Q4: Polling, overhead, topology | Fig. 6 | 26 |
 | M15 / 15 | Q5: Unknown output length | Fig. 7 | 26 |
-| M16 / 16 | Conclusion | — | 27 |
+| M16 / 16 | Limitations \& Future Work | 論文限制與我們的方向 | 27 |
 
 開場順序：M02 動機 → M03 Table I 缺口 → M04 優化目標 → M05 simulator 架構 → M06 TTFT／TPOT 估計 → M07 Facility MILP → M08 其餘三種政策 → M09 驗證 → M10 實驗設定。M02 不提前報告演算法細節或 60%／3% 結果。
 
@@ -50,7 +50,7 @@
 | 22 | B05 | Continuous batching、KV、queue、TTFT／TPOT | M05；另有 M06 |
 | 23 | B06 | Greedy 與 Standard ILP | M08 |
 | 24 | B07 | Iterative ILP 與 Facility MILP | M07；另有 M08 |
-| 25 | B08 | Table II、baselines、load label | M10；另有 M11 |
+| 25 | B08 | Table II、baselines、load label | M10 |
 | 26 | B09 | Fig. 5–7 的數值讀法 | M13；另有 M14, M15 |
 | 27 | B10 | 限制、可重現性、我們的方向 | M16 |
 | 28 | B11 | Figure 1：逐步延遲為何隨負載變 | M02；另有 B03 |

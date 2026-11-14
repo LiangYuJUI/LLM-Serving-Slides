@@ -103,16 +103,23 @@ def validate(render_dir):
     contracts = json.loads(CONTRACTS.read_text())
     full_text = '\n'.join(page.get_text() for page in doc)
     assert 'Figure 8' not in full_text and 'Fig. 8' not in full_text
-    assert 'does not power off' in doc[expected['M07']].get_text()
+    assert 'presentation notation' in doc[expected['M07']].get_text()
+    assert 'does not power off' in ' '.join(doc[expected['B07']].get_text().split())
     trust = ' '.join(doc[expected['M09']].get_text().split())
-    assert '16 physical datacenters' in trust
-    assert 'single-node' in trust
+    assert '9.1' in trust and '28.5' in trust
+    boundary = ' '.join(doc[expected['B04']].get_text().split())
+    assert 'within a node' in boundary
+    assert '16-datacenter experiments remain simulation' in boundary
     assert 'Which Scheduling Policies Are Proposed' not in full_text
-    assert 'up to 60' in doc[expected['M11']].get_text().lower()
-    assert 'average' in doc[expected['M11']].get_text().lower() or 'average' in doc[expected['M11']].get_text()
-    assert '55' in doc[expected['M11']].get_text()
-    assert 'not an author result' in doc[expected['M16']].get_text()
-    assert 'Go to Conclusion (M16)' in doc[expected['INDEX']].get_text()
+    claim = ' '.join(doc[expected['M11']].get_text().split())
+    assert 'moderate load' in claim and 'high load' in claim
+    assert 'carbon-only Greedy' in claim and 'Facility MILP remains better' in claim
+    closing = ' '.join(doc[expected['M16']].get_text().split())
+    assert 'Operational carbon only' in closing
+    assert 'Our Proposed Future Work' in closing
+    assert 'not results reported by Topcu et al.' not in closing
+    assert 'Go to Conclusion (M16)' not in doc[expected['INDEX']].get_text()
+    assert 'Limitations & Future Work (M16)' in doc[expected['INDEX']].get_text()
     goal = ' '.join(doc[expected['M04']].get_text().split())
     assert 'Optimization Goal' in goal and 'already includes PUE' in goal
     assert 'do not share one strict program' not in goal

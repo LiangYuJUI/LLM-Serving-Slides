@@ -12,16 +12,16 @@ M02 的敘事依據是 Sec. I（跨區 routing 動機、Table I 與 simulator co
 - 低 CI 不必然代表高延遲。壅塞示意在 B13，不是量測曲線，也不是低 CI 必然造成高延遲。
 - 「未共同涵蓋所有因素」不等於每篇都忽略全部因素。Table I 的 transfer 有例外，MOER 的 power 為 partial，GCOS 的 batch-aware latency 為不適用。GCOS 的延遲是 GPU job 的等待，不是 token SLO；這句留在 B01。
 - Simulator 是作者開發，以真實 A100／vLLM 量測校準；跨 DC 實驗屬模擬，沒有 16 個實體 DC 的部署驗證。
-- M03 是研究缺口的證據。M04 只放 request-to-datacenter 的決策、operational carbon，以及 TTFT／TPOT budget。PUE 已經在 \(E_d\) 裡，不再乘第二次。M06 只估計 TTFT／TPOT。Facility MILP 在 M07。其餘三種政策在 M08。驗證邊界在 M09。
+- M03 是研究缺口的證據。M04 只放 request-to-datacenter 的決策、operational carbon，以及 TTFT／TPOT budget。PUE 已經在 \(E_d\) 裡，不再乘第二次。M06 只估計 TTFT／TPOT。Facility MILP 在 M07。其餘三種政策在 M08。驗證數字在 M09，單節點邊界在 B04。
 - Figure 1 與 Figure 2 的讀圖在 B11、B12，不在 Main。逐步 MAPE 與 step-energy MAPE 不是跨區 end-to-end 驗證。Figure 2 是 per-GPU power；TDP 不是每個 step 的固定功耗。Idle 與 host 仍留在 operational energy。多項式仍在 B03。
 
 ## M06–M10 估計、排程、驗證、實驗設定
 
 | 頁 | 問題 | 論文依據 | 不要說成 | Backup |
 |---|---|---|---|---|
-| M06 | Scheduler 怎麼預測 TTFT 與 TPOT | Sec. IV 印出 \(\mathrm{TPOT}=t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T^{\mathrm{pre}}_d/(1-\mathrm{duty}_d)\)。duty 因子只除在 queued-prefill 項上。下一句又說這個因子對應已經在跑的 prefill。主頁不把整個式子寫成一個分數 | 預測通過就等於實測 SLO；duty 與 queued prefill 是同一個量 | B05 |
-| M07 | Facility MILP 怎麼記共享 step energy | Sec. IV-C：\(\min\sum c_{r,d}x_{r,d}+\sum f_d y_d\)，\(\sum_r x_{r,d}\le H_d y_d\)。\(f_d\) 是這個 window 喚醒 engine 的碳。作者評估裡它是整體 carbon–SLO 較好的選項 | \(y_d{=}0\) 代表機房斷電；它包含 Iterative ILP 的負載更新；每個 workload 都最優；共享能量等於共享 attention 或 KV | B07 |
-| M08 | 另外三種政策差在哪 | Eq. (1) 的 \(\alpha{=}0\) 對上 MOER，不是全域 energy\(\times\)CI。Eq. (2) 凍結負載。迭代最多 3 次，能量仍是各筆相加 | 這三個一定逐層支配；Facility MILP 是迭代之後再解一次 MILP | B06、B07 |
+| M06 | Scheduler 怎麼預測 TTFT 與 TPOT | Sec. IV 印出 \(\mathrm{TPOT}_{r,d}=[t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T^{\mathrm{pre}}_d]/(1-\mathrm{duty}_d)\)。分母除的是 decode step 與 queued prefill 的和。下一句說這個因子對應已經在跑的 prefill | 預測通過就等於實測 SLO；duty 與 queued prefill 是同一個量 | B05 |
+| M07 | Facility MILP 怎麼在 SLO 限制下指派 | 先估計 TTFT／TPOT，再留下可行集合。投影片把該集合寫成 \(F_r\)，這是簡報記號。目標仍是 \(\min\sum c_{r,d}x_{r,d}+\sum f_d y_d\)，並加上 \(\sum_{d\in F_r}x_{r,d}=1\) 與 \(\sum_r x_{r,d}\le H_d y_d\)。求解不再重算延遲。執行後才記錄實際 SLO | 求解過程會重算 TTFT／TPOT；預測可行就等於實測守住 SLO | B07 |
+| M08 | 另外三種政策差在哪 | Greedy 的 \(\alpha\) 是 latency 與 carbon 的取捨。Standard ILP 和 Facility MILP 幾乎一樣，但沒有每個 datacenter 的 shared fixed carbon cost。迭代最多 3 次，能量仍是各筆相加 | 這三個一定逐層支配；Facility MILP 是迭代之後再解一次 MILP | B06、B07 |
 | M09 | Simulator 可以信到哪一層 | Sec. V-B：Llama-3.1-8B，3 個 engine，19 rates，>40K requests。TTFT 平均 9.1%，飽和附近 28.5% 且高估；TPOT 平均 <5%；GPU energy 2.5% 以內。Sec. III-B 的逐步 MAPE 是另一層 | 16 個實體 DC 已部署；把 1.7%／5.6% 和 9.1% 加成同一個誤差 | B04、B03 |
 | M10 | 實驗在比什麼 | Table II：dense TP=1 與 Mixtral TP=4；TTFT 3 s；TPOT 100／200 ms；4×4 個模擬 DC。MOER = greedy \(\alpha{=}0\) | 平均延遲或 throughput 就是 SLO；16 個機房已經架好 | B08 |
 
@@ -83,7 +83,7 @@ M02 的敘事依據是 Sec. I（跨區 routing 動機、Table I 與 simulator co
 1. **Fig. 4(b) 的印刷標籤**把高負載 facility MILP 寫成 Llama 26%、Qwen 33%、Mixtral 35%。
 2. **PUE 段落**說 uniform PUE 1.1 的起點是 Llama 29.2%、Mixtral 36.6%，換成真實 PUE 後變成 30.5% 與 38.7%。
 
-PDF 沒有說明 26 和 29.2 為什麼不同。簡報兩句都留著，不把其中一個改成另一個。可能是四捨五入、不同的 run，或標籤與正文取了不同的匯總。在作者說明之前，這是未解的差異，不是我們算出的第三個數字。
+PDF 沒有說明 26 和 29.2 為什麼不同。Main 13 不再放這兩個百分比；29.2% 與 30.5%、36.6% 與 38.7% 留在 B09。可能是四捨五入、不同的 run，或標籤與正文取了不同的匯總。在作者說明之前，這是未解的差異，不是我們算出的第三個數字。
 
 ## Respectively
 

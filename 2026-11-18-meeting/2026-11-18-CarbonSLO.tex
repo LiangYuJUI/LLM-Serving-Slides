@@ -243,83 +243,69 @@ Inside a datacenter, inter-node and intra-node placement are round-robin. The en
 \vspace{-0.24cm}
 \end{center}
 {\scriptsize Polled averages plus the RTT matrix. A prediction that passes is not a measured SLO.\par}
-{\centering\setlength{\abovedisplayskip}{2pt}\setlength{\belowdisplayskip}{0pt}%
-{\footnotesize\textbf{\kw{B05}{TTFT}}}\par
+{\setlength{\abovedisplayskip}{2pt}\setlength{\belowdisplayskip}{0pt}%
+\noindent{\footnotesize\textbf{\kw{B05}{TTFT}}}\par
 \[
 \widehat{\mathrm{TTFT}}_{r,d}=\mathrm{RTT}(s,s')+W_d+t_{\mathrm{pre}}(\mathrm{ISL}_r+Q_d)
 \]
 {\scriptsize RTT: inter-region delay, zero if local.\ $W_d$: wait for a batch slot.\ $\mathrm{ISL}_r+Q_d$: this prompt plus queued prefill tokens.\par}
 \vspace{0.02cm}
-{\footnotesize\textbf{\kw{B05}{TPOT}}}\par
+\noindent{\footnotesize\textbf{\kw{B05}{TPOT}}}\par
 \[
-\widehat{\mathrm{TPOT}}_{r,d}=t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+\frac{T_d^{\mathrm{pre}}}{1-\mathrm{duty}_d}
+\widehat{\mathrm{TPOT}}_{r,d}=\frac{t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T_d^{\mathrm{pre}}}{1-\mathrm{duty}_d}
 \]
-{\scriptsize $B_d{+}1$: this request joins the batch.\ $\mathrm{KV}_d$: KV occupancy.\ $T_d^{\mathrm{pre}}$: queued prefill, amortized over the output.\ $\mathrm{duty}_d$: the printed factor divides that queued term.\par}
-\par}
+{\scriptsize $B_d{+}1$: this request joins the batch.\ $\mathrm{KV}_d$: KV occupancy.\par}
+{\scriptsize $T_d^{\mathrm{pre}}$: queued prefill, amortized over the output.\ $1{-}\mathrm{duty}_d$: divides the decode step and that queued term.\par}
+}
 \takeaway{TTFT captures network, queueing, and prefill delay; TPOT captures decode load and prefill interference.}
-\slidenote{Sec.~IV. The PDF writes $T^{\mathrm{pre}}/(1-\mathrm{duty})$, not a fraction over the whole sum. The next sentence also ties the factor to prefills already running.}
+\slidenote{Sec.~IV. The printed form is $[t_{\mathrm{dec}}+T^{\mathrm{pre}}]/(1-\mathrm{duty})$. The factor is for prefills already running.}
 \end{frame}
 
 \section{Method}
 
 \renewcommand{\slideid}{Main 07 / 16}
-\begin{frame}[t,label=M07]{How Does Facility MILP Account for Shared Batch Energy?}
-\vspace{-0.02cm}
-{\scriptsize Requests that share an inference batch share part of the engine's step energy: a fixed part, plus workload-dependent parts. Adding full per-request costs counts the fixed part twice.\par}
-\vspace{0.03cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.46\textwidth}
-\card{lilacbox}{Additive, illustrative}{Request A pays the fixed step cost plus its own marginal cost. Request B pays that fixed cost again.}
-\vspace{0.05cm}
-\card{mintbox}{Facility-style}{Charge the shared fixed cost once, then each request's marginal cost. Not a measured watt split, and not shared attention or KV reuse.}
-\end{column}
-\begin{column}{0.52\textwidth}
-\card{bluebox}{Joint assignment}{\raggedright
-\setlength{\abovedisplayskip}{1pt}\setlength{\belowdisplayskip}{0pt}
+\begin{frame}[t,label=M07]{How Does Facility MILP Route Requests Under SLO Constraints?}
+\vspace{-0.06cm}
+{\footnotesize\textbf{\color{Accent}1. Predict TTFT and TPOT.}\enspace Estimate every request--datacenter pair from the latest provisioner snapshot and inter-region RTT.\par}
+\vspace{0.12cm}
+{\footnotesize\textbf{\color{Accent}2. Filter SLO-feasible datacenters.}\enspace Keep pairs whose predicted TTFT and TPOT meet both budgets. $F_r$ is presentation notation for that set.\par}
+\vspace{0.12cm}
+\begin{beamercolorbox}[wd=\textwidth,rounded=true,sep=0.08cm]{bluebox}
+{\footnotesize\textbf{\color{Accent}3. Solve Facility MILP.}\enspace Feasibility is predicted beforehand and is not recomputed in the solve.\ \kw{B07}{shared batch energy}.\par}
+\setlength{\abovedisplayskip}{4pt}\setlength{\belowdisplayskip}{2pt}
 \[
 \begin{aligned}
-&\min\sum_{r,d}c_{r,d}x_{r,d}+\sum_d f_d y_d\\
-&\sum_r x_{r,d}\le H_d y_d
+&\min\sum_{r,d}c_{r,d}x_{r,d}+\sum_d f_d y_d\\[0.28em]
+&\sum_{d\in F_r}x_{r,d}=1
+\qquad
+\sum_r x_{r,d}\le H_d y_d
 \end{aligned}
 \]
-$x_{r,d}$: assignment.\ $y_d$: the window uses $d$.\ $c$: marginal carbon.\ $f$: shared carbon.\ $H_d$: remaining slots.\par\vspace{0.04cm}
-Full model: \kw{B07}{shared batch energy}.\par}
-\end{column}
-\end{columns}
-\vspace{-0.02cm}
-{\scriptsize It does not power off a datacenter and does not remove RTT. It is not Iterative ILP followed by another solve. Predicted feasibility can still miss the SLO. The authors' runs favor it overall, not on every workload.\par}
-\vspace{-0.16cm}
-\takeaway{Facility MILP improves carbon-aware routing by jointly allocating requests while charging shared batch energy only once.}
-\slidenote{Sec.~IV-C. $f_d$ is the carbon of waking $d$'s engines for the window.}
+{\footnotesize $x$: request assignment.\ $y$: whether the datacenter is used.\ $c$: marginal carbon cost.\ $f$: shared fixed carbon cost.\ $H$: remaining capacity.\par}
+\end{beamercolorbox}
+\vspace{0.12cm}
+{\footnotesize\textbf{\color{Accent}4. Execute and evaluate.}\enspace The simulator then records actual TTFT, TPOT, operational carbon, and SLO violations. Prediction does not guarantee compliance.\par}
+\slidenote{Sec.~IV-C. $F_r$ is presentation notation for the predicted feasible set. $f_d$ is the carbon of waking $d$'s engines for the window.}
 \end{frame}
 
 \renewcommand{\slideid}{Main 08 / 16}
 \begin{frame}[t,label=M08]{How Do the Other Scheduling Policies Differ?}
-\vspace{0.02cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.32\textwidth}
-\card{mintbox}{Greedy}{\raggedright One request.\ \kw{B06}{Greedy score}
+\vspace{0.04cm}
+\card{mintbox}{Greedy}{One request.\ \kw{B06}{Greedy score}
+\setlength{\abovedisplayskip}{2pt}\setlength{\belowdisplayskip}{1pt}
 \[
 \alpha\,\widehat{\mathrm{Lat}}+(1{-}\alpha)\,\widehat{\mathrm{CI}}
 \]
-Hats divide by the feasible-set maximum. $\alpha{=}0$ matches MOER. It does not minimize global energy times CI.\par\vspace{0.04cm}
-Uncoordinated requests can crowd one site from a stale snapshot.\par}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{bluebox}{Standard ILP}{\raggedright One window, jointly.
+$\alpha$ trades off latency and carbon. Uncoordinated requests can crowd one site from a stale snapshot.}
+\vspace{0.16cm}
+\card{bluebox}{Standard ILP}{One window, jointly.
+\setlength{\abovedisplayskip}{2pt}\setlength{\belowdisplayskip}{1pt}
 \[
 \min\sum_{r,d}c_{r,d}x_{r,d}
 \]
-One datacenter per request, inside the predicted feasible set, and within remaining capacity. The \kw{B06}{full ILP} freezes load and cost for that one solve.\par}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{lilacbox}{\kw{B07}{Iterative ILP}}{\raggedright Solve, project batch and queue, recompute TTFT and TPOT, then solve again. Stop on a repeated assignment or after 3 iterations.\par\vspace{0.04cm}
-More solver time. Energy is still a sum of per-request costs.\par}
-\end{column}
-\end{columns}
-\vspace{0.06cm}
-{\scriptsize Facility MILP is a separate policy. It charges shared batch energy once and does not add this load-update loop. None of the four dominates at every load.\par}
-\takeaway{Greedy cannot coordinate requests; Standard ILP coordinates them but freezes load; Iterative ILP updates load but still prices energy additively.}
+Almost the same as Facility MILP, but without each datacenter's shared fixed carbon cost. \kw{B06}{full ILP}.}
+\vspace{0.16cm}
+\card{lilacbox}{\kw{B07}{Iterative ILP}}{Solve, project batch and queue, recompute TTFT and TPOT, then solve again. Stop on a repeated assignment or after 3 iterations. More solver time. Energy is still a sum of per-request costs.}
 \slidenote{Sec.~IV-A--C. Window: 100\,ms or 300 requests.}
 \end{frame}
 
@@ -327,31 +313,16 @@ More solver time. Energy is still a sum of per-request costs.\par}
 
 \renewcommand{\slideid}{Main 09 / 16}
 \begin{frame}[t,label=M09]{Can We Trust the Geo-Distributed Simulator?}
-\vspace{0.01cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.32\textwidth}
-\card{mintbox}{A. Real GPU profiling}{\begin{minipage}[t][0.78cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-A100-40GB, vLLM v0.6.3, FP16. Latency and power across workloads.\end{minipage}}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{bluebox}{B. Analytical fit}{\begin{minipage}[t][0.78cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-Per-phase latency and energy, one fit per model and tensor-parallel degree.\end{minipage}}
-\end{column}
-\begin{column}{0.32\textwidth}
-\card{lilacbox}{C. Geo-simulation}{\begin{minipage}[t][0.78cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-Routing, queues, batching, RTT, regions, and carbon. Not another hardware run.\end{minipage}}
-\end{column}
-\end{columns}
 \vspace{0.04cm}
-\card{bluebox}{\kw{B04}{Within-node validation}, Llama-3.1-8B only}{\begin{minipage}[t][0.78cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-Three data-parallel engines, 19 arrival rates, more than 40K requests. TTFT average error 9.1\%. TPOT average error below 5\%. GPU energy within 2.5\%.\end{minipage}}
-\vspace{0.03cm}
-\card{lilacbox}{Validation boundary}{\begin{minipage}[t][0.72cm][t]{\dimexpr\linewidth-0.16cm\relax}\raggedright
-The simulator was validated against single-node serving measurements, not against deployment across 16 physical datacenters.\end{minipage}}
-\vspace{0.02cm}
-{\scriptsize Near saturation, average TTFT error is 28.5\%. Per-step fits are a separate check on the \kw{B03}{formula backup}, not this end-to-end error.\par}
-\vspace{-0.12cm}
-\takeaway{The simulator uses real GPU measurements, but geo-distributed results are simulation-based.}
+\card{mintbox}{A. Real GPU profiling}{A100-40GB, vLLM v0.6.3, FP16. Latency and power across workloads.}
+\vspace{0.14cm}
+\card{bluebox}{B. Analytical fit}{Per-phase latency and energy, one fit per model and tensor-parallel degree.}
+\vspace{0.14cm}
+\card{lilacbox}{C. Geo-simulation}{Routing, queues, batching, RTT, regions, and carbon. Not another hardware run.}
+\vspace{0.16cm}
+\card{bluebox}{\kw{B04}{Within-node validation}, Llama-3.1-8B only}{Three data-parallel engines, 19 arrival rates, more than 40K requests. TTFT average error 9.1\%. TPOT average error below 5\%. GPU energy within 2.5\%.}
+\vspace{0.10cm}
+{\footnotesize Near saturation, average TTFT error is 28.5\%. Per-step fits are a separate check on the \kw{B03}{formula backup}, not this end-to-end error.\par}
 \slidenote{Sec.~V-B; Sec.~VI. TTFT error is 3.5\% below saturation and 5.2\% in overload. Mixtral at TP=4 fills their four-GPU node.}
 \end{frame}
 
@@ -373,29 +344,30 @@ Arrival rate & 1200 / 2400 / 4000 req/s & 800 / 1200 / 2000 req/s \\
 Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GPUs \\
 \bottomrule
 \end{tabular}\par}
-\vspace{0.06cm}
-\point{Topology}{4 regional schedulers $\times$ 4 datacenters $=$ 16 simulated DCs. RTT 85--280\,ms. Default PUE 1.1. \kw{B08}{Table II} lists CI, engine counts, and the load labels.}
-\point{Baselines}{Carbon-blind: round-robin and least-loaded. Carbon-aware: Green-LLM, and MOER, which is greedy at $\alpha{=}0$.}
-\point{Metrics}{Operational carbon in gCO$_2$, including idle and host energy. SLO violation rate, not mean latency or throughput. Also TTFT p50 / p90 / p99.}
-\takeaway{Evaluation compares carbon reduction and token-level SLO performance across models and loads using a simulated 16-DC topology.}
+\vspace{0.22cm}
+{\small\linespread{1.55}\selectfont
+\textbf{\color{Accent}Topology}\quad 4 regional schedulers $\times$ 4 datacenters $=$ 16 simulated DCs. RTT 85--280\,ms. Default PUE 1.1. \kw{B08}{Table II} lists CI, engine counts, and the load labels.\par
+\vspace{0.42cm}
+\textbf{\color{Accent}Baselines}\quad Carbon-blind: round-robin and least-loaded. Carbon-aware: Green-LLM, and MOER, which is greedy at $\alpha{=}0$.\par
+\vspace{0.42cm}
+\textbf{\color{Accent}Metrics}\quad Operational carbon in gCO$_2$, including idle and host energy. SLO violation rate, not mean latency or throughput. Also TTFT p50 / p90 / p99.\par}
 \slidenote{Sec.~V-A, Table~II. Low / moderate / high: under 15\%, 15--40\%, and above 40\% of round-robin batch capacity.}
 \end{frame}
 
 \renewcommand{\slideid}{Main 11 / 16}
 \begin{frame}[t,label=M11]{Q1: Can Carbon Be Reduced Without Excessive SLO Violations?}
-\vspace{0.01cm}
-{\centering\scriptsize Figure 4(a), Topcu et al. Y: carbon saving versus round-robin. X: fraction of requests missing TTFT or TPOT.\par}
-\vspace{0.01cm}
-{\centering\includegraphics[height=3.72cm]{\crop{fig4a}}\par}
 \vspace{0.02cm}
-\takeaway{Facility MILP keeps most of the carbon saving at a low violation rate. Carbon-only greedy matches the saving only by spending the SLO.}
-\vspace{0.05cm}
-{\scriptsize\textbf{How to read the claim.} Up to 60\% and the average 3\% SLO violation are the authors' summary versus \kw{B08}{baselines} RR, not the coordinate of every marker. Low load is omitted from this figure: facility MILP saves 53.8--59.6\% there. The most carbon-aggressive greedy setting reaches up to 55\% violation; that is not true of greedy at $\alpha{=}0.9$.\par}
-\slidenote{Abstract; Sec.~V-C, Fig.~4(a). Moderate-load $\alpha{=}0$: up to 6.9\% violation on dense models and 44.8\% on Mixtral.}
+{\centering\scriptsize Figure 4(a), Topcu et al.\par}
+\vspace{0.04cm}
+{\centering\includegraphics[height=4.15cm]{\crop{fig4a}}\par}
+\vspace{0.20cm}
+{\small\linespread{1.4}\selectfont
+At moderate load, carbon-only Greedy and Facility MILP are close. At high load, carbon-only Greedy has a much higher SLO violation, while Facility MILP remains better.\par}
+\slidenote{Sec.~V-C, Fig.~4(a).}
 \end{frame}
 
 \renewcommand{\slideid}{Main 12 / 16}
-\begin{frame}[t,label=M12]{Q2: What Happens to Tail Latency Under High Load?}
+\begin{frame}[t,label=M12]{\normalsize On Every Model, Facility MILP Balances TTFT and Carbon Saving, No Clear Trade-off}
 \vspace{0.01cm}
 {\centering\scriptsize Figure 4(b), Topcu et al., high load only. Bars are TTFT from p50 to p99. The printed percentages are carbon savings versus RR, not latency.\par}
 \vspace{0.01cm}
@@ -410,20 +382,19 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 \renewcommand{\slideid}{Main 13 / 16}
 \begin{frame}[t,label=M13]{Q3: How Do PUE and Carbon-Intensity Spread Affect Savings?}
 \vspace{0.02cm}
-{\centering\scriptsize Figure 5, Topcu et al. (a)~high-load PUE. (b)~facility MILP across CI hours. Open versus filled markers in (a): uniform PUE 1.1 versus real per-DC PUE.\par}
-\vspace{0.02cm}
+{\centering\scriptsize Figure 5, Topcu et al. \kw{B09}{PUE and CI spread}.\par}
+\vspace{0.04cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.42\textwidth}
-\centering\includegraphics[height=3.55cm]{\crop{fig5a}}\\[0.06cm]
-{\scriptsize Real PUE is 1.08--1.32. Facility MILP moves from 29.2\% to 30.5\% (Llama) and 36.6\% to 38.7\% (Mixtral). SLO barely changes.\par}
+\begin{column}{0.48\textwidth}
+\centering\includegraphics[height=3.85cm]{\crop{fig5a}}\\[0.08cm]
+{\footnotesize Figure (a) compares one uniform PUE with a different PUE at each datacenter. With the real PUE differences, Facility MILP's carbon savings rise slightly, while the SLO barely changes.\par}
 \end{column}
-\begin{column}{0.56\textwidth}
-\centering\includegraphics[height=3.55cm]{\crop{fig5b}}\\[0.06cm]
-{\scriptsize From the lowest CV (0.31) to the highest (0.94), savings rise and the SLO stays flat. High load still saves up to 39--45\% when the spread is large.\par}
+\begin{column}{0.50\textwidth}
+\centering\includegraphics[height=3.85cm]{\crop{fig5b}}\\[0.08cm]
+{\footnotesize Figure (b) changes how spread out carbon intensity is across regions. A larger CI gap gives the scheduler more room to place requests on lower-carbon datacenters.\par}
 \end{column}
 \end{columns}
-\takeaway{A wider \kw{B09}{PUE and CI spread} creates the carbon opportunity. Higher load spends it. PUE mostly rescales carbon, not the SLO.}
-\slidenote{Sec.~V-C, Fig.~5. The 13\% Llama point at high load and the lowest CV is outside the conclusion's 26--60\% summary.}
+\slidenote{Sec.~V-C, Fig.~5.}
 \end{frame}
 
 \renewcommand{\slideid}{Main 14 / 16}
@@ -437,17 +408,18 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 \end{column}
 \begin{column}{0.34\textwidth}
 \vspace{0.02cm}
-{\scriptsize\bfseries\color{Accent}(a) Solver $\neq$ GPU}\par
-{\scriptsize Greedy is under 1\,ms. Facility MILP p99 is up to 0.5\,s. Iterative ILP p99 is 6.5\,s on Llama.\par}
+{\scriptsize\bfseries\color{Accent}(a) Scheduling Overhead (CPU Time)}\par
+\vspace{0.03cm}
+{\scriptsize Greedy: $<$1\,ms.\par
+Standard ILP / Facility MILP / Green-LLM: p99 $\le$ 0.5\,s.\par
+Iterative ILP: p99 reaches 6.5\,s (Llama-3.1-8B, high load).\par}
 \vspace{0.08cm}
 {\scriptsize\bfseries\color{Accent}(b) \kw{B09}{Polling period}}\par
 {\scriptsize At most 2\,s: violation stays at most 8.2\%. At 5\,s it rises to 10.5--32\%.\par}
-\vspace{0.08cm}
-{\scriptsize\bfseries\color{Accent}(c) Topology}\par
-{\scriptsize Eight schedulers: violation 10.3\% to 19.4\%. Fewer, larger DCs: violation 4.1\%, saving 23.2\%.\par}
 \end{column}
 \end{columns}
-\takeaway{Token SLO tracks how fresh the load snapshot is. The milliseconds and seconds in panel (a) are scheduler time, not TTFT.}
+\vspace{0.06cm}
+{\footnotesize\textbf{\color{Accent}(c) Topology.}\enspace Figure (c) also shows that the topology changes the load and the SLO. Each scheduler knows only the requests in its own region and decides independently, so several schedulers can send requests at once to one idle, low-CI region. More schedulers and datacenters make this worse.\par}
 \slidenote{Sec.~V-C, Fig.~6. Asynchronous polling does not consistently beat synchronous polling.}
 \end{frame}
 
@@ -476,19 +448,56 @@ Engines per DC & 32 (4 nodes $\times$ 8 GPUs) & 8, because each engine uses 4 GP
 \slidenote{Sec.~IV and Sec.~V-C, Fig.~7. Exact-bucket accuracy is only 51\% (Llama) and 37\% (Mixtral); adjacent buckets cover 99\% and 70\%.}
 \end{frame}
 
-\section{Conclusion}
+\section{Limitations \& Future Work}
 
 \renewcommand{\slideid}{Main 16 / 16}
-\begin{frame}[t,label=M16]{Conclusion}
-\vspace{0.02cm}
-\card{bluebox}{1. Problem}{Chasing a lower-CI datacenter moves TTFT and TPOT through queueing, batching, and RTT.}
-\vspace{0.05cm}
-\card{mintbox}{2. Contribution}{A within-node-calibrated simulator and four schedulers. Facility MILP prices shared batch energy instead of summing isolated requests.}
-\vspace{0.05cm}
-\card{bluebox}{3. Evidence}{Versus round-robin: up to 60\% less operational carbon, average SLO violation 3\%. Savings grow with CI spread, shrink with load, and depend on snapshot freshness.}
-\vspace{0.05cm}
-\card{lilacbox}{4. \kw{B10}{Limitations}, and what is not this paper}{Not done here: multi-turn KV locality and heterogeneous hardware. Our direction --- heterogeneous GPUs, HBM/HBF, attention and expert placement, cross-DC carbon-aware serving --- is not an author result.}
-\slidenote{Sec.~VI and Sec.~VIII. The conclusion's 26--60\% band is across loads at the base setting; Fig.~5(b) leaves that band when the CI hour changes.}
+\newlength{\pairsep}\setlength{\pairsep}{0.09cm}
+\newlength{\pairgap}\setlength{\pairgap}{0.02cm}
+\newlength{\pairwd}
+\newsavebox{\cardA}\newsavebox{\cardB}\newsavebox{\cardC}\newsavebox{\cardD}
+\newsavebox{\limA}\newsavebox{\limB}\newsavebox{\limC}\newsavebox{\limD}
+\newcommand{\pairtext}[2]{\parbox{\pairwd}{\raggedright\footnotesize\bfseries\color{Accent}#1\par\footnotesize #2\par}}
+\begin{frame}[t,label=M16]{Limitations \& Future Work}
+\setlength{\pairwd}{\dimexpr0.49\textwidth-2\pairsep\relax}
+\savebox{\cardA}{\begin{beamercolorbox}[wd=0.49\textwidth,rounded=true,sep=\pairsep]{mintbox}\pairtext{Carbon accounting}{Reuse the phase- and load-aware energy models; add GPU/HBM/HBF embodied carbon and lifecycle accounting.}\end{beamercolorbox}}
+\savebox{\cardB}{\begin{beamercolorbox}[wd=0.49\textwidth,rounded=true,sep=\pairsep]{mintbox}\pairtext{Cross-region coordination}{Coordinate assignments or reserve capacity across schedulers to reduce low-CI herding and SLO violations.}\end{beamercolorbox}}
+\savebox{\cardC}{\begin{beamercolorbox}[wd=0.49\textwidth,rounded=true,sep=\pairsep]{mintbox}\pairtext{Heterogeneous GPUs}{Extend the simulator with mixed GPU performance, power, memory, and larger heterogeneous clusters.}\end{beamercolorbox}}
+\savebox{\cardD}{\begin{beamercolorbox}[wd=0.49\textwidth,rounded=true,sep=\pairsep]{mintbox}\pairtext{Memory and placement}{Explore HBM-rich attention/KV workers and HBF-rich MoE expert workers, including transfer cost and energy.}\end{beamercolorbox}}
+\savebox{\limA}{\pairtext{Carbon accounting}{Operational carbon only; hardware embodied emissions excluded.}}
+\savebox{\limB}{\pairtext{Cross-region coordination}{Regional schedulers optimize independently using polled DC snapshots.}}
+\savebox{\limC}{\pairtext{Heterogeneous GPUs}{A100-based profiling; no heterogeneous GPU deployment evaluation.}}
+\savebox{\limD}{\pairtext{Memory and placement}{KV capacity is modeled, but not HBM/HBF tiers or attention/expert placement.}}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+{\footnotesize\bfseries\color{Accent}\kw{B10}{Limitations} in This Paper\par}
+\vspace{0.04cm}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=\pairsep,vmode]{lilacbox}
+\usebox{\limA}\par
+\vspace{\dimexpr\ht\cardA+\dp\cardA-\ht\limA-\dp\limA\relax}
+\vspace{\pairgap}
+\usebox{\limB}\par
+\vspace{\dimexpr\ht\cardB+\dp\cardB-\ht\limB-\dp\limB\relax}
+\vspace{\pairgap}
+\usebox{\limC}\par
+\vspace{\dimexpr\ht\cardC+\dp\cardC-\ht\limC-\dp\limC\relax}
+\vspace{\pairgap}
+\usebox{\limD}\par
+\end{beamercolorbox}
+\end{column}
+\begin{column}{0.49\textwidth}
+{\footnotesize\bfseries\color{Accent}Our Proposed Future Work\par}
+\vspace{0.04cm}
+\usebox{\cardA}\par
+\vspace{\pairgap}
+\usebox{\cardB}\par
+\vspace{\pairgap}
+\usebox{\cardC}\par
+\vspace{\pairgap}
+\usebox{\cardD}\par
+\end{column}
+\end{columns}
+\vspace{0.14cm}
+\slidenote{Sec.~VI, discussion and limitations.}
 \end{frame}
 
 \section{Index}
@@ -540,7 +549,7 @@ Scenario & Lowest-CI routing when the green site is congested & \jlink{B13} \\
 \quad
 \textbf{Method} \nav{M07}{M07} \nav{B07}{B07}\par}
 \vspace{0.06cm}
-\nav{M16}{Go to Conclusion (M16)}\hfill\nav{INDEX}{Discussion Index}
+\nav{M16}{Limitations \& Future Work (M16)}\hfill\nav{INDEX}{Discussion Index}
 \end{frame}
 
 \section{Backup}
@@ -639,7 +648,7 @@ E_{\mathrm{dec}}=e^{\mathrm{dec}}_0+e_d B+e_k K .
 \bpoint{Engine budgets}{Batch size follows vLLM \texttt{max\_num\_seqs}; the per-step token budget follows \texttt{max\_num\_batched\_tokens}. A long prefill is split across steps and stalls the running decode batch.}
 \bpoint{KV example}{Llama-3.1-8B uses 128\,KiB of KV per token after the weights. Batch capacity is 40 at TP=1, 80 at TP=2, and 400 for Mixtral.}
 \bpoint{TTFT estimate}{Scheduling delay, RTT if remote, wait for a slot, and prefill: $\mathrm{TTFT}_{r,d}=\mathrm{RTT}(s,s')+W_d+t_{\mathrm{pre}}(\mathrm{ISL}_r+Q_d)$.}
-\bpoint{TPOT estimate}{The PDF writes $\mathrm{TPOT}_{r,d}=t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T^{\mathrm{pre}}_d/(1-\mathrm{duty}_d)$. $B_d{+}1$: this request joins the batch. $\mathrm{KV}_d$: KV occupancy. $T^{\mathrm{pre}}_d$: queued prefill, amortized over the output. The printed factor divides that queued term. The next sentence also says $1/(1-\mathrm{duty}_d)$ is for prefills already running. It is not a fraction over the whole sum.}
+\bpoint{TPOT estimate}{The PDF writes $\mathrm{TPOT}_{r,d}=[t_{\mathrm{dec}}(B_d{+}1,\mathrm{KV}_d)+T^{\mathrm{pre}}_d]/(1-\mathrm{duty}_d)$. $B_d{+}1$: this request joins the batch. $\mathrm{KV}_d$: KV occupancy. $T^{\mathrm{pre}}_d$: queued prefill, amortized over the output. The factor divides that whole sum. The next sentence says $1/(1-\mathrm{duty}_d)$ is for prefills already running.}
 \bpoint{Per-datacenter snapshot}{The provisioner polls batch size, queue tokens, KV occupancy, prefill duty, and CI. The paper uses averages so the poll and the decision stay small.}
 \slidenote{Sec.~III-C and the latency estimator in Sec.~IV. Intra-DC schedulers are round-robin.}
 \back[\nav{M06}{Main 6}]{M05}
@@ -707,7 +716,7 @@ Scheduler knobs & Poll 1\,s (swept 0.5--10\,s). Window 100\,ms or 300 requests. 
 \bpoint{Green-LLM and MOER}{Green-LLM is ported as scheduling decisions only. MOER sends each request to the lowest-CI SLO-feasible datacenter, which is greedy at $\alpha{=}0$.}
 \bpoint{Not a 16-site deployment}{No claim in the PDF says these 16 datacenters were physically built for the experiment.}
 \slidenote{Sec.~V-A, Table~II.}
-\back[\nav{M11}{Main 11}]{M10}
+\back{M10}
 \end{frame}
 
 \renewcommand{\slideid}{B09}

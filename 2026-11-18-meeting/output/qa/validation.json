@@ -3,8 +3,8 @@
   "main_pages": 16,
   "index_pages": 1,
   "backup_pages": 13,
-  "links": 140,
-  "contracts": 21,
+  "links": 138,
+  "contracts": 20,
   "semantic_mismatch": false,
   "unreachable": [],
   "original_png_sha256": {
@@ -25,9 +25,9 @@
   },
   "original_pdf_sha256": "5c555f8a277d99001651326c50d7de8c5f5b55928fb35c9eda92f58f5e6d4dd6",
   "build": {
-    "pdf_sha256": "861b965b314be235ff0c91a0e8794664cdf116bad87138ff91a956907b838917",
-    "zip_sha256": "3c99a803e1b504c27157049edb7ab95219ed7a08ed8e2b84486e38476c21bf6c",
-    "source_sha256": "33c198e7bb396ae7136065bf2e0dda7185f544e919cd98f0efb8e1c2ea6c6e75",
+    "pdf_sha256": "29972e1997e123dcba9485035c10f4b971eb233aa7afaf832cf96aebd992a3d4",
+    "zip_sha256": "4f2b4c208b0b8331bbca688d5a6a7e98798ddade1a46d7229e3ec72dd58b5fc0",
+    "source_sha256": "e8fb7bc71b1c5fe9c9ec4496e52da4c59f84070c1410087d6dbe7b7ff61107fe",
     "local_passes": 2,
     "standalone_zip_passes": 2,
     "pages": 30,
