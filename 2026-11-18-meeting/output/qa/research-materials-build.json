@@ -1,0 +1,43 @@
+{
+  "pages": 14,
+  "local_passes": 2,
+  "zip_passes": 2,
+  "warnings": [],
+  "source_sha256": "0e3d482c4f220275f16cbf8c6d29d09c58e1d5ad2b3cfd6ede502967e7d66d58",
+  "pdf_sha256": "d39a92b3fdb7cdbfbb35cd12794feea8a221b9884f2fa80c1a7eeb9071f80c79",
+  "zip_sha256": "320c0ecb97913e4dfc6ac91db5a90806d694483bac45c7ca2ecf531d104e0b53",
+  "preserved_frame_hashes": {
+    "REEL1": "4f18cf8dcbfbdd76e2636be9c3c7cb38745c6420ae8d2f056d01ec406a26f038",
+    "REEL2": "f95706d41bbdccbdbe638c065b67d169ca3892939a5fe7071e56db14554e93c1",
+    "REEL3": "922c2a0b5837f1b593df27a8997e53c0ce60143510f70790e14934bb9011ce20",
+    "REEL4": "762f2b68d2f144bfcf3c73c3900df78c2b1b72a8d89817826571425301f9d590"
+  },
+  "category_destinations": {
+    "GPU": 3,
+    "MEMORY": 4,
+    "GEO": 6,
+    "ACCOUNT": 8,
+    "DISAGG": 13
+  },
+  "return_links": 13,
+  "parity": {
+    "text": true,
+    "pixels": true,
+    "annotations": true
+  },
+  "protected_files": 11065,
+  "uris": [
+    "https://arxiv.org/abs/2505.23970v3",
+    "https://arxiv.org/abs/2511.00807v1",
+    "https://arxiv.org/abs/2512.13525",
+    "https://arxiv.org/abs/2608.01891",
+    "https://arxiv.org/abs/2609.39131v2",
+    "https://arxiv.org/abs/2610.14571v1",
+    "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
+    "https://reellci.com/d/hbf-gen1-16hi/",
+    "https://reellci.com/explorer/?category=memory_components",
+    "https://reellci.com/insights/hbm-footprint-inversion.html",
+    "https://reellci.com/insights/the-hbf-inversion.html",
+    "https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/"
+  ]
+}

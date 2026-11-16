@@ -3,15 +3,36 @@
 Meeting: November 18, 2026. Author: Yu-Jui Liang. Advisor: Hsiang-Yun Cheng. National Taiwan University / Academia Sinica.
 
 Repository: https://github.com/LiangYuJUI/LLM-Serving-Slides.git
-Initial branch: `main`, clean working tree. Inspected local HEAD: `5de69e65dadb7028ca55d10accff91f3183b9c69`. This records the local checkout, not a claim that the remote has no newer commits. Access date for all sources: **2026-11-13 (Asia/Taipei)**.
+Current expansion verified on **2026-11-17 (Asia/Taipei)** from clean `main` at `9d09be3`, equal to `origin/main` after fetch. Original REEL research accessed 2026-11-13; its preserved source register follows below.
 
 ## Scope and design
 
-Standalone pdfLaTeX Beamer deck: unnumbered cover plus five content slides, six PDF pages. Scope is HBM/HBF embodied-carbon evidence only. The final slide connects to the existing proposed research direction, without adding future-topic sections or claiming completed simulation work. Speaker script targets 4–5 minutes, excluding Q&A.
+Extend the existing Research Materials source/PDF into exactly **14 pages**: unnumbered cover plus content **1/13–13/13**. Five evidence categories cover GPU power, HBM/HBF energy, geo scheduling, operational/embodied accounting and disaggregation. This is evidence collection and proposed research, not a completed system evaluation.
 
-Madrid, 16:9, Latin Modern, 0.48 cm text margins and inherited title/footer geometry follow the November 11 Research Direction source and GreenCache design. Palette: Ink #243748, Muted #667B8B, Accent #347E74, AccentBlue #507DAD, SoftMint #E6F4EE, SoftLilac #F1EEF8, Paper #FBFCFE. Reference PDF content page 1 rendered and visually inspected. New charts and architecture are native TikZ. Both quantitative charts start at zero, without log scaling or broken axes. No external assets are required by the TeX source.
+Madrid, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. Ink #243748, Muted #667B8B, Accent #347E74, AccentBlue #507DAD, SoftMint #E6F4EE, SoftLilac #F1EEF8, Paper #FBFCFE. Preserve `source`, `takeaway`, `card`, `researchquestion`, and `carbonchart`; add compact cards only where needed. New tables and diagrams are native LaTeX/TikZ. Existing carbon charts retain zero baselines and their data. The sole external visual is the original Carbon–SLO Fig. 2 With-Caption PNG, bundled in Overleaf.
 
-Shared components: `source`, `takeaway`, `card`, `researchquestion`, `carbonchart`, color definitions and TikZ styles. `inserttotalframenumber` updates the footer automatically as content frames are appended; the cover uses `noframenumbering`. Update the build script's five-content-slide acceptance assertion when intentionally expanding scope. No Main/Backup division or Discussion Index.
+## Page and navigation contract
+
+| PDF page | Content | Label | Title / purpose |
+|---|---|---|---|
+| 1 | unnumbered | cover | Research Materials & Supporting Evidence |
+| 2 | 1/13 | EINDEX | What Evidence Supports Our Research Direction? |
+| 3 | 2/13 | GPU | How Does LLM Serving Power Consumption Vary? |
+| 4 | 3/13 | MEMORY | How Do HBM and HBF Differ in Memory Access Energy? |
+| 5 | 4/13 | PLACEMENT | Does HBF Placement Reduce Total Serving Energy? |
+| 6 | 5/13 | GEO | Why Is the Lowest-Carbon Data Center Not Always Optimal? |
+| 7 | 6/13 | RELATED | What Do Carbon–SLO and FREESH Already Cover? |
+| 8 | 7/13 | ACCOUNT | How Should We Account for Total Serving Carbon? |
+| 9 | 8/13 | REEL1 | What Evidence Do We Have for HBM/HBF Embodied Carbon? |
+| 10 | 9/13 | REEL2 | How Much Embodied Carbon Does One Stack Carry? |
+| 11 | 10/13 | REEL3 | Does HBF Reduce Embodied Carbon per Unit Capacity? |
+| 12 | 11/13 | REEL4 | Can We Trust the HBF Carbon Estimate? |
+| 13 | 12/13 | DISAGG | Can Heterogeneous Attention/Expert Placement Improve Energy Efficiency? |
+| 14 | 13/13 | NEXT | What Does This Evidence Mean for Our Research? |
+
+Five index cards link to `GPU`, `MEMORY`, `GEO`, `ACCOUNT`, `DISAGG`. All numbered slides have a visible `Back to Evidence Index` link to `EINDEX`. Links use stable labels, not page-number mechanics. Automatic Beamer numbering excludes the cover. Four original REEL frame bodies are frozen by SHA-256, excluding only frame labels and global footer. Original pages 2–5 are now pages 9–12.
+
+The [Power/Carbon evidence register](2026-11-18-Power-Carbon-Slide-Evidence.md) is the current 14-slide claim ledger, including exact sources, configurations, denominators, interpretation, limitations and proposal/prior-work status. The following original REEL register is retained for scientific provenance. Its historical slide numbers 1–4 map to current content slides 8–11; original final slide 5 is now extended content slide 13. The per-capacity chart is now PDF page 11 / content 10.
 
 ## Source register and access results
 
@@ -43,7 +64,7 @@ All carbon inputs below are **REEL LCI model estimates reported in v1.0 insights
 
 No v0.1 results were used. B rounds HBM3 values to 13.5 and 19.8; A gives 13.52 and 19.81. This is consistent with rounding, so the chart retains A's precision without manufacturing extra digits for HBM3E.
 
-The y-axis on slide 3 is **kg CO2e / nominal capacity unit**. This is an arithmetic index based on the label numerals, not a physical-unit-harmonized carbon intensity. No assumption that GB equals GiB is made. The explicit units remain beside each bar.
+The y-axis on current PDF page 11 (original content slide 3) is **kg CO2e / nominal capacity unit**. This is an arithmetic index based on the label numerals, not a physical-unit-harmonized carbon intensity. No assumption that GB equals GiB is made. The explicit units remain beside each bar.
 
 Derived comparisons, always using unrounded inputs:
 
@@ -90,12 +111,20 @@ The final equation defines total carbon over the same declared service workload/
 
 ## Build and validation workflow
 
-Run `python3 2026-11-18-meeting/scripts/build_research_materials.py` from the repository root (or use an absolute script path from elsewhere). Dependencies: Python 3, PyMuPDF, Pillow, pdfLaTeX with Beamer/TikZ/Latin Modern. In this session dependencies were isolated in `/tmp/reel-research/venv`; no existing build script or environment was modified.
+Run `python3 2026-11-18-meeting/scripts/build_research_materials.py` from any directory using Python with PyMuPDF and Pillow plus pdfLaTeX/Beamer/TikZ/Latin Modern. An isolated environment can be created with `python3 -m venv /tmp/research-materials-qa` then `/tmp/research-materials-qa/bin/pip install pymupdf pillow`.
 
-The script compiles twice locally and twice using only a copied TeX file in a clean temporary directory. It checks pixel/text/link parity, six-page count, 16:9 ratio, automatic numbering, clickable source URIs, text bounds, numeric labels and formulas, and absence of TeX warnings. It renders all pages at 3x resolution and a montage. Output PNGs are named `output/qa/pages/research-materials-01.png` through `-06.png`, deliberately avoiding existing Carbon–SLO `page-*.png` files. No existing QA report is replaced.
+The existing workflow now compiles twice locally, packages `output/overleaf/Research-Materials.zip` with `main.tex` and original Fig. 2, extracts that ZIP and compiles twice. (No Research Materials ZIP existed in the inspected baseline; CarbonSLO.zip is untouched.) It checks 14 pages, numbering, text/image bounds, named links/visible return links, source URI annotations, numeric evidence, four preserved frame hashes, local/ZIP text/pixel/annotation parity and protected file hashes. It rejects all layout/reference warnings. It renders `research-materials-01.png` through `-14.png` at 3× and a montage.
 
-Final automated and visual results are recorded in `output/qa/validation.md`. Visual review is required in addition to compilation. Original repository-file SHA-256 values were captured before authoring and are checked before completion. Only new Research Materials outputs are staged in the local commit; no remote push is authorized or performed.
+Deliverables: existing `.tex`, existing PDF path, Traditional Chinese Script, this SPEC, Power-Carbon evidence register, README and scoped Cross-DC backlog updates. QA: `output/qa/validation.md`, `research-materials-build.json`, `research-materials-url-checks.json`, `research-materials-preservation.json`, page PNGs and montage. URL availability is recorded separately from valid clickable PDF annotations. Visual review must inspect every generated page.
 
-## Completed QA results (2026-11-13)
+## Scientific acceptance
 
-PASS: four total pdfLaTeX passes (two local, two source-only isolated), zero warnings/overfull boxes, six 16:9 pages, unnumbered cover and 1/5–5/5 content numbering. Required numeric labels, formulas, full research title and source links pass automated checks. Local and isolated renders/text/links agree. Six page PNGs and montage generated and visually inspected, including re-inspection of all changed pages after correcting Beamer's initial-paragraph handling. No observed overlap or clipping. PDF SHA-256: `4c8a98cb3af3966102ce7777e9cc6b694732475731ca3cb660e7334b9114fa15`. All 11,058 original files match the pre-authoring SHA-256 snapshot. The standalone build and visual QA are complete; source-unit harmonization and independent inventory-to-GWP reproduction remain explicitly unresolved scientific limitations, not omitted build work.
+- HBF Table 1 and Tables 6–7 verified in original v2; distinguish assumed pJ/bit, simulated MJ and real measured GPU W.
+- Page 5 labels static/background exclusion, hardware difference and no SLO guarantee; Table 7 breakdown uses the correct GLM 1× column.
+- FREESH column includes its runtime LLF queue and DVFS, while distinguishing profiled pool planning from explicit batch-state projection.
+- No generic “geo + heterogeneity + DVFS is novel” claim. Janus/AFlex operator partitions differ, and MemExplorer quantitative verification remains open.
+- Operational energy and embodied component boundaries count each term once. PUE is applied once. Same workload/window/SLO required.
+- Four REEL slides retain all values, nominal GB/GiB warning, manufacturing uncertainty, package exclusions and prospective-model status.
+- Carbon–SLO, GreenCache and Research Direction PDFs and all unrelated tracked files retain their baseline hashes.
+
+Current final automated/visual findings are recorded in `output/qa/validation.md`; scientific unknowns are listed in the evidence register. Historical six-page QA is superseded by the 14-page build.

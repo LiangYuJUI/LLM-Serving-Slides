@@ -282,13 +282,13 @@ Decision: request / session -> DC or replica; not per-layer WAN placement
 
 | Priority | ID | Task | Output / exit criterion | Status |
 | --- | --- | --- | --- | --- |
-| P0 | T01 | 將 Carbon–SLO geo/power/energy baseline 整理為 claim ledger | 原文 Table I、Fig. 2、power/energy/CI/SLO 的來源與限制 | TODO（repo 已有素材） |
-| P0 | T02 | 精讀 FREESH | 決策變數、energy model、geo/hetero/DVFS 的重疊與缺口 | TODO |
-| P0 | T03 | 萃取 GreenCache carbon accounting | operational+embodied boundary 與 amortization 假設 | TODO（repo 已有素材） |
-| P0 | T04 | 建立 HBM/HBF power quantification | Table 1、6、7 精確來源、單位、same-config ablation | TODO |
-| P0 | T05 | 萃取 REEL HBM/HBF embodied-carbon boundary | stack/package、GB vs GiB、可信度與生命週期分攤 | TODO（repo 已有素材） |
-| P1 | T06 | 讀 AFlex + Janus + MemExplorer | A/E–DVFS 與 memory DSE 的已有貢獻與 gap | TODO |
-| P1 | T07 | 建共同 related-work matrix | Geo / GPU / A/E / HBM-HBF / Power / Embodied / SLO / Simulator | TODO |
+| P0 | T01 | 將 Carbon–SLO geo/power/energy baseline 整理為 claim ledger | 原文 Table I、Fig. 2、power/energy/CI/SLO 的來源與限制 | PARTIAL：Fig. 2、geo/PUE/SLO ledger 完成；Table I 全比較未擴充 |
+| P0 | T02 | 精讀 FREESH | 決策變數、energy model、geo/hetero/DVFS 的重疊與缺口 | DONE（2026-11-17）：原文/附錄與 scope matrix、限制見 Power-Carbon-Slide-Evidence |
+| P0 | T03 | 萃取 GreenCache carbon accounting | operational+embodied boundary 與 amortization 假設 | DONE（2026-11-17）：Eqs. (1)–(5)、amortization/count-once 見 evidence register |
+| P0 | T04 | 建立 HBM/HBF power quantification | Table 1、6、7 精確來源、單位、same-config ablation | DONE（2026-11-17）：Table 1/6/7 與 same-H³ placement pair 已核對；第二組 controlled study 仍待辦 |
+| P0 | T05 | 萃取 REEL HBM/HBF embodied-carbon boundary | stack/package、GB vs GiB、可信度與生命週期分攤 | PARTIAL：保留並核對 stack/package、GB/GiB 與限制；生命周期敏感度未完成 |
+| P1 | T06 | 讀 AFlex + Janus + MemExplorer | A/E–DVFS 與 memory DSE 的已有貢獻與 gap | PARTIAL：Janus/AFlex 定性 scope 已核對；MemExplorer 僅 author record，完整定量 review 未完成 |
+| P1 | T07 | 建共同 related-work matrix | Geo / GPU / A/E / HBM-HBF / Power / Embodied / SLO / Simulator | PARTIAL：Carbon–SLO/FREESH 兩篇 matrix 完成；其他論文仍待擴充 |
 | P1 | T08 | 檢查 simulator APIs 與 energy boundary | integration feasibility map、calibration plan | TODO |
 | P1 | T09 | 定義 RQ1–3 的 baseline / metrics / ablation | 研究設計表，足以給教授評估 | TODO |
 | P2 | T10 | 製作 11/24 簡報與講稿 | 每頁 claim-to-source；符合目前簡報排版規範 | TODO |
@@ -325,4 +325,4 @@ Decision: request / session -> DC or replica; not per-layer WAN placement
 **Verification rules:** 報告上任何百分比、表格數字，都需回到原文完整情境；圖表應保留原標題/caption 和軸單位。Web 摘要/第三方轉載只能作 locator，最後以原文 PDF / publisher / official repository 為準。若不同版本資料衝突，標明版本和未解決項，禁止硬湊一致。
 
 ---
-**Next action: T01 — Carbon–SLO Geo/Power Evidence。** 先從 `2026-11-18-CarbonSLO-Evidence.md` 和既有 B12 圖，建立第一批可追溯 entries；之後再處理 FREESH、HBM/HBF Table 1/6/7、REEL allocation。
+**2026-11-17 更新：** 14 頁 Research Materials 與 `2026-11-18-Power-Carbon-Slide-Evidence.md` 已整理 Fig. 2、FREESH scope、HBF Table 1/6/7 及 accounting。下一步補完整 MemExplorer/Janus/AFlex 定量 review、第二組 controlled placement study、allocation scenario，再推進 T08/T09。這不是 T10 的 11/24 簡報或 simulator 完成紀錄。

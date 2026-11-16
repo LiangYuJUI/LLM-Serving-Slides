@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Standalone Beamer build + automated QA. Requires pdflatex, PyMuPDF, Pillow.
-Run from any directory: python3 path/to/build_research_materials.py.
-Only this deck's PDF, research-materials PNGs, and validation.md are written.
-"""
+"""Build Research Materials twice locally and from its Overleaf ZIP; validate and render."""
 from pathlib import Path
-import hashlib, re, shutil, subprocess, tempfile
+import hashlib, json, re, shutil, subprocess, tempfile, zipfile
 import pymupdf as fitz
 from PIL import Image, ImageDraw
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,32 +9,52 @@ REPO = ROOT.parent
 NAME = '2026-11-18-Research-Materials'
 QA = ROOT/'output/qa'
 PDF = ROOT/'output/pdf'/f'{NAME}.pdf'
+ZIP = ROOT/'output/overleaf/Research-Materials.zip'
+FIGURE = Path('CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig02.png')
+LABELS = ['EINDEX','GPU','MEMORY','PLACEMENT','GEO','RELATED','ACCOUNT','REEL1','REEL2','REEL3','REEL4','DISAGG','NEXT']
+CATEGORIES = {'GPU':2, 'MEMORY':3, 'GEO':5, 'ACCOUNT':7, 'DISAGG':12}
+PRESERVED = {'REEL1': '4f18cf8dcbfbdd76e2636be9c3c7cb38745c6420ae8d2f056d01ec406a26f038', 'REEL2': 'f95706d41bbdccbdbe638c065b67d169ca3892939a5fe7071e56db14554e93c1', 'REEL3': '922c2a0b5837f1b593df27a8997e53c0ce60143510f70790e14934bb9011ce20', 'REEL4': '762f2b68d2f144bfcf3c73c3900df78c2b1b72a8d89817826571425301f9d590'}
+
 def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+
 def protected():
     return {str(p.relative_to(REPO)): digest(p) for p in REPO.rglob('*')
-            if p.is_file() and '.git' not in p.parts
-            and p != PDF and p != QA/'validation.md'
-            and not (p.parent == QA/'pages' and p.name.startswith('research-materials-'))
-            and p != QA/'research-materials-montage.png'}
-def compile_pdf(cwd, out):
+            if p.is_file() and '.git' not in p.parts and '__pycache__' not in p.parts
+            and p not in (PDF, ZIP, QA/'validation.md', QA/'research-materials-build.json', QA/'research-materials-montage.png')
+            and not (p.parent == QA/'pages' and p.name.startswith('research-materials-'))}
+
+def compile_pdf(cwd, out, name):
     out.mkdir(parents=True)
     for _ in range(2):
         run = subprocess.run(['pdflatex','-interaction=nonstopmode','-halt-on-error',
-            f'-output-directory={out}',NAME+'.tex'],cwd=cwd,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+            f'-output-directory={out}',name+'.tex'],cwd=cwd,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         if run.returncode: raise RuntimeError(run.stdout[-8000:])
-    log=(out/f'{NAME}.log').read_text()
+    log=(out/f'{name}.log').read_text()
     warnings=re.findall(r'^.*(?:Overfull|Underfull|undefined|Warning|Missing character|not found).*$',log,re.M)
     if warnings: raise RuntimeError('\n'.join(warnings))
-    return out/f'{NAME}.pdf'
+    return out/f'{name}.pdf'
+
+def annotations(p):
+    return [(x.get('uri'),x.get('nameddest'),x.get('page'),tuple(x['from'])) for x in p.get_links()]
+
 def validate(doc):
-    total=len(doc)-1
-    assert total == 5, 'Update content contract when intentionally extending this deck'
+    assert len(doc)==14
     assert 'Research Materials |' not in doc[0].get_text()
-    assert 'November 18, 2026' in doc[0].get_text()
+    names=doc.resolve_names()
+    for i,label in enumerate(LABELS,1): assert names[label]['page']==i,(label,names[label])
+    for target,page in CATEGORIES.items():
+        links=[x for x in doc[1].get_links() if x.get('nameddest')==target]
+        assert len(links)==1 and links[0]['page']==page,(target,links)
+        assert target in names
+        assert links[0]['from'].width>doc[1].rect.width*.9, 'Card must be clickable across its width'
     uris=set()
     for i,p in enumerate(doc):
         t=p.get_text()
-        if i: assert re.search(rf'Research Materials\s*\|\s*{i}\s*/\s*{total}',t), t
+        if i:
+            assert re.search(rf'Research Materials\s*\|\s*{i}\s*/\s*13',t),t
+            back=[x for x in p.get_links() if x.get('nameddest')=='EINDEX']
+            assert len(back)==1 and back[0]['page']==1
+            assert 'Back to Evidence Index' in p.get_textbox(back[0]['from'])
         assert abs(p.rect.width/p.rect.height-16/9)<.001
         links=[l for l in p.get_links() if l.get('uri')]
         assert links, f'No source URI on page {i+1}'
@@ -46,46 +63,48 @@ def validate(doc):
             for line in b.get('lines',[]):
                 for span in line['spans']:
                     r=fitz.Rect(span['bbox'])
-                    assert r.x0>=0 and r.y0>=0 and r.x1<=p.rect.width and r.y1<=p.rect.height, span
-    assert 'https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf' in uris, uris
-    for v in ['13.52','19.81','20.6','225.9','16 GB','24 GB','36 GB','512 GiB','16.7']:
-        assert v in doc[2].get_text(),v
-    for v in ['0.845','0.825','0.572','0.441','47.8','nominal capacity unit','Not a verified per-GiB']:
-        assert v in doc[3].get_text(),v
+                    assert r.x0>=0 and r.y0>=0 and r.x1<=p.rect.width and r.y1<=p.rect.height,span
+        for im in p.get_image_info(): assert p.rect.contains(fitz.Rect(im['bbox']))
+    assert doc[2].get_images(), 'Original power figure missing'
+    for page,values in {9:['13.52','19.81','20.6','225.9','16 GB','24 GB','36 GB','512 GiB','16.7'],10:['0.845','0.825','0.572','0.441','47.8','nominal capacity unit','Not a verified per-GiB'],4:['9.11','7.19','9.54','32.7','static/background'],13:['RQ1','RQ2','RQ3','Request/session']}.items():
+        for value in values: assert value in doc[page].get_text(), (page,value)
+    assert round(100*(9.54/7.19-1),1)==32.7
     assert round(225.9/13.52,1)==16.7
     assert round(100*(1-(225.9/512)/(13.52/16)),1)==47.8
-    assert 'Power-Aware HBM/HBF Co-Design' in doc[5].get_text()
-    assert 'Published REEL LCI v1.0 screening estimates' in doc[2].get_text()
-    assert 'Nominal normalization: divide' in doc[3].get_text()
-    assert 'Conceptual proposed architecture' in doc[5].get_text()
     return sorted(uris)
+
 def main():
     before=protected()
-    (QA/'pages').mkdir(parents=True,exist_ok=True)
-    PDF.parent.mkdir(parents=True,exist_ok=True)
+    source=(ROOT/f'{NAME}.tex').read_text()
+    for label,expected in PRESERVED.items():
+        frame=re.search(r'\\begin\{frame\}\[t,label='+label+r'\](.*?)\\end\{frame\}',source,re.S).group(1)
+        assert hashlib.sha256(frame.encode()).hexdigest()==expected,('Preserved frame changed',label)
+    (QA/'pages').mkdir(parents=True,exist_ok=True);ZIP.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='research-materials-') as td:
-        temp=Path(td)
-        local=compile_pdf(ROOT,temp/'local')
-        isolated=temp/'isolated';isolated.mkdir()
-        shutil.copy2(ROOT/f'{NAME}.tex',isolated)
-        other=compile_pdf(isolated,temp/'standalone')
+        temp=Path(td);local=compile_pdf(ROOT,temp/'local',NAME)
+        with zipfile.ZipFile(ZIP,'w',zipfile.ZIP_DEFLATED) as z:
+            z.write(ROOT/f'{NAME}.tex','main.tex');z.write(ROOT/FIGURE,FIGURE.as_posix())
+            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\nOriginal Carbon--SLO Fig. 2 included unchanged.\n')
+        isolated=temp/'isolated'
+        with zipfile.ZipFile(ZIP) as z: assert z.testzip() is None;z.extractall(isolated)
+        other=compile_pdf(isolated,temp/'standalone','main')
         a,b=fitz.open(local),fitz.open(other)
         uris=validate(a);validate(b)
         for x,y in zip(a,b):
             assert x.get_text()==y.get_text()
             assert x.get_pixmap().digest==y.get_pixmap().digest
-            assert [(l.get('uri'),tuple(l['from'])) for l in x.get_links()]==[(l.get('uri'),tuple(l['from'])) for l in y.get_links()]
-        montage=Image.new('RGB',(1600,1410),'#D8E4EB')
+            assert annotations(x)==annotations(y)
+        montage=Image.new('RGB',(1600,3290),'#D8E4EB')
         for n,page in enumerate(a):
             dest=QA/'pages'/f'research-materials-{n+1:02d}.png'
             page.get_pixmap(matrix=fitz.Matrix(3,3)).save(dest)
             im=Image.open(dest).convert('RGB');im.thumbnail((800,450))
             x=(n%2)*800;y=(n//2)*470
-            montage.paste(im,(x,y));ImageDraw.Draw(montage).text((x+12,y+452),'Cover' if n==0 else f'{n}/5',fill='#243748')
-        montage.save(QA/'research-materials-montage.png')
-        shutil.copy2(local,PDF)
-    assert before==protected(),'Existing files changed'
-    report=f'''# Research Materials validation\n\n- Build base HEAD: `{subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()}`\n- PASS: 2 local + 2 isolated pdfLaTeX passes, source-only standalone build.\n- PASS: no TeX warnings, undefined references/citations, missing characters or overfull/underfull boxes.\n- PASS: 6 pages, 16:9, unnumbered cover, content 1/5 through 5/5.\n- PASS: text stays within page bounds; every page has clickable external source links.\n- PASS: local/isolated text, rendered pixels and URI annotations match.\n- PASS: numeric labels, source capacity labels, 16.7x and 47.8% formulas.\n- PASS: all {len(before)} protected files retain SHA-256 hashes during build.\n- Rendered: six PNGs at 3x resolution plus 2-column montage.\n- PDF SHA-256: `{digest(PDF)}`\n- Visual review: pending human/agent inspection of the generated PNGs.\n\n## External URI targets verified in PDF\n\n'''+''.join(f'- {u}\n' for u in uris)
-    (QA/'validation.md').write_text(report)
-    print(report)
+            montage.paste(im,(x,y));ImageDraw.Draw(montage).text((x+12,y+452),'Cover' if n==0 else f'{n}/13',fill='#243748')
+        montage.save(QA/'research-materials-montage.png');shutil.copy2(local,PDF)
+    assert before==protected(),'Protected files changed during build'
+    report=dict(pages=14,local_passes=2,zip_passes=2,warnings=[],source_sha256=digest(ROOT/f'{NAME}.tex'),pdf_sha256=digest(PDF),zip_sha256=digest(ZIP),preserved_frame_hashes=PRESERVED,category_destinations={k:v+1 for k,v in CATEGORIES.items()},return_links=13,parity={'text':True,'pixels':True,'annotations':True},protected_files=len(before),uris=uris)
+    (QA/'research-materials-build.json').write_text(json.dumps(report,indent=2)+'\n')
+    (QA/'validation.md').write_text('''# Research Materials validation\n\n- PASS: 14 widescreen PDF pages; unnumbered cover, content 1/13–13/13.\n- PASS: two local and two extracted Overleaf ZIP pdfLaTeX passes; no layout/reference warnings.\n- PASS: local/ZIP text, pixels, source URI and named-destination annotations match.\n- PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 13 visible return links land on page 2.\n- PASS: text/image bounds, source hyperlinks on every page, required numeric claims and calculations.\n- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; only frame labels and footer changed.\n- PASS: protected repository files unchanged during build.\n- Rendered all 14 pages at 3x resolution and a two-column montage.\n- Visual review: pending inspection of current generated PNGs.\n- Detailed checksums: `research-materials-build.json`.\n- External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.\n\n## Source hyperlink targets\n\n'''+''.join(f'- {u}\n' for u in uris))
+    print('PASS: 14 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()

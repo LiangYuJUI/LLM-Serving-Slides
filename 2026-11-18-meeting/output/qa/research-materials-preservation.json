@@ -1,0 +1,54 @@
+{
+  "base_commit": "9d09be3",
+  "preserved_REEL_pages": [
+    {
+      "original_page": 2,
+      "current_page": 9,
+      "text_equal": true,
+      "pixels_equal": true
+    },
+    {
+      "original_page": 3,
+      "current_page": 10,
+      "text_equal": true,
+      "pixels_equal": true
+    },
+    {
+      "original_page": 4,
+      "current_page": 11,
+      "text_equal": true,
+      "pixels_equal": true
+    },
+    {
+      "original_page": 5,
+      "current_page": 12,
+      "text_equal": true,
+      "pixels_equal": true
+    }
+  ],
+  "comparison": "3x pixels and text excluding footer bottom 16 PDF points",
+  "tracked_files_baseline": 502,
+  "changed_tracked_files": [
+    "2026-11-18-meeting/2026-11-18-Cross-DC-Power-Carbon-Research-SPEC.md",
+    "2026-11-18-meeting/2026-11-18-Research-Materials-SPEC.md",
+    "2026-11-18-meeting/2026-11-18-Research-Materials-Script.md",
+    "2026-11-18-meeting/2026-11-18-Research-Materials.tex",
+    "2026-11-18-meeting/README.md",
+    "2026-11-18-meeting/output/pdf/2026-11-18-Research-Materials.pdf",
+    "2026-11-18-meeting/output/qa/pages/research-materials-01.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-02.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-03.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-04.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-05.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-06.png",
+    "2026-11-18-meeting/output/qa/research-materials-montage.png",
+    "2026-11-18-meeting/output/qa/validation.md",
+    "2026-11-18-meeting/scripts/build_research_materials.py"
+  ],
+  "unrelated_tracked_files_unchanged": true,
+  "retrieved_primary_pdf_sha256": {
+    "characterizing": "86bfb40031444a9cc0ee759c582d4d37f18108d9df1ff5fdbf37aa23e67a7990",
+    "freesh": "cc966acaa2cf4974fc7113fd0ef9b24b77920aa18d05516bbca26b23129545f6",
+    "aflex": "680e6161f411c0dff52742a24712930b0d34f42122779241c44edb8f0bd6b208"
+  }
+}

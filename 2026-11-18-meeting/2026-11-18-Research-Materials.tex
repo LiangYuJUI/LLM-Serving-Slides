@@ -1,4 +1,4 @@
-% Independent research materials. pdfLaTeX, two passes. No external figures.
+% Independent research materials. pdfLaTeX, two passes. Original Carbon--SLO Figure 2 asset required.
 \documentclass[aspectratio=169,10pt]{beamer}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
@@ -28,10 +28,10 @@
 \begin{beamercolorbox}[wd=\paperwidth,ht=.74cm,dp=.14cm,leftskip=.55cm]{frametitle}
 \usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
 \setbeamertemplate{footline}{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.48cm]{footline}
-\hfill\scriptsize Research Materials\enspace |\enspace\insertframenumber\,/\,\inserttotalframenumber\end{beamercolorbox}}
+\hspace{.48cm}\scriptsize\hyperlink{EINDEX}{Back to Evidence Index}\hfill Research Materials\enspace |\enspace\insertframenumber\,/\,\inserttotalframenumber\end{beamercolorbox}}
 \setbeamersize{text margin left=.48cm,text margin right=.48cm}
 
-\hypersetup{pdftitle={Research Direction \& Supporting Evidence},pdfauthor={Yu-Jui Liang}}
+\hypersetup{pdftitle={Research Materials \& Supporting Evidence},pdfauthor={Yu-Jui Liang}}
 \newcommand{\srcA}{https://reellci.com/insights/the-hbf-inversion.html}
 \newcommand{\srcB}{https://reellci.com/insights/hbm-footprint-inversion.html}
 \newcommand{\srcC}{https://reellci.com/d/hbf-gen1-16hi/}
@@ -55,14 +55,22 @@
 \node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+#2*.025){\num};
 \node[chartlabel,anchor=north] at (\x,-#2*.035){\lab\\\cap};}
 \end{tikzpicture}}
+
+\newcommand{\compactcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.10cm]{#1}{\small\bfseries\color{Accent}#2}\par\vspace{.04cm}{\footnotesize\raggedright #3\par}\end{beamercolorbox}}
+\newcommand{\carbonurl}{https://arxiv.org/abs/2610.14571v1}
+\newcommand{\hbfurl}{https://arxiv.org/abs/2609.39131v2}
+\newcommand{\freeshurl}{https://arxiv.org/abs/2511.00807v1}
+\newcommand{\greenurl}{https://arxiv.org/abs/2505.23970v3}
+\newcommand{\memurl}{https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/}
+\newcommand{\indexcard}[4]{\hyperlink{#1}{\begin{beamercolorbox}[wd=\linewidth,sep=.13cm,rounded=true]{#2}\small\textbf{#3}\quad\footnotesize #4\end{beamercolorbox}}\par\vspace{.12cm}}
 \begin{document}
 \begin{frame}[plain,noframenumbering]
 \vspace{.4cm}
 {\small\bfseries\color{Accent}RESEARCH MATERIALS\par}
 \vspace{.35cm}
-{\LARGE\bfseries Research Direction\par\vspace{.10cm}\& Supporting Evidence\par}
+{\LARGE\bfseries Research Materials\par\vspace{.10cm}\& Supporting Evidence\par}
 \vspace{.30cm}
-{\large HBM vs.\ HBF Embodied Carbon:\\Evidence and Comparison\par}
+{\large Cross-Data-Center Carbon- and Power-Aware LLM Serving\\with Heterogeneous GPU and HBM/HBF Memory Co-Design\par}
 \vspace{.22cm}
 {\color{Accent}\rule{2.2cm}{1.2pt}\par}
 \vspace{.22cm}
@@ -71,10 +79,164 @@
 {\color{Muted}National Taiwan University / Academia Sinica\par}
 \vspace{.24cm}
 {\large Research Meeting\quad November 18, 2026\par}
+{\small\color{Muted}Research evidence collection and proposed direction\par}
 \source{\href{\srcA}{REEL LCI v1.0: HBF comparison}; \href{\srcD}{Methodology report}. Model estimates, accessed 2026-11-13.}
 \end{frame}
 
-\begin{frame}[t]{What Evidence Do We Have for HBM/HBF Embodied Carbon?}
+\begin{frame}[t,label=EINDEX]{What Evidence Supports Our Research Direction?}
+\relax
+\indexcard{GPU}{mintbox}{01\quad GPU Power / Energy Model}{Prefill, Decode, Batching, Idle Power}
+\indexcard{MEMORY}{lilacbox}{02\quad HBM vs. HBF Power / Energy}{Access Energy, Bandwidth, Latency, Placement}
+\indexcard{GEO}{mintbox}{03\quad Geo Carbon-Aware Scheduling}{Carbon Intensity, PUE, Routing, SLO}
+\indexcard{ACCOUNT}{lilacbox}{04\quad Operational vs. Embodied Carbon}{Serving Electricity, Manufacturing, Lifetime Allocation}
+\indexcard{DISAGG}{mintbox}{05\quad GPU / MoE Disaggregation Energy}{Attention/Expert Placement, DVFS, Transfer Energy}
+\takeaway{Connect measured GPU behavior, modeled memory costs, and explicit carbon boundaries.}
+\source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\hbfurl}{Characterizing HBF}; \href{\freeshurl}{FREESH}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; prior work on page 13.}
+\end{frame}
+
+\begin{frame}[t,label=GPU]{How Does LLM Serving Power Consumption Vary?}
+\relax
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.59\textwidth}
+\includegraphics[width=\linewidth]{CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig02.png}
+\end{column}
+\begin{column}{.38\textwidth}
+\card{mintbox}{Measured phase dependence}{\footnotesize Prefill power rises with prompt length toward saturation.\\[5pt]Decode power grows sublinearly with batch size.\\[5pt]A100 TDP (400 W) is a limit/reference, not constant actual power.}
+\vspace{.16cm}
+{\footnotesize Idle: $\sim$72 W per A100.\\Host baseline: 300 W per node (model setting informed by testbed).\par}
+\vspace{.12cm}
+{\small $E_{\rm step}\,[\mathrm J]=\bar P\,[\mathrm W]\,\Delta t\,[\mathrm s]$\par}
+\end{column}
+\end{columns}
+\vspace{.20cm}
+{\footnotesize A100, vLLM 0.6.3, FP16. Llama-3.1-8B / Qwen2.5-7B: TP1/2. Mixtral-8x7B: TP4.\par}
+\takeaway{GPU power and step energy depend on inference phase, workload, and batching behavior.}
+\source{\href{\carbonurl}{Carbon--SLO, Sec. III-B, Fig. 2, PDF p. 4}. Original figure with axes, legends and caption. Testbed-specific baselines.}
+\end{frame}
+
+\begin{frame}[t,label=MEMORY]{How Do HBM and HBF Differ in Memory Access Energy?}
+\relax
+{\small\color{Muted}Modeled memory parameters, not measured HBF silicon results\par}
+\vspace{.15cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\card{mintbox}{Read energy}{\centering
+\begin{tabular}{lrr}\toprule & HBM & HBF\\\midrule
+pJ/bit & \textbf{3.4} & \textbf{6.8}\\
+GB/s & 1,000 & 1,000\\
+Startup ($\mu$s) & 0.1 & 20\\\bottomrule\end{tabular}\par}
+\end{column}
+\begin{column}{.48\textwidth}
+\card{lilacbox}{Write energy}{\centering
+\begin{tabular}{lrr}\toprule & HBM & HBF\\\midrule
+pJ/bit & \textbf{3.4} & \textbf{100}\\
+GB/s & 1,000 & 8\\
+Startup ($\mu$s) & 0.1 & 250\\\bottomrule\end{tabular}\par}
+\end{column}
+\end{columns}
+\vspace{.15cm}
+{\small\textbf{Per stack:} HBM 24 GB; HBF 375 GB (decimal). H$^3$ adds eight HBF stacks alongside eight HBM stacks per GPU. Shared-site designs divide eight sites.\par}
+\vspace{.14cm}
+{\footnotesize HBF read cost assumes $2\times$ HBM following MemExplorer. HBF write parameters use SSD proxies. Equal peak read bandwidth does not imply equal access latency.\par}
+\vspace{.13cm}
+{\small $E_{\rm memory}[\mathrm J]=8\big(R_{\rm bytes}e_r+W_{\rm bytes}e_w\big)\times10^{-12}$\quad ($e_r,e_w$ in pJ/bit)\par}
+\takeaway{HBF offers capacity advantages, but memory-access energy and latency must be explicitly modeled.}
+\source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving v2, Table 1, p. 6; Sec. 3, Eq. (1), p. 3; Sec. 5.1}. No direct conversion from pJ/bit to J/token without traffic.}
+\end{frame}
+
+\begin{frame}[t,label=PLACEMENT]{Does HBF Placement Reduce Total Serving Energy?}
+\relax
+{\footnotesize\textbf{Modeled workload energy:} GLM-5.2, 16 B200-compute GPUs, 16-bit storage, TP16/EP16 + DPA.\\
+1$\times$ trace: 100k turns, 10\% admission buffer, mixed batches, session-sticky routing, KV offload.\par}
+\vspace{.17cm}
+{\small\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}Xcccc@{}}\toprule
+Configuration & Stacks/GPU & Weights & Time (s) & Energy (MJ)\\\midrule
+HBM-only & 8+0 & HBM & 11,354 & 9.11\\
+\rowcolor{SoftMint}H$^3$ & 8+8 & HBM & 4,543 & 7.19\\
+\rowcolor{SoftLilac}H$^3$ & 8+8 & HBF & 4,538 & 9.54\\\bottomrule
+\end{tabularx}\par}
+\vspace{.14cm}
+{\small\textbf{Controlled H$^3$ comparison:} $(9.54/7.19-1)\times100=\mathbf{32.7\%}$ higher energy.\\
+HBM-only has fewer memory stacks. It is not an equal-hardware baseline.\par}
+\vspace{.12cm}
+{\footnotesize\textbf{Table 7, H$^3$ / HBM weights vs. HBM-only, same 1$\times$ workload:} weight reads +19.50 pp, KV/index reads $-$0.63 pp, avoided prefill 0.00 pp, other +2.21 pp; reported net saving 21.09\% (rounding differs).\par}
+\vspace{.12cm}
+{\footnotesize\textbf{Boundary:} operation, memory and communication energy; static/background power excluded. Mean TPOT rises from 218.72 to 279.15 ms for H$^3$/HBM. No SLO guarantee.\par}
+\takeaway{Weight placement can substantially change serving energy even when hardware configuration and completion time are similar.}
+\source{\href{\hbfurl}{Characterizing HBF v2, Table 6 (p. 8), Table 7 (p. 9), Secs. 3 and 5.1}. Simulation-based results; energy is not wall-plug total.}
+\end{frame}
+
+\begin{frame}[t,label=GEO]{Why Is the Lowest-Carbon Data Center Not Always Optimal?}
+\relax
+{\footnotesize\color{Muted}Conceptual example informed by Carbon--SLO, not a measured experiment\par}
+\vspace{.10cm}
+\begin{tikzpicture}[>=Latex,every node/.style={font=\small,align=center}]
+\node[fill=SoftLilac,rounded corners,minimum height=.85cm,text width=2.0cm] (r) at (1.1,0) {Incoming\\request};
+\node[fill=SoftMint,rounded corners,minimum height=.85cm,text width=2.9cm] (s) at (5,0) {Regional scheduler\\Energy + SLO estimate};
+\node[fill=SoftMint,rounded corners,text width=4.7cm,minimum height=.95cm] (a) at (11.5,.7) {Data Center A: lower CI\\Longer queue / WAN RTT};
+\node[fill=SoftLilac,rounded corners,text width=4.7cm,minimum height=.95cm] (b) at (11.5,-.7) {Data Center B: higher CI\\Different GPU/memory energy\\Shorter wait};
+\draw[->,thick,Accent] (r)--(s);
+\draw[->,thick,Accent] (s.east)--(a.west);
+\draw[->,thick,Accent] (s.east)--(b.west);
+\end{tikzpicture}
+\vspace{.12cm}
+{\centering\large $C_{\rm op}[\mathrm{gCO_2e}]=\sum_{d,t}\frac{E^{\rm IT}_{d,t}[\mathrm J]}{3.6\times10^6}\,\mathrm{PUE}_{d,t}\,\mathrm{CI}_{d,t}[\mathrm{gCO_2e/kWh}]$\par}
+\vspace{.12cm}
+{\footnotesize Here $E^{\rm IT}$ excludes facility overhead. Apply PUE once; omit it if energy is already facility-level. Carbon--SLO's $E_d$ already includes PUE. Account for WAN energy separately if in scope.\par}
+\vspace{.15cm}
+{\small Regional CI must be combined with GPU/memory energy, queueing and batching.\\WAN RTT consumes the latency budget. Check \textbf{both TTFT and TPOT SLOs}.\par}
+\takeaway{The lowest-carbon-intensity data center is not necessarily the lowest-carbon SLO-feasible serving destination.}
+\source{\href{\carbonurl}{Carbon--SLO, Sec. II-C (PUE/CI), Secs. III-B--D (power, queueing, RTT and SLO), pp. 2--5}. Diagram and unit-explicit equation: our synthesis.}
+\end{frame}
+
+\begin{frame}[t,label=RELATED]{What Do Carbon--SLO and FREESH Already Cover?}
+\relax
+{\footnotesize Scope of the reviewed papers, not a claim of an exhaustive literature search\par}
+\vspace{.10cm}
+{\footnotesize\renewcommand{\arraystretch}{1.15}\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{@{}p{4.0cm}XX@{}}\toprule
+Capability & Carbon--SLO & FREESH v1\\\midrule
+Cross-DC request routing & Yes, request/batch decisions & Yes, pool plan + runtime routing\\
+Carbon intensity & Yes, regional CI + PUE & Yes, locational marginal emissions\\
+Heterogeneous GPU scheduling & Limited: A100 evaluation & Yes, GPU type + TP allocation\\
+DVFS & Not modeled as a control & Yes, MIAD frequency control\\
+Continuous batching / queues & Yes, explicit step/queue model & Partial: vLLM + LLF queues$^*$\\
+HBM/HBF placement & Not modeled & Not modeled\\
+Embodied carbon & Not modeled & Not modeled\\
+SLO-aware optimization & Yes, TTFT + TPOT & Yes, profiles + runtime thresholds\\\bottomrule
+\end{tabularx}\par}
+\vspace{.12cm}
+{\footnotesize $^*$FREESH uses profiled service rates / latency in its pool optimizer; runtime LLF and MIAD respond to requests. This differs from Carbon--SLO's explicit batch-state latency projection.\par}
+\vspace{.14cm}
+{\small\textbf{Gap candidate:} How do memory-specific energy and performance profiles affect geo-distributed carbon-aware scheduling?\par}
+\takeaway{Memory-aware geo scheduling is a gap candidate, not an established novelty claim.}
+\source{\href{\carbonurl}{Carbon--SLO, Table I, Secs. III--V}; \href{\freeshurl}{FREESH v1, Secs. 3.1--3.3, 4.1; Apps. D.2, D.6--D.7}. Full paper reviewed, including runtime details.}
+\end{frame}
+
+\begin{frame}[t,label=ACCOUNT]{How Should We Account for Total Serving Carbon?}
+\relax
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\card{mintbox}{Operational Carbon}{GPU compute and idle\\[4pt]HBM/HBF memory operation\\[4pt]Host / network / facility energy\\[4pt]Regional carbon intensity and PUE}
+\end{column}
+\begin{column}{.48\textwidth}
+\card{lilacbox}{Allocated Embodied Carbon}{GPU manufacturing\\[4pt]HBM/HBF manufacturing\\[4pt]Packaging and other hardware\\[4pt]Lifetime and allocation assumptions}
+\end{column}
+\end{columns}
+\vspace{.10cm}
+{\centering\small\bfseries Total Carbon = Operational Carbon + Allocated Embodied Carbon\par}
+\vspace{.12cm}
+{\centering\small $C_{\rm emb,alloc}=\sum_h C_{\rm manufacture,h}\,a_h\,T/L_h$\quad (time-based allocation scenario)\par}
+\vspace{.10cm}
+{\footnotesize $a_h$: allocated share; $T$: service window; $L_h$: assumed lifetime in the same time unit. Compare the \textbf{same workload and service window}, with the same SLO targets.\par}
+\vspace{.08cm}
+{\footnotesize\textbf{Count once:} memory power already inside GPU board measurements; memory manufacturing already inside GPU/package footprints; facility energy already covered by PUE. Releasing capacity changes allocation, not past manufacturing emissions.\par}
+\takeaway{Lower serving energy does not automatically imply lower total carbon emissions.}
+\source{\href{\greenurl}{GreenCache, Sec. 2.3, Eqs. (1)--(3), pp. 4--5; Sec. 3.2.1, Eqs. (4)--(5)}; \href{\srcC}{REEL HBF system boundary}. Extended accounting equation: our synthesis.}
+\end{frame}
+
+\begin{frame}[t,label=REEL1]{What Evidence Do We Have for HBM/HBF Embodied Carbon?}
 \vspace{.10cm}
 \researchquestion{Can we obtain traceable manufacturing-carbon estimates for HBF before mass production?}
 \vspace{.25cm}
@@ -97,7 +259,7 @@ Independent validation remains necessary}
 \source{\href{\srcE}{REEL v1.0 dataset explorer}; \href{\srcC}{HBF dataset, quality and limitations}; \href{\srcD}{Methodology, Sec. 4.4.4 (PDF p. 68 / printed p. 66)}.}
 \end{frame}
 
-\begin{frame}[t]{How Much Embodied Carbon Does One Stack Carry?}
+\begin{frame}[t,label=REEL2]{How Much Embodied Carbon Does One Stack Carry?}
 \relax
 {\small\color{Muted}Published REEL LCI v1.0 screening estimates\par}
 \vspace{.05cm}
@@ -116,7 +278,7 @@ The HBF stack also offers substantially more capacity.}
 \source{\href{\srcA}{HBF comparison, chart (13.52 / 19.81 / 225.9)}; \href{\srcB}{HBM comparison (20.6)}; \href{\srcE}{dataset capacity labels}. All model estimates, not manufacturer measurements.}
 \end{frame}
 
-\begin{frame}[t]{Does HBF Reduce Embodied Carbon per Unit Capacity?}
+\begin{frame}[t,label=REEL3]{Does HBF Reduce Embodied Carbon per Unit Capacity?}
 \relax
 {\small\color{Muted}Nominal normalization: divide each published stack estimate by its capacity numeral\par}
 \vspace{.05cm}
@@ -135,7 +297,7 @@ HBM labels: GB\\HBF label: GiB\\\textbf{Not a verified per-GiB comparison.}}
 \source{\href{\srcA}{HBF comparison}; \href{\srcB}{HBM comparison}; \href{\srcE}{capacity labels}. Bars and 47.8\% are our calculations using unconverted capacity numerals.}
 \end{frame}
 
-\begin{frame}[t]{Can We Trust the HBF Carbon Estimate?}
+\begin{frame}[t,label=REEL4]{Can We Trust the HBF Carbon Estimate?}
 \vspace{.10cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.49\textwidth}
@@ -162,24 +324,45 @@ Interposer, substrate and package assembly excluded}
 \takeaway{Useful for scenarios. Independent validation is needed for definitive hardware-carbon claims.}
 \source{\href{\srcC}{HBF dataset: assumptions, boundary and limitations}; \href{\srcD}{Methodology, Sec. 4.4.4, PDF p. 68 / printed p. 66}; \href{\srcA}{article estimate}.}
 \end{frame}
-
-\begin{frame}[t]{What Does This Mean for Our Research?}
+\begin{frame}[t,label=DISAGG]{Can Heterogeneous Attention/Expert Placement Improve Energy Efficiency?}
 \relax
-{\small\bfseries\color{Accent}Power-Aware HBM/HBF Co-Design for Disaggregated MoE Serving\par}
-{\footnotesize\color{Muted}Conceptual proposed architecture. No system-level carbon reduction demonstrated.\par}
-\vspace{.06cm}
+{\small\bfseries\color{Accent}Our Proposed Design\quad\footnotesize No implemented energy result\par}
+\vspace{.12cm}
 \begin{tikzpicture}[>=Latex]
-\node[fill=SoftMint,rounded corners=4pt,inner sep=8pt,text width=3.8cm,minimum height=1.65cm,align=left] (a) at (2.2,0) {\small\textbf{HBM-rich Attention Workers}\\[5pt]\footnotesize Attention computation\\Active KV cache};
-\node[fill=SoftLilac,rounded corners=4pt,inner sep=8pt,text width=4.1cm,minimum height=1.65cm,align=left] (e) at (12.1,0) {\small\textbf{HBF-rich Expert Workers}\\[5pt]\footnotesize MoE Expert computation\\HBM: hot expert weights\\HBF: colder expert residency};
-\draw[<->,thick,Accent] (a.east)--(e.west) node[midway,above,align=center,font=\footnotesize]{Hidden-state /\\activation transfer};
+\node[fill=SoftMint,rounded corners=4pt,inner sep=8pt,text width=4cm,minimum height=1.6cm,align=left] (a) at (2.3,0) {\small\textbf{HBM-rich Attention Worker}\\[5pt]\footnotesize Attention computation\\Active KV cache};
+\node[fill=SoftLilac,rounded corners=4pt,inner sep=8pt,text width=4cm,minimum height=1.6cm,align=left] (e) at (12,0) {\small\textbf{HBF-rich Expert Worker}\\[5pt]\footnotesize MoE expert computation\\Hot weights in HBM\\Cold weights in HBF};
+\draw[<->,thick,Accent] (a.east)--(e.west) node[midway,above,align=center,font=\footnotesize]{Activation /\\hidden-state transfer};
 \end{tikzpicture}
-\vspace{.04cm}
-{\centering\small\textbf{Total Carbon = Allocated Embodied Carbon + Operational Carbon}\par}
-\vspace{.04cm}
-{\footnotesize\textbf{Evaluate:} Memory configurations and GPU count; power and energy; TTFT / TPOT;\\goodput under SLO; HBF read stalls and communication overhead.\par}
+\vspace{.15cm}
+{\small\textbf{Prior work}\par}
+{\footnotesize \textbf{Janus:} Attention/Expert disaggregation and expert scheduling.\\[3pt]
+\textbf{AFlex:} Attention/FFN disaggregation and frequency scaling. A/FFN is not identical to MoE A/Expert partitioning.\\[3pt]
+\textbf{MemExplorer:} heterogeneous memory and NPU design-space exploration.\par}
+\vspace{.16cm}
+{\small\textbf{Unknowns to quantify}\par}
+{\footnotesize Expert-weight read energy; GPU waiting power; inter-GPU communication; SLO impact; hot/cold placement efficiency. Local transfer costs can erase capacity gains.\par}
+\takeaway{Disaggregation creates control options; its net energy benefit needs a measured or calibrated cost model.}
+\source{\href{https://arxiv.org/abs/2512.13525}{Janus, Secs. 3--4}; \href{https://arxiv.org/abs/2608.01891}{AFlex, Secs. III--IV}; \href{\memurl}{MemExplorer, author publication record}. Architecture extends our Nov. 11 proposal.}
+\end{frame}
+
+\begin{frame}[t,label=NEXT]{What Does This Evidence Mean for Our Research?}
+\relax
+{\footnotesize\color{Muted}Our proposed two-level system; no carbon reduction demonstrated\par}
 \vspace{.05cm}
-\researchquestion{Can heterogeneous HBM/HBF configurations reduce total LLM-serving carbon while meeting the same SLO constraints?}
-\takeaway{The capacity-normalized estimate motivates evaluation, not a predetermined conclusion.}
-\source{Architecture: our 2026-11-11 Research Direction (proposal). Carbon motivation: \href{\srcA}{REEL HBF comparison}; boundary: \href{\srcC}{HBF dataset}. Equation: proposed system accounting.}
+\compactcard{mintbox}{Level 1: Global / Regional Scheduler}{\footnotesize Carbon intensity; PUE; GPU and memory availability; workload / queue states; WAN RTT.\\\textbf{Request/session routing across data centers.}}
+\vspace{.03cm}
+{\centering\color{Accent}$\Downarrow$\quad\footnotesize Selected data center\par}
+\vspace{.03cm}
+\compactcard{lilacbox}{Level 2: Local Power- and Memory-Aware Serving}{\footnotesize Heterogeneous GPUs; DVFS; Attention/Expert placement; HBM/HBF weight and KV placement; local communication.}
+\vspace{.04cm}
+{\footnotesize\textbf{Evaluate:} energy per token; power consumption; SLO goodput; TTFT / TPOT; operational carbon; allocated embodied carbon; total carbon.\par}
+\vspace{.05cm}
+{\footnotesize\textbf{RQ1: Geo-aware Power and Carbon Optimization}\\[1pt]
+\textbf{RQ2: HBM/HBF Memory-Aware Placement}\\[1pt]
+\textbf{RQ3: Total Carbon and Hardware Co-Design}\par}
+\vspace{.04cm}
+{\footnotesize\textbf{Next:} energy calibration and placement/routing ablations. No per-layer cross-WAN A/E assumption.\par}
+\takeaway{Test the coupled design under common workload and SLO constraints.}
+\source{Our proposed research, extending Nov. 11 Research Direction and Cross-DC SPEC. Baselines: \href{\carbonurl}{Carbon--SLO}, \href{\freeshurl}{FREESH}; memory: \href{\hbfurl}{Characterizing HBF}; manufacturing: \href{\srcC}{REEL LCI}.}
 \end{frame}
 \end{document}
