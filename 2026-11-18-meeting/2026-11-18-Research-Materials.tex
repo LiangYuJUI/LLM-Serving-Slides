@@ -141,7 +141,7 @@ Assumed P/E cycles & --- & 100,000\\
 \bottomrule
 \end{tabularx}\par}
 \vspace{.14cm}
-{\footnotesize\color{Muted}Modeled parameters, not measured HBF silicon results.\par}
+{\footnotesize\color{Muted}Modeled parameters, not measured HBF silicon results.\hfill\hyperlink{MEMORYSOURCES}{\beamergotobutton{Parameter Sources}}\par}
 \vspace{.13cm}
 \compactcard{mintbox}{Key takeaway}{HBF offers more capacity, but bandwidth, latency and access energy must all be modeled.}
 \source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving v2, Table 1, PDF p. 6}.}
@@ -413,6 +413,53 @@ Dataset descriptions are public on the website. Full inventory quantities are li
 \vspace{.10cm}
 {\small\href{https://reellci.com/}{\textbf{Official website: https://reellci.com/}}\hfill\hyperlink{REEL1}{\beamerreturnbutton{Back to slide 10}}\par}
 \source{\href{https://reellci.com/}{REEL LCI official website}: v1.0 overview, virtual factory approach, access, FAQ and author profile. Accessed 2026-11-17.}
+\end{frame}
+
+% Source mapping checked against arXiv:2609.39131v2, Table 1/caption, Sec. 5.1 and References.
+% Micron Technology: HBM3E (product specification).
+% Lenovo: ThinkSystem NVIDIA HGX B200 180GB 1000W GPU Product Guide, LP2226.
+% Ha, Minho; Kim, Euiseok; Kim, Hoshik (2026): H3: Hybrid Architecture Using
+% High Bandwidth Memory and High Bandwidth Flash for Cost-Efficient LLM Inference.
+% IEEE Computer Architecture Letters 25(1), 49-52. DOI: 10.1109/LCA.2026.3660969.
+% Ma, Xiaoyu; Patterson, David (2026): Challenges and Research Directions for
+% Large Language Model Inference Hardware. Computer 59(5), 55-64. DOI: 10.1109/MC.2026.3652916.
+% Moon, Ki-Ill; Son, Ho-Young; Lee, Kangwook (2023): Advanced Packaging Technologies
+% in Memory Applications for Future Generative AI Era. IEDM, 1-4. DOI: 10.1109/IEDM45741.2023.10413890.
+% Wu et al. (2026): MemExplorer: Navigating the Heterogeneous Memory Design Space
+% for Agentic Inference NPUs. arXiv:2604.16007v1 (version cited by the primary paper).
+% Son et al. (2026): Exploring High-Bandwidth Flash for Modern LLM Inference:
+% Opportunities and Challenges. IEEE CAL 25(2), 251-254. DOI: 10.1109/LCA.2026.3705817.
+% IEEE DOIs are verified from the primary bibliography; publisher full text was not accessible.
+% Typical SSD proxy has no distinct upstream citation in Table 1; do not invent one.
+\begin{frame}[t,label=MEMORYSOURCES]{Where Do the HBM/HBF Memory Parameters Come From?}
+\relax
+{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
+\vspace{.08cm}
+{\scriptsize\color{Muted}\textbf{S}: published hardware specification\quad\textbf{R}: prior-work-derived model\quad\textbf{A}: author-selected assumption\par}
+\vspace{.08cm}
+{\footnotesize\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\linewidth}{@{}p{2.6cm}p{4.0cm}X@{}}\toprule
+\textbf{Parameter} & \textbf{HBM Source} & \textbf{HBF Source}\\\midrule
+Capacity & \href{https://www.micron.com/products/memory/hbm/hbm3e}{Micron Technology: HBM3E} [S] & \href{https://doi.org/10.1109/LCA.2026.3660969}{H$^3$ -- Ha et al. (2026)} [R]\\
+Read bandwidth & \href{https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu}{Lenovo B200 specification} [S] & \href{https://doi.org/10.1109/LCA.2026.3660969}{H$^3$ -- Ha et al. (2026)} [R]\\
+Write bandwidth & \href{https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu}{Lenovo B200 specification} [S] & Typical SSD proxy [A]\\
+Read startup & \href{https://doi.org/10.1109/MC.2026.3652916}{Ma \& Patterson (2026)} [R] & \href{https://doi.org/10.1109/LCA.2026.3660969}{H$^3$ -- Ha et al. (2026)} [R]\\
+Write startup & \href{https://doi.org/10.1109/MC.2026.3652916}{Ma \& Patterson (2026)} [R] & Typical SSD proxy [A]\\
+\rowcolor{SoftMint}Read energy & \href{https://doi.org/10.1109/IEDM45741.2023.10413890}{Moon et al. (2023)} [R] & \href{https://arxiv.org/abs/2604.16007v1}{MemExplorer -- Wu et al. (2026)} [R]\\
+\rowcolor{SoftLilac}Write energy & \href{https://doi.org/10.1109/IEDM45741.2023.10413890}{Moon et al. (2023)} [R] & Typical SSD proxy [A]\\
+P/E cycles & N/A & \href{https://doi.org/10.1109/LCA.2026.3705817}{Son et al. (2026)}; assumed SLC endurance [A]\\\bottomrule
+\end{tabularx}\par}
+\vspace{.08cm}
+{\scriptsize
+\textbf{Read:} 6.8 pJ/bit = 2$\times$ HBM, following MemExplorer.\\[2pt]
+\textbf{Write:} 100 pJ/bit, 8 GB/s and 250 $\mu$s use SSD proxies because public HBF specifications are limited.\\[2pt]
+\textbf{Endurance:} 100,000 P/E cycles is assumed, not a measured production-HBF lifetime.\par}
+\vspace{.08cm}
+{\footnotesize\bfseries\color{Accent}HBF parameters combine prior research and SSD-based assumptions, not direct silicon measurements.\par}
+{\scriptsize\color{Muted}The 2$\times$ HBF read-energy assumption is not equivalent to a measured 2$\times$ device power ratio.\par}
+\vspace{.08cm}
+\hyperlink{MEMORY}{\beamerreturnbutton{Back to Slide 4}}
+\source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving v2, Table 1 and caption, PDF p. 6; Sec. 5.1; References}.}
 \end{frame}
 
 \begin{frame}[c,label=THANKYOU]
