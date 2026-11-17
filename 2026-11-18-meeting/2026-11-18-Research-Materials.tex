@@ -259,21 +259,21 @@ SLO-aware optimization & Yes, TTFT + TPOT & Yes, profiles + runtime thresholds\\
 
 \begin{frame}[t,label=REEL2]{Embodied Carbon per Memory Stack}
 \relax
-{\small\color{Muted}Published REEL LCI v1.0 screening estimates\par}
+{\small\color{Muted}REEL LCI v1.0 screening estimates $\cdot$ kg CO$_2$e / stack\par}
 \vspace{.05cm}
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.65\textwidth}
-\carbonchart{.014}{250}{0,50,100,150,200,250}{1.2/13.52/{HBM3 8-Hi}/{16 GB}/13.52/barHBM,3.3/19.81/{HBM3 12-Hi}/{24 GB}/19.81/barHBM,5.4/20.6/{HBM3E 12-Hi}/{36 GB}/{\(\approx20.6\)}/barHBM,7.5/225.9/{HBF Gen 1}/{512 GiB}/225.9/barHBF}{kg CO$_2$e / stack}
+\carbonchart{.0146}{240}{0,60,120,180,240}{1.2/13.52/{HBM3 8-Hi}/{16 GB}/13.52/barHBM,3.3/19.81/{HBM3 12-Hi}/{24 GB}/19.81/barHBM,5.4/20.6/{HBM3E 12-Hi}/{36 GB}/{\(\approx20.6\)}/barHBM,7.5/225.9/{HBF Gen 1}/{512 GiB}/225.9/barHBF}{Manufacturing carbon per stack}
 \end{column}
 \begin{column}{.32\textwidth}
-\card{lilacbox}{HBF Gen 1, 16-Hi}{\LARGE\textbf{16.7$\times$}\par\vspace{.14cm}\small the per-stack carbon of HBM3 8-Hi\par\vspace{.20cm}
-$225.9/13.52$\par\vspace{.20cm}
-The HBF stack also offers substantially more capacity.}
+\card{lilacbox}{HBF vs. HBM3 8-Hi}{\LARGE\textbf{16.7$\times$}\par\vspace{.14cm}\small Higher carbon per stack}
+\vspace{.16cm}
+\card{mintbox}{Capacity difference}{16 GB vs. 512 GiB\par\vspace{.12cm}
+Not a capacity-matched comparison}
 \end{column}
 \end{columns}
-\takeaway{HBF has a substantially higher manufacturing-carbon cost per stack.}
-{\scriptsize\color{Muted}Article estimates shown as published. Alignment with current detailed inventories has not been independently reproduced.\par}
-\source{\href{\srcA}{HBF comparison, chart (13.52 / 19.81 / 225.9)}; \href{\srcB}{HBM comparison (20.6)}; \href{\srcE}{dataset capacity labels}. All model estimates, not manufacturer measurements.}
+\takeaway{HBF has higher embodied carbon per stack, but also substantially more capacity.}
+\source{\href{\srcA}{HBF comparison}; \href{\srcB}{HBM comparison}; \href{\srcE}{capacity labels}. Model estimates, not manufacturer measurements.}
 \end{frame}
 
 \begin{frame}[t,label=REEL3]{Embodied Carbon per Nominal Capacity Unit}

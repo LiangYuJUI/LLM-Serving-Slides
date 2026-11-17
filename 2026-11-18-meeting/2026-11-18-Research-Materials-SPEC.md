@@ -147,3 +147,8 @@ All 14 content/supplement frame titles use descriptive headings rather than ques
 ### Slide 9 concise copy update
 
 Slide 9 uses the user-provided research question, three points in each evidence card and concise takeaway. The original article, source citations and supplement navigation remain. REEL1 now has a refreshed frozen hash for this authorized copy; REEL2–4 retain their original baselines.
+
+
+### Slide 10 concise comparison update
+
+Slide 10 uses the requested screening-estimate subtitle, manufacturing-carbon chart, 16.7× comparison, capacity-difference card and concise takeaway. Axis ticks are 0/60/120/180/240; bar values and capacity labels (16 GB, 24 GB, 36 GB, 512 GiB) remain. Source links and model-estimate qualification remain in the footer. REEL2 frozen hash reflects this authorized update.
