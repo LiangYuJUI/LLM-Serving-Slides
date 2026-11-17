@@ -18,7 +18,7 @@
 \setbeamercolor{normal text}{fg=Ink}
 \setbeamercolor{structure}{fg=Accent}
 \setbeamercolor{frametitle}{fg=Ink,bg=Paper}
-\setbeamercolor{footline}{fg=Muted,bg=Paper}
+\setbeamercolor{footline}{fg=Muted,bg=}
 \setbeamercolor{mintbox}{fg=Ink,bg=SoftMint}
 \setbeamercolor{lilacbox}{fg=Ink,bg=SoftLilac}
 \setbeamerfont{frametitle}{size=\large,series=\bfseries}
@@ -28,7 +28,7 @@
 \begin{beamercolorbox}[wd=\paperwidth,ht=.74cm,dp=.14cm,leftskip=.55cm]{frametitle}
 \usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
 \setbeamertemplate{footline}{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.48cm]{footline}
-\hspace{.48cm}\scriptsize\ifnum\value{framenumber}>1\hyperlink{EINDEX}{Back to Evidence Index}\fi\hfill Research Materials\enspace |\enspace\insertframenumber\,/\,\inserttotalframenumber\end{beamercolorbox}}
+\hspace{.48cm}\scriptsize\hfill Research Materials\enspace |\enspace\insertframenumber\,/\,\inserttotalframenumber\end{beamercolorbox}}
 \setbeamersize{text margin left=.48cm,text margin right=.48cm}
 
 \hypersetup{pdftitle={Research Materials \& Supporting Evidence},pdfauthor={Yu-Jui Liang}}
@@ -37,13 +37,13 @@
 \newcommand{\srcC}{https://reellci.com/d/hbf-gen1-16hi/}
 \newcommand{\srcD}{https://reellci.com/REEL\%20LCI\%20Methodology\%20Report\%20v1.0.pdf}
 \newcommand{\srcE}{https://reellci.com/explorer/?category=memory_components}
-% Anchor every source block above the footer; wrapped citations grow upward.
+% Bottom-align sources beside the page footer; wrapped citations grow upward.
 \newcommand{\source}[1]{\vfill
 \begin{tikzpicture}[remember picture,overlay]
 \node[anchor=south west,inner sep=0pt,outer sep=0pt,
-text width=\dimexpr\paperwidth-.96cm\relax,align=left,
+text width=\dimexpr\paperwidth-5.3cm\relax,align=left,
 font=\fontsize{6.8}{8}\selectfont,text=Muted]
-at ([xshift=.48cm,yshift=.61cm]current page.south west) {Source: #1};
+at ([xshift=.48cm,yshift=.16cm]current page.south west) {Source: #1};
 \end{tikzpicture}\par}
 \newcommand{\takeaway}[1]{\par\vspace{.14cm}{\small\bfseries\color{Accent}#1\par}}
 \newcommand{\card}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.17cm]{#1}
@@ -219,42 +219,34 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \source{\href{\carbonurl}{Carbon--SLO, Secs. III-A, III-C, IV-A, V-C, VI; Fig. 6(c)}. Diagram and research direction: our synthesis.}
 \end{frame}
 
-\begin{frame}[t,label=RELATED]{GreenCache: Adaptive Caching and Limitations}
+\begin{frame}[t,label=RELATED]{GreenCache: Carbon-Aware SSD Cache Sizing}
 \relax
-{\footnotesize\color{Muted}Carbon-aware SSD KV caching with operational and allocated embodied carbon\par}
+{\footnotesize\color{Muted}Adaptive KV caching under carbon and SLO constraints\par}
 \vspace{.08cm}
+{\small\bfseries\color{Accent}Core Idea\par}
+\vspace{.06cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.54\textwidth}
-{\small\bfseries\color{Accent}Current Architecture\par}
-\vspace{.04cm}
-\begin{tikzpicture}[>={Latex[length=1.3mm]},every node/.style={align=center,text=Ink},
-box/.style={rounded corners=3pt,inner sep=2pt,text width=7.1cm,font=\fontsize{7}{8}\selectfont}]
-\node[box,fill=SoftMint] (profile) at (3.7,0) {\textbf{1. Profiler + Performance Monitor}\\ TTFT / TPOT / power; cache-size and request-rate profiles\\ Monitor current workload};
-\node[box,fill=SoftLilac] (predict) at (3.7,-1.10) {\textbf{2. Carbon Intensity + Load Predictors}\\ Forecast CI (EnsembleCI) and future request rates\\ Load prediction: SARIMA};
-\node[box,fill=SoftMint] (solve) at (3.7,-2.20) {\textbf{3. ILP Optimization}\\ Select SSD cache size to minimize total carbon\\ Subject to serving SLO attainment constraints};
-\node[box,fill=SoftLilac] (cache) at (3.7,-3.30) {\textbf{4. Cache Manager + LCS}\\ Resize SSD KV cache; carbon-aware replacement\\ Retain valuable entries; evict Least Carbon Savings};
-\draw[->,thick,Accent] (profile.south)--(predict.north);
-\draw[->,thick,Accent] (predict.south)--(solve.north);
-\draw[->,thick,Accent] (solve.south)--(cache.north);
-\end{tikzpicture}
-\vspace{.02cm}
-{\scriptsize LMCache / vLLM $\cdot$ L40 GPUs $\cdot$ ShareGPT / TriviaQA\\Azure demand / CarbonCast CI traces\par}
+\begin{column}{.30\textwidth}
+\card{mintbox}{Inputs}{\footnotesize Predicted CI\\[3pt]Request Rate\\[3pt]Power / SLO Profiles}
 \end{column}
-\begin{column}{.43\textwidth}
-{\small\bfseries\color{Accent}Limitations\par}
-\vspace{.04cm}
-\researchinputcard{mintbox}{1 -- No Cross-DC Scheduling}{Adaptive cache management; no geo request routing or WAN-aware placement.}
-\vspace{.08cm}
-\researchinputcard{lilacbox}{2 -- SSD-Centric KV Caching}{No HBM/HBF co-design or MoE expert-weight placement.}
-\vspace{.08cm}
-\researchinputcard{mintbox}{3 -- Homogeneous GPU Evaluation}{L40 evaluation; no heterogeneous GPU and memory-placement optimization.}
-\vspace{.10cm}
-{\scriptsize\color{Muted}GreenCache already accounts for operational and allocated embodied carbon.\par}
+\begin{column}{.32\textwidth}
+\card{lilacbox}{Optimization}{\footnotesize Hourly ILP\\[3pt]Select SSD KV Cache Capacity\\[3pt]Minimize Total Carbon}
+\end{column}
+\begin{column}{.34\textwidth}
+\card{mintbox}{Trade-off}{\footnotesize More Cache: Save Prefill Energy\\[3pt]Less Cache: Lower Allocated Embodied Carbon}
 \end{column}
 \end{columns}
 \vspace{.06cm}
-{\footnotesize\bfseries\color{Accent}GreenCache models KV-cache carbon costs, but not geo routing or HBM/HBF--MoE placement.\par}
-\source{\href{\greenurl}{GreenCache v3, Secs. 2.3, 3.2.1 (carbon); 5.1--5.5 (framework); 6.1 (evaluation); 7 (discussion)}. Simplified grouping of six components, not a reproduction of Fig. 10; scope assessment: our reading.}
+{\footnotesize Cache resizing must still satisfy TTFT / TPOT SLO targets.\par}
+\vspace{.10cm}
+{\small\bfseries\color{Accent}Limitations\par}
+\vspace{.08cm}
+{\small 1. No cross-data-center request scheduling.\\[3pt]
+2. No heterogeneous GPU or HBM/HBF memory placement.\\[3pt]
+3. Prefill-focused carbon objective; no separate prefill/decode power models.\par}
+\vspace{.08cm}
+\takeaway{GreenCache optimizes SSD KV-cache capacity for total carbon, but not GPU/memory placement across data centers.}
+\source{\href{\greenurl}{GreenCache v3, Secs. 3.2.1, 4.1--4.2, 5.4--5.5}.}
 \end{frame}
 
 \begin{frame}[t,label=ACCOUNT]{Previous Work: Reusable Methods and Research Inputs}
