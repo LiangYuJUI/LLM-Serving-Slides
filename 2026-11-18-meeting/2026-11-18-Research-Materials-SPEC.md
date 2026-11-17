@@ -7,7 +7,7 @@ Current expansion verified on **2026-11-17 (Asia/Taipei)** from clean `main` at 
 
 ## Scope and design
 
-Extend the existing Research Materials source/PDF into exactly **14 pages**: unnumbered cover plus content **1/13–13/13**. Five evidence categories cover GPU power, HBM/HBF energy, geo scheduling, operational/embodied accounting and disaggregation. This is evidence collection and proposed research, not a completed system evaluation.
+Extend the existing Research Materials source/PDF into exactly **15 pages**, numbered **1/15–15/15**, including the cover as slide 1 and the final Thank you slide. Five evidence categories cover GPU power, HBM/HBF energy, geo scheduling, operational/embodied accounting and disaggregation. This is evidence collection and proposed research, not a completed system evaluation.
 
 Madrid, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. Ink #243748, Muted #667B8B, Accent #347E74, AccentBlue #507DAD, SoftMint #E6F4EE, SoftLilac #F1EEF8, Paper #FBFCFE. Preserve `source`, `takeaway`, `card`, `researchquestion`, and `carbonchart`; add compact cards only where needed. New tables and diagrams are native LaTeX/TikZ. Existing carbon charts retain zero baselines and their data. The sole external visual is the original Carbon–SLO Fig. 2 With-Caption PNG, bundled in Overleaf.
 
@@ -15,24 +15,25 @@ Madrid, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. 
 
 | PDF page | Content | Label | Title / purpose |
 |---|---|---|---|
-| 1 | unnumbered | cover | Research Materials & Supporting Evidence |
-| 2 | 1/13 | EINDEX | What Evidence Supports Our Research Direction? |
-| 3 | 2/13 | GPU | How Does LLM Serving Power Consumption Vary? |
-| 4 | 3/13 | MEMORY | How Do HBM and HBF Differ in Memory Access Energy? |
-| 5 | 4/13 | PLACEMENT | Does HBF Placement Reduce Total Serving Energy? |
-| 6 | 5/13 | GEO | Why Is the Lowest-Carbon Data Center Not Always Optimal? |
-| 7 | 6/13 | RELATED | What Do Carbon–SLO and FREESH Already Cover? |
-| 8 | 7/13 | ACCOUNT | How Should We Account for Total Serving Carbon? |
-| 9 | 8/13 | REEL1 | What Evidence Do We Have for HBM/HBF Embodied Carbon? |
-| 10 | 9/13 | REEL2 | How Much Embodied Carbon Does One Stack Carry? |
-| 11 | 10/13 | REEL3 | Does HBF Reduce Embodied Carbon per Unit Capacity? |
-| 12 | 11/13 | REEL4 | Can We Trust the HBF Carbon Estimate? |
-| 13 | 12/13 | DISAGG | Can Heterogeneous Attention/Expert Placement Improve Energy Efficiency? |
-| 14 | 13/13 | NEXT | What Does This Evidence Mean for Our Research? |
+| 1 | 1/15 | COVER | Research Materials & Supporting Evidence |
+| 2 | 2/15 | EINDEX | What Evidence Supports Our Research Direction? |
+| 3 | 3/15 | GPU | How Does LLM Serving Power Consumption Vary? |
+| 4 | 4/15 | MEMORY | How Do HBM and HBF Differ in Memory Access Energy? |
+| 5 | 5/15 | PLACEMENT | Does HBF Placement Reduce Total Serving Energy? |
+| 6 | 6/15 | GEO | Why Is the Lowest-Carbon Data Center Not Always Optimal? |
+| 7 | 7/15 | RELATED | What Do Carbon–SLO and FREESH Already Cover? |
+| 8 | 8/15 | ACCOUNT | How Should We Account for Total Serving Carbon? |
+| 9 | 9/15 | REEL1 | What Evidence Do We Have for HBM/HBF Embodied Carbon? |
+| 10 | 10/15 | REEL2 | How Much Embodied Carbon Does One Stack Carry? |
+| 11 | 11/15 | REEL3 | Does HBF Reduce Embodied Carbon per Unit Capacity? |
+| 12 | 12/15 | REEL4 | Can We Trust the HBF Carbon Estimate? |
+| 13 | 13/15 | DISAGG | Can Heterogeneous Attention/Expert Placement Improve Energy Efficiency? |
+| 14 | 14/15 | NEXT | What Does This Evidence Mean for Our Research? |
+| 15 | 15/15 | THANKYOU | Thank you |
 
-Five index cards link to `GPU`, `MEMORY`, `GEO`, `ACCOUNT`, `DISAGG`. All numbered slides have a visible `Back to Evidence Index` link to `EINDEX`. Links use stable labels, not page-number mechanics. Automatic Beamer numbering excludes the cover. Four original REEL frame bodies are frozen by SHA-256, excluding only frame labels and global footer. Original pages 2–5 are now pages 9–12.
+Five index cards link to `GPU`, `MEMORY`, `GEO`, `ACCOUNT`, `DISAGG`. All slides except the cover have a visible `Back to Evidence Index` link to `EINDEX`. Links use stable labels, not page-number mechanics. Automatic Beamer numbering includes the cover and closing slide. Four original REEL frame bodies are frozen by SHA-256, excluding only frame labels and global footer. Original pages 2–5 are now pages 9–12.
 
-The [Power/Carbon evidence register](2026-11-18-Power-Carbon-Slide-Evidence.md) is the current 14-slide claim ledger, including exact sources, configurations, denominators, interpretation, limitations and proposal/prior-work status. The following original REEL register is retained for scientific provenance. Its historical slide numbers 1–4 map to current content slides 8–11; original final slide 5 is now extended content slide 13. The per-capacity chart is now PDF page 11 / content 10.
+The [Power/Carbon evidence register](2026-11-18-Power-Carbon-Slide-Evidence.md) is the current 15-slide claim ledger, including exact sources, configurations, denominators, interpretation, limitations and proposal/prior-work status. The following original REEL register is retained for scientific provenance. Its historical slide numbers 1–4 map to current slides 9–12; original final slide 5 is now extended slide 14. The per-capacity chart is now PDF page 11 / slide 11.
 
 ## Source register and access results
 
@@ -113,7 +114,7 @@ The final equation defines total carbon over the same declared service workload/
 
 Run `python3 2026-11-18-meeting/scripts/build_research_materials.py` from any directory using Python with PyMuPDF and Pillow plus pdfLaTeX/Beamer/TikZ/Latin Modern. An isolated environment can be created with `python3 -m venv /tmp/research-materials-qa` then `/tmp/research-materials-qa/bin/pip install pymupdf pillow`.
 
-The existing workflow now compiles twice locally, packages `output/overleaf/Research-Materials.zip` with `main.tex` and original Fig. 2, extracts that ZIP and compiles twice. (No Research Materials ZIP existed in the inspected baseline; CarbonSLO.zip is untouched.) It checks 14 pages, numbering, text/image bounds, named links/visible return links, source URI annotations, numeric evidence, four preserved frame hashes, local/ZIP text/pixel/annotation parity and protected file hashes. It rejects all layout/reference warnings. It renders `research-materials-01.png` through `-14.png` at 3× and a montage.
+The existing workflow now compiles twice locally, packages `output/overleaf/Research-Materials.zip` with `main.tex` and original Fig. 2, extracts that ZIP and compiles twice. (No Research Materials ZIP existed in the inspected baseline; CarbonSLO.zip is untouched.) It checks 15 pages, numbering, text/image bounds, named links/visible return links, source URI annotations, numeric evidence, four preserved frame hashes, local/ZIP text/pixel/annotation parity and protected file hashes. It rejects all layout/reference warnings. It renders `research-materials-01.png` through `-15.png` at 3× and a montage.
 
 Deliverables: existing `.tex`, existing PDF path, Traditional Chinese Script, this SPEC, Power-Carbon evidence register, README and scoped Cross-DC backlog updates. QA: `output/qa/validation.md`, `research-materials-build.json`, `research-materials-url-checks.json`, `research-materials-preservation.json`, page PNGs and montage. URL availability is recorded separately from valid clickable PDF annotations. Visual review must inspect every generated page.
 
@@ -127,4 +128,8 @@ Deliverables: existing `.tex`, existing PDF path, Traditional Chinese Script, th
 - Four REEL slides retain all values, nominal GB/GiB warning, manufacturing uncertainty, package exclusions and prospective-model status.
 - Carbon–SLO, GreenCache and Research Direction PDFs and all unrelated tracked files retain their baseline hashes.
 
-Current final automated/visual findings are recorded in `output/qa/validation.md`; scientific unknowns are listed in the evidence register. Historical six-page QA is superseded by the 14-page build.
+Current final automated/visual findings are recorded in `output/qa/validation.md`; scientific unknowns are listed in the evidence register. Historical six-page QA is superseded by the 15-page build.
+
+## Numbering update
+
+Per user request, slide number equals physical PDF page, including the cover. PDF pages 2–14 retain their content and internal destinations. Page 15 is a simple Thank you / Questions & Discussion closing slide, with an index return link and no scientific claim or source requirement.

@@ -1,11 +1,11 @@
 {
-  "pages": 14,
+  "pages": 15,
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "0e3d482c4f220275f16cbf8c6d29d09c58e1d5ad2b3cfd6ede502967e7d66d58",
-  "pdf_sha256": "d39a92b3fdb7cdbfbb35cd12794feea8a221b9884f2fa80c1a7eeb9071f80c79",
-  "zip_sha256": "320c0ecb97913e4dfc6ac91db5a90806d694483bac45c7ca2ecf531d104e0b53",
+  "source_sha256": "c90b11aa615ae51c9cb58b9fa521d31b0236383c804bb243caa02dfe557e90a5",
+  "pdf_sha256": "12ccee6aa8cafaad549393493dd9ffc3fb4056d81b7eed624de466b059612f94",
+  "zip_sha256": "b0c336576fdae8d8558a9e02ee9234ea13dcd8049cbc674f685a874c75561e04",
   "preserved_frame_hashes": {
     "REEL1": "4f18cf8dcbfbdd76e2636be9c3c7cb38745c6420ae8d2f056d01ec406a26f038",
     "REEL2": "f95706d41bbdccbdbe638c065b67d169ca3892939a5fe7071e56db14554e93c1",
@@ -19,13 +19,13 @@
     "ACCOUNT": 8,
     "DISAGG": 13
   },
-  "return_links": 13,
+  "return_links": 14,
   "parity": {
     "text": true,
     "pixels": true,
     "annotations": true
   },
-  "protected_files": 11065,
+  "protected_files": 11067,
   "uris": [
     "https://arxiv.org/abs/2505.23970v3",
     "https://arxiv.org/abs/2511.00807v1",

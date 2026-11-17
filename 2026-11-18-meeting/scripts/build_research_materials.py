@@ -11,7 +11,7 @@ QA = ROOT/'output/qa'
 PDF = ROOT/'output/pdf'/f'{NAME}.pdf'
 ZIP = ROOT/'output/overleaf/Research-Materials.zip'
 FIGURE = Path('CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig02.png')
-LABELS = ['EINDEX','GPU','MEMORY','PLACEMENT','GEO','RELATED','ACCOUNT','REEL1','REEL2','REEL3','REEL4','DISAGG','NEXT']
+LABELS = ['EINDEX','GPU','MEMORY','PLACEMENT','GEO','RELATED','ACCOUNT','REEL1','REEL2','REEL3','REEL4','DISAGG','NEXT','THANKYOU']
 CATEGORIES = {'GPU':2, 'MEMORY':3, 'GEO':5, 'ACCOUNT':7, 'DISAGG':12}
 PRESERVED = {'REEL1': '4f18cf8dcbfbdd76e2636be9c3c7cb38745c6420ae8d2f056d01ec406a26f038', 'REEL2': 'f95706d41bbdccbdbe638c065b67d169ca3892939a5fe7071e56db14554e93c1', 'REEL3': '922c2a0b5837f1b593df27a8997e53c0ce60143510f70790e14934bb9011ce20', 'REEL4': '762f2b68d2f144bfcf3c73c3900df78c2b1b72a8d89817826571425301f9d590'}
 
@@ -38,8 +38,9 @@ def annotations(p):
     return [(x.get('uri'),x.get('nameddest'),x.get('page'),tuple(x['from'])) for x in p.get_links()]
 
 def validate(doc):
-    assert len(doc)==14
-    assert 'Research Materials |' not in doc[0].get_text()
+    assert len(doc)==15
+    assert doc.resolve_names()['COVER']['page']==0
+    assert 'Thank you' in doc[-1].get_text()
     names=doc.resolve_names()
     for i,label in enumerate(LABELS,1): assert names[label]['page']==i,(label,names[label])
     for target,page in CATEGORIES.items():
@@ -50,14 +51,14 @@ def validate(doc):
     uris=set()
     for i,p in enumerate(doc):
         t=p.get_text()
+        assert re.search(rf'Research Materials\s*\|\s*{i+1}\s*/\s*15',t),t
         if i:
-            assert re.search(rf'Research Materials\s*\|\s*{i}\s*/\s*13',t),t
             back=[x for x in p.get_links() if x.get('nameddest')=='EINDEX']
             assert len(back)==1 and back[0]['page']==1
             assert 'Back to Evidence Index' in p.get_textbox(back[0]['from'])
         assert abs(p.rect.width/p.rect.height-16/9)<.001
         links=[l for l in p.get_links() if l.get('uri')]
-        assert links, f'No source URI on page {i+1}'
+        if i < 14: assert links, f'No source URI on page {i+1}'
         uris.update(l['uri'] for l in links)
         for b in p.get_text('dict')['blocks']:
             for line in b.get('lines',[]):
@@ -94,17 +95,17 @@ def main():
             assert x.get_text()==y.get_text()
             assert x.get_pixmap().digest==y.get_pixmap().digest
             assert annotations(x)==annotations(y)
-        montage=Image.new('RGB',(1600,3290),'#D8E4EB')
+        montage=Image.new('RGB',(1600,3760),'#D8E4EB')
         for n,page in enumerate(a):
             dest=QA/'pages'/f'research-materials-{n+1:02d}.png'
             page.get_pixmap(matrix=fitz.Matrix(3,3)).save(dest)
             im=Image.open(dest).convert('RGB');im.thumbnail((800,450))
             x=(n%2)*800;y=(n//2)*470
-            montage.paste(im,(x,y));ImageDraw.Draw(montage).text((x+12,y+452),'Cover' if n==0 else f'{n}/13',fill='#243748')
+            montage.paste(im,(x,y));ImageDraw.Draw(montage).text((x+12,y+452),f'{n+1}/15',fill='#243748')
         montage.save(QA/'research-materials-montage.png');shutil.copy2(local,PDF)
     assert before==protected(),'Protected files changed during build'
-    report=dict(pages=14,local_passes=2,zip_passes=2,warnings=[],source_sha256=digest(ROOT/f'{NAME}.tex'),pdf_sha256=digest(PDF),zip_sha256=digest(ZIP),preserved_frame_hashes=PRESERVED,category_destinations={k:v+1 for k,v in CATEGORIES.items()},return_links=13,parity={'text':True,'pixels':True,'annotations':True},protected_files=len(before),uris=uris)
+    report=dict(pages=15,local_passes=2,zip_passes=2,warnings=[],source_sha256=digest(ROOT/f'{NAME}.tex'),pdf_sha256=digest(PDF),zip_sha256=digest(ZIP),preserved_frame_hashes=PRESERVED,category_destinations={k:v+1 for k,v in CATEGORIES.items()},return_links=14,parity={'text':True,'pixels':True,'annotations':True},protected_files=len(before),uris=uris)
     (QA/'research-materials-build.json').write_text(json.dumps(report,indent=2)+'\n')
-    (QA/'validation.md').write_text('''# Research Materials validation\n\n- PASS: 14 widescreen PDF pages; unnumbered cover, content 1/13–13/13.\n- PASS: two local and two extracted Overleaf ZIP pdfLaTeX passes; no layout/reference warnings.\n- PASS: local/ZIP text, pixels, source URI and named-destination annotations match.\n- PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 13 visible return links land on page 2.\n- PASS: text/image bounds, source hyperlinks on every page, required numeric claims and calculations.\n- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; only frame labels and footer changed.\n- PASS: protected repository files unchanged during build.\n- Rendered all 14 pages at 3x resolution and a two-column montage.\n- Visual review: pending inspection of current generated PNGs.\n- Detailed checksums: `research-materials-build.json`.\n- External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.\n\n## Source hyperlink targets\n\n'''+''.join(f'- {u}\n' for u in uris))
-    print('PASS: 14 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
+    (QA/'validation.md').write_text('''# Research Materials validation\n\n- PASS: 15 widescreen PDF pages; slide numbers match PDF pages, 1/15–15/15; final Thank you page.\n- PASS: two local and two extracted Overleaf ZIP pdfLaTeX passes; no layout/reference warnings.\n- PASS: local/ZIP text, pixels, source URI and named-destination annotations match.\n- PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 14 visible return links land on page 2.\n- PASS: text/image bounds, source hyperlinks on every evidence page, required numeric claims and calculations.\n- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; only frame labels and footer changed.\n- PASS: protected repository files unchanged during build.\n- Rendered all 15 pages at 3x resolution and a two-column montage.\n- Visual review: pending inspection of current generated PNGs.\n- Detailed checksums: `research-materials-build.json`.\n- External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.\n\n## Source hyperlink targets\n\n'''+''.join(f'- {u}\n' for u in uris))
+    print('PASS: 15 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()

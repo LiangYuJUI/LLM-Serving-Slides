@@ -28,7 +28,7 @@
 \begin{beamercolorbox}[wd=\paperwidth,ht=.74cm,dp=.14cm,leftskip=.55cm]{frametitle}
 \usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
 \setbeamertemplate{footline}{\begin{beamercolorbox}[wd=\paperwidth,ht=.30cm,dp=.16cm,rightskip=.48cm]{footline}
-\hspace{.48cm}\scriptsize\hyperlink{EINDEX}{Back to Evidence Index}\hfill Research Materials\enspace |\enspace\insertframenumber\,/\,\inserttotalframenumber\end{beamercolorbox}}
+\hspace{.48cm}\scriptsize\ifnum\value{framenumber}>1\hyperlink{EINDEX}{Back to Evidence Index}\fi\hfill Research Materials\enspace |\enspace\insertframenumber\,/\,\inserttotalframenumber\end{beamercolorbox}}
 \setbeamersize{text margin left=.48cm,text margin right=.48cm}
 
 \hypersetup{pdftitle={Research Materials \& Supporting Evidence},pdfauthor={Yu-Jui Liang}}
@@ -64,7 +64,7 @@
 \newcommand{\memurl}{https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/}
 \newcommand{\indexcard}[4]{\hyperlink{#1}{\begin{beamercolorbox}[wd=\linewidth,sep=.13cm,rounded=true]{#2}\small\textbf{#3}\quad\footnotesize #4\end{beamercolorbox}}\par\vspace{.12cm}}
 \begin{document}
-\begin{frame}[plain,noframenumbering]
+\begin{frame}[c,label=COVER]
 \vspace{.4cm}
 {\small\bfseries\color{Accent}RESEARCH MATERIALS\par}
 \vspace{.35cm}
@@ -364,5 +364,15 @@ Interposer, substrate and package assembly excluded}
 {\footnotesize\textbf{Next:} energy calibration and placement/routing ablations. No per-layer cross-WAN A/E assumption.\par}
 \takeaway{Test the coupled design under common workload and SLO constraints.}
 \source{Our proposed research, extending Nov. 11 Research Direction and Cross-DC SPEC. Baselines: \href{\carbonurl}{Carbon--SLO}, \href{\freeshurl}{FREESH}; memory: \href{\hbfurl}{Characterizing HBF}; manufacturing: \href{\srcC}{REEL LCI}.}
+\end{frame}
+\begin{frame}[c,label=THANKYOU]
+\centering
+{\Huge\bfseries\color{Ink}Thank you\par}
+\vspace{.35cm}
+{\color{Accent}\rule{2.2cm}{1.2pt}\par}
+\vspace{.35cm}
+{\large Questions \& Discussion\par}
+\vspace{.50cm}
+{\small Yu-Jui Liang\par}
 \end{frame}
 \end{document}

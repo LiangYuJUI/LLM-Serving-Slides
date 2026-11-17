@@ -103,13 +103,13 @@ python3 -m venv /tmp/carbonslo-qa
 - 最後一頁「heterogeneous GPU、HBM/HBF、attention/expert placement」是我們之後可能做的方向，不是這篇論文的結果。
 
 
-## Research Materials：14 頁 Evidence Deck
+## Research Materials：15 頁 Evidence Deck
 
 - [PDF](output/pdf/2026-11-18-Research-Materials.pdf)、[TeX](2026-11-18-Research-Materials.tex)、[Overleaf ZIP](output/overleaf/Research-Materials.zip)
 - [繁體中文講稿](2026-11-18-Research-Materials-Script.md)、[SPEC](2026-11-18-Research-Materials-SPEC.md)、[逐頁 Evidence Register](2026-11-18-Power-Carbon-Slide-Evidence.md)
 - [Montage](output/qa/research-materials-montage.png)、[QA 報告](output/qa/validation.md)、[build checks](output/qa/research-materials-build.json)、[來源 URL 檢查](output/qa/research-materials-url-checks.json)、[保留內容稽核](output/qa/research-materials-preservation.json)
 
-封面不編號；內容 1/13–13/13。PDF 2 的五張可點卡片分別前往 PDF 3/4/6/8/13，每張證據頁都有 Back to Evidence Index。新增 GPU power、memory energy/placement、geo 與 FREESH 比較、total accounting、A/E 架構，共八張內容頁。原四張 REEL 證據頁原文保留於 PDF 9–12，原末頁延伸為兩層 cross-DC/local 架構。
+封面為 slide 1，頁碼與 PDF 頁碼一致，依序 1/15–15/15；最後新增 Thank you 頁。PDF 2 的五張可點卡片分別前往 PDF 3/4/6/8/13，每張證據頁都有 Back to Evidence Index。新增 GPU power、memory energy/placement、geo 與 FREESH 比較、total accounting、A/E 架構，共八張內容頁。原四張 REEL 證據頁原文保留於 PDF 9–12，原末頁延伸為兩層 cross-DC/local 架構。
 
 編譯（使用上方具 PyMuPDF/Pillow 的環境）：
 
@@ -118,6 +118,6 @@ python3 scripts/build_research_materials.py
 python3 scripts/test_research_materials.py
 ```
 
-兩次本機 pdfLaTeX，再將 ZIP 解壓獨立編譯兩次，比對文字、像素、完整 annotations 並驗證 14 頁與 navigation。ZIP 入口 `main.tex`，內含原始 Carbon–SLO Fig. 2；不需要其他簡報。此腳本不重建 Carbon–SLO、GreenCache 或 Research Direction。
+兩次本機 pdfLaTeX，再將 ZIP 解壓獨立編譯兩次，比對文字、像素、完整 annotations 並驗證 15 頁與 navigation。ZIP 入口 `main.tex`，內含原始 Carbon–SLO Fig. 2；不需要其他簡報。此腳本不重建 Carbon–SLO、GreenCache 或 Research Direction。
 
 科學限制：HBF 能量為排除 static/background power 的模型；FREESH 有 runtime queues，不能標為完全沒有 queue；REEL GB/GiB 與 manufacturing uncertainty 尚未解決；本簡報沒有完成新系統評估或證明 novelty。
