@@ -133,3 +133,5 @@ Current final automated/visual findings are recorded in `output/qa/validation.md
 ## Numbering update
 
 Per user request, slide number equals physical PDF page, including the cover. PDF pages 2–14 retain their content and internal destinations. Page 15 is a simple Thank you / Questions & Discussion closing slide, with an index return link and no scientific claim or source requirement.
+
+Slide 9 source-link update: the `REEL LCI v1.0` card title links directly to the original HBF article, https://reellci.com/insights/the-hbf-inversion.html. Scientific text and rendered appearance remain unchanged. The preserved-frame check normalizes only this authorized hyperlink wrapper and separately verifies the title annotation target.

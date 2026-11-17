@@ -55,5 +55,11 @@
     "compared_to_commit": "4a0ab7bb4e12e7081790f40e5b0752db8e32ae50",
     "pages_2_through_14_pixels_unchanged_above_footer": true,
     "current_pdf_sha256": "12ccee6aa8cafaad549393493dd9ffc3fb4056d81b7eed624de466b059612f94"
+  },
+  "title_hyperlink_update": {
+    "all_15_pages_pixel_and_text_identical": true,
+    "compared_to_commit": "61831bd70d2eae40c057d696786a9ebe278398ba",
+    "pdf_sha256": "bef8274cb0144f8eb9edbc9e209406b66a2415f621f0a29f123de9b2a5297741",
+    "slide_9_title_url": "https://reellci.com/insights/the-hbf-inversion.html"
   }
 }

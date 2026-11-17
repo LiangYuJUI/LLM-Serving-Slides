@@ -5,12 +5,12 @@
 - PASS: local/ZIP text, pixels, source URI and named-destination annotations match.
 - PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 14 visible return links land on page 2.
 - PASS: text/image bounds, source hyperlinks on every evidence page, required numeric claims and calculations.
-- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; only frame labels and footer changed.
+- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; only frame labels, footer and the slide 9 title hyperlink changed.
 - PASS: protected repository files unchanged during build.
 - Rendered all 15 pages at 3x resolution and a two-column montage.
-- PASS: full 15-page montage, cover and Thank you page visually inspected; no clipping or overlap.
-- PASS: pages 2–14 are pixel-identical to the previous committed PDF above the footer.
-- PASS: all three negative navigation/page-count regression tests.
+- PASS: slide 9 visually inspected; all 15 pages have identical pixels and text to the previous committed version.
+- PASS: slide 9 REEL LCI v1.0 title links to the original HBF article.
+- PASS: all three navigation regression tests.
 - Detailed checksums: `research-materials-build.json`.
 - External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.
 

@@ -66,6 +66,9 @@ def validate(doc):
                     r=fitz.Rect(span['bbox'])
                     assert r.x0>=0 and r.y0>=0 and r.x1<=p.rect.width and r.y1<=p.rect.height,span
         for im in p.get_image_info(): assert p.rect.contains(fitz.Rect(im['bbox']))
+    assert any(x.get('uri') == 'https://reellci.com/insights/the-hbf-inversion.html'
+               and 'REEL LCI v1.0' in doc[8].get_textbox(x['from'])
+               for x in doc[8].get_links()), 'REEL title source hyperlink missing'
     assert doc[2].get_images(), 'Original power figure missing'
     for page,values in {9:['13.52','19.81','20.6','225.9','16 GB','24 GB','36 GB','512 GiB','16.7'],10:['0.845','0.825','0.572','0.441','47.8','nominal capacity unit','Not a verified per-GiB'],4:['9.11','7.19','9.54','32.7','static/background'],13:['RQ1','RQ2','RQ3','Request/session']}.items():
         for value in values: assert value in doc[page].get_text(), (page,value)
@@ -79,6 +82,8 @@ def main():
     source=(ROOT/f'{NAME}.tex').read_text()
     for label,expected in PRESERVED.items():
         frame=re.search(r'\\begin\{frame\}\[t,label='+label+r'\](.*?)\\end\{frame\}',source,re.S).group(1)
+        # The title hyperlink is an authorized annotation-only change.
+        frame=frame.replace(r'\href{\srcA}{REEL LCI v1.0}', 'REEL LCI v1.0')
         assert hashlib.sha256(frame.encode()).hexdigest()==expected,('Preserved frame changed',label)
     (QA/'pages').mkdir(parents=True,exist_ok=True);ZIP.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='research-materials-') as td:
@@ -106,6 +111,6 @@ def main():
     assert before==protected(),'Protected files changed during build'
     report=dict(pages=15,local_passes=2,zip_passes=2,warnings=[],source_sha256=digest(ROOT/f'{NAME}.tex'),pdf_sha256=digest(PDF),zip_sha256=digest(ZIP),preserved_frame_hashes=PRESERVED,category_destinations={k:v+1 for k,v in CATEGORIES.items()},return_links=14,parity={'text':True,'pixels':True,'annotations':True},protected_files=len(before),uris=uris)
     (QA/'research-materials-build.json').write_text(json.dumps(report,indent=2)+'\n')
-    (QA/'validation.md').write_text('''# Research Materials validation\n\n- PASS: 15 widescreen PDF pages; slide numbers match PDF pages, 1/15–15/15; final Thank you page.\n- PASS: two local and two extracted Overleaf ZIP pdfLaTeX passes; no layout/reference warnings.\n- PASS: local/ZIP text, pixels, source URI and named-destination annotations match.\n- PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 14 visible return links land on page 2.\n- PASS: text/image bounds, source hyperlinks on every evidence page, required numeric claims and calculations.\n- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; only frame labels and footer changed.\n- PASS: protected repository files unchanged during build.\n- Rendered all 15 pages at 3x resolution and a two-column montage.\n- Visual review: pending inspection of current generated PNGs.\n- Detailed checksums: `research-materials-build.json`.\n- External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.\n\n## Source hyperlink targets\n\n'''+''.join(f'- {u}\n' for u in uris))
+    (QA/'validation.md').write_text('''# Research Materials validation\n\n- PASS: 15 widescreen PDF pages; slide numbers match PDF pages, 1/15–15/15; final Thank you page.\n- PASS: two local and two extracted Overleaf ZIP pdfLaTeX passes; no layout/reference warnings.\n- PASS: local/ZIP text, pixels, source URI and named-destination annotations match.\n- PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 14 visible return links land on page 2.\n- PASS: text/image bounds, source hyperlinks on every evidence page, required numeric claims and calculations.\n- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; only frame labels, footer and the slide 9 title hyperlink changed.\n- PASS: protected repository files unchanged during build.\n- Rendered all 15 pages at 3x resolution and a two-column montage.\n- Visual review: pending inspection of current generated PNGs.\n- Detailed checksums: `research-materials-build.json`.\n- External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.\n\n## Source hyperlink targets\n\n'''+''.join(f'- {u}\n' for u in uris))
     print('PASS: 15 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()
