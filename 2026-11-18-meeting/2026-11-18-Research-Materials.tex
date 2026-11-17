@@ -91,7 +91,7 @@
 \indexcard{ACCOUNT}{lilacbox}{04\quad Operational vs. Embodied Carbon}{Serving Electricity, Manufacturing, Lifetime Allocation}
 \indexcard{DISAGG}{mintbox}{05\quad GPU / MoE Disaggregation Energy}{Attention/Expert Placement, DVFS, Transfer Energy}
 \takeaway{Connect measured GPU behavior, modeled memory costs, and explicit carbon boundaries.}
-\source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\hbfurl}{Characterizing HBF}; \href{\freeshurl}{FREESH}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; prior work on page 13.}
+\source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\hbfurl}{Characterizing HBF}; \href{\freeshurl}{FREESH}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; prior work on page 14.}
 \end{frame}
 
 \begin{frame}[t,label=GPU]{LLM Serving Power Across Inference Phases and Workloads}
@@ -134,46 +134,58 @@ Access energy & \textbf{HBM} & \textbf{HBF} & \textbf{HBF / HBM}\\
 \source{\href{\hbfurl}{Yu et al. (2026), Table 1, p. 6}.}
 \end{frame}
 
-\begin{frame}[t,label=PLACEMENT]{Weight Placement and Modeled Serving Energy}
+\begin{frame}[t,label=PLACEMENT]{Workload Completion Time Comparison}
 \relax
 {\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
 {\footnotesize\color{Muted}GLM-5.2 | 16 simulated GPUs | TP16/EP16 | 100k turns\par}
-\vspace{.04cm}
-{\small\bfseries Workload Completion Time (s) $\downarrow$\par}
+\vspace{.17cm}
+{\small\bfseries Workload Completion Time (s)\par}
+\vspace{.05cm}
 {\centering
-\begin{tikzpicture}[x=1cm,y=.000105cm]
+\begin{tikzpicture}[x=1cm,y=.0001833cm]
+
 \foreach \y/\label in {0/0,6000/{6,000},12000/{12,000}}{
 \draw[gridline] (0,\y)--(12.8,\y);
 \node[anchor=east,font=\scriptsize,text=Muted] at (-.12,\y){\label};}
 \draw[Muted] (0,0)--(12.8,0);
 \foreach \x/\v/\value/\shade in {2.2/11354/{11,354}/AccentBlue,6.4/4543/{4,543}/Accent,10.6/4538/{4,538}/Accent!65}{
-\fill[\shade] (\x-.70,0) rectangle (\x+.70,\v);
-\node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+180){\value};}
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (2.2,-250){HBM-only (8+0)};
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (6.4,-250){H$^3$ (8+8), HBM weights};
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (10.6,-250){H$^3$ (8+8), HBF weights};
-\end{tikzpicture}
-\par}
-{\footnotesize\renewcommand{\arraystretch}{.88}
-\begin{tabularx}{\linewidth}{@{}Xccc@{}}\toprule
-\textbf{Configuration} & \textbf{Stacks/GPU} & \textbf{Weights} & \textbf{Energy (MJ)}\\\midrule
-HBM-only & 8+0 & HBM & 9.11\\
-\rowcolor{SoftMint}H$^3$ & 8+8 & \textbf{HBM} & 7.19\\
-\rowcolor{SoftLilac}H$^3$ & 8+8 & \textbf{HBF} & 9.54\\\bottomrule
-\end{tabularx}\par}
-\vspace{.09cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.07cm]{mintbox}{\footnotesize\bfseries\color{Accent}$\sim$60\% shorter completion time\par}{\scriptsize H$^3$ vs. HBM-only: different capacity configurations.\par}\end{beamercolorbox}
-\end{column}
-\begin{column}{.49\textwidth}
-\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.07cm]{lilacbox}{\footnotesize\bfseries\color{Accent}+32.7\% modeled energy\par}{\scriptsize H$^3$ HBF vs. HBM weights: same 8+8 hardware.\par}\end{beamercolorbox}
-\end{column}
-\end{columns}
-\vspace{.04cm}
-{\footnotesize\bfseries\color{Accent}H$^3$ improves workload completion time, but weight placement still affects energy.\par}
-{\scriptsize\color{Muted}HBM-only has fewer stacks. Simulated energy excludes static/background power.\par}
-\source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving, Table 6, PDF p. 8}.}
+\fill[\shade] (\x-.72,0) rectangle (\x+.72,\v);
+\node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+190){\value};}
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (2.2,-300){HBM-only (8+0)};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (6.4,-300){H$^3$ (8+8), HBM weights};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (10.6,-300){H$^3$ (8+8), HBF weights};
+\end{tikzpicture}\par}
+\vspace{.15cm}
+\card{mintbox}{$\sim$60\% shorter completion time}{H$^3$ adds memory capacity; not an equal-hardware comparison.}
+\takeaway{Additional HBF capacity can improve workload completion time in this simulated setting.}
+\source{\href{\hbfurl}{Table 6, PDF p. 8}.}
+\end{frame}
+
+\begin{frame}[t,label=PLACEMENTENERGY]{Modeled Serving Energy Comparison}
+\relax
+{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
+{\footnotesize\color{Muted}GLM-5.2 | 16 simulated GPUs | TP16/EP16 | 100k turns\par}
+\vspace{.17cm}
+{\small\bfseries Modeled Workload Energy (MJ)\par}
+\vspace{.05cm}
+{\centering
+\begin{tikzpicture}[x=1cm,y=.22cm]
+\fill[SoftMint] (4.65,0) rectangle (12.35,10.9);
+\foreach \y/\label in {0/0,5/5,10/10}{
+\draw[gridline] (0,\y)--(12.8,\y);
+\node[anchor=east,font=\scriptsize,text=Muted] at (-.12,\y){\label};}
+\draw[Muted] (0,0)--(12.8,0);
+\foreach \x/\v/\value/\shade in {2.2/9.11/9.11/AccentBlue,6.4/7.19/7.19/Accent,10.6/9.54/9.54/Accent!65}{
+\fill[\shade] (\x-.72,0) rectangle (\x+.72,\v);
+\node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+.16){\value};}
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (2.2,-.25){HBM-only (8+0)};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (6.4,-.25){H$^3$ (8+8), HBM weights};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (10.6,-.25){H$^3$ (8+8), HBF weights};
+\end{tikzpicture}\par}
+\vspace{.15cm}
+\card{mintbox}{+32.7\% modeled energy}{H$^3$: HBF weights vs. HBM weights, same 8+8 hardware.}
+\takeaway{Weight placement significantly affects modeled serving energy, even with similar completion times.}
+\source{\href{\hbfurl}{Table 6, PDF p. 8}. Simulation-based energy; static/background power excluded.}
 \end{frame}
 
 \begin{frame}[t,label=GEO]{Geo Scheduling Trade-offs in Carbon, Energy and Latency}
@@ -387,7 +399,7 @@ Dataset descriptions are public on the website. Full inventory quantities are li
 {\small Source-documented models support manufacturing-carbon studies when proprietary fab data are unavailable. Connect background data and apply an impact-assessment method to obtain carbon footprints.\par}
 \takeaway{LCI provides the inventory behind a footprint; modeled data still need boundary and quality checks.}
 \vspace{.10cm}
-{\small\href{https://reellci.com/}{\textbf{Official website: https://reellci.com/}}\hfill\hyperlink{REEL1}{\beamerreturnbutton{Back to slide 9}}\par}
+{\small\href{https://reellci.com/}{\textbf{Official website: https://reellci.com/}}\hfill\hyperlink{REEL1}{\beamerreturnbutton{Back to slide 10}}\par}
 \source{\href{https://reellci.com/}{REEL LCI official website}: v1.0 overview, virtual factory approach, access, FAQ and author profile. Accessed 2026-11-17.}
 \end{frame}
 
