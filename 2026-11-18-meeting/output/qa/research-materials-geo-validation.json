@@ -1,13 +1,13 @@
 {
-  "baseline_commit": "c8004975fce159f1ce7f965b705d925e9c1574c2",
-  "pdf_sha256": "a13c5bcc20a2bb3072614b027223baf2b0950cc299b1366bef858420ccb65b45",
+  "baseline_commit": "6452d5bd13d52da8ca5452845f863b8458adcc8f",
+  "pdf_sha256": "caf26ce59ea7a8841c826aab1d3978b0e01f476b9f097b801704e2d5b096c094",
   "changed_page": 7,
   "other_17_pages": {
     "pixels_identical": true,
     "text_identical": true,
     "link_targets_and_rectangles_identical": true
   },
-  "visual_review": "Third limitation card inspected at 3x; no overlap or clipping.",
+  "visual_review": "Slide 7 inspected after requested removal of the extension/allocation note; no clipping or overlap.",
   "primary_source": "https://arxiv.org/abs/2610.14571v1",
   "evidence": "Numerical Figure 6(c) callout removed at user request; source citation retained as support for coordination limitation.",
   "scope": "Only GEO frame changed; fixed non-GEO frame hashes verified. Scripts synchronized to existing 18-page deck without removing numeric, source, navigation, bounds or parity checks.",
