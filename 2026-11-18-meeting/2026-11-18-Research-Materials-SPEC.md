@@ -18,7 +18,7 @@ Madrid, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. 
 | 1 | 1/16 | COVER | Research Materials & Supporting Evidence |
 | 2 | 2/16 | EINDEX | Research Evidence Overview |
 | 3 | 3/16 | GPU | LLM Serving Power Across Inference Phases and Workloads |
-| 4 | 4/16 | MEMORY | HBM and HBF Memory Access Energy |
+| 4 | 4/16 | MEMORY | How Much More Energy Does HBF Access Require? |
 | 5 | 5/16 | PLACEMENT | Weight Placement and Modeled Serving Energy |
 | 6 | 6/16 | GEO | Geo Scheduling Trade-offs in Carbon, Energy and Latency |
 | 7 | 7/16 | RELATED | Related Work: Carbon–SLO and FREESH |
@@ -162,3 +162,8 @@ Slide 11 uses the user-provided subtitle, GB/GiB qualification and concise 47.8%
 ### Slide 12 concise assumptions and limitations
 
 Slide 12 uses the user-provided three model assumptions, three limitations, takeaway and two linked sources. REEL4 frozen hash reflects this authorized update. Speaker scripts are not updated for this or future deck revisions, per user preference.
+
+
+### Slide 4 concise access-energy comparison
+
+Slide 4 uses the user-specified question title (an explicit exception to the earlier descriptive-title preference), publication label, read/write table, units and modeled-data qualification, takeaway and linked Table 1 citation. Ratios are 6.8/3.4 = 2 and 100/3.4 rounded to 29.4. No speaker-script update.
