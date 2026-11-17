@@ -1,4 +1,4 @@
-% Independent research materials. pdfLaTeX, two passes. Original Carbon--SLO Figure 2 asset required.
+% Independent research materials. pdfLaTeX, two passes.
 \documentclass[aspectratio=169,10pt]{beamer}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
@@ -92,33 +92,12 @@ at ([xshift=.48cm,yshift=.61cm]current page.south west) {Source: #1};
 
 \begin{frame}[t,label=EINDEX]{Research Evidence Overview}
 \relax
-\indexcard{GPU}{mintbox}{01\quad GPU Power / Energy Model}{Prefill, Decode, Batching, Idle Power}
-\indexcard{MEMORY}{lilacbox}{02\quad HBM vs. HBF Power / Energy}{Access Energy, Bandwidth, Latency, Placement}
-\indexcard{GEO}{mintbox}{03\quad Geo Carbon-Aware Scheduling}{Carbon Intensity, PUE, Routing, SLO}
-\indexcard{ACCOUNT}{lilacbox}{04\quad Operational vs. Embodied Carbon}{Serving Electricity, Manufacturing, Lifetime Allocation}
-\indexcard{DISAGG}{mintbox}{05\quad GPU / MoE Disaggregation Energy}{Attention/Expert Placement, DVFS, Transfer Energy}
+\indexcard{MEMORY}{mintbox}{01\quad HBM vs. HBF Power / Energy}{Access Energy, Bandwidth, Latency, Placement}
+\indexcard{GEO}{lilacbox}{02\quad Geo Carbon-Aware Scheduling}{Carbon Intensity, PUE, Routing, SLO}
+\indexcard{ACCOUNT}{mintbox}{03\quad Operational vs. Embodied Carbon}{Serving Electricity, Manufacturing, Lifetime Allocation}
+\indexcard{DISAGG}{lilacbox}{04\quad GPU / MoE Disaggregation Energy}{Attention/Expert Placement, DVFS, Transfer Energy}
 \takeaway{Connect measured GPU behavior, modeled memory costs, and explicit carbon boundaries.}
-\source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\hbfurl}{Characterizing HBF}; \href{\freeshurl}{FREESH}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; prior work on page 14.}
-\end{frame}
-
-\begin{frame}[t,label=GPU]{LLM Serving Power Across Inference Phases and Workloads}
-\relax
-\begin{columns}[c,onlytextwidth]
-\begin{column}{.59\textwidth}
-\includegraphics[width=\linewidth]{CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig02.png}
-\end{column}
-\begin{column}{.38\textwidth}
-\card{mintbox}{Measured phase dependence}{\footnotesize Prefill power rises with prompt length toward saturation.\\[5pt]Decode power grows sublinearly with batch size.\\[5pt]A100 TDP (400 W) is a limit/reference, not constant actual power.}
-\vspace{.16cm}
-{\footnotesize Idle: $\sim$72 W per A100.\\Host baseline: 300 W per node (model setting informed by testbed).\par}
-\vspace{.12cm}
-{\small $E_{\rm step}\,[\mathrm J]=\bar P\,[\mathrm W]\,\Delta t\,[\mathrm s]$\par}
-\end{column}
-\end{columns}
-\vspace{.20cm}
-{\footnotesize A100, vLLM 0.6.3, FP16. Llama-3.1-8B / Qwen2.5-7B: TP1/2. Mixtral-8x7B: TP4.\par}
-\takeaway{GPU power and step energy depend on inference phase, workload, and batching behavior.}
-\source{\href{\carbonurl}{Carbon--SLO, Sec. III-B, Fig. 2, PDF p. 4}. Original figure with axes, legends and caption. Testbed-specific baselines.}
+\source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\hbfurl}{Characterizing HBF}; \href{\freeshurl}{FREESH}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; prior work on \hyperlink{DISAGG}{page \ref{DISAGG}}.}
 \end{frame}
 
 \begin{frame}[t,label=MEMORY]{HBM and HBF Memory Access Energy}
@@ -268,7 +247,7 @@ SLO-aware optimization & Yes, TTFT + TPOT & Yes, profiles + runtime thresholds\\
 \relax
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
-\card{mintbox}{Operational Carbon}{GPU compute and idle\\[4pt]HBM/HBF memory operation\\[4pt]Host / network / facility energy\\[4pt]Regional carbon intensity and PUE}
+\card{mintbox}{Operational Carbon}{GPU prefill/decode, batching and idle energy\\[4pt]HBM/HBF memory operation\\[4pt]Host / network / facility energy\\[4pt]Regional carbon intensity and PUE}
 \end{column}
 \begin{column}{.48\textwidth}
 \card{lilacbox}{Allocated Embodied Carbon}{GPU manufacturing\\[4pt]HBM/HBF manufacturing\\[4pt]Packaging and other hardware\\[4pt]Lifetime and allocation assumptions}
@@ -283,7 +262,7 @@ SLO-aware optimization & Yes, TTFT + TPOT & Yes, profiles + runtime thresholds\\
 \vspace{.08cm}
 {\footnotesize\textbf{Count once:} memory power already inside GPU board measurements; memory manufacturing already inside GPU/package footprints; facility energy already covered by PUE. Releasing capacity changes allocation, not past manufacturing emissions.\par}
 \takeaway{Lower serving energy does not automatically imply lower total carbon emissions.}
-\source{\href{\greenurl}{GreenCache, Sec. 2.3, Eqs. (1)--(3), pp. 4--5; Sec. 3.2.1, Eqs. (4)--(5)}; \href{\srcC}{REEL HBF system boundary}. Extended accounting equation: our synthesis.}
+\source{\href{\carbonurl}{Carbon--SLO, Sec. III-B, Fig. 2, PDF p. 4}; \href{\greenurl}{GreenCache, Sec. 2.3, Eqs. (1)--(3), pp. 4--5; Sec. 3.2.1, Eqs. (4)--(5)}; \href{\srcC}{REEL HBF system boundary}. Extended accounting equation: our synthesis.}
 \end{frame}
 
 \begin{frame}[t,label=REEL1]{HBM/HBF Embodied Carbon Evidence}
@@ -427,7 +406,7 @@ Dataset descriptions are public on the website. Full inventory quantities are li
 {\small Source-documented models support manufacturing-carbon studies when proprietary fab data are unavailable. Connect background data and apply an impact-assessment method to obtain carbon footprints.\par}
 \takeaway{LCI provides the inventory behind a footprint; modeled data still need boundary and quality checks.}
 \vspace{.10cm}
-{\small\href{https://reellci.com/}{\textbf{Official website: https://reellci.com/}}\hfill\hyperlink{REEL1}{\beamerreturnbutton{Back to slide 10}}\par}
+{\small\href{https://reellci.com/}{\textbf{Official website: https://reellci.com/}}\hfill\hyperlink{REEL1}{\beamerreturnbutton{Back to slide \ref{REEL1}}}\par}
 \source{\href{https://reellci.com/}{REEL LCI official website}: v1.0 overview, virtual factory approach, access, FAQ and author profile. Accessed 2026-11-17.}
 \end{frame}
 
@@ -474,7 +453,7 @@ P/E cycles & N/A & \href{https://doi.org/10.1109/LCA.2026.3705817}{Son et al. (2
 {\footnotesize\bfseries\color{Accent}HBF parameters combine prior research and SSD-based assumptions, not direct silicon measurements.\par}
 {\scriptsize\color{Muted}The 2$\times$ HBF read-energy assumption is not equivalent to a measured 2$\times$ device power ratio.\par}
 \vspace{.08cm}
-\hyperlink{MEMORY}{\beamerreturnbutton{Back to Slide 4}}
+\hyperlink{MEMORY}{\beamerreturnbutton{Back to Slide \ref{MEMORY}}}
 \source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving v2, Table 1 and caption, PDF p. 6; Sec. 5.1; References}.}
 \end{frame}
 
