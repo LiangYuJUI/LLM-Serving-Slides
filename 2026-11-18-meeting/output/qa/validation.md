@@ -8,7 +8,7 @@
 - PASS: REEL1–3 concise copy and original REEL4 frame body match frozen SHA-256 values exactly; authorized titles, frame labels, footer and slide 9 source/supplement hyperlinks normalized; slides 9–11 copy updated as requested.
 - PASS: protected repository files unchanged during build.
 - Rendered all 16 pages at 3x resolution and a two-column montage.
-- PASS: slides 10 and 11 visually inspected; HBM3E 12-Hi labels display = 20.6 and = 0.572 without clipping.
+- PASS: slides 10 and 11 visually inspected; HBM3E labels show 20.6 and 0.572 with the same bold font as other bar values and no equals signs.
 - Detailed checksums: `research-materials-build.json`.
 - External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.
 
