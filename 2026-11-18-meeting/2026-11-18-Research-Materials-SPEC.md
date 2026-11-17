@@ -142,3 +142,8 @@ REEL supplement: slide 9’s `About REEL / LCI` links to named destination `REEL
 ## Descriptive title update
 
 All 14 content/supplement frame titles use descriptive headings rather than questions. Cover and Thank you are unchanged. REEL scientific content remains frozen; preservation checks normalize the four explicitly authorized title replacements before comparing original frame hashes.
+
+
+### Slide 9 concise copy update
+
+Slide 9 uses the user-provided research question, three points in each evidence card and concise takeaway. The original article, source citations and supplement navigation remain. REEL1 now has a refreshed frozen hash for this authorized copy; REEL2–4 retain their original baselines.
