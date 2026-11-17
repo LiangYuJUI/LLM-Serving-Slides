@@ -123,22 +123,28 @@ at ([xshift=.48cm,yshift=.61cm]current page.south west) {Source: #1};
 
 \begin{frame}[t,label=MEMORY]{HBM and HBF Memory Access Energy}
 \relax
-{\footnotesize\bfseries\color{Muted}CHARACTERIZING HIGH BANDWIDTH FLASH FOR LLM SERVING\par}
-\vspace{.32cm}
-{\large\renewcommand{\arraystretch}{1.65}
-\begin{tabularx}{\linewidth}{@{}Xccc@{}}
+{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
+\vspace{.16cm}
+{\small\renewcommand{\arraystretch}{1.06}
+\begin{tabularx}{\linewidth}{@{}Xcc@{}}
 \toprule
-Access energy & \textbf{HBM} & \textbf{HBF} & \textbf{HBF / HBM}\\
+\textbf{Parameter} & \textbf{HBM} & \textbf{HBF}\\
 \midrule
-\rowcolor{SoftMint}Read & 3.4 & 6.8 & \textbf{2$\times$}\\
-\rowcolor{SoftLilac}Write & 3.4 & 100 & \textbf{29.4$\times$}\\
+Capacity (GB/stack) & 24 & 375\\
+Read bandwidth (GB/s) & 1,000 & 1,000\\
+Write bandwidth (GB/s) & 1,000 & 8\\
+Read startup ($\mu$s) & 0.1 & 20\\
+Write startup ($\mu$s) & 0.1 & 250\\
+\rowcolor{SoftMint}Read energy (pJ/bit) & 3.4 & 6.8\\
+\rowcolor{SoftLilac}Write energy (pJ/bit) & 3.4 & 100\\
+Assumed P/E cycles & --- & 100,000\\
 \bottomrule
 \end{tabularx}\par}
-\vspace{.17cm}
-{\small\color{Muted}Unit: pJ/bit $\cdot$ Model assumptions, not measured HBF silicon\par}
-\vspace{.30cm}
-\card{mintbox}{Key takeaway}{HBF offers much larger capacity, but has higher modeled access energy.}
-\source{\href{\hbfurl}{Yu et al. (2026), Table 1, p. 6}.}
+\vspace{.14cm}
+{\footnotesize\color{Muted}Modeled parameters, not measured HBF silicon results.\par}
+\vspace{.13cm}
+\compactcard{mintbox}{Key takeaway}{HBF offers more capacity, but bandwidth, latency and access energy must all be modeled.}
+\source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving v2, Table 1, PDF p. 6}.}
 \end{frame}
 
 \begin{frame}[t,label=PLACEMENT]{Workload Completion Time Comparison}
