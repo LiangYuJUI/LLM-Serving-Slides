@@ -1,13 +1,13 @@
 {
-  "baseline_commit": "242997d14be192a9f53a809a88a35f05dbc65983",
-  "pdf_sha256": "edc7eda0180ff92633ff82fdabc2dfc520fc14ce8ff927e6c2462bfaeac23018",
+  "baseline_commit": "0d288818e35d2f52d30d3b03ccf836ca7f23d4eb",
+  "pdf_sha256": "c05866270d1943ecac6f22d7d49612aa624aa8ac1d73285d6a0741d569014844",
   "changed_page": 7,
   "other_17_pages": {
     "pixels_identical": true,
     "text_identical": true,
     "link_targets_and_rectangles_identical": true
   },
-  "visual_review": "Slide 7 inspected at 3x; no clipping, overlap or source/footer collision.",
+  "visual_review": "Slide 7 inspected after user-requested removal of routing/diagram note; no clipping or overlap.",
   "primary_source": "https://arxiv.org/abs/2610.14571v1",
   "evidence": "Numerical Figure 6(c) callout removed at user request; source citation retained as support for coordination limitation.",
   "scope": "Only GEO frame changed; fixed non-GEO frame hashes verified. Scripts synchronized to existing 18-page deck without removing numeric, source, navigation, bounds or parity checks."
