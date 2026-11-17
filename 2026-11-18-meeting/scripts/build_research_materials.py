@@ -89,7 +89,7 @@ def validate(doc):
         'PLACEMENT': ['11,354', '4,543', '4,538', '60%', 'not an equal-hardware comparison'],
         'GEO': ['Global Provisioner', 'Periodically polls DCs', 'broadcasts global snapshot',
                 'Operational Carbon Only', 'No allocated embodied carbon.',
-                'Independent Regional Decisions', 'same snapshot', 'Our direction:', 'not yet validated',
+                'Independent Regional Decisions', 'same snapshot', 'Single GPU Type: A100', 'heterogeneous GPUs', 'Our direction:', 'not yet validated',
                 'GPU provisioning', 'hardware configuration', 'lifetime allocation'],
         'MEMORYSOURCES': ['Micron', 'Lenovo', 'Ma & Patterson', 'Moon', 'MemExplorer',
                           'Son', 'SSD', '100,000', 'device power ratio'],
