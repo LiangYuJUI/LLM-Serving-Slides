@@ -242,7 +242,7 @@ SLO-aware optimization & Yes, TTFT + TPOT & Yes, profiles + runtime thresholds\\
 \vspace{.25cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
-\card{mintbox}{\href{\srcA}{REEL LCI v1.0}}{Public semiconductor LCA methodology\\[5pt]
+\card{mintbox}{\href{\srcA}{REEL LCI v1.0}\hfill\hyperlink{REELABOUT}{\scriptsize About REEL / LCI}}{Public semiconductor LCA methodology\\[5pt]
 HBM3, HBM3E, HBM4 and HBF entries\\[5pt]
 Fabrication and assembly assumptions\\[5pt]
 Full inventory quantities require dataset access}
@@ -365,6 +365,33 @@ Interposer, substrate and package assembly excluded}
 \takeaway{Test the coupled design under common workload and SLO constraints.}
 \source{Our proposed research, extending Nov. 11 Research Direction and Cross-DC SPEC. Baselines: \href{\carbonurl}{Carbon--SLO}, \href{\freeshurl}{FREESH}; memory: \href{\hbfurl}{Characterizing HBF}; manufacturing: \href{\srcC}{REEL LCI}.}
 \end{frame}
+\begin{frame}[t,label=REELABOUT]{What Is REEL LCI, and What Does Its Inventory Provide?}
+\relax
+{\large\bfseries\color{Accent}REEL: Repository of Electronics Environmental Line-items\par}
+\vspace{.12cm}
+{\small\textbf{LCI: Life cycle inventory}\quad Manufacturing inputs and outputs, before impact assessment.\par}
+\vspace{.20cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\card{mintbox}{Database and creator}{\footnotesize
+\textbf{Jonathan Balsvik}: electronics LCA practitioner with experience in product carbon footprints.\\[6pt]
+\textbf{v1.0: 520 datasets, 18 categories.}\\[6pt]
+Coverage includes semiconductors, memory, packaging, PCBs and data-center hardware.}
+\end{column}
+\begin{column}{.48\textwidth}
+\card{lilacbox}{How it is built and accessed}{\footnotesize
+Public papers, equipment specifications, patents and sustainability reports inform engineering process models.\\[6pt]
+Dataset descriptions are public on the website. Full inventory quantities are licensed through \textbf{Circa}.}
+\end{column}
+\end{columns}
+\vspace{.17cm}
+{\small Source-documented models support manufacturing-carbon studies when proprietary fab data are unavailable. Connect background data and apply an impact-assessment method to obtain carbon footprints.\par}
+\takeaway{LCI provides the inventory behind a footprint; modeled data still need boundary and quality checks.}
+\vspace{.10cm}
+{\small\href{https://reellci.com/}{\textbf{Official website: https://reellci.com/}}\hfill\hyperlink{REEL1}{\beamerreturnbutton{Back to slide 9}}\par}
+\source{\href{https://reellci.com/}{REEL LCI official website}: v1.0 overview, virtual factory approach, access, FAQ and author profile. Accessed 2026-11-17.}
+\end{frame}
+
 \begin{frame}[c,label=THANKYOU]
 \centering
 {\Huge\bfseries\color{Ink}Thank you\par}

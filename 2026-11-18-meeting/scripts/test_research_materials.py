@@ -25,6 +25,18 @@ class NavigationContracts(unittest.TestCase):
             doc[2].delete_link(link)
         self.reject(mutate)
 
+    def test_missing_reel_supplement(self):
+        def mutate(doc):
+            link = next(x for x in doc[8].get_links() if x.get('nameddest') == 'REELABOUT')
+            doc[8].delete_link(link)
+        self.reject(mutate)
+
+    def test_missing_reel_supplement_return(self):
+        def mutate(doc):
+            link = next(x for x in doc[14].get_links() if x.get('nameddest') == 'REEL1')
+            doc[14].delete_link(link)
+        self.reject(mutate)
+
     def test_wrong_page_count(self):
         self.reject(lambda doc: doc.delete_page(13))
 

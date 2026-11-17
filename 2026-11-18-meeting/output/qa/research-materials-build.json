@@ -1,11 +1,11 @@
 {
-  "pages": 15,
+  "pages": 16,
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "912acee6704d66daaf6a6c25221031e15083562ef7f64718e25488d0262d6027",
-  "pdf_sha256": "bef8274cb0144f8eb9edbc9e209406b66a2415f621f0a29f123de9b2a5297741",
-  "zip_sha256": "ea70eb8c03e24d2786c5ebbf6438dc6250684ec0bf0aebc6aea230b66338cfc9",
+  "source_sha256": "ae3d95b84b446ca1e653422507f248fc6c74f99f63e1a06011eb90fdea10a0d0",
+  "pdf_sha256": "95242cfa46ac454ae9dba0ed72f58dd4d0621d992cc670be6abb2d462af81f2e",
+  "zip_sha256": "b34fd93f154c4c633874cdb39aafab53338221a475b2ed2948cf3bff4d35b6c4",
   "preserved_frame_hashes": {
     "REEL1": "4f18cf8dcbfbdd76e2636be9c3c7cb38745c6420ae8d2f056d01ec406a26f038",
     "REEL2": "f95706d41bbdccbdbe638c065b67d169ca3892939a5fe7071e56db14554e93c1",
@@ -19,7 +19,7 @@
     "ACCOUNT": 8,
     "DISAGG": 13
   },
-  "return_links": 14,
+  "return_links": 15,
   "parity": {
     "text": true,
     "pixels": true,
@@ -33,6 +33,7 @@
     "https://arxiv.org/abs/2608.01891",
     "https://arxiv.org/abs/2609.39131v2",
     "https://arxiv.org/abs/2610.14571v1",
+    "https://reellci.com/",
     "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
     "https://reellci.com/d/hbf-gen1-16hi/",
     "https://reellci.com/explorer/?category=memory_components",

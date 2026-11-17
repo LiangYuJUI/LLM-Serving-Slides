@@ -1,7 +1,7 @@
 # Research Materials & Supporting Evidence — 講稿
 
 2026 年 11 月 18 日研究會議。主講 Yu-Jui Liang，指導教授 Hsiang-Yun Cheng。
-更新：2026-11-17。建議主講約 12–14 分鐘；時間是排練目標，非實測。封面為 slide 1，所有 slide 編號與 PDF 頁碼一致，依序 1/15–15/15，最後一頁為 Thank you。詳細定位見 Power-Carbon-Slide-Evidence。
+更新：2026-11-17。建議主講約 12–14 分鐘；時間是排練目標，非實測。封面為 slide 1，所有 slide 編號與 PDF 頁碼一致，依序 1/16–16/16，最後一頁為 Thank you。詳細定位見 Power-Carbon-Slide-Evidence。
 
 ## 1 — 封面（20 秒）
 
@@ -83,7 +83,15 @@ Janus 已有 attention/expert 分離與 expert scheduling；AFlex 做的是 atte
 
 RQ1 問 geo-aware power 和 carbon optimization；RQ2 問 memory placement；RQ3 問 total carbon 和 hardware co-design。下一步先校準能量與 component boundary，再做固定 workload 的 placement/routing ablation。最後一起看 J/token、功率、SLO goodput、TTFT/TPOT、operational 與 allocated embodied carbon，不能只挑一個有利指標。今天的證據支持我們提出問題，還沒有證明這個系統能減碳。
 
-## 15 — Thank you（10 秒；PDF 15）
+## 15 — REEL LCI 是什麼？（補充頁，約 60 秒；PDF 15）
+
+這頁可以從 slide 9 的 About REEL / LCI 點進來，講完再返回。REEL 的全名是 Repository of Electronics Environmental Line-items，可以理解成電子產品環境盤查資料庫；LCI 則是 Life cycle inventory，生命週期盤查。
+
+建立者 Jonathan Balsvik 是電子產業的 LCA 與產品碳足跡實務工作者。官網 v1.0 列出五百二十組資料集、十八個元件類別，涵蓋半導體、記憶體、封裝、PCB 與資料中心硬體。它利用公開論文、設備規格、專利及企業永續報告來建立工程製程模型。官網可以閱讀資料集說明，完整 inventory 數量則需經 Circa 授權取得。
+
+它讓缺少晶圓廠專有數據的研究者，仍能建立可追查來源的製造碳排模型。但 LCI 是投入與產出資料，還不是碳足跡答案；仍要串接背景資料、套用影響評估方法，並檢查邊界與資料品質。頁面下方可以直接開啟官網。
+
+## 16 — Thank you（10 秒；PDF 16）
 
 謝謝老師，接下來想請教這三個研究問題的優先順序，以及哪些能量與碳排假設應該先驗證。
 

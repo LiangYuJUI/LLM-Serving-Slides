@@ -72,6 +72,12 @@
       "status": 200,
       "final_url": "https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/",
       "ok": true
+    },
+    {
+      "url": "https://reellci.com/",
+      "status": 200,
+      "final_url": "https://reellci.com/",
+      "ok": true
     }
   ]
 }

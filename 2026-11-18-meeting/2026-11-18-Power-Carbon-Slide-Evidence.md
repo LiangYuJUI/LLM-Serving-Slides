@@ -1,6 +1,6 @@
 # Research Materials: Power / Carbon Slide Evidence Register
 
-Verified 2026-11-17 (Asia/Taipei). Meeting: 2026-11-18. Base commit `9d09be3`; `git fetch origin` confirmed local main equals origin/main before editing. This is an evidence collection, not a system evaluation. PDF page numbers include the cover; slide number = PDF page (1–15), including cover and closing slide.
+Verified 2026-11-17 (Asia/Taipei). Meeting: 2026-11-18. Base commit `9d09be3`; `git fetch origin` confirmed local main equals origin/main before editing. This is an evidence collection, not a system evaluation. PDF page numbers include the cover; slide number = PDF page (1–16), including cover and closing slide.
 
 ## Primary sources and verification scope
 
@@ -31,7 +31,8 @@ Verified 2026-11-17 (Asia/Taipei). Meeting: 2026-11-18. Base commit `9d09be3`; `
 | 12 / 12 | Can the estimate be trusted? | R dataset and methodology PDF p. 68 | 232-layer NAND / 65 nm CMOS / 28 nm base proxies; 175.6 mm² package-envelope proxy; exp(−.005×175.6)≈.416. Report −24%/+32% band | Scenario input, not validated production footprint | Preserved original. Missing package boundaries, geometry/bit-density conflict, no verified link between current inventory and article's 225.9 center |
 | 13 / 13 | Can heterogeneous A/E placement improve energy efficiency? | J Secs. 3–4; A Secs. III–IV; M publication record; Nov. 11 Research Direction | No numerical result. HBM-rich attention/active KV; HBF-rich experts with hot HBM/cold HBF weights; local activation/hidden-state exchange | Existing disaggregation and frequency control motivate a memory-aware experiment | **Our Proposed Design**. A/FFN ≠ MoE A/Expert. Expert reads, waiting power, communication, hot/cold accuracy and SLO remain unknown |
 | 14 / 14 | What follows for our research? | Cross-DC SPEC and Nov. 11 proposal; C/F/H/R motivation | Two-level architecture and RQ1–3; energy/token, power, SLO goodput, TTFT/TPOT, operational/allocated embodied/total carbon | Request/session routing across DCs; operator/memory control locally | Our proposal and next steps. No assumption of practical per-layer A/E traffic over WAN; no carbon-saving result |
-| 15 / 15 | Thank you / Questions & Discussion | Author closing slide | No quantitative evidence | Invite discussion | No scientific claim; not an experiment |
+| 15 / 15 | What is REEL LCI? | Official homepage: overview, virtual factory, pricing/access, FAQ, author profile and footer; checked 2026-11-17 | v1.0: 520 datasets / 18 categories; no experiment | Inventory data support impact assessment | Provider-reported scope, not independent validation; supplement linked from slide 9 |
+| 16 / 16 | Thank you / Questions & Discussion | Author closing slide | No quantitative evidence | Invite discussion | No scientific claim; not an experiment |
 
 ## HBF controlled comparison and energy boundary
 
