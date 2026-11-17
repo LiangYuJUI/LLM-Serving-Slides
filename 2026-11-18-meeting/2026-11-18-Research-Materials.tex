@@ -136,25 +136,44 @@ Access energy & \textbf{HBM} & \textbf{HBF} & \textbf{HBF / HBM}\\
 
 \begin{frame}[t,label=PLACEMENT]{Weight Placement and Modeled Serving Energy}
 \relax
-{\footnotesize\textbf{Modeled workload energy:} GLM-5.2, 16 B200-compute GPUs, 16-bit storage, TP16/EP16 + DPA.\\
-1$\times$ trace: 100k turns, 10\% admission buffer, mixed batches, session-sticky routing, KV offload.\par}
-\vspace{.17cm}
-{\small\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\linewidth}{@{}Xcccc@{}}\toprule
-Configuration & Stacks/GPU & Weights & Time (s) & Energy (MJ)\\\midrule
-HBM-only & 8+0 & HBM & 11,354 & 9.11\\
-\rowcolor{SoftMint}H$^3$ & 8+8 & HBM & 4,543 & 7.19\\
-\rowcolor{SoftLilac}H$^3$ & 8+8 & HBF & 4,538 & 9.54\\\bottomrule
+{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
+{\footnotesize\color{Muted}GLM-5.2 | 16 simulated GPUs | TP16/EP16 | 100k turns\par}
+\vspace{.04cm}
+{\small\bfseries Workload Completion Time (s) $\downarrow$\par}
+{\centering
+\begin{tikzpicture}[x=1cm,y=.000105cm]
+\foreach \y/\label in {0/0,6000/{6,000},12000/{12,000}}{
+\draw[gridline] (0,\y)--(12.8,\y);
+\node[anchor=east,font=\scriptsize,text=Muted] at (-.12,\y){\label};}
+\draw[Muted] (0,0)--(12.8,0);
+\foreach \x/\v/\value/\shade in {2.2/11354/{11,354}/AccentBlue,6.4/4543/{4,543}/Accent,10.6/4538/{4,538}/Accent!65}{
+\fill[\shade] (\x-.70,0) rectangle (\x+.70,\v);
+\node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+180){\value};}
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (2.2,-250){HBM-only (8+0)};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (6.4,-250){H$^3$ (8+8), HBM weights};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (10.6,-250){H$^3$ (8+8), HBF weights};
+\end{tikzpicture}
+\par}
+{\footnotesize\renewcommand{\arraystretch}{.88}
+\begin{tabularx}{\linewidth}{@{}Xccc@{}}\toprule
+\textbf{Configuration} & \textbf{Stacks/GPU} & \textbf{Weights} & \textbf{Energy (MJ)}\\\midrule
+HBM-only & 8+0 & HBM & 9.11\\
+\rowcolor{SoftMint}H$^3$ & 8+8 & \textbf{HBM} & 7.19\\
+\rowcolor{SoftLilac}H$^3$ & 8+8 & \textbf{HBF} & 9.54\\\bottomrule
 \end{tabularx}\par}
-\vspace{.14cm}
-{\small\textbf{Controlled H$^3$ comparison:} $(9.54/7.19-1)\times100=\mathbf{32.7\%}$ higher energy.\\
-HBM-only has fewer memory stacks. It is not an equal-hardware baseline.\par}
-\vspace{.12cm}
-{\footnotesize\textbf{Table 7, H$^3$ / HBM weights vs. HBM-only, same 1$\times$ workload:} weight reads +19.50 pp, KV/index reads $-$0.63 pp, avoided prefill 0.00 pp, other +2.21 pp; reported net saving 21.09\% (rounding differs).\par}
-\vspace{.12cm}
-{\footnotesize\textbf{Boundary:} operation, memory and communication energy; static/background power excluded. Mean TPOT rises from 218.72 to 279.15 ms for H$^3$/HBM. No SLO guarantee.\par}
-\takeaway{Weight placement can substantially change serving energy even when hardware configuration and completion time are similar.}
-\source{\href{\hbfurl}{Characterizing HBF v2, Table 6 (p. 8), Table 7 (p. 9), Secs. 3 and 5.1}. Simulation-based results; energy is not wall-plug total.}
+\vspace{.09cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.07cm]{mintbox}{\footnotesize\bfseries\color{Accent}$\sim$60\% shorter completion time\par}{\scriptsize H$^3$ vs. HBM-only: different capacity configurations.\par}\end{beamercolorbox}
+\end{column}
+\begin{column}{.49\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.07cm]{lilacbox}{\footnotesize\bfseries\color{Accent}+32.7\% modeled energy\par}{\scriptsize H$^3$ HBF vs. HBM weights: same 8+8 hardware.\par}\end{beamercolorbox}
+\end{column}
+\end{columns}
+\vspace{.04cm}
+{\footnotesize\bfseries\color{Accent}H$^3$ improves workload completion time, but weight placement still affects energy.\par}
+{\scriptsize\color{Muted}HBM-only has fewer stacks. Simulated energy excludes static/background power.\par}
+\source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving, Table 6, PDF p. 8}.}
 \end{frame}
 
 \begin{frame}[t,label=GEO]{Geo Scheduling Trade-offs in Carbon, Energy and Latency}
