@@ -298,28 +298,21 @@ Higher stack carbon, but substantially larger capacity.\par\vspace{.20cm}
 \vspace{.10cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.49\textwidth}
-\card{mintbox}{Current dataset assumptions}{\footnotesize
-16-Hi stack, 512 GiB nominal capacity\\[6pt]
-232-layer NAND + 65 nm CMOS proxy\\[6pt]
-28 nm base logic, CBA bonding, TSV and testing\\[6pt]
-175.6 mm$^2$ device envelope used as die area\\[6pt]
-Assumed die yield: $\exp(-0.005\!\times\!175.6)\approx0.416$}
+\card{mintbox}{Model Assumptions}{
+16-Hi HBF stack, 512 GiB\\[8pt]
+232-layer NAND; 65 nm / 28 nm process proxies\\[8pt]
+175.6 mm$^2$ package outline used as die-area proxy}
 \end{column}
 \begin{column}{.49\textwidth}
-\card{lilacbox}{Limits that affect interpretation}{\footnotesize
-No manufacturer production-carbon validation\\[6pt]
-Package outline is not a measured die area\\[6pt]
-Die area / bit density conflict remains unresolved\\[6pt]
-Packaging and material inventory gaps\\[6pt]
-Interposer, substrate and package assembly excluded}
+\card{lilacbox}{Key Limitations}{
+No verified production-carbon data\\[8pt]
+Die-area / bit-density inconsistency\\[8pt]
+Interposer, substrate and package-level assembly excluded}
 \end{column}
 \end{columns}
 \vspace{.22cm}
-{\small\textbf{Version caution:} Both the article and dataset say v1.0. The public inventory does not establish that today's assumptions reproduce 225.9 kg CO$_2$e.\par}
-\vspace{.12cm}
-{\footnotesize\color{Muted}The report gives a $-24\%/+32\%$ uncertainty band. We do not present it as a validated carbon interval around the article's estimate.\par}
-\takeaway{Useful for scenarios. Independent validation is needed for definitive hardware-carbon claims.}
-\source{\href{\srcC}{HBF dataset: assumptions, boundary and limitations}; \href{\srcD}{Methodology, Sec. 4.4.4, PDF p. 68 / printed p. 66}; \href{\srcA}{article estimate}.}
+\takeaway{Suitable for preliminary carbon modeling, but not validated HBF manufacturing footprints.}
+\source{\href{\srcC}{REEL LCI v1.0 HBF dataset}; \href{\srcD}{Methodology Report, Sec. 4.4.4}.}
 \end{frame}
 \begin{frame}[t,label=DISAGG]{Proposed Attention/Expert Placement and Energy Costs}
 \relax

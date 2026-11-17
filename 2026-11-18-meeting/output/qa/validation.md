@@ -5,10 +5,10 @@
 - PASS: local/ZIP text, pixels, source URI and named-destination annotations match.
 - PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 15 visible return links land on page 2.
 - PASS: text/image bounds, source hyperlinks on every evidence page, required numeric claims and calculations.
-- PASS: REEL1–3 concise copy and original REEL4 frame body match frozen SHA-256 values exactly; authorized titles, frame labels, footer and slide 9 source/supplement hyperlinks normalized; slides 9–11 copy updated as requested.
+- PASS: REEL1–4 concise frame bodies match frozen SHA-256 values exactly; authorized titles, frame labels, footer and slide 9 source/supplement hyperlinks normalized; slides 9–12 copy updated as requested.
 - PASS: protected repository files unchanged during build.
 - Rendered all 16 pages at 3x resolution and a two-column montage.
-- PASS: slides 10 and 11 visually inspected; HBM3E labels show 20.6 and 0.572 with the same bold font as other bar values and no equals signs.
+- PASS: slide 12 visually inspected; concise assumptions, limitations and takeaway fit without clipping. Other 15 pages pixel-identical to the prior commit.
 - Detailed checksums: `research-materials-build.json`.
 - External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.
 

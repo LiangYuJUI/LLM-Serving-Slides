@@ -157,3 +157,8 @@ Slide 10 uses the requested screening-estimate subtitle, manufacturing-carbon ch
 ### Slide 11 concise nominal-normalization update
 
 Slide 11 uses the user-provided subtitle, GB/GiB qualification and concise 47.8% comparison card. Axis ticks are 0/0.25/0.5/0.75/1. Bar values, capacity labels, units and source links remain. REEL3 frozen hash reflects this authorized update.
+
+
+### Slide 12 concise assumptions and limitations
+
+Slide 12 uses the user-provided three model assumptions, three limitations, takeaway and two linked sources. REEL4 frozen hash reflects this authorized update. Speaker scripts are not updated for this or future deck revisions, per user preference.
