@@ -53,9 +53,9 @@ class NavigationContracts(unittest.TestCase):
             doc[16].delete_link(link)
         self.reject(mutate)
 
-    def test_missing_geo_evidence(self):
+    def test_missing_geo_shared_state(self):
         def mutate(doc):
-            for rect in doc[6].search_for('19.4%'):
+            for rect in doc[6].search_for('Global Provisioner'):
                 doc[6].add_redact_annot(rect)
             doc[6].apply_redactions()
         self.reject(mutate)

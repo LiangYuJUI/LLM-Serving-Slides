@@ -8,10 +8,8 @@
 - PASS: REEL1–4 concise frame bodies match frozen SHA-256 values exactly; authorized titles, frame labels, footer and slide 9 source/supplement hyperlinks normalized; previously authorized REEL copy and caveat removal included in baselines.
 - PASS: protected repository files unchanged during build.
 - Rendered all 18 pages at 3x resolution and a two-column montage.
-- PASS: final Slide 7 inspected at 3x; no text/arrow overlap or clipping.
-- PASS: other 17 pages pixel/text/link-identical to baseline 5728ad4.
-- PASS: 9 regression tests; all 17 non-GEO frame hashes preserved.
-- Detailed GEO evidence and scope: `research-materials-geo-validation.json`.
+- PASS: Slide 7 visually inspected after user-requested removal of the numerical evidence block; no clipping/overlap. Other 17 pages pixel-identical to previous commit.
+- PASS: all 9 regression tests, including required global-state description.
 - Detailed checksums: `research-materials-build.json`.
 - External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.
 
