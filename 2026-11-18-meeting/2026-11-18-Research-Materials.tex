@@ -72,9 +72,7 @@ at ([xshift=.48cm,yshift=.16cm]current page.south west) {Source: #1};
 \newcommand{\researchinputcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.10cm]{#1}{\footnotesize\bfseries\color{Accent}#2}\par\vspace{.03cm}{\scriptsize\raggedright #3\par}\end{beamercolorbox}}
 \begin{document}
 \begin{frame}[c,label=COVER]
-\vspace{.4cm}
-{\small\bfseries\color{Accent}RESEARCH MATERIALS\par}
-\vspace{.35cm}
+\relax
 {\LARGE\bfseries Research Materials\par\vspace{.10cm}\& Supporting Evidence\par}
 \vspace{.30cm}
 {\large Cross-Data-Center Carbon- and Power-Aware LLM Serving\\with Heterogeneous GPU and HBM/HBF Memory Co-Design\par}
@@ -84,10 +82,6 @@ at ([xshift=.48cm,yshift=.16cm]current page.south west) {Source: #1};
 {\large Yu-Jui Liang\quad Advisor: Hsiang-Yun Cheng\par}
 \vspace{.12cm}
 {\color{Muted}National Taiwan University / Academia Sinica\par}
-\vspace{.24cm}
-{\large Research Meeting\quad November 18, 2026\par}
-{\small\color{Muted}Research evidence collection and proposed direction\par}
-\source{\href{\srcA}{REEL LCI v1.0: HBF comparison}; \href{\srcD}{Methodology report}. Model estimates, accessed 2026-11-13.}
 \end{frame}
 
 \begin{frame}[t,label=EINDEX]{Research Evidence Overview}
@@ -251,36 +245,40 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 
 \begin{frame}[t,label=ACCOUNT]{Previous Work: Reusable Methods and Research Inputs}
 \relax
-{\footnotesize\color{Muted}Building on Carbon--SLO and GreenCache\par}
-\vspace{.08cm}
-{\small\bfseries\color{Accent}Previous Work Comparison\par}
-{\scriptsize\color{Muted}Research materials: data to obtain or reproduce; not an open-source inventory.\par}
-\vspace{.04cm}
-{\scriptsize\renewcommand{\arraystretch}{1.05}\setlength{\tabcolsep}{4pt}
-\begin{tabularx}{\linewidth}{@{}p{2.0cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}\toprule
-\textbf{Previous Work} & \textbf{Reusable Methods} & \textbf{Research Materials}\\\midrule
-\href{\carbonurl}{\textbf{Carbon--SLO}} & Geo simulator; continuous batching / queues; RTT; latency / power models; facility MILP & GPU profiles; request traces; regional CI / PUE; WAN RTT; TTFT / TPOT\\[1pt]
-\href{\greenurl}{\textbf{GreenCache}} & LMCache/vLLM KV reuse; cache profiling; CI/load prediction; allocated embodied-carbon model & ShareGPT / TriviaQA; Azure demand; CarbonCast CI; cache / hardware energy data\\\bottomrule
-\end{tabularx}\par}
-\vspace{.03cm}
-{\small\bfseries\color{Accent}Additional Inputs for Our Research\par}
-\vspace{-.16cm}
+{\footnotesize\color{Muted}Carbon--SLO and GreenCache as foundations for our research\par}
+\vspace{.02cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.49\textwidth}
-\researchinputcard{mintbox}{Hardware and Memory Models}{Heterogeneous GPU power / latency profiles\\[1pt]HBM/HBF capacity, bandwidth, access energy\\[1pt]GPU waiting and inter-GPU transfer costs}
+\card{mintbox}{\href{\carbonurl}{Carbon--SLO}}{\footnotesize
+\textbf{Geo-Distributed Serving}\\[3pt]
+\textbf{Methods}\\[2pt]
+SLO-aware geo scheduling; batching and queueing simulation\\[3pt]
+\textbf{Research Inputs}\\[2pt]
+GPU power/latency profiles, CI, PUE and WAN RTT}
 \end{column}
 \begin{column}{.49\textwidth}
-\researchinputcard{lilacbox}{Workload and Carbon Data}{Multi-turn KV reuse; MoE expert-access traces\\[1pt]Regional CI / PUE / WAN RTT\\[1pt]HBM/HBF embodied carbon; lifetime assumptions}
+\card{lilacbox}{\href{\greenurl}{GreenCache}}{\footnotesize
+\textbf{Carbon-Aware KV Caching}\\[3pt]
+\textbf{Methods}\\[2pt]
+KV reuse and adaptive cache sizing; total-carbon accounting\\[3pt]
+\textbf{Research Inputs}\\[2pt]
+Multi-turn workload traces, cache/power profiles and carbon models}
 \end{column}
 \end{columns}
-\vspace{.07cm}
-{\scriptsize\color{Muted}\textbf{Evidence types:} measured GPU profiles $\ne$ HBM/HBF simulator assumptions $\ne$ prospective REEL embodied-carbon estimates.\par}
-\vspace{.03cm}
-{\scriptsize\color{Muted}Our proposed sequence\par}
-{\footnotesize\color{Accent}\textbf{1. Local Memory Placement $\rightarrow$ 2. SLO-Aware Geo Routing $\rightarrow$ 3. Total-Carbon Evaluation}\par}
 \vspace{.02cm}
-{\scriptsize\bfseries\color{Accent}Combine geo scheduling, KV reuse and HBM/HBF placement under common SLO and carbon constraints.\par}
-\source{\href{\carbonurl}{Carbon--SLO, Secs. III--V}; \href{\greenurl}{GreenCache, Secs. 2.3, 3.2.1, 5--7}; \href{\hbfurl}{Characterizing HBF v2, Sec. 3, Table 1, Sec. 5.1}; \href{\srcC}{REEL HBF boundary / limitations}. Research integration and evaluation plan: our proposal; novelty not established.}
+{\small\bfseries\color{Accent}Additional Research Requirements\par}
+\vspace{-.15cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.49\textwidth}
+\compactcard{mintbox}{Hardware / Memory Models}{Heterogeneous GPU power; HBM/HBF access energy, capacity and transfer costs}
+\end{column}
+\begin{column}{.49\textwidth}
+\compactcard{lilacbox}{Workload / Carbon Data}{MoE expert-access traces, KV reuse and HBM/HBF embodied-carbon estimates}
+\end{column}
+\end{columns}
+\vspace{.06cm}
+{\footnotesize\bfseries\color{Accent}Extend geo scheduling and KV caching with HBM/HBF-aware placement and total-carbon evaluation.\par}
+\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\hbfurl}{Characterizing HBF}; \href{\srcC}{REEL LCI}. Research integration is our proposal.}
 \end{frame}
 
 \begin{frame}[t,label=REEL1]{HBM/HBF Embodied Carbon Evidence}
