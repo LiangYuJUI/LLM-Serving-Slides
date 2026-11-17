@@ -152,3 +152,8 @@ Slide 9 uses the user-provided research question, three points in each evidence 
 ### Slide 10 concise comparison update
 
 Slide 10 uses the requested screening-estimate subtitle, manufacturing-carbon chart, 16.7× comparison, capacity-difference card and concise takeaway. Axis ticks are 0/60/120/180/240; bar values and capacity labels (16 GB, 24 GB, 36 GB, 512 GiB) remain. Source links and model-estimate qualification remain in the footer. REEL2 frozen hash reflects this authorized update.
+
+
+### Slide 11 concise nominal-normalization update
+
+Slide 11 uses the user-provided subtitle, GB/GiB qualification and concise 47.8% comparison card. Axis ticks are 0/0.25/0.5/0.75/1. Bar values, capacity labels, units and source links remain. REEL3 frozen hash reflects this authorized update.

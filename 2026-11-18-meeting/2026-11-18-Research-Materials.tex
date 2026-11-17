@@ -278,20 +278,19 @@ Not a capacity-matched comparison}
 
 \begin{frame}[t,label=REEL3]{Embodied Carbon per Nominal Capacity Unit}
 \relax
-{\small\color{Muted}Nominal normalization: divide each published stack estimate by its capacity numeral\par}
+{\small\color{Muted}Published stack estimates divided by labeled capacity numerals\par}
 \vspace{.05cm}
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.65\textwidth}
-\carbonchart{3.5}{1}{0,0.2,0.4,0.6,0.8,1.0}{1.2/.845/{HBM3 8-Hi}/{16 GB}/0.845/barHBM,3.3/.8254167/{HBM3 12-Hi}/{24 GB}/0.825/barHBM,5.4/.5722222/{HBM3E 12-Hi}/{36 GB}/{\(\approx0.572\)}/barHBM,7.5/.4412109/{HBF Gen 1}/{512 GiB}/0.441/barHBF}{kg CO$_2$e / nominal capacity unit}
+\carbonchart{3.5}{1}{0,0.25,0.5,0.75,1}{1.2/.845/{HBM3 8-Hi}/{16 GB}/0.845/barHBM,3.3/.8254167/{HBM3 12-Hi}/{24 GB}/0.825/barHBM,5.4/.5722222/{HBM3E 12-Hi}/{36 GB}/{\(\approx0.572\)}/barHBM,7.5/.4412109/{HBF Gen 1}/{512 GiB}/0.441/barHBF}{kg CO$_2$e / nominal capacity unit}
 \end{column}
 \begin{column}{.32\textwidth}
-\card{mintbox}{HBF vs. HBM3 8-Hi}{\LARGE\textbf{47.8\% lower}\par\vspace{.12cm}\small under nominal normalization\par\vspace{.16cm}
-\footnotesize $1-\dfrac{225.9/512}{13.52/16}$\par\vspace{.16cm}\small
-HBM labels: GB\\HBF label: GiB\\\textbf{Not a verified per-GiB comparison.}}
+\card{mintbox}{HBF vs. HBM3 8-Hi}{\LARGE\textbf{47.8\% lower}\par\vspace{.12cm}\small Under nominal normalization\par\vspace{.20cm}
+Higher stack carbon, but substantially larger capacity.\par\vspace{.20cm}
+\textbf{Not a verified per-GiB or equal-performance comparison.}}
 \end{column}
 \end{columns}
-\takeaway{HBF is lower after nominal capacity normalization, despite a higher stack cost.}
-{\scriptsize\color{Muted}GB/GiB ambiguity remains. Lower carbon per capacity does not imply equal bandwidth, latency or serving performance.\par}
+{\footnotesize\color{Muted}HBM capacity labels use GB; HBF uses GiB. Values are nominal-normalized calculations, not verified per-GiB results.\par}
 \source{\href{\srcA}{HBF comparison}; \href{\srcB}{HBM comparison}; \href{\srcE}{capacity labels}. Bars and 47.8\% are our calculations using unconverted capacity numerals.}
 \end{frame}
 
