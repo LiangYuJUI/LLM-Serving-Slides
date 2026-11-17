@@ -201,27 +201,46 @@ Assumed P/E cycles & --- & 100,000\\
 \source{\href{\hbfurl}{Table 6, PDF p. 8}. Simulation-based energy; static/background power excluded.}
 \end{frame}
 
-\begin{frame}[t,label=GEO]{Geo Scheduling Trade-offs in Carbon, Energy and Latency}
+\begin{frame}[t,label=GEO]{Carbon--SLO: Shared State, Regional Decisions}
 \relax
-{\footnotesize\color{Muted}Conceptual example informed by Carbon--SLO, not a measured experiment\par}
-\vspace{.10cm}
-\begin{tikzpicture}[>=Latex,every node/.style={font=\small,align=center}]
-\node[fill=SoftLilac,rounded corners,minimum height=.85cm,text width=2.0cm] (r) at (1.1,0) {Incoming\\request};
-\node[fill=SoftMint,rounded corners,minimum height=.85cm,text width=2.9cm] (s) at (5,0) {Regional scheduler\\Energy + SLO estimate};
-\node[fill=SoftMint,rounded corners,text width=4.7cm,minimum height=.95cm] (a) at (11.5,.7) {Data Center A: lower CI\\Longer queue / WAN RTT};
-\node[fill=SoftLilac,rounded corners,text width=4.7cm,minimum height=.95cm] (b) at (11.5,-.7) {Data Center B: higher CI\\Different GPU/memory energy\\Shorter wait};
-\draw[->,thick,Accent] (r)--(s);
-\draw[->,thick,Accent] (s.east)--(a.west);
-\draw[->,thick,Accent] (s.east)--(b.west);
+{\small\color{Muted}Hierarchical control with independent regional scheduling\par}
+\vspace{.08cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.54\textwidth}
+{\small\bfseries\color{Accent}Current Architecture\par}
+\vspace{.03cm}
+\begin{tikzpicture}[>=Latex,every node/.style={align=center,text=Ink},
+box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
+\node[box,fill=SoftMint,text width=6.6cm] (global) at (3.65,0) {\textbf{Global Provisioner}\\CI $\cdot$ Batch $\cdot$ Queue $\cdot$ KV $\cdot$ RTT\\\scriptsize Periodically polls DCs; broadcasts global snapshot};
+\node[box,fill=SoftLilac,text width=2.75cm] (r1) at (1.75,-1.35) {Regional Scheduler 1};
+\node[box,fill=SoftLilac,text width=2.75cm] (r2) at (5.55,-1.35) {Regional Scheduler 2};
+\draw[->,thick,Accent] (global.south) -- ++(0,-.25) -| (r1.north);
+\draw[->,thick,Accent] (global.south) -- ++(0,-.25) -| (r2.north);
+\node[box,fill=SoftMint,text width=5.3cm] (dc) at (3.65,-2.55) {\textbf{Shared Low-CI Data Center}};
+\draw[->,thick,AccentBlue] (r1.south)--([xshift=-.65cm]dc.north);
+\draw[->,thick,AccentBlue] (r2.south)--([xshift=.65cm]dc.north);
 \end{tikzpicture}
-\vspace{.12cm}
-{\centering\large $C_{\rm op}[\mathrm{gCO_2e}]=\sum_{d,t}\frac{E^{\rm IT}_{d,t}[\mathrm J]}{3.6\times10^6}\,\mathrm{PUE}_{d,t}\,\mathrm{CI}_{d,t}[\mathrm{gCO_2e/kWh}]$\par}
-\vspace{.12cm}
-{\footnotesize Here $E^{\rm IT}$ excludes facility overhead. Apply PUE once; omit it if energy is already facility-level. Carbon--SLO's $E_d$ already includes PUE. Account for WAN energy separately if in scope.\par}
-\vspace{.15cm}
-{\small Regional CI must be combined with GPU/memory energy, queueing and batching.\\WAN RTT consumes the latency budget. Check \textbf{both TTFT and TPOT SLOs}.\par}
-\takeaway{The lowest-carbon-intensity data center is not necessarily the lowest-carbon SLO-feasible serving destination.}
-\source{\href{\carbonurl}{Carbon--SLO, Sec. II-C (PUE/CI), Secs. III-B--D (power, queueing, RTT and SLO), pp. 2--5}. Diagram and unit-explicit equation: our synthesis.}
+{\footnotesize\itshape Concurrent routing can overload the same DC.\par}
+\vspace{.03cm}
+{\scriptsize\color{Muted}Local or cross-region routing; remote requests pass through the target scheduler. Conceptual conflict diagram, not the measured topology.\par}
+\end{column}
+\begin{column}{.43\textwidth}
+{\small\bfseries\color{Accent}Limitations \& Evidence\par}
+\vspace{.03cm}
+\compactcard{mintbox}{Limitation 1 -- Carbon Scope}{\textbf{Operational Carbon Only}\\No allocated embodied carbon.}
+\vspace{.03cm}
+\compactcard{lilacbox}{Limitation 2 -- Coordination}{\textbf{Independent Regional Decisions}\\Concurrent decisions on the same snapshot.}
+\vspace{.04cm}
+{\Large\bfseries\color{Accent}10.3\% $\rightarrow$ 19.4\%\par}
+{\footnotesize SLO violations: 4 $\rightarrow$ 8 regional schedulers\par}
+\vspace{.02cm}
+{\scriptsize\color{Muted}Facility MILP $\cdot$ Llama-3.1-8B $\cdot$ high load\\Same total inference engines $\cdot$ evaluated topology\\\href{\carbonurl}{Figure 6(c)}; not a universal outcome.\par}
+\end{column}
+\end{columns}
+\vspace{.08cm}
+\takeaway{Our direction: Cross-region coordination + HBM/HBF-aware energy/SLO + Total carbon}
+{\scriptsize\color{Muted}Proposed extension; not yet validated. Embodied carbon: GPU provisioning, hardware configuration and lifetime allocation.\par}
+\source{\href{\carbonurl}{Carbon--SLO, Secs. III-A, III-C, IV-A, V-C; Fig. 6(c)}. Diagram and research direction: our synthesis.}
 \end{frame}
 
 \begin{frame}[t,label=RELATED]{Related Work: Carbon--SLO and FREESH}

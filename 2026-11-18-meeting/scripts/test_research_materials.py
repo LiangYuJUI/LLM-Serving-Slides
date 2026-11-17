@@ -27,14 +27,37 @@ class NavigationContracts(unittest.TestCase):
 
     def test_missing_reel_supplement(self):
         def mutate(doc):
-            link = next(x for x in doc[8].get_links() if x.get('nameddest') == 'REELABOUT')
-            doc[8].delete_link(link)
+            link = next(x for x in doc[9].get_links() if x.get('nameddest') == 'REELABOUT')
+            doc[9].delete_link(link)
         self.reject(mutate)
 
     def test_missing_reel_supplement_return(self):
         def mutate(doc):
-            link = next(x for x in doc[14].get_links() if x.get('nameddest') == 'REEL1')
-            doc[14].delete_link(link)
+            link = next(x for x in doc[15].get_links() if x.get('nameddest') == 'REEL1')
+            doc[15].delete_link(link)
+        self.reject(mutate)
+
+    def test_valid_deck(self):
+        with fitz.open(build.PDF) as doc:
+            build.validate(doc)
+
+    def test_missing_memory_supplement(self):
+        def mutate(doc):
+            link = next(x for x in doc[3].get_links() if x.get('nameddest') == 'MEMORYSOURCES')
+            doc[3].delete_link(link)
+        self.reject(mutate)
+
+    def test_missing_memory_supplement_return(self):
+        def mutate(doc):
+            link = next(x for x in doc[16].get_links() if x.get('nameddest') == 'MEMORY')
+            doc[16].delete_link(link)
+        self.reject(mutate)
+
+    def test_missing_geo_evidence(self):
+        def mutate(doc):
+            for rect in doc[6].search_for('19.4%'):
+                doc[6].add_redact_annot(rect)
+            doc[6].apply_redactions()
         self.reject(mutate)
 
     def test_wrong_page_count(self):

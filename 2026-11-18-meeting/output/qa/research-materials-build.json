@@ -1,44 +1,51 @@
 {
-  "pages": 16,
+  "pages": 18,
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "c753ba0a424e81dafc3a5223eed8f6139b019f63e5163f4b4fb468260d161fef",
-  "pdf_sha256": "1032cc48a41ead31e70ccafad337a0a34417fd2a52a69ec9f6d7e9463c3d7381",
-  "zip_sha256": "bbfbc11e8895faf3dfad02b2b87b0e71c5b26a0f59d15e48b54d70e81621744a",
+  "source_sha256": "4fbb11ff401e5d9e2d757cd003d904121bf59f68c7c737d6544da179a85273dd",
+  "pdf_sha256": "81b43c111107a83a773d7f3088e4e401671e955c7f156ce0af4e4596e383782b",
+  "zip_sha256": "e43e847888953acb7f38ec438925ecc5a0c57811c38a1031b6be26ddfb489b63",
   "preserved_frame_hashes": {
     "REEL1": "a48e62133c24df47d87ca15285fc999607b32e1ee2b5933999f2570035c1bbd3",
     "REEL2": "893e24ef3c3b3dc2d50e559402ce0ff48e0243a0fd4d36627d20ad8a3cb59965",
-    "REEL3": "ea806be98f9f6d18d138bf0131938d1723c505b34a3bfd358545615782d08a41",
+    "REEL3": "1fc3a6cce4ab8ec2c99130ad8e3d17ce2eb1ecf5367dff6c2dfa5643e739eb09",
     "REEL4": "e8bc4a53e7f5c755c1b4bb33ab1f4b03ea8be635ef1d5701c01944af2a7139fe"
   },
   "category_destinations": {
     "GPU": 3,
     "MEMORY": 4,
-    "GEO": 6,
-    "ACCOUNT": 8,
-    "DISAGG": 13
+    "GEO": 7,
+    "ACCOUNT": 9,
+    "DISAGG": 14
   },
-  "return_links": 15,
+  "return_links": 17,
   "parity": {
     "text": true,
     "pixels": true,
     "annotations": true
   },
-  "protected_files": 11067,
+  "protected_files": 11069,
   "uris": [
     "https://arxiv.org/abs/2505.23970v3",
     "https://arxiv.org/abs/2511.00807v1",
     "https://arxiv.org/abs/2512.13525",
+    "https://arxiv.org/abs/2604.16007v1",
     "https://arxiv.org/abs/2608.01891",
     "https://arxiv.org/abs/2609.39131v2",
     "https://arxiv.org/abs/2610.14571v1",
+    "https://doi.org/10.1109/IEDM45741.2023.10413890",
+    "https://doi.org/10.1109/LCA.2026.3660969",
+    "https://doi.org/10.1109/LCA.2026.3705817",
+    "https://doi.org/10.1109/MC.2026.3652916",
+    "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu",
     "https://reellci.com/",
     "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
     "https://reellci.com/d/hbf-gen1-16hi/",
     "https://reellci.com/explorer/?category=memory_components",
     "https://reellci.com/insights/hbm-footprint-inversion.html",
     "https://reellci.com/insights/the-hbf-inversion.html",
+    "https://www.micron.com/products/memory/hbm/hbm3e",
     "https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/"
   ]
 }

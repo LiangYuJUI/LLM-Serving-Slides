@@ -1,0 +1,14 @@
+{
+  "baseline_commit": "5728ad4320f564af7013869103b2aae47fa3ab6b",
+  "pdf_sha256": "81b43c111107a83a773d7f3088e4e401671e955c7f156ce0af4e4596e383782b",
+  "changed_page": 7,
+  "other_17_pages": {
+    "pixels_identical": true,
+    "text_identical": true,
+    "link_targets_and_rectangles_identical": true
+  },
+  "visual_review": "Slide 7 inspected at 3x; no clipping, overlap or source/footer collision.",
+  "primary_source": "https://arxiv.org/abs/2610.14571v1",
+  "evidence": "Secs. III-A, III-C, IV-A, V-C; Fig. 6(c), PDF p. 9. Facility MILP, Llama-3.1-8B, high load; 4 vs 8 regional schedulers, same total engines; 10.3% vs 19.4%.",
+  "scope": "Only GEO frame changed; fixed non-GEO frame hashes verified. Scripts synchronized to existing 18-page deck without removing numeric, source, navigation, bounds or parity checks."
+}
