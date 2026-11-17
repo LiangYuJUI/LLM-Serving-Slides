@@ -37,7 +37,14 @@
 \newcommand{\srcC}{https://reellci.com/d/hbf-gen1-16hi/}
 \newcommand{\srcD}{https://reellci.com/REEL\%20LCI\%20Methodology\%20Report\%20v1.0.pdf}
 \newcommand{\srcE}{https://reellci.com/explorer/?category=memory_components}
-\newcommand{\source}[1]{\vfill{\fontsize{6.8}{8}\selectfont\color{Muted}Source: #1\par}\vspace{.04cm}}
+% Anchor every source block above the footer; wrapped citations grow upward.
+\newcommand{\source}[1]{\vfill
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=south west,inner sep=0pt,outer sep=0pt,
+text width=\dimexpr\paperwidth-.96cm\relax,align=left,
+font=\fontsize{6.8}{8}\selectfont,text=Muted]
+at ([xshift=.48cm,yshift=.61cm]current page.south west) {Source: #1};
+\end{tikzpicture}\par}
 \newcommand{\takeaway}[1]{\par\vspace{.14cm}{\small\bfseries\color{Accent}#1\par}}
 \newcommand{\card}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.17cm]{#1}
 {\small\bfseries\color{Accent}#2}\par\vspace{.10cm}{\small\raggedright #3\par}\end{beamercolorbox}}
