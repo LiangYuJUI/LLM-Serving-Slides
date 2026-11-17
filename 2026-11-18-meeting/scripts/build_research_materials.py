@@ -15,7 +15,7 @@ LABELS = ['EINDEX','GPU','MEMORY','PLACEMENT','GEO','RELATED','ACCOUNT','REEL1',
 CATEGORIES = {'GPU':2, 'MEMORY':3, 'GEO':5, 'ACCOUNT':7, 'DISAGG':12}
 ORIGINAL_REEL_TITLES = {'HBM/HBF Embodied Carbon Evidence': 'What Evidence Do We Have for HBM/HBF Embodied Carbon?', 'Embodied Carbon per Memory Stack': 'How Much Embodied Carbon Does One Stack Carry?', 'Embodied Carbon per Nominal Capacity Unit': 'Does HBF Reduce Embodied Carbon per Unit Capacity?', 'HBF Carbon Estimate: Assumptions and Limitations': 'Can We Trust the HBF Carbon Estimate?'}
 # REEL1–2 baselines include user-requested concise copy updates; REEL3–4 retain original bodies.
-PRESERVED = {'REEL1': 'a48e62133c24df47d87ca15285fc999607b32e1ee2b5933999f2570035c1bbd3', 'REEL2': '7b224fa4deb0a20dc141d6a6cae518be9f8ae0579178c5dbca6f1dac988720c6', 'REEL3': '922c2a0b5837f1b593df27a8997e53c0ce60143510f70790e14934bb9011ce20', 'REEL4': '762f2b68d2f144bfcf3c73c3900df78c2b1b72a8d89817826571425301f9d590'}
+PRESERVED = {'REEL1': 'a48e62133c24df47d87ca15285fc999607b32e1ee2b5933999f2570035c1bbd3', 'REEL2': '86b272db9fb09c42371e921f058a49092f272d1d648bdda001560b574997157c', 'REEL3': '922c2a0b5837f1b593df27a8997e53c0ce60143510f70790e14934bb9011ce20', 'REEL4': '762f2b68d2f144bfcf3c73c3900df78c2b1b72a8d89817826571425301f9d590'}
 
 def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 
