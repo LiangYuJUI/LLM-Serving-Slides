@@ -1,10 +1,12 @@
-# Slides 7–8 繁體中文講稿
+# Slides 4–5 繁體中文講稿
+
+重排後：本檔的 GreenCache 是 slide 4（原 slide 7），Previous Work 是 slide 5（原 slide 8）。Notion 頁面尚未改頁碼。
 
 Notion：https://app.notion.com/p/41bc9399c91881598c97dee6fb8231b7
 
 每頁正文預計約 50–70 秒；「研究啟發」與「原始論文來源」為提問補充，不計入正文講述時間。
 
-## Slide 7 — GreenCache: Adaptive Caching and Limitations
+## Slide 4 — GreenCache: Adaptive Caching and Limitations
 
 這一頁看 GreenCache 如何管理 SSD 上可重用的 KV Cache。保留更多 Cache 能減少 Prefill 重算，但也增加儲存資源的分攤製造碳排，所以最佳容量會隨負載與電網碳強度改變。
 
@@ -20,7 +22,7 @@ Notion：https://app.notion.com/p/41bc9399c91881598c97dee6fb8231b7
 
 [GreenCache — Cache Your Prompt When It’s Green（arXiv v3）](https://arxiv.org/abs/2505.23970v3)：Secs. 2.3、3.2.1（碳模型）；5.1–5.5（框架、Profiler、SARIMA、ILP、LCS）；6.1（LMCache/vLLM、L40、ShareGPT/TriviaQA、Azure/CarbonCast）；7（分攤假設與討論）。左側四組流程是我們對六個元件的簡化整理，不是 Figure 10 的完整重製。
 
-## Slide 8 — Previous Work: Reusable Methods and Research Inputs
+## Slide 5 — Previous Work: Reusable Methods and Research Inputs
 
 這一頁整理前人研究能提供的方法，以及我們還需要補上的輸入。Carbon–SLO 提供跨資料中心模擬與排程方法，把 Continuous Batching、Queue、RTT 和延遲功率模型接起來，在 TTFT、TPOT 限制下做路由。GreenCache 則提供 KV 重用、Cache Profiling、負載預測，以及分攤製造碳排的方法。
 

@@ -5,36 +5,39 @@ Meeting: November 18, 2026. Author: Yu-Jui Liang. Advisor: Hsiang-Yun Cheng. Nat
 Repository: https://github.com/LiangYuJUI/LLM-Serving-Slides.git
 Current expansion verified on **2026-11-17 (Asia/Taipei)** from clean `main` at `9d09be3`, equal to `origin/main` after fetch. Original REEL research accessed 2026-11-13; its preserved source register follows below.
 
+## Current 17-page contract
+
+The present deck is exactly **17 pages**, numbered **1/17–17/17**. Narrative order is Previous Work, Embodied Carbon Evidence, HBM/HBF Performance and Energy, then the proposed research direction. Thank you is slide 15. Slides 16–17 are backups and are not index chapters. This is evidence and a proposal, not a completed system evaluation.
+
+| PDF page | Label | Role |
+|---|---|---|
+| 1 | COVER | Research Materials & Supporting Evidence |
+| 2 | EINDEX | Four-chapter index for Carbon- and Power-Aware Cross-DC LLM Serving |
+| 3 | GEO | Carbon–SLO previous work |
+| 4 | RELATED | GreenCache previous work |
+| 5 | ACCOUNT | Reusable methods and missing inputs |
+| 6 | REEL1 | Embodied-carbon evidence; links to REELABOUT |
+| 7 | REEL2 | Carbon per stack |
+| 8 | REEL3 | Carbon per nominal capacity unit |
+| 9 | REEL4 | HBF carbon assumptions and limitations |
+| 10 | MEMORY | HBM/HBF parameters; links to MEMORYSOURCES |
+| 11 | PLACEMENT | Workload completion time |
+| 12 | PLACEMENTENERGY | Modeled serving energy, including 7.19 / 9.54 MJ and +32.7% |
+| 13 | DISAGG | Proposed HBM/HBF-aware placement |
+| 14 | NEXT | Research plan |
+| 15 | THANKYOU | Thank you |
+| 16 | REELABOUT | REEL backup; returns to REEL1 |
+| 17 | MEMORYSOURCES | Parameter-source backup; returns to MEMORY |
+
+Index cards link to `GEO`, `REEL1`, `MEMORY` and `DISAGG`. Navigation uses frame labels. There is no per-slide “Back to Evidence Index” button. REEL1–4 frame bodies stay frozen by SHA-256 aside from the authorized title and supplement-link normalization. Sections below this contract that mention 16 pages, a GPU frame, FREESH as a main slide, or Carbon–SLO Fig. 2 inside this deck describe earlier drafts.
+
 ## Scope and design
 
-Extend the existing Research Materials source/PDF into exactly **16 pages**, numbered **1/16–16/16**, including the cover as slide 1 and the final Thank you slide. Five evidence categories cover GPU power, HBM/HBF energy, geo scheduling, operational/embodied accounting and disaggregation. This is evidence collection and proposed research, not a completed system evaluation.
+Madrid, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. Ink #243748, Muted #667B8B, Accent #347E74, AccentBlue #507DAD, SoftMint #E6F4EE, SoftLilac #F1EEF8, Paper #FBFCFE. Preserve `source`, `takeaway`, `card`, `researchquestion`, and `carbonchart`. Tables and diagrams on the evidence slides are native LaTeX/TikZ. Existing carbon charts retain zero baselines and their data.
 
-Madrid, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. Ink #243748, Muted #667B8B, Accent #347E74, AccentBlue #507DAD, SoftMint #E6F4EE, SoftLilac #F1EEF8, Paper #FBFCFE. Preserve `source`, `takeaway`, `card`, `researchquestion`, and `carbonchart`; add compact cards only where needed. New tables and diagrams are native LaTeX/TikZ. Existing carbon charts retain zero baselines and their data. The sole external visual is the original Carbon–SLO Fig. 2 With-Caption PNG, bundled in Overleaf.
+## Historical page notes
 
-## Page and navigation contract
-
-| PDF page | Content | Label | Title / purpose |
-|---|---|---|---|
-| 1 | 1/16 | COVER | Research Materials & Supporting Evidence |
-| 2 | 2/16 | EINDEX | Research Evidence Overview |
-| 3 | 3/16 | GPU | LLM Serving Power Across Inference Phases and Workloads |
-| 4 | 4/16 | MEMORY | How Much More Energy Does HBF Access Require? |
-| 5 | 5/16 | PLACEMENT | Weight Placement and Modeled Serving Energy |
-| 6 | 6/16 | GEO | Geo Scheduling Trade-offs in Carbon, Energy and Latency |
-| 7 | 7/16 | RELATED | Related Work: Carbon–SLO and FREESH |
-| 8 | 8/16 | ACCOUNT | Total Serving Carbon Accounting |
-| 9 | 9/16 | REEL1 | HBM/HBF Embodied Carbon Evidence |
-| 10 | 10/16 | REEL2 | Embodied Carbon per Memory Stack |
-| 11 | 11/16 | REEL3 | Embodied Carbon per Nominal Capacity Unit |
-| 12 | 12/16 | REEL4 | HBF Carbon Estimate: Assumptions and Limitations |
-| 13 | 13/16 | DISAGG | Proposed Attention/Expert Placement and Energy Costs |
-| 14 | 14/16 | NEXT | Research Direction and Next Steps |
-| 15 | 15/16 | REELABOUT | REEL LCI: Database Background and Inventory Scope |
-| 16 | 16/16 | THANKYOU | Thank you |
-
-Five index cards link to `GPU`, `MEMORY`, `GEO`, `ACCOUNT`, `DISAGG`. All slides except the cover have a visible `Back to Evidence Index` link to `EINDEX`. Links use stable labels, not page-number mechanics. Automatic Beamer numbering includes the cover and closing slide. Four original REEL frame bodies are frozen by SHA-256, excluding only frame labels and global footer. Original pages 2–5 are now pages 9–12.
-
-The [Power/Carbon evidence register](2026-11-18-Power-Carbon-Slide-Evidence.md) is the current 16-slide claim ledger, including exact sources, configurations, denominators, interpretation, limitations and proposal/prior-work status. The following original REEL register is retained for scientific provenance. Its historical slide numbers 1–4 map to current slides 9–12; original final slide 5 is now extended slide 14. The per-capacity chart is now PDF page 11 / slide 11.
+The following original REEL register is retained for scientific provenance. Historical REEL slides 1–4 are now slides 6–9. The per-capacity chart is PDF page 8.
 
 ## Source register and access results
 
@@ -66,7 +69,7 @@ All carbon inputs below are **REEL LCI model estimates reported in v1.0 insights
 
 No v0.1 results were used. B rounds HBM3 values to 13.5 and 19.8; A gives 13.52 and 19.81. This is consistent with rounding, so the chart retains A's precision without manufacturing extra digits for HBM3E.
 
-The y-axis on current PDF page 11 (original content slide 3) is **kg CO2e / nominal capacity unit**. This is an arithmetic index based on the label numerals, not a physical-unit-harmonized carbon intensity. No assumption that GB equals GiB is made. The explicit units remain beside each bar.
+The y-axis on current PDF page 8 (REEL3) is **kg CO2e / nominal capacity unit**. This is an arithmetic index based on the label numerals, not a physical-unit-harmonized carbon intensity. No assumption that GB equals GiB is made. The explicit units remain beside each bar.
 
 Derived comparisons, always using unrounded inputs:
 
@@ -115,7 +118,7 @@ The final equation defines total carbon over the same declared service workload/
 
 Run `python3 2026-11-18-meeting/scripts/build_research_materials.py` from any directory using Python with PyMuPDF and Pillow plus pdfLaTeX/Beamer/TikZ/Latin Modern. An isolated environment can be created with `python3 -m venv /tmp/research-materials-qa` then `/tmp/research-materials-qa/bin/pip install pymupdf pillow`.
 
-The existing workflow now compiles twice locally, packages `output/overleaf/Research-Materials.zip` with `main.tex` and original Fig. 2, extracts that ZIP and compiles twice. (No Research Materials ZIP existed in the inspected baseline; CarbonSLO.zip is untouched.) It checks 16 pages, numbering, text/image bounds, named links/visible return links, source URI annotations, numeric evidence, four preserved frame hashes, local/ZIP text/pixel/annotation parity and protected file hashes. It rejects all layout/reference warnings. It renders `research-materials-01.png` through `-16.png` at 3× and a montage.
+The current workflow compiles twice locally, packages `output/overleaf/Research-Materials.zip` with self-contained `main.tex`, extracts that ZIP and compiles twice. It checks 17 pages, the four-chapter order, text/image bounds, named backup links, source URI annotations, numeric evidence, four preserved REEL frame hashes, local/ZIP parity and protected file hashes. It rejects layout and reference warnings. It renders `research-materials-01.png` through `-17.png` at 3× and a montage.
 
 Deliverables: existing `.tex`, existing PDF path, Traditional Chinese Script, this SPEC, Power-Carbon evidence register, README and scoped Cross-DC backlog updates. QA: `output/qa/validation.md`, `research-materials-build.json`, `research-materials-url-checks.json`, `research-materials-preservation.json`, page PNGs and montage. URL availability is recorded separately from valid clickable PDF annotations. Visual review must inspect every generated page.
 

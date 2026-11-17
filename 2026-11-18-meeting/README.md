@@ -103,23 +103,23 @@ python3 -m venv /tmp/carbonslo-qa
 - 最後一頁「heterogeneous GPU、HBM/HBF、attention/expert placement」是我們之後可能做的方向，不是這篇論文的結果。
 
 
-## Research Materials：16 頁 Evidence Deck
+## Research Materials：17 頁 Evidence Deck
 
 - [PDF](output/pdf/2026-11-18-Research-Materials.pdf)、[TeX](2026-11-18-Research-Materials.tex)、[Overleaf ZIP](output/overleaf/Research-Materials.zip)
-- [繁體中文講稿](2026-11-18-Research-Materials-Script.md)、[SPEC](2026-11-18-Research-Materials-SPEC.md)、[逐頁 Evidence Register](2026-11-18-Power-Carbon-Slide-Evidence.md)
-- [Montage](output/qa/research-materials-montage.png)、[QA 報告](output/qa/validation.md)、[build checks](output/qa/research-materials-build.json)、[來源 URL 檢查](output/qa/research-materials-url-checks.json)、[保留內容稽核](output/qa/research-materials-preservation.json)
+- [繁體中文講稿](2026-11-18-Research-Materials-Script.md)、[SPEC](2026-11-18-Research-Materials-SPEC.md)、[逐頁 Evidence Register](2026-11-18-Power-Carbon-Slide-Evidence.md)、[頁碼對照](2026-11-18-Research-Materials-Page-Map.md)
+- [Montage](output/qa/research-materials-montage.png)、[QA 報告](output/qa/validation.md)、[build checks](output/qa/research-materials-build.json)
 
-封面為 slide 1，頁碼與 PDF 頁碼一致，依序 1/16–16/16；最後新增 Thank you 頁。PDF 2 的五張可點卡片分別前往 PDF 3/4/6/8/13，每張證據頁都有 Back to Evidence Index。新增 GPU power、memory energy/placement、geo 與 FREESH 比較、total accounting、A/E 架構，共八張內容頁。原四張 REEL 證據頁原文保留於 PDF 9–12，原末頁延伸為兩層 cross-DC/local 架構。
+封面是 slide 1，頁碼 1/17–17/17。順序是 Previous Work（3–5）、Embodied Carbon（6–9）、HBM/HBF Performance and Energy（10–12）、提案（13–14）。Thank you 是第 15 頁。第 16、17 頁是 REEL 與參數來源 backup，不進 Slide 2 的四個章節。四張索引分別連到 `GEO`、`REEL1`、`MEMORY`、`DISAGG`。
 
-編譯（使用上方具 PyMuPDF/Pillow 的環境）：
+編譯（使用具 PyMuPDF/Pillow 的環境）：
 
 ```bash
 python3 scripts/build_research_materials.py
 python3 scripts/test_research_materials.py
 ```
 
-兩次本機 pdfLaTeX，再將 ZIP 解壓獨立編譯兩次，比對文字、像素、完整 annotations 並驗證 16 頁與 navigation。ZIP 入口 `main.tex`，內含原始 Carbon–SLO Fig. 2；不需要其他簡報。此腳本不重建 Carbon–SLO、GreenCache 或 Research Direction。
+本機 pdfLaTeX 兩次，再把只含 `main.tex` 的 ZIP 解壓後編譯兩次。腳本檢查 17 頁、章節順序、backup 往返、實驗數值、REEL frame hash，以及文字、像素和連結是否一致。
 
-科學限制：HBF 能量為排除 static/background power 的模型；FREESH 有 runtime queues，不能標為完全沒有 queue；REEL GB/GiB 與 manufacturing uncertainty 尚未解決；本簡報沒有完成新系統評估或證明 novelty。
+科學限制：H³ 的 +32.7% 是相同 8+8 配置的模擬能量，排除 static/background power，不是整機耗電。HBM-only 與 H³ 容量不同。REEL 的 GB/GiB 與製造不確定性尚未解決。Slide 13–14 是提案，沒有節能或減碳結果。
 
-REEL LCI 補充頁位於 slide 15，包含 REEL/LCI 全名、建立者、v1.0 範圍、資料建立與授權方式，以及官網 https://reellci.com/。從 slide 9 的 About REEL / LCI 點入，可返回 slide 9；Thank you 移至 slide 16。
+REEL 補充頁是 slide 16，從 slide 6 進入並返回 slide 6。參數來源是 slide 17，從 slide 10 進入並返回 slide 10。

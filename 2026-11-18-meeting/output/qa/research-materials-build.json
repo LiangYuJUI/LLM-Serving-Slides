@@ -1,11 +1,11 @@
 {
-  "pages": 18,
+  "pages": 17,
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "8add5bbd9aaeea47a9a25a02806964499acb12f03224ba5582fa926ad9c47015",
-  "pdf_sha256": "caf26ce59ea7a8841c826aab1d3978b0e01f476b9f097b801704e2d5b096c094",
-  "zip_sha256": "1c6b1e84ee56a60ebe37a8f9a2c20115f95f67646dcaba1ef27580c41d3ef7a5",
+  "source_sha256": "b03d26436bbbb4e26d07264d6c94dfe45c3410af7332c715448d1153385fdb82",
+  "pdf_sha256": "862caff45f7d0f9001e118f25f777117ebaf09f1102bf2e03b74105ad10d9591",
+  "zip_sha256": "f34360d2e6b93b32897db3203843f8fb152868b4e5bc4e58e71e23ed32866297",
   "preserved_frame_hashes": {
     "REEL1": "a48e62133c24df47d87ca15285fc999607b32e1ee2b5933999f2570035c1bbd3",
     "REEL2": "893e24ef3c3b3dc2d50e559402ce0ff48e0243a0fd4d36627d20ad8a3cb59965",
@@ -13,22 +13,20 @@
     "REEL4": "e8bc4a53e7f5c755c1b4bb33ab1f4b03ea8be635ef1d5701c01944af2a7139fe"
   },
   "category_destinations": {
-    "GPU": 3,
-    "MEMORY": 4,
-    "GEO": 7,
-    "ACCOUNT": 9,
-    "DISAGG": 14
+    "GEO": 3,
+    "REEL1": 6,
+    "MEMORY": 10,
+    "DISAGG": 13
   },
-  "return_links": 17,
+  "return_links": 0,
   "parity": {
     "text": true,
     "pixels": true,
     "annotations": true
   },
-  "protected_files": 11069,
+  "protected_files": 11071,
   "uris": [
     "https://arxiv.org/abs/2505.23970v3",
-    "https://arxiv.org/abs/2511.00807v1",
     "https://arxiv.org/abs/2512.13525",
     "https://arxiv.org/abs/2604.16007v1",
     "https://arxiv.org/abs/2608.01891",
