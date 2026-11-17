@@ -8,7 +8,7 @@
 - PASS: REEL1–4 concise frame bodies match frozen SHA-256 values exactly; authorized titles, frame labels, footer and slide 9 source/supplement hyperlinks normalized; previously authorized REEL copy and caveat removal included in baselines.
 - PASS: protected repository files unchanged during build.
 - Rendered all 18 pages at 3x resolution and a two-column montage.
-- PASS: Slide 7 visually reviewed after removal of routing/diagram note; no clipping or overlap. Other 17 pages pixel-identical to previous commit.
+- PASS: Slide 7 visually inspected after increasing each diagram layer gap by 0.30 cm; no overlap/clipping. Other 17 pages pixel-identical to prior commit.
 - PASS: 9 regression tests.
 - Detailed checksums: `research-materials-build.json`.
 - External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.

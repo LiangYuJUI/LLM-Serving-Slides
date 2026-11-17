@@ -212,11 +212,11 @@ Assumed P/E cycles & --- & 100,000\\
 \begin{tikzpicture}[>=Latex,every node/.style={align=center,text=Ink},
 box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \node[box,fill=SoftMint,text width=6.6cm] (global) at (3.65,0) {\textbf{Global Provisioner}\\CI $\cdot$ Batch $\cdot$ Queue $\cdot$ KV $\cdot$ RTT\\\scriptsize Periodically polls DCs; broadcasts global snapshot};
-\node[box,fill=SoftLilac,text width=2.75cm] (r1) at (1.75,-1.35) {Regional Scheduler 1};
-\node[box,fill=SoftLilac,text width=2.75cm] (r2) at (5.55,-1.35) {Regional Scheduler 2};
+\node[box,fill=SoftLilac,text width=2.75cm] (r1) at (1.75,-1.65) {Regional Scheduler 1};
+\node[box,fill=SoftLilac,text width=2.75cm] (r2) at (5.55,-1.65) {Regional Scheduler 2};
 \draw[->,thick,Accent] (global.south) -- ++(0,-.25) -| (r1.north);
 \draw[->,thick,Accent] (global.south) -- ++(0,-.25) -| (r2.north);
-\node[box,fill=SoftMint,text width=5.3cm] (dc) at (3.65,-2.55) {\textbf{Shared Low-CI Data Center}};
+\node[box,fill=SoftMint,text width=5.3cm] (dc) at (3.65,-3.15) {\textbf{Shared Low-CI Data Center}};
 \draw[->,thick,AccentBlue] (r1.south)--([xshift=-.65cm]dc.north);
 \draw[->,thick,AccentBlue] (r2.south)--([xshift=.65cm]dc.north);
 \end{tikzpicture}
