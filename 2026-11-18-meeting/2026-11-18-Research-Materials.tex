@@ -66,10 +66,10 @@ at ([xshift=.48cm,yshift=.61cm]current page.south west) {Source: #1};
 \newcommand{\compactcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.10cm]{#1}{\small\bfseries\color{Accent}#2}\par\vspace{.04cm}{\footnotesize\raggedright #3\par}\end{beamercolorbox}}
 \newcommand{\carbonurl}{https://arxiv.org/abs/2610.14571v1}
 \newcommand{\hbfurl}{https://arxiv.org/abs/2609.39131v2}
-\newcommand{\freeshurl}{https://arxiv.org/abs/2511.00807v1}
 \newcommand{\greenurl}{https://arxiv.org/abs/2505.23970v3}
 \newcommand{\memurl}{https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/}
 \newcommand{\indexcard}[4]{\hyperlink{#1}{\begin{beamercolorbox}[wd=\linewidth,sep=.13cm,rounded=true]{#2}\small\textbf{#3}\quad\footnotesize #4\end{beamercolorbox}}\par\vspace{.12cm}}
+\newcommand{\researchinputcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.10cm]{#1}{\footnotesize\bfseries\color{Accent}#2}\par\vspace{.03cm}{\scriptsize\raggedright #3\par}\end{beamercolorbox}}
 \begin{document}
 \begin{frame}[c,label=COVER]
 \vspace{.4cm}
@@ -94,10 +94,10 @@ at ([xshift=.48cm,yshift=.61cm]current page.south west) {Source: #1};
 \relax
 \indexcard{MEMORY}{mintbox}{01\quad HBM vs. HBF Power / Energy}{Access Energy, Bandwidth, Latency, Placement}
 \indexcard{GEO}{lilacbox}{02\quad Geo Carbon-Aware Scheduling}{Carbon Intensity, PUE, Routing, SLO}
-\indexcard{ACCOUNT}{mintbox}{03\quad Operational vs. Embodied Carbon}{Serving Electricity, Manufacturing, Lifetime Allocation}
+\indexcard{ACCOUNT}{mintbox}{03\quad Previous Work and Research Inputs}{Methods, Data, Hardware and Memory Models}
 \indexcard{DISAGG}{lilacbox}{04\quad GPU / MoE Disaggregation Energy}{Attention/Expert Placement, DVFS, Transfer Energy}
 \takeaway{Connect measured GPU behavior, modeled memory costs, and explicit carbon boundaries.}
-\source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\hbfurl}{Characterizing HBF}; \href{\freeshurl}{FREESH}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; prior work on \hyperlink{DISAGG}{page \ref{DISAGG}}.}
+\source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\hbfurl}{Characterizing HBF}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; prior work on \hyperlink{DISAGG}{page \ref{DISAGG}}.}
 \end{frame}
 
 \begin{frame}[t,label=MEMORY]{HBM and HBF Memory Access Energy}
@@ -219,50 +219,76 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \source{\href{\carbonurl}{Carbon--SLO, Secs. III-A, III-C, IV-A, V-C, VI; Fig. 6(c)}. Diagram and research direction: our synthesis.}
 \end{frame}
 
-\begin{frame}[t,label=RELATED]{Related Work: Carbon--SLO and FREESH}
+\begin{frame}[t,label=RELATED]{GreenCache: Adaptive Caching and Limitations}
 \relax
-{\footnotesize Scope of the reviewed papers, not a claim of an exhaustive literature search\par}
-\vspace{.10cm}
-{\footnotesize\renewcommand{\arraystretch}{1.15}\setlength{\tabcolsep}{5pt}
-\begin{tabularx}{\linewidth}{@{}p{4.0cm}XX@{}}\toprule
-Capability & Carbon--SLO & FREESH v1\\\midrule
-Cross-DC request routing & Yes, request/batch decisions & Yes, pool plan + runtime routing\\
-Carbon intensity & Yes, regional CI + PUE & Yes, locational marginal emissions\\
-Heterogeneous GPU scheduling & Limited: A100 evaluation & Yes, GPU type + TP allocation\\
-DVFS & Not modeled as a control & Yes, MIAD frequency control\\
-Continuous batching / queues & Yes, explicit step/queue model & Partial: vLLM + LLF queues$^*$\\
-HBM/HBF placement & Not modeled & Not modeled\\
-Embodied carbon & Not modeled & Not modeled\\
-SLO-aware optimization & Yes, TTFT + TPOT & Yes, profiles + runtime thresholds\\\bottomrule
-\end{tabularx}\par}
-\vspace{.12cm}
-{\footnotesize $^*$FREESH uses profiled service rates / latency in its pool optimizer; runtime LLF and MIAD respond to requests. This differs from Carbon--SLO's explicit batch-state latency projection.\par}
-\vspace{.14cm}
-{\small\textbf{Gap candidate:} How do memory-specific energy and performance profiles affect geo-distributed carbon-aware scheduling?\par}
-\takeaway{Memory-aware geo scheduling is a gap candidate, not an established novelty claim.}
-\source{\href{\carbonurl}{Carbon--SLO, Table I, Secs. III--V}; \href{\freeshurl}{FREESH v1, Secs. 3.1--3.3, 4.1; Apps. D.2, D.6--D.7}. Full paper reviewed, including runtime details.}
-\end{frame}
-
-\begin{frame}[t,label=ACCOUNT]{Total Serving Carbon Accounting}
-\relax
+{\footnotesize\color{Muted}Carbon-aware SSD KV caching with operational and allocated embodied carbon\par}
+\vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\card{mintbox}{Operational Carbon}{GPU prefill/decode, batching and idle energy\\[4pt]HBM/HBF memory operation\\[4pt]Host / network / facility energy\\[4pt]Regional carbon intensity and PUE}
+\begin{column}{.54\textwidth}
+{\small\bfseries\color{Accent}Current Architecture\par}
+\vspace{.04cm}
+\begin{tikzpicture}[>={Latex[length=1.3mm]},every node/.style={align=center,text=Ink},
+box/.style={rounded corners=3pt,inner sep=2pt,text width=7.1cm,font=\fontsize{7}{8}\selectfont}]
+\node[box,fill=SoftMint] (profile) at (3.7,0) {\textbf{1. Profiler + Performance Monitor}\\ TTFT / TPOT / power; cache-size and request-rate profiles\\ Monitor current workload};
+\node[box,fill=SoftLilac] (predict) at (3.7,-1.10) {\textbf{2. Carbon Intensity + Load Predictors}\\ Forecast CI (EnsembleCI) and future request rates\\ Load prediction: SARIMA};
+\node[box,fill=SoftMint] (solve) at (3.7,-2.20) {\textbf{3. ILP Optimization}\\ Select SSD cache size to minimize total carbon\\ Subject to serving SLO attainment constraints};
+\node[box,fill=SoftLilac] (cache) at (3.7,-3.30) {\textbf{4. Cache Manager + LCS}\\ Resize SSD KV cache; carbon-aware replacement\\ Retain valuable entries; evict Least Carbon Savings};
+\draw[->,thick,Accent] (profile.south)--(predict.north);
+\draw[->,thick,Accent] (predict.south)--(solve.north);
+\draw[->,thick,Accent] (solve.south)--(cache.north);
+\end{tikzpicture}
+\vspace{.02cm}
+{\scriptsize LMCache / vLLM $\cdot$ L40 GPUs $\cdot$ ShareGPT / TriviaQA\\Azure demand / CarbonCast CI traces\par}
 \end{column}
-\begin{column}{.48\textwidth}
-\card{lilacbox}{Allocated Embodied Carbon}{GPU manufacturing\\[4pt]HBM/HBF manufacturing\\[4pt]Packaging and other hardware\\[4pt]Lifetime and allocation assumptions}
+\begin{column}{.43\textwidth}
+{\small\bfseries\color{Accent}Limitations\par}
+\vspace{.04cm}
+\researchinputcard{mintbox}{1 -- No Cross-DC Scheduling}{Adaptive cache management; no geo request routing or WAN-aware placement.}
+\vspace{.08cm}
+\researchinputcard{lilacbox}{2 -- SSD-Centric KV Caching}{No HBM/HBF co-design or MoE expert-weight placement.}
+\vspace{.08cm}
+\researchinputcard{mintbox}{3 -- Homogeneous GPU Evaluation}{L40 evaluation; no heterogeneous GPU and memory-placement optimization.}
+\vspace{.10cm}
+{\scriptsize\color{Muted}GreenCache already accounts for operational and allocated embodied carbon.\par}
 \end{column}
 \end{columns}
-\vspace{.10cm}
-{\centering\small\bfseries Total Carbon = Operational Carbon + Allocated Embodied Carbon\par}
-\vspace{.12cm}
-{\centering\small $C_{\rm emb,alloc}=\sum_h C_{\rm manufacture,h}\,a_h\,T/L_h$\quad (time-based allocation scenario)\par}
-\vspace{.10cm}
-{\footnotesize $a_h$: allocated share; $T$: service window; $L_h$: assumed lifetime in the same time unit. Compare the \textbf{same workload and service window}, with the same SLO targets.\par}
+\vspace{.06cm}
+{\footnotesize\bfseries\color{Accent}GreenCache models KV-cache carbon costs, but not geo routing or HBM/HBF--MoE placement.\par}
+\source{\href{\greenurl}{GreenCache v3, Secs. 2.3, 3.2.1 (carbon); 5.1--5.5 (framework); 6.1 (evaluation); 7 (discussion)}. Simplified grouping of six components, not a reproduction of Fig. 10; scope assessment: our reading.}
+\end{frame}
+
+\begin{frame}[t,label=ACCOUNT]{Previous Work: Reusable Methods and Research Inputs}
+\relax
+{\footnotesize\color{Muted}Building on Carbon--SLO and GreenCache\par}
 \vspace{.08cm}
-{\footnotesize\textbf{Count once:} memory power already inside GPU board measurements; memory manufacturing already inside GPU/package footprints; facility energy already covered by PUE. Releasing capacity changes allocation, not past manufacturing emissions.\par}
-\takeaway{Lower serving energy does not automatically imply lower total carbon emissions.}
-\source{\href{\carbonurl}{Carbon--SLO, Sec. III-B, Fig. 2, PDF p. 4}; \href{\greenurl}{GreenCache, Sec. 2.3, Eqs. (1)--(3), pp. 4--5; Sec. 3.2.1, Eqs. (4)--(5)}; \href{\srcC}{REEL HBF system boundary}. Extended accounting equation: our synthesis.}
+{\small\bfseries\color{Accent}Previous Work Comparison\par}
+{\scriptsize\color{Muted}Research materials: data to obtain or reproduce; not an open-source inventory.\par}
+\vspace{.04cm}
+{\scriptsize\renewcommand{\arraystretch}{1.05}\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{@{}p{2.0cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}\toprule
+\textbf{Previous Work} & \textbf{Reusable Methods} & \textbf{Research Materials}\\\midrule
+\href{\carbonurl}{\textbf{Carbon--SLO}} & Geo simulator; continuous batching / queues; RTT; latency / power models; facility MILP & GPU profiles; request traces; regional CI / PUE; WAN RTT; TTFT / TPOT\\[1pt]
+\href{\greenurl}{\textbf{GreenCache}} & LMCache/vLLM KV reuse; cache profiling; CI/load prediction; allocated embodied-carbon model & ShareGPT / TriviaQA; Azure demand; CarbonCast CI; cache / hardware energy data\\\bottomrule
+\end{tabularx}\par}
+\vspace{.03cm}
+{\small\bfseries\color{Accent}Additional Inputs for Our Research\par}
+\vspace{-.16cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.49\textwidth}
+\researchinputcard{mintbox}{Hardware and Memory Models}{Heterogeneous GPU power / latency profiles\\[1pt]HBM/HBF capacity, bandwidth, access energy\\[1pt]GPU waiting and inter-GPU transfer costs}
+\end{column}
+\begin{column}{.49\textwidth}
+\researchinputcard{lilacbox}{Workload and Carbon Data}{Multi-turn KV reuse; MoE expert-access traces\\[1pt]Regional CI / PUE / WAN RTT\\[1pt]HBM/HBF embodied carbon; lifetime assumptions}
+\end{column}
+\end{columns}
+\vspace{.07cm}
+{\scriptsize\color{Muted}\textbf{Evidence types:} measured GPU profiles $\ne$ HBM/HBF simulator assumptions $\ne$ prospective REEL embodied-carbon estimates.\par}
+\vspace{.03cm}
+{\scriptsize\color{Muted}Our proposed sequence\par}
+{\footnotesize\color{Accent}\textbf{1. Local Memory Placement $\rightarrow$ 2. SLO-Aware Geo Routing $\rightarrow$ 3. Total-Carbon Evaluation}\par}
+\vspace{.02cm}
+{\scriptsize\bfseries\color{Accent}Combine geo scheduling, KV reuse and HBM/HBF placement under common SLO and carbon constraints.\par}
+\source{\href{\carbonurl}{Carbon--SLO, Secs. III--V}; \href{\greenurl}{GreenCache, Secs. 2.3, 3.2.1, 5--7}; \href{\hbfurl}{Characterizing HBF v2, Sec. 3, Table 1, Sec. 5.1}; \href{\srcC}{REEL HBF boundary / limitations}. Research integration and evaluation plan: our proposal; novelty not established.}
 \end{frame}
 
 \begin{frame}[t,label=REEL1]{HBM/HBF Embodied Carbon Evidence}
@@ -381,7 +407,7 @@ Interposer, substrate and package-level assembly excluded}
 \vspace{.04cm}
 {\footnotesize\textbf{Next:} energy calibration and placement/routing ablations. No per-layer cross-WAN A/E assumption.\par}
 \takeaway{Test the coupled design under common workload and SLO constraints.}
-\source{Our proposed research, extending Nov. 11 Research Direction and Cross-DC SPEC. Baselines: \href{\carbonurl}{Carbon--SLO}, \href{\freeshurl}{FREESH}; memory: \href{\hbfurl}{Characterizing HBF}; manufacturing: \href{\srcC}{REEL LCI}.}
+\source{Our proposed research, extending Nov. 11 Research Direction and Cross-DC SPEC. Baselines: \href{\carbonurl}{Carbon--SLO}, \href{\greenurl}{GreenCache}; memory: \href{\hbfurl}{Characterizing HBF}; manufacturing: \href{\srcC}{REEL LCI}.}
 \end{frame}
 \begin{frame}[t,label=REELABOUT]{REEL LCI: Database Background and Inventory Scope}
 \relax
@@ -426,7 +452,7 @@ Dataset descriptions are public on the website. Full inventory quantities are li
 % Opportunities and Challenges. IEEE CAL 25(2), 251-254. DOI: 10.1109/LCA.2026.3705817.
 % IEEE DOIs are verified from the primary bibliography; publisher full text was not accessible.
 % Typical SSD proxy has no distinct upstream citation in Table 1; do not invent one.
-\begin{frame}[t,label=MEMORYSOURCES]{Where Do the HBM/HBF Memory Parameters Come From?}
+\begin{frame}[t,label=MEMORYSOURCES]{Sources of the HBM/HBF Memory Parameters}
 \relax
 {\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
 \vspace{.08cm}
