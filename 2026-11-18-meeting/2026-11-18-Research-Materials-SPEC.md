@@ -16,20 +16,20 @@ Madrid, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. 
 | PDF page | Content | Label | Title / purpose |
 |---|---|---|---|
 | 1 | 1/16 | COVER | Research Materials & Supporting Evidence |
-| 2 | 2/16 | EINDEX | What Evidence Supports Our Research Direction? |
-| 3 | 3/16 | GPU | How Does LLM Serving Power Consumption Vary? |
-| 4 | 4/16 | MEMORY | How Do HBM and HBF Differ in Memory Access Energy? |
-| 5 | 5/16 | PLACEMENT | Does HBF Placement Reduce Total Serving Energy? |
-| 6 | 6/16 | GEO | Why Is the Lowest-Carbon Data Center Not Always Optimal? |
-| 7 | 7/16 | RELATED | What Do Carbon–SLO and FREESH Already Cover? |
-| 8 | 8/16 | ACCOUNT | How Should We Account for Total Serving Carbon? |
-| 9 | 9/16 | REEL1 | What Evidence Do We Have for HBM/HBF Embodied Carbon? |
-| 10 | 10/16 | REEL2 | How Much Embodied Carbon Does One Stack Carry? |
-| 11 | 11/16 | REEL3 | Does HBF Reduce Embodied Carbon per Unit Capacity? |
-| 12 | 12/16 | REEL4 | Can We Trust the HBF Carbon Estimate? |
-| 13 | 13/16 | DISAGG | Can Heterogeneous Attention/Expert Placement Improve Energy Efficiency? |
-| 14 | 14/16 | NEXT | What Does This Evidence Mean for Our Research? |
-| 15 | 15/16 | REELABOUT | What Is REEL LCI, and What Does Its Inventory Provide? |
+| 2 | 2/16 | EINDEX | Research Evidence Overview |
+| 3 | 3/16 | GPU | LLM Serving Power Across Inference Phases and Workloads |
+| 4 | 4/16 | MEMORY | HBM and HBF Memory Access Energy |
+| 5 | 5/16 | PLACEMENT | Weight Placement and Modeled Serving Energy |
+| 6 | 6/16 | GEO | Geo Scheduling Trade-offs in Carbon, Energy and Latency |
+| 7 | 7/16 | RELATED | Related Work: Carbon–SLO and FREESH |
+| 8 | 8/16 | ACCOUNT | Total Serving Carbon Accounting |
+| 9 | 9/16 | REEL1 | HBM/HBF Embodied Carbon Evidence |
+| 10 | 10/16 | REEL2 | Embodied Carbon per Memory Stack |
+| 11 | 11/16 | REEL3 | Embodied Carbon per Nominal Capacity Unit |
+| 12 | 12/16 | REEL4 | HBF Carbon Estimate: Assumptions and Limitations |
+| 13 | 13/16 | DISAGG | Proposed Attention/Expert Placement and Energy Costs |
+| 14 | 14/16 | NEXT | Research Direction and Next Steps |
+| 15 | 15/16 | REELABOUT | REEL LCI: Database Background and Inventory Scope |
 | 16 | 16/16 | THANKYOU | Thank you |
 
 Five index cards link to `GPU`, `MEMORY`, `GEO`, `ACCOUNT`, `DISAGG`. All slides except the cover have a visible `Back to Evidence Index` link to `EINDEX`. Links use stable labels, not page-number mechanics. Automatic Beamer numbering includes the cover and closing slide. Four original REEL frame bodies are frozen by SHA-256, excluding only frame labels and global footer. Original pages 2–5 are now pages 9–12.
@@ -138,3 +138,7 @@ Per user request, slide number equals physical PDF page, including the cover. PD
 Slide 9 source-link update: the `REEL LCI v1.0` card title links directly to the original HBF article, https://reellci.com/insights/the-hbf-inversion.html. Scientific text and rendered appearance remain unchanged. The preserved-frame check normalizes only this authorized hyperlink wrapper and separately verifies the title annotation target.
 
 REEL supplement: slide 9’s `About REEL / LCI` links to named destination `REELABOUT` (slide 15), which returns to `REEL1` (slide 9). The original external article link remains. Supplement statements and the 520/18 v1.0 counts were verified against https://reellci.com/ on 2026-11-17. It describes a database rather than asserting government or academic institutional status.
+
+## Descriptive title update
+
+All 14 content/supplement frame titles use descriptive headings rather than questions. Cover and Thank you are unchanged. REEL scientific content remains frozen; preservation checks normalize the four explicitly authorized title replacements before comparing original frame hashes.

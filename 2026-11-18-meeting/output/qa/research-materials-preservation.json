@@ -67,5 +67,11 @@
     "unchanged_above_footer": "All prior pages except slide 9 (added supplement link); Thank you moved from 15 to 16.",
     "pdf_sha256": "95242cfa46ac454ae9dba0ed72f58dd4d0621d992cc670be6abb2d462af81f2e",
     "slide_9_to_15_and_return_verified": true
+  },
+  "descriptive_title_update": {
+    "compared_to_commit": "e2b5f927dc6d3493a0571da170b5fa4174457d3e",
+    "all_pages_pixel_identical_below_top_30_points": true,
+    "all_link_targets_and_rectangles_unchanged": true,
+    "pdf_sha256": "4aa456dfc973f74f667e84e3e6d9b10131518ded42cca8aab9de6c578b820944"
   }
 }

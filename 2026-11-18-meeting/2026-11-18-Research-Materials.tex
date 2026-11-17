@@ -83,7 +83,7 @@
 \source{\href{\srcA}{REEL LCI v1.0: HBF comparison}; \href{\srcD}{Methodology report}. Model estimates, accessed 2026-11-13.}
 \end{frame}
 
-\begin{frame}[t,label=EINDEX]{What Evidence Supports Our Research Direction?}
+\begin{frame}[t,label=EINDEX]{Research Evidence Overview}
 \relax
 \indexcard{GPU}{mintbox}{01\quad GPU Power / Energy Model}{Prefill, Decode, Batching, Idle Power}
 \indexcard{MEMORY}{lilacbox}{02\quad HBM vs. HBF Power / Energy}{Access Energy, Bandwidth, Latency, Placement}
@@ -94,7 +94,7 @@
 \source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\hbfurl}{Characterizing HBF}; \href{\freeshurl}{FREESH}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; prior work on page 13.}
 \end{frame}
 
-\begin{frame}[t,label=GPU]{How Does LLM Serving Power Consumption Vary?}
+\begin{frame}[t,label=GPU]{LLM Serving Power Across Inference Phases and Workloads}
 \relax
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.59\textwidth}
@@ -114,7 +114,7 @@
 \source{\href{\carbonurl}{Carbon--SLO, Sec. III-B, Fig. 2, PDF p. 4}. Original figure with axes, legends and caption. Testbed-specific baselines.}
 \end{frame}
 
-\begin{frame}[t,label=MEMORY]{How Do HBM and HBF Differ in Memory Access Energy?}
+\begin{frame}[t,label=MEMORY]{HBM and HBF Memory Access Energy}
 \relax
 {\small\color{Muted}Modeled memory parameters, not measured HBF silicon results\par}
 \vspace{.15cm}
@@ -144,7 +144,7 @@ Startup ($\mu$s) & 0.1 & 250\\\bottomrule\end{tabular}\par}
 \source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving v2, Table 1, p. 6; Sec. 3, Eq. (1), p. 3; Sec. 5.1}. No direct conversion from pJ/bit to J/token without traffic.}
 \end{frame}
 
-\begin{frame}[t,label=PLACEMENT]{Does HBF Placement Reduce Total Serving Energy?}
+\begin{frame}[t,label=PLACEMENT]{Weight Placement and Modeled Serving Energy}
 \relax
 {\footnotesize\textbf{Modeled workload energy:} GLM-5.2, 16 B200-compute GPUs, 16-bit storage, TP16/EP16 + DPA.\\
 1$\times$ trace: 100k turns, 10\% admission buffer, mixed batches, session-sticky routing, KV offload.\par}
@@ -167,7 +167,7 @@ HBM-only has fewer memory stacks. It is not an equal-hardware baseline.\par}
 \source{\href{\hbfurl}{Characterizing HBF v2, Table 6 (p. 8), Table 7 (p. 9), Secs. 3 and 5.1}. Simulation-based results; energy is not wall-plug total.}
 \end{frame}
 
-\begin{frame}[t,label=GEO]{Why Is the Lowest-Carbon Data Center Not Always Optimal?}
+\begin{frame}[t,label=GEO]{Geo Scheduling Trade-offs in Carbon, Energy and Latency}
 \relax
 {\footnotesize\color{Muted}Conceptual example informed by Carbon--SLO, not a measured experiment\par}
 \vspace{.10cm}
@@ -190,7 +190,7 @@ HBM-only has fewer memory stacks. It is not an equal-hardware baseline.\par}
 \source{\href{\carbonurl}{Carbon--SLO, Sec. II-C (PUE/CI), Secs. III-B--D (power, queueing, RTT and SLO), pp. 2--5}. Diagram and unit-explicit equation: our synthesis.}
 \end{frame}
 
-\begin{frame}[t,label=RELATED]{What Do Carbon--SLO and FREESH Already Cover?}
+\begin{frame}[t,label=RELATED]{Related Work: Carbon--SLO and FREESH}
 \relax
 {\footnotesize Scope of the reviewed papers, not a claim of an exhaustive literature search\par}
 \vspace{.10cm}
@@ -214,7 +214,7 @@ SLO-aware optimization & Yes, TTFT + TPOT & Yes, profiles + runtime thresholds\\
 \source{\href{\carbonurl}{Carbon--SLO, Table I, Secs. III--V}; \href{\freeshurl}{FREESH v1, Secs. 3.1--3.3, 4.1; Apps. D.2, D.6--D.7}. Full paper reviewed, including runtime details.}
 \end{frame}
 
-\begin{frame}[t,label=ACCOUNT]{How Should We Account for Total Serving Carbon?}
+\begin{frame}[t,label=ACCOUNT]{Total Serving Carbon Accounting}
 \relax
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
@@ -236,7 +236,7 @@ SLO-aware optimization & Yes, TTFT + TPOT & Yes, profiles + runtime thresholds\\
 \source{\href{\greenurl}{GreenCache, Sec. 2.3, Eqs. (1)--(3), pp. 4--5; Sec. 3.2.1, Eqs. (4)--(5)}; \href{\srcC}{REEL HBF system boundary}. Extended accounting equation: our synthesis.}
 \end{frame}
 
-\begin{frame}[t,label=REEL1]{What Evidence Do We Have for HBM/HBF Embodied Carbon?}
+\begin{frame}[t,label=REEL1]{HBM/HBF Embodied Carbon Evidence}
 \vspace{.10cm}
 \researchquestion{Can we obtain traceable manufacturing-carbon estimates for HBF before mass production?}
 \vspace{.25cm}
@@ -259,7 +259,7 @@ Independent validation remains necessary}
 \source{\href{\srcE}{REEL v1.0 dataset explorer}; \href{\srcC}{HBF dataset, quality and limitations}; \href{\srcD}{Methodology, Sec. 4.4.4 (PDF p. 68 / printed p. 66)}.}
 \end{frame}
 
-\begin{frame}[t,label=REEL2]{How Much Embodied Carbon Does One Stack Carry?}
+\begin{frame}[t,label=REEL2]{Embodied Carbon per Memory Stack}
 \relax
 {\small\color{Muted}Published REEL LCI v1.0 screening estimates\par}
 \vspace{.05cm}
@@ -278,7 +278,7 @@ The HBF stack also offers substantially more capacity.}
 \source{\href{\srcA}{HBF comparison, chart (13.52 / 19.81 / 225.9)}; \href{\srcB}{HBM comparison (20.6)}; \href{\srcE}{dataset capacity labels}. All model estimates, not manufacturer measurements.}
 \end{frame}
 
-\begin{frame}[t,label=REEL3]{Does HBF Reduce Embodied Carbon per Unit Capacity?}
+\begin{frame}[t,label=REEL3]{Embodied Carbon per Nominal Capacity Unit}
 \relax
 {\small\color{Muted}Nominal normalization: divide each published stack estimate by its capacity numeral\par}
 \vspace{.05cm}
@@ -297,7 +297,7 @@ HBM labels: GB\\HBF label: GiB\\\textbf{Not a verified per-GiB comparison.}}
 \source{\href{\srcA}{HBF comparison}; \href{\srcB}{HBM comparison}; \href{\srcE}{capacity labels}. Bars and 47.8\% are our calculations using unconverted capacity numerals.}
 \end{frame}
 
-\begin{frame}[t,label=REEL4]{Can We Trust the HBF Carbon Estimate?}
+\begin{frame}[t,label=REEL4]{HBF Carbon Estimate: Assumptions and Limitations}
 \vspace{.10cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.49\textwidth}
@@ -324,7 +324,7 @@ Interposer, substrate and package assembly excluded}
 \takeaway{Useful for scenarios. Independent validation is needed for definitive hardware-carbon claims.}
 \source{\href{\srcC}{HBF dataset: assumptions, boundary and limitations}; \href{\srcD}{Methodology, Sec. 4.4.4, PDF p. 68 / printed p. 66}; \href{\srcA}{article estimate}.}
 \end{frame}
-\begin{frame}[t,label=DISAGG]{Can Heterogeneous Attention/Expert Placement Improve Energy Efficiency?}
+\begin{frame}[t,label=DISAGG]{Proposed Attention/Expert Placement and Energy Costs}
 \relax
 {\small\bfseries\color{Accent}Our Proposed Design\quad\footnotesize No implemented energy result\par}
 \vspace{.12cm}
@@ -345,7 +345,7 @@ Interposer, substrate and package assembly excluded}
 \source{\href{https://arxiv.org/abs/2512.13525}{Janus, Secs. 3--4}; \href{https://arxiv.org/abs/2608.01891}{AFlex, Secs. III--IV}; \href{\memurl}{MemExplorer, author publication record}. Architecture extends our Nov. 11 proposal.}
 \end{frame}
 
-\begin{frame}[t,label=NEXT]{What Does This Evidence Mean for Our Research?}
+\begin{frame}[t,label=NEXT]{Research Direction and Next Steps}
 \relax
 {\footnotesize\color{Muted}Our proposed two-level system; no carbon reduction demonstrated\par}
 \vspace{.05cm}
@@ -365,7 +365,7 @@ Interposer, substrate and package assembly excluded}
 \takeaway{Test the coupled design under common workload and SLO constraints.}
 \source{Our proposed research, extending Nov. 11 Research Direction and Cross-DC SPEC. Baselines: \href{\carbonurl}{Carbon--SLO}, \href{\freeshurl}{FREESH}; memory: \href{\hbfurl}{Characterizing HBF}; manufacturing: \href{\srcC}{REEL LCI}.}
 \end{frame}
-\begin{frame}[t,label=REELABOUT]{What Is REEL LCI, and What Does Its Inventory Provide?}
+\begin{frame}[t,label=REELABOUT]{REEL LCI: Database Background and Inventory Scope}
 \relax
 {\large\bfseries\color{Accent}REEL: Repository of Electronics Environmental Line-items\par}
 \vspace{.12cm}

@@ -13,6 +13,7 @@ ZIP = ROOT/'output/overleaf/Research-Materials.zip'
 FIGURE = Path('CarbonSLO-GeoDistributed-LLM-Serving-2026/With-Caption/CarbonSLO_Fig02.png')
 LABELS = ['EINDEX','GPU','MEMORY','PLACEMENT','GEO','RELATED','ACCOUNT','REEL1','REEL2','REEL3','REEL4','DISAGG','NEXT','REELABOUT','THANKYOU']
 CATEGORIES = {'GPU':2, 'MEMORY':3, 'GEO':5, 'ACCOUNT':7, 'DISAGG':12}
+ORIGINAL_REEL_TITLES = {'HBM/HBF Embodied Carbon Evidence': 'What Evidence Do We Have for HBM/HBF Embodied Carbon?', 'Embodied Carbon per Memory Stack': 'How Much Embodied Carbon Does One Stack Carry?', 'Embodied Carbon per Nominal Capacity Unit': 'Does HBF Reduce Embodied Carbon per Unit Capacity?', 'HBF Carbon Estimate: Assumptions and Limitations': 'Can We Trust the HBF Carbon Estimate?'}
 PRESERVED = {'REEL1': '4f18cf8dcbfbdd76e2636be9c3c7cb38745c6420ae8d2f056d01ec406a26f038', 'REEL2': 'f95706d41bbdccbdbe638c065b67d169ca3892939a5fe7071e56db14554e93c1', 'REEL3': '922c2a0b5837f1b593df27a8997e53c0ce60143510f70790e14934bb9011ce20', 'REEL4': '762f2b68d2f144bfcf3c73c3900df78c2b1b72a8d89817826571425301f9d590'}
 
 def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -84,9 +85,14 @@ def validate(doc):
 def main():
     before=protected()
     source=(ROOT/f'{NAME}.tex').read_text()
+    frame_titles=re.findall(r'\\begin\{frame\}\[[^]]+\]\{([^}]+)\}',source)
+    assert len(frame_titles)==14 and all('?' not in title for title in frame_titles), 'Question-style slide title remains'
     for label,expected in PRESERVED.items():
         frame=re.search(r'\\begin\{frame\}\[t,label='+label+r'\](.*?)\\end\{frame\}',source,re.S).group(1)
-        # Normalize only the authorized source and supplement navigation wrappers.
+        # Normalize authorized title edits and source/supplement navigation only.
+        for current, original in ORIGINAL_REEL_TITLES.items():
+            if frame.startswith('{'+current+'}'):
+                frame='{'+original+'}'+frame[len(current)+2:]
         frame=frame.replace(r'\hfill\hyperlink{REELABOUT}{\scriptsize About REEL / LCI}', '')
         frame=frame.replace(r'\href{\srcA}{REEL LCI v1.0}', 'REEL LCI v1.0')
         assert hashlib.sha256(frame.encode()).hexdigest()==expected,('Preserved frame changed',label)
@@ -116,6 +122,6 @@ def main():
     assert before==protected(),'Protected files changed during build'
     report=dict(pages=16,local_passes=2,zip_passes=2,warnings=[],source_sha256=digest(ROOT/f'{NAME}.tex'),pdf_sha256=digest(PDF),zip_sha256=digest(ZIP),preserved_frame_hashes=PRESERVED,category_destinations={k:v+1 for k,v in CATEGORIES.items()},return_links=15,parity={'text':True,'pixels':True,'annotations':True},protected_files=len(before),uris=uris)
     (QA/'research-materials-build.json').write_text(json.dumps(report,indent=2)+'\n')
-    (QA/'validation.md').write_text('''# Research Materials validation\n\n- PASS: 16 widescreen PDF pages; slide numbers match PDF pages, 1/16–16/16; final Thank you page.\n- PASS: two local and two extracted Overleaf ZIP pdfLaTeX passes; no layout/reference warnings.\n- PASS: local/ZIP text, pixels, source URI and named-destination annotations match.\n- PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 15 visible return links land on page 2.\n- PASS: text/image bounds, source hyperlinks on every evidence page, required numeric claims and calculations.\n- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; only frame labels, footer and the slide 9 source/supplement hyperlinks changed.\n- PASS: protected repository files unchanged during build.\n- Rendered all 16 pages at 3x resolution and a two-column montage.\n- Visual review: pending inspection of current generated PNGs.\n- Detailed checksums: `research-materials-build.json`.\n- External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.\n\n## Source hyperlink targets\n\n'''+''.join(f'- {u}\n' for u in uris))
+    (QA/'validation.md').write_text('''# Research Materials validation\n\n- PASS: 16 widescreen PDF pages; slide numbers match PDF pages, 1/16–16/16; final Thank you page.\n- PASS: two local and two extracted Overleaf ZIP pdfLaTeX passes; no layout/reference warnings.\n- PASS: local/ZIP text, pixels, source URI and named-destination annotations match.\n- PASS: five full-card index links land on PDF pages 3, 4, 6, 8, 13; 15 visible return links land on page 2.\n- PASS: text/image bounds, source hyperlinks on every evidence page, required numeric claims and calculations.\n- PASS: four original REEL frame bodies match frozen SHA-256 values exactly; authorized titles, frame labels, footer and slide 9 source/supplement hyperlinks normalized; scientific content unchanged.\n- PASS: protected repository files unchanged during build.\n- Rendered all 16 pages at 3x resolution and a two-column montage.\n- Visual review: pending inspection of current generated PNGs.\n- Detailed checksums: `research-materials-build.json`.\n- External URL availability: see `research-materials-url-checks.json`; HTTP availability is separate from PDF annotation validity.\n\n## Source hyperlink targets\n\n'''+''.join(f'- {u}\n' for u in uris))
     print('PASS: 16 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()

@@ -51,7 +51,7 @@ Carbon–SLO 和 FREESH 都已做跨資料中心的碳感知選擇。FREESH 還�
 
 比較時要固定同 workload、同 service window 和 SLO，而且同一份成本只能算一次。假設 NVML board power 已含 HBM，就不能再把整份 HBM power 加上去；GPU 碳足跡若已含記憶體，也不能再加完整 stack 製造排放。REEL 的 stack 邊界不含完整 package，這些仍需補齊。降低 serving energy 不等於降低 total carbon。
 
-## 9 — 我們找到什麼證據？（40 秒）
+## 9 — HBM/HBF 製造碳排證據（40 秒）
 
 目前找到的是 REEL LCI v1.0。它的價值在於，同一個半導體生命週期建模架構裡，同時列有 HBM3、HBM3E、HBM4 和 HBF，可以追查製造與組裝假設。但公開文件不等於完整原始 inventory，詳細數量仍需取得資料集。尤其 HBF 明確是前瞻性工程模型，沒有量產資料驗證。因此這份資料可以作為初步敏感度分析的起點，不能稱作廠商實測的產品碳足跡，也不能把它當成經同儕審查的 HBF 論文。
 
@@ -83,7 +83,7 @@ Janus 已有 attention/expert 分離與 expert scheduling；AFlex 做的是 atte
 
 RQ1 問 geo-aware power 和 carbon optimization；RQ2 問 memory placement；RQ3 問 total carbon 和 hardware co-design。下一步先校準能量與 component boundary，再做固定 workload 的 placement/routing ablation。最後一起看 J/token、功率、SLO goodput、TTFT/TPOT、operational 與 allocated embodied carbon，不能只挑一個有利指標。今天的證據支持我們提出問題，還沒有證明這個系統能減碳。
 
-## 15 — REEL LCI 是什麼？（補充頁，約 60 秒；PDF 15）
+## 15 — REEL LCI 資料庫與盤查範圍（補充頁，約 60 秒；PDF 15）
 
 這頁可以從 slide 9 的 About REEL / LCI 點進來，講完再返回。REEL 的全名是 Repository of Electronics Environmental Line-items，可以理解成電子產品環境盤查資料庫；LCI 則是 Life cycle inventory，生命週期盤查。
 
