@@ -141,7 +141,7 @@ class NavigationContracts(unittest.TestCase):
         self.remove_text(build.PAGE['ENVIRONMENT'], 'KV-cache management')
 
     def test_environment_missing_real_gpu_profiling(self):
-        self.remove_text(build.PAGE['ENVIRONMENT'], 'Academia Sinica RCITI GPU Cluster')
+        self.remove_text(build.PAGE['ENVIRONMENT'], 'Academia Sinica CITI GPU Cluster')
 
     def test_environment_missing_validation_separator(self):
         self.remove_text(build.PAGE['ENVIRONMENT'], 'Profiling and Validation')

@@ -181,14 +181,14 @@ def validate(doc):
                     'Coordinated Cross-DC Scheduling','Carbon–SLO shares global data-center states, but regional schedulers make routing decisions independently.','Investigate coordinated cross-region scheduling to account for shared capacity, workload distribution, and SLO feasibility.',
                     'Carbon-Aware Cost Modeling','GreenCache considers operational and amortized embodied carbon for caching, but not cross-data-center routing.','Adapt carbon-aware cost modeling to heterogeneous GPU serving and geographic scheduling, starting with operational carbon.',
                     'Power-Aware Heterogeneous GPU Scheduling','Helix and ThunderServe study heterogeneous GPU placement and workload-aware allocation, mainly for performance or cost.','Explore power-aware scheduling across GPUs with different compute, memory, and energy characteristics.'],
-        'EINDEX': ['Contents','01 Previous Work and Research Background','Carbon–SLO, GreenCache, Helix, ThunderServe','02 Workload and Resource Characteristics','Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence','03 Research Gaps and Proposed Direction','Cross-DC Coordination, Carbon-Aware Cost Modeling, Power-Aware GPU Scheduling','04 Experimental Environment','LLMServingSim 2.0, Academia Sinica RCITI GPU Cluster'],
+        'EINDEX': ['Contents','01 Previous Work and Research Background','Carbon–SLO, GreenCache, Helix, ThunderServe','02 Workload and Resource Characteristics','Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence','03 Research Gaps and Proposed Direction','Cross-DC Coordination, Carbon-Aware Cost Modeling, Power-Aware GPU Scheduling','04 Experimental Environment','LLMServingSim 2.0, Academia Sinica CITI GPU Cluster'],
         'ENVIRONMENT': ['Experimental Environment: LLMServingSim 2.0 and Real GPU Profiling',
                         'LLMServingSim 2.0 — Simulation','A profile-driven simulator for heterogeneous and disaggregated LLM serving systems.',
                         'Hardware and Network Modeling','Heterogeneous GPU configurations, memory hierarchies, and ASTRA-Sim-based interconnect simulation.',
                         'Serving Simulation','Multi-instance serving with configurable request routing, TP/PP parallelism, batching, and KV-cache management.',
                         'Performance and power/energy modeling rely on hardware-specific profiles, configured parameters, and validation.',
                         'Profiling and Validation',
-                        'Real GPU Profiling — Academia Sinica RCITI GPU Cluster','We plan to run representative LLM workloads on real GPUs to measure serving performance and power consumption.','Real measurements can provide hardware profiles and help validate simulation results.'],
+                        'Real GPU Profiling — Academia Sinica CITI GPU Cluster','We plan to run representative LLM workloads on real GPUs to measure serving performance and power consumption.','Real measurements can provide hardware profiles and help validate simulation results.'],
         'PLACEMENT': ['Published MoE-based simulation evidence'],
         'PLACEMENTENERGY': ['Published MoE-based simulation evidence'],
     }
@@ -470,7 +470,7 @@ def main():
         "- PASS: Helix Figure 3 retains original resolution and aspect ratio; ZIP asset bytes match.\n"
         "- PASS: no slide carries a source footer (all 19 pages); citations remain in the speaker script and evidence register. The MoE scope note (pages 9-10) and static/background power note (page 10) are in the slide body.\n"
         "- PASS: the 17 unchanged or renumbered slides (cover, pages 3-11, Thank You and supplements) are byte-identical in source to the 20-page deck (a280f04) and match it in text, 3x pixels above the page footer, and links.\n"
-        "- PASS: Slide 11 is three stacked gap cards (Previous Work vs. Research Opportunity) without a research-question box; slide 12 introduces LLMServingSim 2.0 and real RCITI GPU profiling with a Profiling and Validation separator and no architecture, roadmap or research phases; neither contains HBM/HBF, GPU model names, percentages or result claims.\n"
+        "- PASS: Slide 11 is three stacked gap cards (Previous Work vs. Research Opportunity) without a research-question box; slide 12 introduces LLMServingSim 2.0 and real CITI GPU profiling with a Profiling and Validation separator and no architecture, roadmap or research phases; neither contains HBM/HBF, GPU model names, percentages or result claims.\n"
         "- PASS: ThunderServe slide (page 6) uses ThunderServe Figure 5 with only the printed caption removed (pixel-identical to the original top 440 rows); Table 3 values and HBM/HBF content are absent from the slide; Figure 5 is included in the Overleaf ZIP.\n")
     print('PASS: 19 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()

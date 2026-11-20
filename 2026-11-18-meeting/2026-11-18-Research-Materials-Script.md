@@ -74,7 +74,7 @@ ThunderServe 主要研究不同 Workload 下，如何有效分配異質 GPU 資�
 
 上面是 LLMServingSim 2.0，這是一個用來模擬 LLM Serving 的 Simulator。它支援 Heterogeneous GPU、不同 Memory Hierarchy，以及 Multi-Instance Serving、Batching、Scheduling 和 Request Routing 等功能，因此我們可以利用它來探索不同 GPU 配置下的 Serving Performance。
 
-另外，我們也會使用中研院 RCITI 的真實 GPU Cluster 進行實驗，實際量測不同 LLM Workload 在 GPU 上的 Latency、Throughput 和 Power Consumption。
+另外，我們也會使用中研院 CITI 的真實 GPU Cluster 進行實驗，實際量測不同 LLM Workload 在 GPU 上的 Latency、Throughput 和 Power Consumption。
 
 這樣就不會完全依賴 Simulator，而是可以透過真實 GPU 的量測結果建立 Profile，並驗證模擬的準確性。
 

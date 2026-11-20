@@ -21,9 +21,9 @@ Four index cards link to pages 3, 7, 11 and 12. No embodied-carbon chapter is ex
 - Helix: ASPLOS 2025 max-flow/MILP placement and runtime scheduling. Single-cluster prototype versus simulated cross-region/high-heterogeneity settings are distinguished.
 - ThunderServe: MLSys 2025 Table 3, LLaMA-30B. Coding has 8 prefill / 4 decode replicas; Conversation has 4 / 8. These are replicas, not GPU counts. No throughput comparison between different hardware baselines is imported.
 - Workloads: Coding and Conversation are relative characteristics of the cited workloads. Multi-turn/agentic reuse uses GreenCache and Characterizing HBF evidence. Proposed implications are marked separately, and categories can overlap.
-- RCITI: proposed Dense LLM profiling environment. GPU inventory, counts and access must be established before experiments. No available HBF hardware is claimed.
+- CITI: proposed Dense LLM profiling environment. GPU inventory, counts and access must be established before experiments. No available HBF hardware is claimed.
 - LLMServingSim 2.0: official overview and architecture reviewed on 2026-11-20. Documented heterogeneous/disaggregated serving, batching/scheduling, KV models, compute profiles and ASTRA-Sim communication. HBF access/placement, calibrated energy integration and geo carbon scheduling are proposed work requiring implementation and validation. Do not generalize published simulator accuracy to this new setup.
-- Roadmap and scheduling architecture: removed from the deck on 2026-11-20 at the professor's request. The final main slide (page 12) only introduces the available environments, LLMServingSim 2.0 and planned real GPU profiling on the RCITI cluster, with no research phases or architecture commitment.
+- Roadmap and scheduling architecture: removed from the deck on 2026-11-20 at the professor's request. The final main slide (page 12) only introduces the available environments, LLMServingSim 2.0 and planned real GPU profiling on the CITI cluster, with no research phases or architecture commitment.
 
 ## Accounting and fair comparison
 
