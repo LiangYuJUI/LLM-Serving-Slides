@@ -20,6 +20,10 @@ THUNDER_ORIGINAL = REPO/'2026-10-21-meeting/ThunderServe/ThunderServe_Fig05.png'
 THUNDER_FIGURE = ROOT/'figures/ThunderServe_Fig05_no_caption.png'
 THUNDER_ZIP_PATH = 'figures/ThunderServe_Fig05_no_caption.png'
 THUNDER_CROP_HEIGHT = 440
+REVISED_SLIDES = {'COVER':0, 'EINDEX':1, 'WORKLOAD':6, 'ACCOUNT':7}  # label -> 0-based PDF page of the 2026-11-20 refocus
+# Source frames of slides 3-6 as they stood before the refocus (latest Helix / ThunderServe layouts). Must stay byte-identical.
+FROZEN_SLIDES_3_6 = {'GEO': 'a928fc065e6737f3787b94612151bf8bd4a44cb941c8d9951c07151f89ba8020', 'RELATED': '7b51b79f56d4ddba54bcb03ca7b980db9106f27e8472ceab3042bd3ce7457379', 'HELIX': 'b997d9a6bbb5a19a247c2e5d3f787d85f1ba04c31034b68070467b21e694a106', 'THUNDER': '69c2b725665f7b48ed16605644d372d7a1af1456ae0ec5e007770cef068d38d6'}
+COVER_TEXT = 'Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs Workload-Aware Scheduling Across Compute and Memory Resources'
 CATEGORIES = {'GEO':2, 'WORKLOAD':6, 'DISAGG':11, 'ENVIRONMENT':13}
 ORIGINAL_REEL_TITLES = {'HBM/HBF Embodied Carbon Evidence': 'What Evidence Do We Have for HBM/HBF Embodied Carbon?', 'Embodied Carbon per Memory Stack': 'How Much Embodied Carbon Does One Stack Carry?', 'Embodied Carbon per Nominal Capacity Unit': 'Does HBF Reduce Embodied Carbon per Unit Capacity?', 'HBF Carbon Estimate: Assumptions and Limitations': 'Can We Trust the HBF Carbon Estimate?'}
 # REEL1–4 baselines include user-requested concise copy updates.
@@ -43,6 +47,28 @@ def compile_pdf(cwd, out, name):
     warnings=re.findall(r'^.*(?:Overfull|Underfull|undefined|Warning|Missing character|not found).*$',log,re.M)
     if warnings: raise RuntimeError('\n'.join(warnings))
     return out/f'{name}.pdf'
+
+def same_page(p, q, clip=None):
+    """Equivalence of two renderings of the same slide.
+
+    pdfTeX subsets fonts per document, so adding glyphs elsewhere can move Type1 hinting by a few anti-aliasing
+    levels on otherwise untouched pages. Text, word positions (0.1 pt), vector drawings, images and links must
+    still match exactly; the raster is compared after 3x -> 1x area averaging with a small tolerance (measured
+    subset-hinting noise <= 34/255, versus >= 200/255 for a genuinely different page).
+    """
+    if p.get_text(clip=clip) != q.get_text(clip=clip) or (clip is None and annotations(p) != annotations(q)): return False
+    wp, wq = p.get_text('words', clip=clip), q.get_text('words', clip=clip)
+    if len(wp) != len(wq) or any(a[4] != b[4] or max(abs(x-y) for x, y in zip(a[:4], b[:4])) > .1 for a, b in zip(wp, wq)): return False
+    if clip is None:
+        if [(tuple(round(v, 2) for v in d['rect']), d.get('fill'), d.get('color')) for d in p.get_drawings()] != [(tuple(round(v, 2) for v in d['rect']), d.get('fill'), d.get('color')) for d in q.get_drawings()]: return False
+        if [tuple(round(v, 2) for v in im['bbox']) for im in p.get_image_info()] != [tuple(round(v, 2) for v in im['bbox']) for im in q.get_image_info()]: return False
+    m = fitz.Matrix(3, 3)
+    pa, pb = p.get_pixmap(matrix=m, clip=clip), q.get_pixmap(matrix=m, clip=clip)
+    if pa.digest == pb.digest: return True
+    def gray(pm): return Image.frombytes('RGB', (pm.width, pm.height), pm.samples).convert('L')
+    a, b = gray(pa), gray(pb)
+    size = (a.width // 3, a.height // 3)
+    return ImageChops.difference(a.resize(size, Image.BOX), b.resize(size, Image.BOX)).getextrema()[1] <= 48
 
 def annotations(p):
     return [(x.get('uri'),x.get('nameddest'),x.get('page'),tuple(x['from'])) for x in p.get_links()]
@@ -104,9 +130,14 @@ def validate(doc):
     new_required = {
         'RELATED': ['Cache Your Prompt When It’s Green', 'Carbon-Aware Caching for Large Language Model Serving', 'SIGMETRICS 2026', 'Carbon-Aware Adaptive SSD KV Cache Sizing'],
         'HELIX': ['Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow','Motivation:', 'making model placement challenging.', 'Method:', 'max-flow/MILP-based layer placement to maximize throughput', 'runtime request scheduling', 'Evaluation:', 'Real heterogeneous GPU cluster', 'geo-distributed settings evaluated using simulation', 'Fig. 3 (System Overview)'],
-        'THUNDER': ['High-Performance and Cost-Efficient LLM Serving in Cloud Environments','MLSys 2025','Workload-Aware Prefill/Decode Disaggregation','Motivation:','Prefill is typically compute-intensive','Method:','Jointly optimize GPU grouping, prefill/decode assignment, parallel configuration, and request routing','Workload characteristics affect the preferred prefill/decode resource allocation and routing','Figure 5','Sec. 3.3','Sec. 5.3'],
-        'WORKLOAD': ['Reported behavior above; proposed research implications below','Coding / Long-Prompt','Conversation / Long-Output','Multi-Turn / Agentic','Implications to evaluate','Categories can overlap'],
-        'ACCOUNT': ['What previous work provides','What we still need to investigate','Novelty requires'],
+        'THUNDER': ['ThunderServe: High-performance and Cost-efficient LLM Serving in Cloud Environments','MLSys 2025','Workload-Aware Prefill/Decode Placement & Scheduling','Motivation:','Prefill is typically compute-intensive','Method:','Jointly optimize GPU grouping, prefill/decode assignment, parallel configuration, and request routing','Workload characteristics affect the preferred prefill/decode resource allocation and routing','Figure 5','Sec. 3.3','Sec. 5.3'],
+        'WORKLOAD': ['Different Workloads, Different Resource Requirements','Workload characteristics influence GPU compute, memory, and scheduling demand.','Workload Characteristics Resource Requirements','Coding Longer prompts, shorter outputs Prefill compute, TTFT','Conversation Shorter prompts, longer outputs Decode throughput, memory bandwidth','Multi-Turn / Agentic Repeated context, potential prefix/KV reuse Memory capacity, KV retention and reuse','Coding and Conversation follow the workloads evaluated in ThunderServe, not universal definitions.','interaction pattern that may overlap with either','Different LLM workloads require different compute, memory, and scheduling resources.','ThunderServe, Sec. 3.4, Fig. 6, Table 3','GreenCache, Secs. 2–3'],
+        'ACCOUNT': ['Research Direction: Power- and Carbon-Aware Heterogeneous GPU Scheduling','Prior work provides geo-aware routing, caching, heterogeneous GPU placement, and phase-aware resource allocation.',
+                    '1 Workload-Aware Performance and Power Modeling','Profile heterogeneous GPUs across different workload characteristics.','Compute capability','Memory capacity and bandwidth','Serving latency and throughput','GPU power and energy',
+                    '2 Heterogeneous GPU Scheduling','different GPU capabilities and power characteristics','GPU allocation','Workload-aware request scheduling','Model/phase placement where appropriate','Resource utilization and communication costs',
+                    '3 Carbon-Aware Scheduling','Cross-data-center routing may be evaluated as an extension of calibrated local scheduling.','Serving energy estimation','Regional carbon intensity','Queueing and network latency','TTFT/TPOT SLO feasibility',
+                    'Optimize heterogeneous GPU serving energy and operational carbon while satisfying latency SLOs.','Carbon–SLO','GreenCache','Helix','ThunderServe'],
+        'EINDEX': ['Research Evidence Overview','01 Previous Work and Research Background','Carbon–SLO, GreenCache, Helix, ThunderServe','02 Workload and Resource Characteristics','Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence','03 Power- and Carbon-Aware GPU Scheduling','Heterogeneous GPU Allocation, Workload-Aware Scheduling, Cross-DC Routing','04 Experimental Environment and Evaluation','Academia Sinica GPU Cluster, LLMServingSim 2.0, Research Roadmap','Workload-aware heterogeneous GPU scheduling for energy- and carbon-efficient LLM serving.'],
         'DISAGG': ['Proposed','Not Yet Evaluated','Active / reusable KV placement','Optional serving-phase placement','SLO goodput'],
         'GEOARCH': ['Global Cross-DC Scheduler','DC A:','DC B:','request/session routing','operational energy/carbon'],
         'ENVIRONMENT': ['RCITI GPU Cluster','Dense LLM','LLMServingSim 2.0','Documented capabilities','Planned extensions','No HBF hardware is assumed'],
@@ -159,9 +190,61 @@ def validate(doc):
     for label, uri in expected_citations.items():
         assert any(l.get('uri')==uri for l in doc[names[label]['page']].get_links()), (label,uri)
     index=' '.join(doc[1].get_text().split())
-    for value in ['Previous Work and Research Gaps','Workload and HBM/HBF Evidence','Proposed Research Direction','Experimental Environment and Evaluation']:
+    for value in ['Previous Work and Research Background','Workload and Resource Characteristics','Power- and Carbon-Aware GPU Scheduling','Experimental Environment and Evaluation']:
         assert value in index, value
     assert 'Embodied Carbon' not in index
+    # The index must not mention HBM/HBF in its cards or takeaway (the only trace allowed is the spelled-out title of the cited paper in the source line).
+    index_body = index.split('Source:')[0]
+    for banned in ['HBM','HBF','High Bandwidth','Flash','MoE','Previous Work and Research Gaps','Proposed Research Direction','Calibrate local serving costs']:
+        assert banned not in index_body, ('Obsolete or out-of-scope index text', banned)
+    for source in ['Carbon–SLO','GreenCache','Helix','ThunderServe','LLMServingSim 2.0']:
+        assert source in index.split('Source:')[1], ('Index citation missing', source)
+    # Cover: only the title and subtitle, centered, with no personal or institutional metadata.
+    cover = doc[0]
+    cover_text = ' '.join(re.sub(r'Research Materials\s*\|\s*1\s*/\s*22','',cover.get_text()).split())
+    assert cover_text == COVER_TEXT, ('Cover must contain only the title and subtitle', cover_text)
+    for banned in ['Yu-Jui','Liang','Advisor','Hsiang-Yun','Cheng','National Taiwan','Academia Sinica','Research Overview','HBM','HBF','2026']:
+        assert banned not in cover.get_text(), ('Cover contains removed metadata', banned)
+    boxes = [fitz.Rect(sp['bbox']) for b in cover.get_text('dict')['blocks'] for ln in b.get('lines',[]) for sp in ln['spans']
+             if sp['text'].strip() and fitz.Rect(sp['bbox']).y1 < cover.rect.height-24]
+    union = fitz.Rect(boxes[0])
+    for box in boxes[1:]: union |= box
+    assert abs((union.x0+union.x1)/2-cover.rect.width/2) < 6, 'Cover text is not horizontally centered'
+    assert abs((union.y0+union.y1)/2-cover.rect.height/2) < cover.rect.height*.08, 'Cover text is not vertically balanced'
+    assert union.width > cover.rect.width*.6 and union.height > cover.rect.height*.3, 'Cover typography is too small or sparse'
+    sizes = [sp['size'] for b in cover.get_text('dict')['blocks'] for ln in b.get('lines',[]) for sp in ln['spans'] if sp['text'].strip() and sp['bbox'][3] < cover.rect.height-24]
+    assert max(sizes) >= 20, 'Cover title must be large'
+    # Slides 7 and 8: concise workload/direction slides without HBM/HBF, MoE, novelty claims, or removed layouts.
+    for label in ['WORKLOAD','ACCOUNT']:
+        text = ' '.join(doc[names[label]['page']].get_text().split())
+        for banned in ['HBM','HBF','MoE','Attention','Expert','Reported:','Implications to evaluate','Reported behavior above','novel','Novelty','What previous work provides','Weight and KV','research opportunity']:
+            assert banned.lower() not in text.lower(), ('Out-of-scope text on '+label, banned)
+    workload_text = ' '.join(doc[names['WORKLOAD']['page']].get_text().split())
+    for banned in ['Coding / Long-Prompt','Conversation / Long-Output','Categories can overlap','Characterizing']:
+        assert banned not in workload_text, ('Obsolete workload text', banned)
+    account_text = ' '.join(doc[names['ACCOUNT']['page']].get_text().split())
+    for banned in ['Carbon–SLO Geo-aware routing and SLO modeling','GreenCache Carbon-aware KV reuse','Helix Heterogeneous GPU placement','ThunderServe Phase/workload-aware']:
+        assert banned not in account_text, ('Four-paper comparison card must be removed', banned)
+    for label in ['COVER','EINDEX','WORKLOAD','ACCOUNT']:
+        page = doc[names[label]['page']]
+        blocks = [fitz.Rect(b[:4]) for b in page.get_text('blocks') if b[4].strip()]
+        for n,x in enumerate(blocks):
+            for y in blocks[n+1:]:
+                inter = x & y
+                assert inter.is_empty or inter.width*inter.height < 1, ('Overlapping text blocks on '+label, x, y)
+    # Slide 7 table: three workloads stacked in order, each row spanning three aligned columns.
+    wl = doc[names['WORKLOAD']['page']]
+    row_y = {name: wl.search_for(name)[0].y0 for name in ['Coding','Conversation','Multi-Turn / Agentic']}
+    assert row_y['Coding'] < row_y['Conversation'] < row_y['Multi-Turn / Agentic'], 'Workload rows out of order'
+    for header, row_text in [('Characteristics','Longer prompts'),('Resource Requirements','Prefill compute')]:
+        assert abs(wl.search_for(header)[-1].x0 - wl.search_for(row_text)[0].x0) < 2, ('Table column misaligned', header)
+    # Slide 8: three stacked cards in order, takeaway between the cards and the source footer.
+    ac = doc[names['ACCOUNT']['page']]
+    heads = [ac.search_for(h)[-1] for h in ['Workload-Aware Performance and Power Modeling','Heterogeneous GPU Scheduling','Carbon-Aware Scheduling']]
+    assert heads[0].y0 < heads[1].y0 < heads[2].y0 and max(abs(h.x0-heads[0].x0) for h in heads) < 2, 'Research cards must be stacked and aligned'
+    last_item = ac.search_for('TTFT/TPOT SLO feasibility')[0]; take = ac.search_for('Optimize heterogeneous GPU serving energy')[0]
+    src = fitz.Rect(next(b[:4] for b in ac.get_text('blocks') if b[4].startswith('Source:')))
+    assert last_item.y1 < take.y0 and take.y1 < src.y0, 'Slide 8 takeaway collides with cards or source'
     assert round(100*(9.54/7.19-1),1)==32.7
     assert round(225.9/13.52,1)==16.7
     assert round(100*(1-(225.9/512)/(13.52/16)),1)==47.8
@@ -220,8 +303,11 @@ def main():
     helix_baseline=subprocess.check_output(['git','show',HELIX_BASE+':2026-11-18-meeting/'+NAME+'.tex'],cwd=REPO,text=True)
     baseline_frames=frames(helix_baseline)
     # THUNDER is the authorized Figure 5 redesign; its contract is checked explicitly in validate().
-    for label in current.keys()-{'HELIX','THUNDER'}:
+    for label in current.keys()-{'HELIX','THUNDER'}-set(REVISED_SLIDES):
         assert normalize_related(current[label])==baseline_frames[label], ('Preserved frame changed',label)
+    # Slides 3-6 must stay byte-identical to their pre-refocus source (latest Helix / ThunderServe layouts).
+    for label,expected in FROZEN_SLIDES_3_6.items():
+        assert hashlib.sha256(current[label].encode()).hexdigest()==expected, ('Slides 3-6 changed by the refocus',label)
     assert r'\begin{tabularx}' not in current['THUNDER'] and 'figures/ThunderServe_Fig05_no_caption.png' in current['THUNDER'], 'THUNDER must use the Figure 5 crop'
     assert HELIX_LOCAL_PATH in current['HELIX'] and r'\begin{tikzpicture}' not in current['HELIX']
     (QA/'pages').mkdir(parents=True,exist_ok=True);ZIP.parent.mkdir(parents=True,exist_ok=True)
@@ -247,10 +333,11 @@ def main():
             assert annotations(x)==annotations(y)
         previous=fitz.open(stream=subprocess.check_output(['git','show',HELIX_BASE+':2026-11-18-meeting/output/pdf/'+NAME+'.pdf'],cwd=REPO),filetype='pdf')
         for i in range(22):
-            # Pages 3-5 (GEO, RELATED, HELIX) and 6 (THUNDER) are authorized redesigns.
-            if i in (2,3,4,5): continue
+            # Pages 3-6 (GEO, RELATED, HELIX, THUNDER) are earlier authorized redesigns, frozen by hash above;
+            # pages 1, 2, 7 and 8 are the 2026-11-20 refocus. Everything else must equal the older baseline.
+            if i in (2,3,4,5) or i in REVISED_SLIDES.values(): continue
             assert a[i].get_text()==previous[i].get_text(), ('Non-Helix text changed',i+1)
-            assert a[i].get_pixmap(matrix=fitz.Matrix(3,3)).digest==previous[i].get_pixmap(matrix=fitz.Matrix(3,3)).digest, ('Non-Helix pixels changed',i+1)
+            assert same_page(a[i],previous[i]), ('Non-Helix rendering changed',i+1)
             assert annotations(a[i])==annotations(previous[i]), ('Non-Helix links changed',i+1)
         for stale in (QA/'pages').glob('research-materials-*.png'):
             if int(stale.stem.rsplit('-',1)[1]) > len(a): stale.unlink()
@@ -274,7 +361,7 @@ def main():
     for label, old_page in {'MEMORY':9,'REEL1':5,'REEL2':6,'REEL3':7,'REEL4':8,'THANKYOU':14}.items():
         new_page=new_doc.resolve_names()[label]['page']
         clip=fitz.Rect(0,0,new_doc[new_page].rect.width,new_doc[new_page].rect.height-16)
-        assert old_doc[old_page].get_pixmap(matrix=fitz.Matrix(3,3),clip=clip).digest == new_doc[new_page].get_pixmap(matrix=fitz.Matrix(3,3),clip=clip).digest, label
+        assert same_page(old_doc[old_page], new_doc[new_page], clip), label
         assert {l.get('uri') for l in old_doc[old_page].get_links() if l.get('uri')} == {l.get('uri') for l in new_doc[new_page].get_links() if l.get('uri')}, label
         preserved_pages.append(dict(label=label,original_page=old_page+1,current_page=new_page+1,pixels_equal_above_footer=True,external_citations_equal=True))
     (QA/'research-materials-preservation.json').write_text(json.dumps(dict(base_commit=base_commit,pdf_sha256=digest(PDF),preserved_pages=preserved_pages,comparison='3x pixels excluding bottom 16 PDF points; source-frame checks additionally preserve all scientific content',hbf_table6='Source unchanged except explicit MoE scope note; all values and charts frozen'),indent=2)+'\n')
@@ -285,11 +372,12 @@ def main():
         "- PASS: 22 widescreen pages; Thank You at 16, supplements at 17–22.\n"
         "- PASS: two local and two extracted ZIP pdfLaTeX passes; no warnings.\n"
         "- PASS: local/ZIP text, pixels and annotations match.\n"
-        "- PASS: four index cards target pages 3, 7, 12 and 14; embodied carbon is supplementary.\n"
+        "- PASS: four index cards (Previous Work and Research Background; Workload and Resource Characteristics; Power- and Carbon-Aware GPU Scheduling; Experimental Environment and Evaluation) target pages 3, 7, 12 and 14; no HBM/HBF wording in the card text or takeaway; embodied carbon is supplementary.\n"
         "- PASS: backup round trips, bounds, evidence values and unchanged evidence frames.\n"
         "- PASS: all text/image bounds fit; preserved evidence and new proposal contracts pass.\n"
         "- PASS: Helix Figure 3 retains original resolution and aspect ratio; ZIP asset bytes match.\n"
-        "- PASS: all 19 pages outside Carbon-SLO/GreenCache/Helix match commit 3f90a20 in text, 3x pixels and annotations.\n"
+        "- PASS: 14 pages outside Carbon-SLO/GreenCache/Helix/ThunderServe and the refocused pages 1, 2, 7, 8 match commit 3f90a20 in text, 3x pixels and annotations.\n"
+        "- PASS: Slide 1 contains only the new title and subtitle (no presenter, advisor, institution or label), centered; Slide 7 is a three-row workload table without HBM/HBF; Slide 8 is three stacked research cards without HBM/HBF, MoE, Attention/Expert, or novelty claims; slides 3-6 source frames are byte-identical to the pre-refocus versions.\n"
         "- PASS: ThunderServe slide (page 6) uses ThunderServe Figure 5 with only the printed caption removed (pixel-identical to the original top 440 rows); Table 3 values and HBM/HBF content are absent from the slide; Figure 5 is included in the Overleaf ZIP.\n"
         "- Note: the page-6 frame is an authorized redesign, so it is excluded from the frozen-baseline and page-pixel comparisons and checked by the explicit ThunderServe contract instead.\n")
     print('PASS: 22 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')

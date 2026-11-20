@@ -111,7 +111,7 @@ python3 -m venv /tmp/carbonslo-qa
 
 2026-11-20 依教授回饋修訂。主簡報 1–16，Thank You 在 16；補充 17–22。頁腳為 1/22–22/22，與 PDF 實際頁碼相同。索引連至 3、7、12、14。Embodied carbon 四頁移到 17–20，不列為主章節。REEL 背景往返 17↔21；記憶體來源往返 9↔22。
 
-新方向為 workload-aware heterogeneous GPU 與 HBM/HBF memory co-design，先校正本地效能／能量，再研究跨資料中心 operational carbon routing。新增 Helix、ThunderServe、工作負載比較、兩層架構，以及 RCITI／LLMServingSim 2.0 實驗規劃。原 Attention/Expert worker 提案已移除。
+研究主軸為 power- and carbon-aware LLM serving on heterogeneous GPUs：依 workload 特性、GPU 運算／記憶體／功耗差異與延遲 SLO 做排程，先校正本地效能／能量，再研究跨資料中心 operational carbon routing。第 1、2、7、8 頁已依此主軸改寫；HBM/HBF 證據頁保留，但不作為已確認的主要研究方向。新增 Helix、ThunderServe、工作負載比較、兩層架構，以及 RCITI／LLMServingSim 2.0 實驗規劃。原 Attention/Expert worker 提案已移除。
 
 ```sh
 python3 scripts/build_research_materials.py

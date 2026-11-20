@@ -31,7 +31,7 @@
 \hspace{.48cm}\scriptsize\hfill Research Materials\enspace |\enspace\insertframenumber\,/\,\inserttotalframenumber\end{beamercolorbox}}
 \setbeamersize{text margin left=.48cm,text margin right=.48cm}
 
-\hypersetup{pdftitle={Workload-Aware, Power- and Carbon-Aware LLM Serving},pdfauthor={Yu-Jui Liang}}
+\hypersetup{pdftitle={Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs},pdfauthor={Yu-Jui Liang}}
 \newcommand{\srcA}{https://reellci.com/insights/the-hbf-inversion.html}
 \newcommand{\srcB}{https://reellci.com/insights/hbm-footprint-inversion.html}
 \newcommand{\srcC}{https://reellci.com/d/hbf-gen1-16hi/}
@@ -71,6 +71,8 @@ at ([xshift=.48cm,yshift=.16cm]current page.south west) {Source: #1};
 \newcommand{\indexcard}[4]{\hyperlink{#1}{\begin{beamercolorbox}[wd=\linewidth,sep=.13cm,rounded=true]{#2}\small\textbf{#3}\quad\footnotesize #4\end{beamercolorbox}}\par\vspace{.12cm}}
 \newcommand{\researchinputcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.10cm]{#1}{\footnotesize\bfseries\color{Accent}#2}\par\vspace{.03cm}{\scriptsize\raggedright #3\par}\end{beamercolorbox}}
 
+\newcommand{\directioncard}[5]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.06cm]{#1}{\small\bfseries\color{Accent}#2}\par{\footnotesize #3\par}
+\begin{minipage}[t]{.47\linewidth}\scriptsize\raggedright #4\end{minipage}\hfill\begin{minipage}[t]{.49\linewidth}\scriptsize\raggedright #5\end{minipage}\end{beamercolorbox}\par}
 \newcommand{\helixurl}{https://doi.org/10.1145/3669940.3707215}
 \newcommand{\thunderurl}{https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf}
 \newcommand{\simurl}{https://llmservingsim.ai/docs/getting-started/overview}
@@ -81,29 +83,24 @@ at ([xshift=.48cm,yshift=.16cm]current page.south west) {Source: #1};
 
 \begin{frame}[c,label=COVER]
 \relax
-{\small\color{Muted}Research Overview\par}
-\vspace{.18cm}
-{\LARGE\bfseries Workload-Aware, Power- and\\[3pt]Carbon-Aware LLM Serving\par}
-\vspace{.30cm}
-{\large Heterogeneous GPUs, HBM/HBF Memory Co-Design\\and Cross-Data-Center Scheduling\par}
-\vspace{.22cm}
-{\color{Accent}\rule{2.2cm}{1.2pt}\par}
-\vspace{.22cm}
-{\large Yu-Jui Liang\quad Advisor: Hsiang-Yun Cheng\par}
-\vspace{.12cm}
-{\color{Muted}National Taiwan University / Academia Sinica\par}
+\centering
+{\fontsize{23}{30}\selectfont\bfseries Power- and Carbon-Aware\\LLM Serving on Heterogeneous GPUs\par}
+\vspace{.50cm}
+{\color{Accent}\rule{2.4cm}{1.4pt}\par}
+\vspace{.50cm}
+{\Large\color{Muted}Workload-Aware Scheduling Across\\Compute and Memory Resources\par}
 \end{frame}
 
 \begin{frame}[t,label=EINDEX]{Research Evidence Overview}
 \relax
-{\footnotesize\color{Muted}Workload-aware serving from local GPU/memory placement to cross-DC routing\par}
+{\footnotesize\color{Muted}From prior work and workload characteristics to power- and carbon-aware GPU scheduling\par}
 \vspace{.12cm}
-\indexcard{GEO}{mintbox}{01\quad Previous Work and Research Gaps}{\\Carbon--SLO, GreenCache, Helix, ThunderServe}
-\indexcard{WORKLOAD}{lilacbox}{02\quad Workload and HBM/HBF Evidence}{\\Workload Characteristics, Memory Performance, Serving Energy}
-\indexcard{DISAGG}{mintbox}{03\quad Proposed Research Direction}{\\Workload-Aware GPU/Memory Placement, Cross-DC Scheduling}
+\indexcard{GEO}{mintbox}{01\quad Previous Work and Research Background}{\\Carbon--SLO, GreenCache, Helix, ThunderServe}
+\indexcard{WORKLOAD}{lilacbox}{02\quad Workload and Resource Characteristics}{\\Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence}
+\indexcard{DISAGG}{mintbox}{03\quad Power- and Carbon-Aware GPU Scheduling}{\\Heterogeneous GPU Allocation, Workload-Aware Scheduling, Cross-DC Routing}
 \indexcard{ENVIRONMENT}{lilacbox}{04\quad Experimental Environment and Evaluation}{\\Academia Sinica GPU Cluster, LLMServingSim 2.0, Research Roadmap}
-\takeaway{Calibrate local serving costs before evaluating carbon-aware routing.}
-\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\helixurl}{Helix}; \href{\thunderurl}{ThunderServe}; \href{\hbfurl}{Characterizing HBF}; \href{\simurl}{LLMServingSim 2.0}.}
+\takeaway{Workload-aware heterogeneous GPU scheduling for energy- and carbon-efficient LLM serving.}
+\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\helixurl}{Helix}; \href{\thunderurl}{ThunderServe}; \href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving}; \href{\simurl}{LLMServingSim 2.0}.}
 \end{frame}
 
 \begingroup
@@ -212,84 +209,59 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \setbeamertemplate{frametitle}{\nointerlineskip
 \begin{beamercolorbox}[wd=\paperwidth,ht=1.12cm,dp=.14cm,leftskip=.55cm,rightskip=.48cm]{frametitle}
 \usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
-\begin{frame}[t,label=THUNDER]{ThunderServe: Workload-Aware Serving}
+\begin{frame}[t,label=THUNDER]{ThunderServe: High-performance and Cost-efficient LLM Serving in Cloud Environments}
 \relax
-{\small\bfseries\color{Accent}High-Performance and Cost-Efficient LLM Serving in Cloud Environments\par}
-{\footnotesize\color{Muted}MLSys 2025\quad |\quad Workload-Aware Prefill/Decode Disaggregation \& Scheduling\par}
-\vspace{.04cm}
-{\small\textbf{Motivation:} Prefill is typically compute-intensive, while decode is more memory-bandwidth-sensitive.\par}
+{\footnotesize\color{Muted}MLSys 2025\quad |\quad Workload-Aware Prefill/Decode Placement \& Scheduling\par}
+\vspace{.02cm}
 \begin{center}
 \includegraphics[width=8.2cm]{figures/ThunderServe_Fig05_no_caption.png}
 \end{center}
+{\small\textbf{Motivation:} Prefill is typically compute-intensive, while decode is more memory-bandwidth-sensitive.\par}
 {\small\textbf{Method:} Jointly optimize GPU grouping, prefill/decode assignment, parallel configuration, and request routing.\par}
 \takeaway{Workload characteristics affect the preferred prefill/decode resource allocation and routing.}
 \source{\href{\thunderurl}{ThunderServe, MLSys 2025, Sec. 3.3, Figure 5; Sec. 5.3, Table 3}.}
 \end{frame}
 \endgroup
 
-\begin{frame}[t,label=WORKLOAD]{Different LLM Workload Characteristics}
+\begin{frame}[t,label=WORKLOAD]{Different Workloads, Different Resource Requirements}
 \relax
-{\footnotesize\color{Muted}Reported behavior above; proposed research implications below\par}
-\vspace{.18cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.32\textwidth}
-\card{mintbox}{Coding / Long-Prompt}{\footnotesize
-\textbf{Reported: ThunderServe}\\[5pt]
-Relatively longer inputs\\[3pt]Relatively shorter outputs\\[3pt]Higher prefill demand}
-\vspace{.18cm}
-{\small\bfseries\color{Accent}Implications to evaluate\par}
-\vspace{.08cm}
-{\footnotesize Compute-intensive prefill\\[5pt]TTFT sensitivity\\[5pt]Prefill GPU allocation\par}
-\end{column}
-\begin{column}{.32\textwidth}
-\card{lilacbox}{Conversation / Long-Output}{\footnotesize
-\textbf{Reported: ThunderServe}\\[5pt]
-Relatively shorter inputs\\[3pt]Relatively longer outputs\\[3pt]Greater decode demand}
-\vspace{.18cm}
-{\small\bfseries\color{Accent}Implications to evaluate\par}
-\vspace{.08cm}
-{\footnotesize Sustained token generation\\[5pt]Memory-bandwidth pressure\\[5pt]TPOT sensitivity\par}
-\end{column}
-\begin{column}{.32\textwidth}
-\card{mintbox}{Multi-Turn / Agentic}{\footnotesize
-\textbf{Reported: caching studies}\\[5pt]
-Related requests and reuse\\[3pt]Longer-lived session state\\[3pt]Variable cache capacity needs}
-\vspace{.18cm}
-{\small\bfseries\color{Accent}Implications to evaluate\par}
-\vspace{.08cm}
-{\footnotesize KV retention and capacity\\[5pt]HBM/HBF data placement\\[5pt]Read/write and movement costs\par}
-\end{column}
-\end{columns}
+{\footnotesize\color{Muted}Workload characteristics influence GPU compute, memory, and scheduling demand.\par}
+\vspace{.30cm}
+{\renewcommand{\arraystretch}{1.95}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}p{4.0cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Workload} & \textbf{Characteristics} & \textbf{Resource Requirements}\\
+\midrule
+\rowcolor{SoftMint}Coding & Longer prompts, shorter outputs & Prefill compute, TTFT\\
+\rowcolor{SoftLilac}Conversation & Shorter prompts, longer outputs & Decode throughput, memory bandwidth\\
+\rowcolor{SoftMint}Multi-Turn / Agentic & Repeated context, potential prefix/KV reuse & Memory capacity, KV retention and reuse\\
+\bottomrule
+\end{tabularx}\par}
 \vspace{.22cm}
-{\scriptsize\color{Muted}TTFT: time to first token. TPOT: time per output token. KV: key--value cache. Categories can overlap.\par}
-\takeaway{Different workload characteristics lead to different compute, memory and scheduling requirements.}
-\source{\href{\thunderurl}{ThunderServe, Sec. 3.4, Fig. 6, Table 3}; \href{\greenurl}{GreenCache, Secs. 2--3}; \href{\hbfurl}{Characterizing HBF, Secs. 1, 3.2--3.3, 4.2}.}
+{\scriptsize\color{Muted}Coding and Conversation follow the workloads evaluated in ThunderServe, not universal definitions. Multi-Turn / Agentic is an interaction pattern that may overlap with either.\\TTFT: time to first token. KV: key--value cache.\par}
+\takeaway{Different LLM workloads require different compute, memory, and scheduling resources.}
+\source{\href{\thunderurl}{ThunderServe, Sec. 3.4, Fig. 6, Table 3}; \href{\greenurl}{GreenCache, Secs. 2--3}.}
 \end{frame}
 
-\begin{frame}[t,label=ACCOUNT]{Research Gaps and Required Models}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.46\textwidth}
-\card{mintbox}{What previous work provides}{\footnotesize
-\textbf{Carbon--SLO}\\Geo-aware routing and SLO modeling\\[4pt]
-\textbf{GreenCache}\\Carbon-aware KV reuse and caching\\[4pt]
-\textbf{Helix}\\Heterogeneous GPU placement\\[4pt]
-\textbf{ThunderServe}\\Phase/workload-aware resource allocation}
-\end{column}
-\begin{column}{.51\textwidth}
-\card{lilacbox}{What we still need to investigate}{\footnotesize
-Workload-sensitive GPU power and energy\\[4pt]
-HBM/HBF capacity, latency and read/write energy\\[4pt]
-Weight and KV placement with communication costs\\[4pt]
-End-to-end serving SLO feasibility\\[4pt]
-Effect of calibrated local costs on cross-DC routing}
-\end{column}
-\end{columns}
-\vspace{.14cm}
-\compactcard{mintbox}{Our research opportunity}{Combine measured workload-dependent serving profiles with heterogeneous GPU/HBM/HBF exploration. Evaluate power, performance and operational carbon under common SLOs.}
-\vspace{.12cm}
-{\footnotesize\color{Muted}A proposed integration to investigate. Novelty requires further comparison with related systems.\par}
-\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\helixurl}{Helix}; \href{\thunderurl}{ThunderServe}; \href{\hbfurl}{Characterizing HBF}. Gap and integration: our synthesis.}
+\begingroup
+% Local two-line title treatment matching the Helix and ThunderServe slides.
+\setbeamerfont{frametitle}{size=\fontsize{12}{14}\selectfont,series=\bfseries}
+\setbeamertemplate{frametitle}{\nointerlineskip
+\begin{beamercolorbox}[wd=\paperwidth,ht=1.12cm,dp=.14cm,leftskip=.55cm,rightskip=.48cm]{frametitle}
+\usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
+\begin{frame}[t,label=ACCOUNT]{Research Direction:\\Power- and Carbon-Aware Heterogeneous GPU Scheduling}
+\relax
+{\footnotesize\color{Muted}Prior work provides geo-aware routing, caching, heterogeneous GPU placement, and phase-aware resource allocation.\par}
+\vspace{.04cm}
+\directioncard{mintbox}{1\quad Workload-Aware Performance and Power Modeling}{Profile heterogeneous GPUs across different workload characteristics.}{Compute capability\\Memory capacity and bandwidth}{Serving latency and throughput\\GPU power and energy}
+\vspace{.04cm}
+\directioncard{lilacbox}{2\quad Heterogeneous GPU Scheduling}{Optimize under different GPU capabilities and power characteristics.}{GPU allocation\\Workload-aware request scheduling}{Model/phase placement where appropriate\\Resource utilization and communication costs}
+\vspace{.04cm}
+\directioncard{mintbox}{3\quad Carbon-Aware Scheduling}{Cross-data-center routing may be evaluated as an extension of calibrated local scheduling.}{Serving energy estimation\\Regional carbon intensity}{Queueing and network latency\\TTFT/TPOT SLO feasibility}
+\takeaway{Optimize heterogeneous GPU serving energy and operational carbon while satisfying latency SLOs.}
+\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\helixurl}{Helix}; \href{\thunderurl}{ThunderServe}. Our proposed direction.}
 \end{frame}
+\endgroup
 
 \begin{frame}[t,label=MEMORY]{HBM and HBF Memory Access Energy}
 \relax

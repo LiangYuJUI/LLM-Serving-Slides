@@ -57,6 +57,48 @@ class NavigationContracts(unittest.TestCase):
                     doc[21].delete_link(link)
         self.reject(mutate)
 
+    def add_text(self, page, text, point=(40, 150)):
+        def mutate(doc):
+            doc[page].insert_text(point, text, fontsize=10)
+        self.reject(mutate)
+
+    # Slide 1 (cover): only title and subtitle.
+    def test_cover_author_returns(self):
+        self.add_text(0, 'Yu-Jui Liang')
+
+    def test_cover_institution_returns(self):
+        self.add_text(0, 'National Taiwan University / Academia Sinica')
+
+    def test_cover_missing_subtitle(self):
+        self.remove_text(0, 'Compute and Memory Resources')
+
+    # Slide 2 (index): new cards, no HBM/HBF wording.
+    def test_index_mentions_hbf(self):
+        self.add_text(1, 'Workload and HBM/HBF Evidence', (40, 150))
+
+    def test_index_missing_new_takeaway(self):
+        self.remove_text(1, 'energy- and carbon-efficient LLM serving')
+
+    # Slide 7 (workload table).
+    def test_workload_missing_agentic_row(self):
+        self.remove_text(6, 'Repeated context')
+
+    def test_workload_missing_scope_note(self):
+        self.remove_text(6, 'not universal definitions')
+
+    def test_workload_hbf_returns(self):
+        self.add_text(6, 'HBM/HBF data placement', (40, 150))
+
+    # Slide 8 (research direction).
+    def test_direction_missing_carbon_card(self):
+        self.remove_text(7, 'Carbon-Aware Scheduling')
+
+    def test_direction_hbf_returns(self):
+        self.add_text(7, 'HBM/HBF capacity, latency and read/write energy', (40, 150))
+
+    def test_direction_novelty_claim_returns(self):
+        self.add_text(7, 'Novelty requires further comparison', (40, 150))
+
     def test_missing_geo_shared_state(self):
         def mutate(doc):
             for rect in doc[2].search_for('same snapshot'):

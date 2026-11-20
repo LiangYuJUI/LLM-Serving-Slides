@@ -2,13 +2,13 @@
 
 2026-11-18 會議後修訂，更新日期：2026-11-20（Asia/Taipei）。主簡報 1–16，補充 17–22，頁腳與 PDF 實際頁碼一致。本稿取代舊版 Attention/Expert 架構的講法。英文投影片區分已發表證據、模型假設，以及尚未驗證的研究提案。
 
-## 1 — Research Overview
+## 1 — Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs
 
-老師，依照上次的建議，我把研究主軸改成工作負載導向的 GPU 與 HBM/HBF 記憶體配置，不再以 MoE 的 Attention/Expert 分離作為提案。核心問題是：不同工作負載適合什麼 GPU、記憶體配置與資料位置，能不能在滿足延遲 SLO 的前提下降低 serving energy？先把這個本地成本量準，再研究它如何影響跨資料中心的碳感知排程。今天呈現的是研究規劃與文獻證據，還沒有我們自己的節能結果。
+老師好，今天要報告的主題是異質 GPU 上的 power 與 carbon-aware LLM serving。實際的 serving 環境裡，GPU 的運算能力、記憶體容量、頻寬和功耗都不一樣，而不同 workload 對這些資源的需求也不同。所以我們想研究，怎麼依照 workload 特性在不同 GPU 之間做排程，並且在滿足延遲 SLO 的前提下，降低 serving energy 和 carbon。
 
 ## 2 — Research Evidence Overview
 
-簡報分成四部分。先看 Carbon–SLO、GreenCache、Helix 和 ThunderServe 已經提供的方法，再比較工作負載需求與 HBM/HBF 的效能、能量證據。接著說明我們的本地配置與跨資料中心架構，最後交代中研院實驗環境、LLMServingSim 2.0 和三階段評估計畫。Embodied carbon 的資料保留在最後的補充頁，主線先以 operational energy 和 carbon 為主。
+這份簡報分成四個部分。第一部分是 Carbon–SLO、GreenCache、Helix 和 ThunderServe 這幾篇相關研究，作為研究背景。第二部分整理不同 workload 的特性，以及 GPU 和記憶體的特性與已發表的效能、能量證據。第三部分是我們提出的 power 與 carbon-aware GPU 排程方向，最後說明實驗環境與評估規劃。每張卡片都可以直接點進去對應的頁面。
 
 ## 3 — Carbon–SLO: Shared State, Regional Decisions
 
@@ -36,15 +36,13 @@ ThunderServe 主要研究不同 Workload 下，如何有效分配異質 GPU 資�
 
 這說明不同 Workload 可能需要不同的資源配置。
 
-## 7 — Different LLM Workload Characteristics
+## 7 — Different Workloads, Different Resource Requirements
 
-這頁是新方向的重要出發點。ThunderServe 的 Coding 工作負載相對長輸入、短輸出，因此 prefill 需求較高；Conversation 相對短輸入、長輸出，因此需要較多持續 decode 的資源。多輪或 agentic 工作負載還多了一個維度：前一輪的 prefix 和 KV 可能繼續使用，session state 需要保留多久、值得用多少容量，都會改變成本。上半部是文獻觀察，下半部是我們要驗證的配置意涵。三類可以重疊，也不能把所有 coding 或 conversation 都固定成同一種長度分布。
+這一頁想說明，不同 workload 對 GPU 資源的需求並不一樣。以 ThunderServe 評估的 workload 來看，Coding 的 prompt 比較長、輸出比較短，所以主要吃 prefill 的運算能力，也很在意 TTFT。Conversation 則相反，prompt 較短、輸出較長，比較需要 decode 的吞吐量和記憶體頻寬。Multi-turn 或 agentic 是一種互動模式，前後輪會重複使用 context，可能重用 prefix 和 KV，所以更看重記憶體容量，以及 KV 要保留多久。因此，不同 workload 需要不同的運算、記憶體和排程資源。
 
-TTFT 是第一個 token 出現前的時間，TPOT 是後續每個輸出 token 的時間。這些需求會影響 GPU 分配、記憶體頻寬、KV 保留與資料搬移，所以不能只依模型大小決定配置。
+## 8 — Research Direction: Power- and Carbon-Aware Heterogeneous GPU Scheduling
 
-## 8 — Research Gaps and Required Models
-
-前面的文獻分別提供了 geo routing、碳感知 cache、異質 GPU placement，以及 phase 和 workload-aware allocation。我們需要補的是可校正的工作負載功率與能量模型、HBM/HBF 的讀寫與延遲成本、權重和 KV 的資料位置，以及通訊與端到端 SLO 的影響。接著再問，這些本地成本會不會改變跨資料中心的選擇。這是具體要研究的整合問題，不是宣稱過去沒有任何人考慮過其中幾個因素；新穎性還要繼續比對相關系統。
+前面的文獻已經提供 geo-aware routing、caching、異質 GPU placement，以及 phase-aware 的資源分配。我們計畫分成三個部分。第一，針對不同 workload，量測異質 GPU 的效能與功耗，建立 performance 和 power model。第二，在這個基礎上研究異質 GPU 的排程，包含 GPU 配置、request 排程，以及在適合的情況下決定模型或 phase 的放置。第三，加入 serving energy、各地區的碳強度、queue 與網路延遲，檢查 TTFT 和 TPOT SLO 是否可行；跨資料中心路由則作為本地排程校正之後的延伸。目標是在滿足延遲 SLO 的同時，降低 serving energy 和 operational carbon。
 
 ## 9 — HBM and HBF Memory Access Energy
 

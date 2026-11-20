@@ -20,14 +20,14 @@ Revised 2026-11-20 (Asia/Taipei). **22 pages: main 1–16, supplements 17–22.*
 
 | PDF | Topic | Source / location | Evidence | Boundary |
 |---|---|---|---|---|
-| 1 | Research Overview | User scope | Research question and identity only | No experimental result |
-| 2 | Research Evidence Overview | C, G, L, T, H, S | Index → 3, 7, 12, 14 | No embodied-carbon chapter |
+| 1 | Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs | User scope | Research title and subtitle only; no presenter or institution metadata | No experimental result |
+| 2 | Research Evidence Overview | C, G, L, T, H, S | Four-card index → 3, 7, 12, 14; heterogeneous GPU scheduling focus; no HBM/HBF wording in cards or takeaway | No embodied-carbon chapter; no demonstrated power or carbon result |
 | 3 | Carbon–SLO: Shared State, Regional Decisions | C Secs. III-A, III-C, IV-A, V-C, VI; Fig. 6(c) | Shared state, independent regional scheduling, A100 profiles | Our synthesis connects local energy/SLO costs to routing |
 | 4 | GreenCache: Carbon-Aware SSD Cache Sizing | G Secs. 3.2.1, 4.1–4.2, 5.4–5.5 | SSD cache size; operational and allocated embodied carbon | No joint heterogeneous GPU/HBM/HBF placement |
 | 5 | Helix: Heterogeneous GPU Placement | L Secs. 3–5, 6.1–6.4 | Profiling, max-flow/MILP and runtime scheduling | Real single-cluster prototype; geo and high-heterogeneity simulations |
 | 6 | ThunderServe: Workload-Aware Serving | T Secs. 3.2–3.4, 5.1, 5.3; Table 3 | LLaMA-30B Coding 8/4; Conversation 4/8 prefill/decode replicas | Replica counts, not physical GPU counts |
-| 7 | Different LLM Workload Characteristics | T Sec. 3.4, Fig. 6, Table 3; G Secs. 2–3; H Secs. 1, 3.2–3.3, 4.2 | Relative input/output demand; session state and reuse | Implications are proposed; categories overlap |
-| 8 | Research Gaps and Required Models | C, G, L, T, H | Specific integration of measured local profiles and GPU/memory exploration | Novelty still requires systematic verification |
+| 7 | Different Workloads, Different Resource Requirements | T Sec. 3.4, Fig. 6, Table 3; G Secs. 2–3 | Qualitative Coding / Conversation prompt-output contrast as evaluated in ThunderServe; multi-turn/agentic prefix and KV reuse | Not universal workload definitions; multi-turn/agentic is an interaction pattern that may overlap; no new quantitative claim |
+| 8 | Research Direction: Power- and Carbon-Aware Heterogeneous GPU Scheduling | C, G, L, T (context only) | Three proposed research parts: workload-aware performance/power modeling, heterogeneous GPU scheduling, carbon-aware scheduling | Proposal only; no selected algorithm, measured result or novelty claim; cross-DC routing is an extension of calibrated local scheduling |
 | 9 | HBM and HBF Memory Access Energy | H Table 1, Sec. 5.1 | 24/375 GB; 1000/1000 and 1000/8 GB/s; 0.1/20 and 0.1/250 µs; 3.4/6.8 and 3.4/100 pJ/bit; 100,000 P/E | Modeled parameters; provenance at page 22 |
 | 10 | Workload Completion Time Comparison | H Table 6 | GLM-5.2, 16 simulated GPUs, TP16/EP16, 100k turns; 11,354 / 4,543 / 4,538 s | Published MoE simulation; 8+0 vs 8+8 is unequal memory hardware |
 | 11 | Modeled Serving Energy Comparison | H Table 6 | 9.11 / 7.19 / 9.54 MJ; +32.7% = (9.54/7.19−1)×100 | Same H³ 8+8 weight-placement comparison; excludes static/background |
