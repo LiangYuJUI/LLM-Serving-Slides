@@ -20,7 +20,9 @@ GreenCache 的決策是 SSD KV cache 要配置多大。保留 cache 可以減少
 
 ## 5 — Helix: Heterogeneous GPU Placement
 
-Helix 說明異質 GPU placement 已經有完整的研究。它先量測 GPU 與網路特性，用 max-flow graph 表達系統，再以 MILP 尋找以 throughput 為目標的模型配置，runtime 根據這個配置排請求。這裡要區分實驗範圍：單一 cluster 有真實 prototype，跨區域和更高異質性的設定則是 simulation。我們不把 max-flow 方法或異質 GPU 當成自己的創新，而是進一步研究工作負載對功率、能量和 HBM/HBF 配置的影響。
+Helix 研究如何讓不同型號的 GPU 一起執行 LLM serving。圖左的 Coordinator 先透過 Profiler 收集 GPU 和網路資訊，再由 Planner 決定模型 layer 的位置；規劃使用 max-flow 與 MILP，但這張圖呈現的是系統架構，不是演算法內部。中間是異質 GPU workers，Scheduler 依照已部署的模型安排 request 路徑；右邊放大單一節點的 queue 和 layers。
+
+作者有真實異質 cluster 實驗，跨區域設定則用 simulation。對我們的啟發是，GPU placement 和 scheduling 已有成熟方法，我們要進一步研究 workload 的能量需求與 HBM/HBF 配置。
 
 ## 6 — ThunderServe: Workload-Aware Serving
 

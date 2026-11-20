@@ -11,6 +11,10 @@ QA = ROOT/'output/qa'
 PDF = ROOT/'output/pdf'/f'{NAME}.pdf'
 ZIP = ROOT/'output/overleaf/Research-Materials.zip'
 LABELS = ['EINDEX','GEO','RELATED','HELIX','THUNDER','WORKLOAD','ACCOUNT','MEMORY','PLACEMENT','PLACEMENTENERGY','DISAGG','GEOARCH','ENVIRONMENT','NEXT','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES']
+HELIX_BASE = '3f90a20ee7648052352fb19cc090c5500bfe06f9'
+HELIX_FIGURE = REPO/'2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png'
+HELIX_LOCAL_PATH = '../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png'
+HELIX_ZIP_PATH = 'figures/Helix_Figure_03_System_Overview.png'
 CATEGORIES = {'GEO':2, 'WORKLOAD':6, 'DISAGG':11, 'ENVIRONMENT':13}
 ORIGINAL_REEL_TITLES = {'HBM/HBF Embodied Carbon Evidence': 'What Evidence Do We Have for HBM/HBF Embodied Carbon?', 'Embodied Carbon per Memory Stack': 'How Much Embodied Carbon Does One Stack Carry?', 'Embodied Carbon per Nominal Capacity Unit': 'Does HBF Reduce Embodied Carbon per Unit Capacity?', 'HBF Carbon Estimate: Assumptions and Limitations': 'Can We Trust the HBF Carbon Estimate?'}
 # REEL1–4 baselines include user-requested concise copy updates.
@@ -93,7 +97,7 @@ def validate(doc):
         for value in values:
             assert value in text, (label, value)
     new_required = {
-        'HELIX': ['Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow','Max-flow graph + MILP','throughput objective','Real-system evidence','Simulation evidence'],
+        'HELIX': ['Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow','Method:', 'model placement (max-flow/MILP)', 'runtime request scheduling', 'Evaluation:', 'Real heterogeneous GPU cluster', 'geo-distributed settings evaluated using simulation', 'Fig. 3 (System Overview)'],
         'THUNDER': ['High-Performance and Cost-Efficient LLM Serving in Cloud Environments','LLaMA-30B','Table 3','Coding','Conversation','Replica counts, not physical GPU counts'],
         'WORKLOAD': ['Reported behavior above; proposed research implications below','Coding / Long-Prompt','Conversation / Long-Output','Multi-Turn / Agentic','Implications to evaluate','Categories can overlap'],
         'ACCOUNT': ['What previous work provides','What we still need to investigate','Novelty requires'],
@@ -107,6 +111,13 @@ def validate(doc):
     for label, values in new_required.items():
         text = ' '.join(doc[names[label]['page']].get_text().split())
         for value in values: assert value in text, (label, value)
+    helix_images=doc[names['HELIX']['page']].get_image_info()
+    assert len(helix_images)==1, 'Helix must use one original system overview figure'
+    with Image.open(HELIX_FIGURE) as original:
+        im=helix_images[0]; bounds=fitz.Rect(im['bbox'])
+        assert (im['width'],im['height'])==original.size, 'Original image resolution must be preserved'
+        assert abs(bounds.width/bounds.height-original.width/original.height)<.001, 'Figure distorted'
+        assert bounds.width>doc[4].rect.width*.93, 'Figure must occupy the content width'
     thunder = ' '.join(doc[names['THUNDER']['page']].get_text().split())
     assert re.search(r'Coding 8 4 Conversation 4 8', thunder), thunder
     expected_citations = {
@@ -163,14 +174,23 @@ def main():
         assert r'\proposed' in current[label], label
         for obsolete in ['Attention Worker','Expert Worker','expert-weight','A/E disaggregation']:
             assert obsolete not in current[label], (label,obsolete)
+    helix_baseline=subprocess.check_output(['git','show',HELIX_BASE+':2026-11-18-meeting/'+NAME+'.tex'],cwd=REPO,text=True)
+    baseline_frames=frames(helix_baseline)
+    for label in current.keys()-{'HELIX'}:
+        assert current[label]==baseline_frames[label], ('Non-Helix frame changed',label)
+    assert HELIX_LOCAL_PATH in current['HELIX'] and r'\begin{tikzpicture}' not in current['HELIX']
     (QA/'pages').mkdir(parents=True,exist_ok=True);ZIP.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='research-materials-') as td:
         temp=Path(td);local=compile_pdf(ROOT,temp/'local',NAME)
         with zipfile.ZipFile(ZIP,'w',zipfile.ZIP_DEFLATED) as z:
-            z.write(ROOT/f'{NAME}.tex','main.tex')
-            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\nSelf-contained Beamer source; 22 pages.\n')
+            z.writestr('main.tex',source.replace(HELIX_LOCAL_PATH,HELIX_ZIP_PATH))
+            z.write(HELIX_FIGURE,HELIX_ZIP_PATH)
+            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\nSelf-contained Beamer source and original Helix Figure 3; 22 pages.\n')
         isolated=temp/'isolated'
-        with zipfile.ZipFile(ZIP) as z: assert z.testzip() is None;z.extractall(isolated)
+        with zipfile.ZipFile(ZIP) as z:
+            assert z.testzip() is None
+            assert hashlib.sha256(z.read(HELIX_ZIP_PATH)).hexdigest()==digest(HELIX_FIGURE)
+            z.extractall(isolated)
         other=compile_pdf(isolated,temp/'standalone','main')
         a,b=fitz.open(local),fitz.open(other)
         uris=validate(a);validate(b)
@@ -178,6 +198,12 @@ def main():
             assert x.get_text()==y.get_text()
             assert x.get_pixmap().digest==y.get_pixmap().digest
             assert annotations(x)==annotations(y)
+        previous=fitz.open(stream=subprocess.check_output(['git','show',HELIX_BASE+':2026-11-18-meeting/output/pdf/'+NAME+'.pdf'],cwd=REPO),filetype='pdf')
+        for i in range(22):
+            if i==4: continue
+            assert a[i].get_text()==previous[i].get_text(), ('Non-Helix text changed',i+1)
+            assert a[i].get_pixmap(matrix=fitz.Matrix(3,3)).digest==previous[i].get_pixmap(matrix=fitz.Matrix(3,3)).digest, ('Non-Helix pixels changed',i+1)
+            assert annotations(a[i])==annotations(previous[i]), ('Non-Helix links changed',i+1)
         for stale in (QA/'pages').glob('research-materials-*.png'):
             if int(stale.stem.rsplit('-',1)[1]) > len(a): stale.unlink()
         montage=Image.new('RGB',(1600,((len(a)+1)//2)*470),'#D8E4EB')
@@ -206,12 +232,15 @@ def main():
     (QA/'research-materials-preservation.json').write_text(json.dumps(dict(base_commit=base_commit,pdf_sha256=digest(PDF),preserved_pages=preserved_pages,comparison='3x pixels excluding bottom 16 PDF points; source-frame checks additionally preserve all scientific content',hbf_table6='Source unchanged except explicit MoE scope note; all values and charts frozen'),indent=2)+'\n')
     (QA/'research-materials-frame-baseline.json').write_text(json.dumps(dict(commit=base_commit,scope='Frozen source frames checked against starting commit; current source includes only authorized revision',unchanged_labels=['RELATED','MEMORY','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES'],scope_note_only_labels=['PLACEMENT','PLACEMENTENERGY'],current_order=['COVER']+LABELS,sha256={label:hashlib.sha256(frame.encode()).hexdigest() for label,frame in current.items()}),indent=2)+'\n')
     (QA/'research-materials-geo-validation.json').write_text(json.dumps(dict(baseline_commit=base_commit,pdf_sha256=digest(PDF),current_page=3,label='GEO',preserved_scientific_claims=['Shared global snapshot and independent regional scheduling','Operational carbon only','A100-calibrated models'],authorized_change='Research direction now emphasizes calibrated workload-aware GPU/memory costs for routing; no total-carbon result claimed',primary_source='https://arxiv.org/abs/2610.14571v1'),indent=2)+'\n')
+    (QA/'research-materials-helix-validation.json').write_text(json.dumps(dict(baseline_commit=HELIX_BASE,pdf_sha256=digest(PDF),changed_page=5,label='HELIX',figure=str(HELIX_FIGURE.relative_to(REPO)),figure_sha256=digest(HELIX_FIGURE),zip_asset_bytes_identical=True,other_21_pages=dict(text_equal=True,pixels_equal_at_3x=True,annotations_equal=True),local_zip_parity=True),indent=2)+'\n')
     (QA/'validation.md').write_text("# Research Materials validation\n\n"
         "- PASS: 22 widescreen pages; Thank You at 16, supplements at 17–22.\n"
         "- PASS: two local and two extracted ZIP pdfLaTeX passes; no warnings.\n"
         "- PASS: local/ZIP text, pixels and annotations match.\n"
         "- PASS: four index cards target pages 3, 7, 12 and 14; embodied carbon is supplementary.\n"
         "- PASS: backup round trips, bounds, evidence values and unchanged evidence frames.\n"
-        "- PASS: all text/image bounds fit; preserved evidence and new proposal contracts pass.\n")
+        "- PASS: all text/image bounds fit; preserved evidence and new proposal contracts pass.\n"
+        "- PASS: Helix Figure 3 retains original resolution and aspect ratio; ZIP asset bytes match.\n"
+        "- PASS: all 21 non-Helix pages match commit 3f90a20 in text, 3x pixels and annotations.\n")
     print('PASS: 22 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()

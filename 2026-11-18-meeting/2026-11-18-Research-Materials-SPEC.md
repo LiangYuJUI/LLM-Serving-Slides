@@ -116,3 +116,7 @@ The source's TRL/sample timing is an authored model status, not an independent a
 | 20 / die-area/bit-density conflict; package gaps | C Limitations and unquantified flows | Model's own disclosure |
 | 20 / omitted package burdens | C Production covered; F boundary | Include in system accounting separately |
 | 20 / uncertainty band and caution | D PDF p. 68 / printed p. 66; C | Published band; not validated around A's GWP center |
+
+## Slide 5 figure redesign
+
+Only the `HELIX` frame and its speaker-script section are redesigned from commit `3f90a20`. Original Helix Figure 3 is included at full content width with its aspect ratio and all labels preserved. The local TeX references `../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png`. Packaging rewrites only this path to `figures/Helix_Figure_03_System_Overview.png` and includes the exact image bytes in the self-contained ZIP. The builder verifies identical text, 3× pixels and link annotations for every other page against that commit. Figure 3 depicts the system overview, while the method line separately describes max-flow/MILP placement and subsequent runtime scheduling.

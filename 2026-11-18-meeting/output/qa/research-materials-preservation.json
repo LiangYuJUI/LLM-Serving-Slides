@@ -1,6 +1,6 @@
 {
   "base_commit": "51548444d0d896c8302ad94a9c81cae3f2ed571d",
-  "pdf_sha256": "524ff3fa4631fa68838f5dd1894d57122da093205b696839c7a9b2c1949eceb7",
+  "pdf_sha256": "b97097ce1c7f533285487e102b68016fadfbb5c526e2f153c274cadd9fba3b60",
   "preserved_pages": [
     {
       "label": "RELATED",
@@ -53,43 +53,5 @@
     }
   ],
   "comparison": "3x pixels excluding bottom 16 PDF points; source-frame checks additionally preserve all scientific content",
-  "hbf_table6": "Source unchanged except explicit MoE scope note; all values and charts frozen",
-  "unrelated_tracked_files_unchanged": true,
-  "changed_tracked_files": [
-    "2026-11-18-meeting/2026-11-18-Power-Carbon-Slide-Evidence.md",
-    "2026-11-18-meeting/2026-11-18-Research-Materials-Page-Map.md",
-    "2026-11-18-meeting/2026-11-18-Research-Materials-SPEC.md",
-    "2026-11-18-meeting/2026-11-18-Research-Materials-Script.md",
-    "2026-11-18-meeting/2026-11-18-Research-Materials.tex",
-    "2026-11-18-meeting/README.md",
-    "2026-11-18-meeting/output/overleaf/Research-Materials.zip",
-    "2026-11-18-meeting/output/pdf/2026-11-18-Research-Materials.pdf",
-    "2026-11-18-meeting/output/qa/pages/research-materials-01.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-02.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-03.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-04.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-05.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-06.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-07.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-08.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-09.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-10.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-11.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-12.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-13.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-14.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-15.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-16.png",
-    "2026-11-18-meeting/output/qa/pages/research-materials-17.png",
-    "2026-11-18-meeting/output/qa/research-materials-build.json",
-    "2026-11-18-meeting/output/qa/research-materials-frame-baseline.json",
-    "2026-11-18-meeting/output/qa/research-materials-geo-validation.json",
-    "2026-11-18-meeting/output/qa/research-materials-montage.png",
-    "2026-11-18-meeting/output/qa/research-materials-navigation-tests.json",
-    "2026-11-18-meeting/output/qa/research-materials-preservation.json",
-    "2026-11-18-meeting/output/qa/research-materials-url-checks.json",
-    "2026-11-18-meeting/output/qa/validation.md",
-    "2026-11-18-meeting/scripts/build_research_materials.py",
-    "2026-11-18-meeting/scripts/test_research_materials.py"
-  ]
+  "hbf_table6": "Source unchanged except explicit MoE scope note; all values and charts frozen"
 }

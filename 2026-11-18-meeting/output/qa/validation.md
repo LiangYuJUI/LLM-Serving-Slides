@@ -6,15 +6,13 @@
 - PASS: four index cards target pages 3, 7, 12 and 14; embodied carbon is supplementary.
 - PASS: backup round trips, bounds, evidence values and unchanged evidence frames.
 - PASS: all text/image bounds fit; preserved evidence and new proposal contracts pass.
+- PASS: Helix Figure 3 retains original resolution and aspect ratio; ZIP asset bytes match.
+- PASS: all 21 non-Helix pages match commit 3f90a20 in text, 3x pixels and annotations.
 
-## Final review — 2026-11-20 (Asia/Taipei)
+## Helix figure redesign review
 
-- PASS: all 22 pages visually reviewed using the montage; new/rewritten pages and both Table 6 evidence pages inspected at full render size. No clipping, text/figure overlap or source-footer collisions observed.
-- PASS: 14 regression tests, including wrong index destinations, missing supplementary round trips, missing scientific caveats/citations, incorrect page count and misplaced Thank You.
-- PASS: preserved GreenCache, Table 1, Thank You and all four REEL pages match the starting PDF at 3× pixels above the footer. Source hashes additionally protect scientific text and source annotations.
-- PASS: all 22 speaker-script sections and the current page map/specification/evidence register match the final narrative. No MoE worker proposal remains in the current deck.
-- PASS: changes are limited to Research Materials and its scoped documentation/QA. Unrelated meeting decks, source papers and previous PDF deliverables are unchanged.
-- External citation annotations are clickable; remote publisher access policies are independent of PDF link validity. New previous-work claims were checked against original papers and simulator claims against official documentation.
-- Scientific limitations remain: RCITI inventory/access, empirical calibration, HBF model validation, simulator extensions, novelty verification and lifecycle allocation are future work. No measured saving is claimed.
-
-Final PDF SHA-256: `524ff3fa4631fa68838f5dd1894d57122da093205b696839c7a9b2c1949eceb7`.
+- PASS: slide 5 PNG visually inspected at 3×. Original Figure 3 is sharp and complete, with undistorted aspect ratio, readable labels and no overlap with explanatory text or footer.
+- PASS: all 14 navigation and scientific-boundary regression tests.
+- PASS: only speaker-script section 5 changed; all other sections match commit `3f90a20` exactly.
+- PASS: the original image file is unchanged and its exact bytes are included in the Overleaf ZIP. Only its relative reference differs in packaged `main.tex`.
+- Scope: slide 5 layout and narration only; all other 21 pages preserve text, 3× pixels and link annotations.

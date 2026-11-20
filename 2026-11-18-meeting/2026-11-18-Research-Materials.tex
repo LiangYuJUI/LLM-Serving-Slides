@@ -178,26 +178,15 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \begin{frame}[t,label=HELIX]{Helix: Heterogeneous GPU Placement}
 \relax
 {\small\bfseries\color{Accent}Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow\par}
-{\footnotesize\color{Muted}ASPLOS 2025\quad Published placement and scheduling method\par}
-\vspace{.25cm}
-\begin{tikzpicture}
-\node[flowbox,fill=SoftMint,text width=3.8cm] (a) at (2.05,0) {\textbf{GPU / network profiling}\\[5pt]Compute throughput\\Memory capacity\\Network bandwidth};
-\node[flowbox,fill=SoftLilac,text width=4.0cm] (b) at (7.45,0) {\textbf{Max-flow graph + MILP}\\[5pt]Choose model placement\\Maximize flow as a\\throughput objective};
-\node[flowbox,fill=SoftMint,text width=3.7cm] (c) at (12.85,0) {\textbf{Runtime scheduling}\\[5pt]Route requests through\\the placed model\\using computed flow};
-\draw[flowarrow] (a)--(b);\draw[flowarrow] (b)--(c);
-\end{tikzpicture}\par
-\vspace{.24cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.49\textwidth}
-\card{mintbox}{Real-system evidence}{\footnotesize Single-cluster prototype on heterogeneous GPUs. GPU profiles inform placement.}
-\end{column}
-\begin{column}{.49\textwidth}
-\card{lilacbox}{Simulation evidence}{\footnotesize Geo-distributed and higher-heterogeneity settings use a simulator.}
-\end{column}
-\end{columns}
+{\footnotesize\color{Muted}ASPLOS 2025\quad |\quad Heterogeneous GPU Placement \& Scheduling\par}
 \vspace{.16cm}
-\takeaway{GPU heterogeneity is established. Our question concerns workload-dependent energy and HBM/HBF configurations.}
-\source{\href{\helixurl}{Mei et al., Helix, ASPLOS 2025, Secs. 3--5 and 6.1--6.4}. Diagram: synthesis of the published method.}
+\noindent\includegraphics[width=\linewidth]{../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png}\par
+\vspace{.14cm}
+{\footnotesize\textbf{Method:} GPU/network profiling $\rightarrow$ model placement (max-flow/MILP) $\rightarrow$ runtime request scheduling.\par}
+\vspace{.08cm}
+{\footnotesize\textbf{Evaluation:} Real heterogeneous GPU cluster; geo-distributed settings evaluated using simulation.\par}
+\takeaway{Helix establishes heterogeneous GPU placement and scheduling. Our direction considers workload-dependent energy and HBM/HBF memory configurations.}
+\source{\href{\helixurl}{Mei et al., Helix, ASPLOS 2025, Fig. 3 (System Overview); Secs. 3--5 and 6.1--6.4}.}
 \end{frame}
 
 \begin{frame}[t,label=THUNDER]{ThunderServe: Workload-Aware Serving}
