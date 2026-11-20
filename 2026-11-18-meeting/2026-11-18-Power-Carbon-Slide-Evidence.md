@@ -21,7 +21,7 @@ Revised 2026-11-20 (Asia/Taipei). **20 pages: main 1–14, supplements 15–20**
 | PDF | Topic | Source / location | Evidence | Boundary |
 |---|---|---|---|---|
 | 1 | Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs | User scope | Research title and subtitle only; no presenter or institution metadata | No experimental result |
-| 2 | Research Evidence Overview | C, G, L, T, H, S | Four-card index → 3, 7, 11, 13; heterogeneous GPU scheduling focus; no HBM/HBF wording in cards or takeaway | No embodied-carbon chapter; no demonstrated power or carbon result |
+| 2 | Contents | C, G, L, T, H, S | Four-card index → 3, 7, 11, 13; heterogeneous GPU scheduling focus; no HBM/HBF wording in cards or takeaway | No embodied-carbon chapter; no demonstrated power or carbon result |
 | 3 | Carbon–SLO: Shared State, Regional Decisions | C Secs. III-A, III-C, IV-A, V-C, VI; Fig. 6(c) | Shared state, independent regional scheduling, A100 profiles | Our synthesis connects local energy/SLO costs to routing |
 | 4 | GreenCache: Carbon-Aware SSD Cache Sizing | G Secs. 3.2.1, 4.1–4.2, 5.4–5.5 | SSD cache size; operational and allocated embodied carbon | No joint heterogeneous GPU/HBM/HBF placement |
 | 5 | Helix: Heterogeneous GPU Placement | L Secs. 3–5, 6.1–6.4 | Profiling, max-flow/MILP and runtime scheduling | Real single-cluster prototype; geo and high-heterogeneity simulations |

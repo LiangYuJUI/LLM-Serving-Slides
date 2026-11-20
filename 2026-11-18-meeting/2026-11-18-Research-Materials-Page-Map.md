@@ -7,7 +7,7 @@ Exactly **20 PDF pages: 14 main + 6 supplementary**. Physical page and footer nu
 | PDF / footer | Label | Previous page (22-page deck) | Topic | Action |
 |---|---|---|---|---|
 | 1 | `COVER` | 1 | Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs (title and subtitle only) | Preserved |
-| 2 | `EINDEX` | 2 | Research Evidence Overview | Navigation updated |
+| 2 | `EINDEX` | 2 | Contents (agenda with four index cards) | Navigation updated; subtitle removed |
 | 3 | `GEO` | 3 | Carbon–SLO: Shared State, Regional Decisions | Preserved |
 | 4 | `RELATED` | 4 | GreenCache: Carbon-Aware SSD Cache Sizing | Preserved |
 | 5 | `HELIX` | 5 | Helix: Heterogeneous GPU Placement | Preserved |

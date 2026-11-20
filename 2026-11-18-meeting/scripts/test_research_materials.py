@@ -92,6 +92,12 @@ class NavigationContracts(unittest.TestCase):
     def test_index_mentions_hbf(self):
         self.add_text(1, 'Workload and HBM/HBF Evidence', (40, 150))
 
+    def test_index_subtitle_returns(self):
+        self.add_text(1, 'From prior work and workload/memory evidence to research gaps, proposed scheduling and evaluation', (40, 150))
+
+    def test_index_old_title_returns(self):
+        self.add_text(1, 'Research Evidence Overview', (40, 150))
+
     def test_index_missing_new_takeaway(self):
         self.remove_text(1, 'energy- and carbon-efficient LLM serving')
 

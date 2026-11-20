@@ -6,7 +6,7 @@
 
 老師好，今天要報告的主題是異質 GPU 上的 power 與 carbon-aware LLM serving。實際的 serving 環境裡，GPU 的運算能力、記憶體容量、頻寬和功耗都不一樣，而不同 workload 對這些資源的需求也不同。所以我們想研究，怎麼依照 workload 特性在不同 GPU 之間做排程，並且在滿足延遲 SLO 的前提下，降低 serving energy 和 carbon。
 
-## 2 — Research Evidence Overview
+## 2 — Contents
 
 這份簡報分成四個部分。第一部分是 Carbon–SLO、GreenCache、Helix 和 ThunderServe 這幾篇相關研究，作為研究背景。第二部分整理不同 workload 的特性，以及已發表的 GPU 記憶體效能與能量證據。第三部分是從這些文獻歸納出的研究缺口和我們提出的方向，包含協調式排程架構。最後是實驗規劃與研究路線。每張卡片都可以直接點進去對應的頁面。
 
