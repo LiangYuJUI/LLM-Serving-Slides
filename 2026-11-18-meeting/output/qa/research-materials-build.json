@@ -3,14 +3,14 @@
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "5ac5c3521cdf4bfbd01ec7d3dfd5dd59da14372790897a8cd48d6b1a710dfe76",
-  "pdf_sha256": "996814ccf58edce856da8c620180dad237ec095a9eca5aabd2aba5bf76eb955f",
-  "zip_sha256": "1e74a8501f69f3535176697d18bfa9d6cd75316e32e1670c142ced1f87747489",
+  "source_sha256": "e1adb9cbe0edc70f22a32ae3e97de5c5a7bc3da7d05c548f1d04258008d76ac5",
+  "pdf_sha256": "6b2cc69f29c9164b0d52a1245e36d9c51435f5a5fe05e6e16e683086e477ec27",
+  "zip_sha256": "101bc2d04d778d07e14693ed2d0b34df5221a6ebebc6aacea6fd72134ae7a058",
   "preserved_frame_hashes": {
-    "REEL1": "a48e62133c24df47d87ca15285fc999607b32e1ee2b5933999f2570035c1bbd3",
-    "REEL2": "893e24ef3c3b3dc2d50e559402ce0ff48e0243a0fd4d36627d20ad8a3cb59965",
-    "REEL3": "1fc3a6cce4ab8ec2c99130ad8e3d17ce2eb1ecf5367dff6c2dfa5643e739eb09",
-    "REEL4": "e8bc4a53e7f5c755c1b4bb33ab1f4b03ea8be635ef1d5701c01944af2a7139fe"
+    "REEL1": "2e6c42ab7c6183cd8c21e882e46bdff3f08761af861eb1434a617e8b1ca7cc34",
+    "REEL2": "67c208ee185b642def61e2b5cd1a5c71cbff1c4e5fcb0bb22650023b400a003c",
+    "REEL3": "eafaf33665b01ff8a1a3e3a5ee71026570d942a16a2d43dba81cae33fbf85269",
+    "REEL4": "a4b1e49c1f9bdbda33d5cf6f955c9b5165b005556d82963b7bf826c85b0ade99"
   },
   "category_destinations": {
     "GEO": 3,
@@ -35,25 +35,14 @@
   },
   "protected_files": 11075,
   "uris": [
-    "https://arxiv.org/abs/2505.23970v3",
-    "https://arxiv.org/abs/2602.23036",
     "https://arxiv.org/abs/2604.16007v1",
     "https://arxiv.org/abs/2609.39131v2",
-    "https://arxiv.org/abs/2610.14571v1",
     "https://doi.org/10.1109/IEDM45741.2023.10413890",
     "https://doi.org/10.1109/LCA.2026.3660969",
     "https://doi.org/10.1109/LCA.2026.3705817",
     "https://doi.org/10.1109/MC.2026.3652916",
-    "https://doi.org/10.1145/3669940.3707215",
     "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu",
-    "https://llmservingsim.ai/docs/getting-started/overview",
-    "https://llmservingsim.ai/docs/simulator/architecture",
-    "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
     "https://reellci.com/",
-    "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
-    "https://reellci.com/d/hbf-gen1-16hi/",
-    "https://reellci.com/explorer/?category=memory_components",
-    "https://reellci.com/insights/hbm-footprint-inversion.html",
     "https://reellci.com/insights/the-hbf-inversion.html",
     "https://www.micron.com/products/memory/hbm/hbm3e"
   ]

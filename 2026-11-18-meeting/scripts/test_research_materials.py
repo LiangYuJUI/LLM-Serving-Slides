@@ -131,11 +131,23 @@ class NavigationContracts(unittest.TestCase):
     def test_missing_simulator_boundary(self):
         self.remove_text(13, 'No HBF hardware is assumed')
 
-    def test_missing_helix_citation(self):
+    def test_missing_helix_figure(self):
         def mutate(doc):
-            for link in doc[4].get_links():
-                if link.get('uri'): doc[4].delete_link(link)
+            page = doc[4]
+            for im in page.get_image_info():
+                page.add_redact_annot(fitz.Rect(im['bbox']))
+            page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_REMOVE)
         self.reject(mutate)
+
+    # Source footers were removed from every slide; a returning footer must be rejected.
+    def test_source_footer_returns(self):
+        self.add_text(3, 'Source: Carbon–SLO, Secs. III-A, III-C.', (40, 240))
+
+    def test_missing_hbf_scope_note_on_slide_10(self):
+        self.remove_text(9, 'Published MoE-based simulation evidence')
+
+    def test_missing_static_power_note(self):
+        self.remove_text(10, 'static/background power excluded')
 
     def test_wrong_thank_you_position(self):
         self.reject(lambda doc: doc.move_page(15, 17))

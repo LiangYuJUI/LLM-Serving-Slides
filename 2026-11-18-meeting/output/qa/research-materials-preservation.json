@@ -1,6 +1,6 @@
 {
   "base_commit": "51548444d0d896c8302ad94a9c81cae3f2ed571d",
-  "pdf_sha256": "996814ccf58edce856da8c620180dad237ec095a9eca5aabd2aba5bf76eb955f",
+  "pdf_sha256": "6b2cc69f29c9164b0d52a1245e36d9c51435f5a5fe05e6e16e683086e477ec27",
   "preserved_pages": [
     {
       "label": "MEMORY",
@@ -45,6 +45,6 @@
       "external_citations_equal": true
     }
   ],
-  "comparison": "3x pixels excluding bottom 16 PDF points; source-frame checks additionally preserve all scientific content",
+  "comparison": "legacy source footers redacted before comparison; 3x pixels excluding bottom 16 PDF points; source-frame checks additionally preserve all scientific content",
   "hbf_table6": "Source unchanged except explicit MoE scope note; all values and charts frozen"
 }
