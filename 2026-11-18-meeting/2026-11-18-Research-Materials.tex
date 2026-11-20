@@ -65,12 +65,10 @@
 
 \newcommand{\gapcard}[4]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.075cm]{#1}\setlength{\fboxsep}{3pt}%
 \begin{minipage}[t]{.165\linewidth}\raggedright\small\bfseries\color{Accent}#2\end{minipage}\hfill\begin{minipage}[t]{.40\linewidth}\raggedright\footnotesize{\bfseries\color{Muted}Previous Work}\\[1pt]#3\end{minipage}\hfill\colorbox{Paper}{\begin{minipage}[t]{.375\linewidth}\raggedright\footnotesize{\bfseries\color{Accent}Research Opportunity}\\[1pt]#4\end{minipage}}\end{beamercolorbox}\par}
-\newcommand{\phasecard}[4]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.10cm]{#1}\begin{minipage}[c]{.045\linewidth}\centering{\Large\bfseries\color{Accent}#2}\end{minipage}\begin{minipage}[c]{.94\linewidth}{\small\bfseries\color{Accent}#3}\par\vspace{.02cm}{\footnotesize #4\par}\end{minipage}\end{beamercolorbox}\par}
 \newcommand{\helixurl}{https://doi.org/10.1145/3669940.3707215}
 \newcommand{\thunderurl}{https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf}
 \newcommand{\simurl}{https://llmservingsim.ai/docs/getting-started/overview}
 \newcommand{\simarchurl}{https://llmservingsim.ai/docs/simulator/architecture}
-\newcommand{\proposed}{{\footnotesize\color{Accent}\bfseries Proposed --- Not Yet Evaluated\par}\vspace{.12cm}}
 \tikzset{flowbox/.style={rounded corners=3pt,inner sep=7pt,align=left,font=\footnotesize,text=Ink},flowarrow/.style={-Latex,thick,Accent}}
 \begin{document}
 
@@ -89,8 +87,8 @@
 \vspace{.12cm}
 \indexcard{GEO}{mintbox}{01\quad Previous Work and Research Background}{\\Carbon--SLO, GreenCache, Helix, ThunderServe}
 \indexcard{WORKLOAD}{lilacbox}{02\quad Workload and Resource Characteristics}{\\Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence}
-\indexcard{ACCOUNT}{mintbox}{03\quad Research Gaps and Proposed Direction}{\\Cross-DC Coordination, Carbon-Aware Cost Modeling, Power-Aware GPU Scheduling, Proposed Architecture}
-\indexcard{ENVIRONMENT}{lilacbox}{04\quad Experimental Plan and Roadmap}{\\Academia Sinica GPU Cluster, LLMServingSim 2.0, Research Phases}
+\indexcard{ACCOUNT}{mintbox}{03\quad Research Gaps and Proposed Direction}{\\Cross-DC Coordination, Carbon-Aware Cost Modeling, Power-Aware GPU Scheduling}
+\indexcard{ENVIRONMENT}{lilacbox}{04\quad Experimental Environment}{\\LLMServingSim 2.0, Academia Sinica RCITI GPU Cluster}
 \end{frame}
 
 \begingroup
@@ -316,51 +314,23 @@ Assumed P/E cycles & --- & 100,000\\
 \gapcard{mintbox}{Power-Aware Heterogeneous GPU Scheduling}{Helix and ThunderServe study heterogeneous GPU placement and workload-aware allocation, mainly for performance or cost.}{Explore power-aware scheduling across GPUs with different compute, memory, and energy characteristics.}
 \end{frame}
 
-\begin{frame}[t,label=GEOARCH]{Proposed Coordinated Scheduling Architecture}
-\proposed
-\begin{tikzpicture}[>=Latex,
-gpu/.style={rounded corners=2pt,minimum width=2.05cm,minimum height=.52cm,inner sep=2pt,font=\scriptsize,text=Ink,align=center},
-down/.style={-Latex,thick,Accent},up/.style={-Latex,thick,dashed,AccentBlue},
-lab/.style={font=\scriptsize}]
-\node[flowbox,fill=SoftMint,text width=13.9cm,align=center,anchor=north] (g) at (7.52,0) {\hyphenpenalty=10000 \textbf{Global Carbon-Aware Scheduler}\\[2pt]Coordinate cross-data-center routing using regional carbon intensity, predicted serving energy, shared capacity, and SLO feasibility.\\[3pt]\textbf{Decision: Joint request routing / load allocation}};
-\fill[rounded corners=3pt,SoftLilac] (0,-3.0) rectangle (7.2,-5.05);
-\fill[rounded corners=3pt,SoftLilac] (7.84,-3.0) rectangle (15.04,-5.05);
-\node[font=\footnotesize,text=Ink,align=center,anchor=north] at (3.6,-3.05) {\textbf{Data Center A}\\Local Heterogeneous GPU Scheduler\\[1pt]{\scriptsize Workload-aware GPU allocation and serving placement}};
-\node[font=\footnotesize,text=Ink,align=center,anchor=north] at (11.44,-3.05) {\textbf{Data Center B}\\Local Heterogeneous GPU Scheduler\\[1pt]{\scriptsize Workload-aware GPU allocation and serving placement}};
-\node[gpu,fill=AccentBlue!30] at (1.35,-4.45) {Compute-rich};
-\node[gpu,fill=Accent!30] at (3.6,-4.45) {Memory-rich};
-\node[gpu,fill=Muted!25] at (5.85,-4.45) {Low-power};
-\node[gpu,fill=Accent!30] at (9.19,-4.45) {Memory-rich};
-\node[gpu,fill=Accent!30] at (11.44,-4.45) {Memory-rich};
-\node[gpu,fill=AccentBlue!30] at (13.69,-4.45) {Compute-rich};
-\foreach \x in {3.6,11.44}{
-\draw[down] (\x-.7,-1.98)--(\x-.7,-3.0);\draw[up] (\x+.7,-3.0)--(\x+.7,-1.98);
-\node[lab,anchor=east,align=right,text=Accent] at (\x-.8,-2.5) {Request assignment\\and scheduling\\decisions};
-\node[lab,anchor=west,align=left,text=AccentBlue!80!Ink] at (\x+.8,-2.5) {Predicted performance,\\energy, capacity, and\\SLO feasibility};}
-\end{tikzpicture}\par
-\vspace{.04cm}
-{\scriptsize\color{Muted}Conceptual design, not implemented or evaluated; GPU groups are illustrative. A coordinated plan may be executed by distributed regional schedulers; coordination overhead, snapshot freshness, network latency and queueing remain to be evaluated. Operational carbon is prioritized; embodied carbon is optional future work.\par}
-\takeaway{Coordinated routing uses workload-aware serving costs from heterogeneous GPU resources.}
-\end{frame}
-
-\begin{frame}[t,label=ENVIRONMENT]{Experimental Plan and Research Roadmap}
-\proposed
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.485\textwidth}
-\card{mintbox}{Real GPU Profiling}{\footnotesize\textbf{Academia Sinica RCITI GPU Cluster}\\[2pt]Profile representative LLM workloads for heterogeneous GPU serving performance and power.}
-\end{column}
-\begin{column}{.485\textwidth}
-\card{lilacbox}{Simulation and Evaluation}{\footnotesize\textbf{LLMServingSim 2.0}\\[2pt]Foundation for calibrated heterogeneous GPU experiments and proposed scheduling extensions.}
-\end{column}
-\end{columns}
-\vspace{.08cm}
-\phasecard{mintbox}{1}{Phase 1 --- Workload-Aware Performance and Power Modeling}{Profile representative workloads across heterogeneous GPUs and validate serving cost estimates.}
-\vspace{.06cm}
-\phasecard{lilacbox}{2}{Phase 2 --- Power-Aware Heterogeneous GPU Scheduling}{Evaluate workload-aware allocation and placement across GPU compute, memory, and power configurations.}
-\vspace{.06cm}
-\phasecard{mintbox}{3}{Phase 3 --- Coordinated Cross-DC Carbon-Aware Scheduling}{Compare coordinated and independent regional routing under common workloads and latency SLOs.}
-\vspace{.06cm}
-{\scriptsize\color{Muted}GPU types, counts and cluster access remain to be confirmed. Dense LLM serving is the initial profiling workload; operational-carbon accounting and multi-DC scheduling are planned extensions that need calibration and validation.\par}
+\begin{frame}[t,label=ENVIRONMENT]{Experimental Environment: LLMServingSim 2.0 and Real GPU Profiling}
+\vspace{-.02cm}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.12cm]{mintbox}
+{\small\bfseries\color{Accent}LLMServingSim 2.0 --- Simulation\par}\vspace{.04cm}
+{\small A profile-driven simulator for heterogeneous and disaggregated LLM serving systems.\par}\vspace{.12cm}
+\setlength{\fboxsep}{5pt}%
+\colorbox{Paper}{\begin{minipage}[t][1.3cm]{\dimexpr.485\linewidth-10pt\relax}\raggedright\footnotesize{\bfseries\color{Accent}Hardware and Network Modeling}\\[2pt]Heterogeneous GPU configurations, memory hierarchies, and ASTRA-Sim-based interconnect simulation.\end{minipage}}\hfill\colorbox{Paper}{\begin{minipage}[t][1.3cm]{\dimexpr.485\linewidth-10pt\relax}\raggedright\footnotesize{\bfseries\color{Accent}Serving Simulation}\\[2pt]Multi-instance serving with configurable request routing, TP/PP parallelism, batching, and KV-cache management.\end{minipage}}\par\vspace{.12cm}
+{\footnotesize\color{Muted}Performance and power/energy modeling rely on hardware-specific profiles, configured parameters, and validation.\par}
+\end{beamercolorbox}
+\vspace{.12cm}
+\begin{center}\begin{tikzpicture}\draw[<->,>=Latex,thick,Accent] (0,0)--(0,.62);\node[anchor=west,font=\small\bfseries,text=Accent] at (.18,.31) {Profiling and Validation};\end{tikzpicture}\end{center}
+\vspace{-.12cm}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.12cm]{lilacbox}
+{\small\bfseries\color{Accent}Real GPU Profiling --- Academia Sinica RCITI GPU Cluster\par}\vspace{.04cm}
+{\small We plan to run representative LLM workloads on real GPUs to measure serving performance and power consumption.\par}\vspace{.06cm}
+{\small Real measurements can provide hardware profiles and help validate simulation results.\par}
+\end{beamercolorbox}
 \end{frame}
 
 \begin{frame}[c,label=THANKYOU]

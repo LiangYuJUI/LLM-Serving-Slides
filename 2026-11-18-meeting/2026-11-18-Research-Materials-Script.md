@@ -1,6 +1,6 @@
 # Research Materials 講稿
 
-2026-11-18 會議後修訂，更新日期：2026-11-20（Asia/Taipei）。主簡報 1–14，補充 15–20，頁腳與 PDF 實際頁碼一致。本稿取代舊版 Attention/Expert 與 HBM/HBF 共同設計的講法。英文投影片區分已發表證據、模型假設，以及尚未驗證的研究提案。
+2026-11-18 會議後修訂，更新日期：2026-11-20（Asia/Taipei）。主簡報 1–13，補充 14–19，頁腳與 PDF 實際頁碼一致。本稿取代舊版 Attention/Expert、HBM/HBF 共同設計與排程架構的講法。英文投影片區分已發表證據、模型假設，以及尚未驗證的研究提案。
 
 ## 1 — Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs
 
@@ -8,7 +8,7 @@
 
 ## 2 — Contents
 
-這份簡報分成四個部分。第一部分是 Carbon–SLO、GreenCache、Helix 和 ThunderServe 這幾篇相關研究，作為研究背景。第二部分整理不同 workload 的特性，以及已發表的 GPU 記憶體效能與能量證據。第三部分是從這些文獻歸納出的研究缺口和我們提出的方向，包含協調式排程架構。最後是實驗規劃與研究路線。每張卡片都可以直接點進去對應的頁面。
+這份簡報分成四個部分。第一部分是 Carbon–SLO、GreenCache、Helix 和 ThunderServe 這幾篇相關研究，作為研究背景。第二部分整理不同 workload 的特性，以及已發表的 GPU 記憶體效能與能量證據。第三部分是從這些文獻歸納出的研究缺口和我們想探討的方向。最後介紹我們目前可以使用的實驗環境。每張卡片都可以直接點進去對應的頁面。
 
 ## 3 — Carbon–SLO: Shared State, Regional Decisions
 
@@ -44,7 +44,7 @@ ThunderServe 主要研究不同 Workload 下，如何有效分配異質 GPU 資�
 
 ## 8 — HBM and HBF Memory Access Energy
 
-這頁保留 Characterizing HBF 的 Table 1。HBF 的容量較大，但在這個模型中，讀取能量是 6.8 pJ/bit，HBM 是 3.4；HBF 寫入能量與啟動延遲也更高，寫入頻寬則低很多。因此不能直接從容量推論節能。這些參數混合了硬體規格、先前研究與 SSD proxy，不是 HBF 生產晶片的實測數據。右下角可以跳到第 20 頁逐項看來源。
+這頁保留 Characterizing HBF 的 Table 1。HBF 的容量較大，但在這個模型中，讀取能量是 6.8 pJ/bit，HBM 是 3.4；HBF 寫入能量與啟動延遲也更高，寫入頻寬則低很多。因此不能直接從容量推論節能。這些參數混合了硬體規格、先前研究與 SSD proxy，不是 HBF 生產晶片的實測數據。右下角可以跳到第 19 頁逐項看來源。
 
 ## 9 — Workload Completion Time Comparison
 
@@ -68,54 +68,40 @@ ThunderServe 主要研究不同 Workload 下，如何有效分配異質 GPU 資�
 
 合起來，研究問題是：workload-aware、協調式的異質 GPU 排程，能不能在滿足延遲 SLO 的前提下，降低 serving energy 和 operational carbon。這是研究假設，不是已經證明的結果。
 
-## 12 — Proposed Coordinated Scheduling Architecture
+## 12 — Experimental Environment: LLMServingSim 2.0 and Real GPU Profiling
 
-這是我們提出的概念架構，還沒有實作，也還沒有評估。架構分成兩層。
+最後介紹一下我們目前可以使用的實驗環境。
 
-上層是 Global Carbon-Aware Scheduler，它參考各區域的碳強度、預測的 serving energy、共享容量和 SLO 可行性，決定請求或 workload 要怎麼分配到各個資料中心，也就是 joint request routing 和 load allocation。
+上面是 LLMServingSim 2.0，這是一個用來模擬 LLM Serving 的 Simulator。它支援 Heterogeneous GPU、不同 Memory Hierarchy，以及 Multi-Instance Serving、Batching、Scheduling 和 Request Routing 等功能，因此我們可以利用它來探索不同 GPU 配置下的 Serving Performance。
 
-下層是每個資料中心自己的 Local Heterogeneous GPU Scheduler，管理資料中心裡運算、記憶體和功耗特性不同的 GPU，做 workload-aware 的 GPU 配置與 serving placement。圖中 DC A 和 DC B 的 GPU 組成可以不一樣，只是示意，不是實際設備清單，也不是以某個記憶體技術為主的區分。
+另外，我們也會使用中研院 RCITI 的真實 GPU Cluster 進行實驗，實際量測不同 LLM Workload 在 GPU 上的 Latency、Throughput 和 Power Consumption。
 
-往下的實線是請求分配與排程決策；往上的虛線，是本地端預測出來的效能、能量、容量和 SLO 可行性，讓全域決策可以用到異質 GPU 實際的服務成本。所以重點是：協調式路由用的是來自異質 GPU 資源、對 workload 敏感的 serving cost。
+這樣就不會完全依賴 Simulator，而是可以透過真實 GPU 的量測結果建立 Profile，並驗證模擬的準確性。
 
-這不一定是單一的即時中央控制器，也可以先算出協調計畫，再由各區域的 scheduler 分散執行。後續評估必須處理協調開銷、快照新鮮度、網路延遲和排隊。同樣先以 operational carbon 為主，embodied carbon 是可選的未來工作。
-
-## 13 — Experimental Plan and Research Roadmap
-
-實驗規劃有兩個環境和三個階段，目前仍是規劃，還沒有定案。
-
-真實量測會用中研院 RCITI 的 GPU cluster。第一步是確認實際可用的 GPU 型號、張數與存取條件；之後用代表性的 LLM 工作負載，量測異質 GPU 的 serving 效能與功耗，初期以 Dense LLM serving 為主。現在沒有宣稱任何 GPU 型號、張數或功率結果，也沒有假設 cluster 有 HBF，HBF 建模不是必要的階段。
-
-模擬會用 LLMServingSim 2.0，作為校正後異質 GPU 實驗和我們排程擴充的基礎。它的官方文件已描述異質／分離式 serving、batching、scheduling、KV 模型、profiled compute 和 ASTRA-Sim 通訊；operational carbon 的會計和協調式多資料中心排程，是我們需要開發與驗證的部分，不能當成現成能力。
-
-第一階段是 workload-aware 的效能與功耗建模：量測代表性 workload 在異質 GPU 上的 latency、throughput 和 power，積分得到 energy，驗證 serving cost 估計，校正 simulator 並用 held-out 情境報告誤差。第二階段是 power-aware 的異質 GPU 排程：評估 workload-aware 的配置與 placement，在不同運算、記憶體和功耗設定下的表現。第三階段是協調式跨資料中心、carbon-aware 排程：在相同的 workload 和延遲 SLO 下，比較協調式與獨立式區域路由。
-
-基準與公平比較的細節放在這裡說明，不放在投影片上。Baseline 要包含 homogeneous 對 heterogeneous、workload-unaware 對 workload-aware、簡單的 SLO-aware 對 carbon-aware 路由，以及獨立區域路由對協調式路由。每組都要交代 GPU 數量、容量、precision、同一份 trace 和同一組 SLO；如果多了硬體容量，要把容量帶來的收益和策略本身的收益分開。協調式路由還要把協調開銷、快照新鮮度、網路延遲和排隊算進去。順序是先把本地模型量準，再談排程，最後才談跨站減碳。
-
-## 14 — Thank You
+## 13 — Thank You
 
 以上是依照老師建議調整後的方向。想請老師幫忙確認，先以 Dense LLM 的 workload-aware GPU／記憶體能量模型作為第一階段，是否適合。後面保留 embodied carbon 和記憶體參數來源，方便需要時補充討論。
 
-## 15 — HBM/HBF Embodied Carbon Evidence（補充）
+## 14 — HBM/HBF Embodied Carbon Evidence（補充）
 
-REEL LCI 提供可追溯的半導體製造模型與公開方法，可以當作初步比較或敏感度分析的起點。HBF 仍是 prospective model，並沒有經過我們獨立重建或生產資料驗證。完整 inventory 也不是公開頁面就能全部取得。右上角的 About REEL 可以到第 19 頁看資料庫背景。
+REEL LCI 提供可追溯的半導體製造模型與公開方法，可以當作初步比較或敏感度分析的起點。HBF 仍是 prospective model，並沒有經過我們獨立重建或生產資料驗證。完整 inventory 也不是公開頁面就能全部取得。右上角的 About REEL 可以到第 18 頁看資料庫背景。
 
-## 16 — Embodied Carbon per Memory Stack（補充）
+## 15 — Embodied Carbon per Memory Stack（補充）
 
 這裡保留 REEL 公布的每 stack screening estimates：HBM3 兩種配置是 13.52 和 19.81 kg CO₂e，HBM3E 約 20.6，HBF 是 225.9。HBF 對第一個 HBM3 stack 約高 16.7 倍，但容量標示分別是 512 GiB 和 16 GB，所以不是 capacity-matched 比較，更不是 serving carbon 的直接排名。
 
-## 17 — Embodied Carbon per Nominal Capacity Unit（補充）
+## 16 — Embodied Carbon per Nominal Capacity Unit（補充）
 
 這頁把已公布的 footprint 除以標示的容量數字，得到 0.845、0.825、0.572 和 0.441。47.8% 是這個 nominal index 的計算結果。因為 HBM 標示 GB、HBF 標示 GiB，還沒建立一致的實際單位，所以不能說是經過驗證的每 GiB 減碳幅度，也不能用它推論整個服務會減碳。
 
-## 18 — HBF Carbon Estimate: Assumptions and Limitations（補充）
+## 17 — HBF Carbon Estimate: Assumptions and Limitations（補充）
 
 模型使用 16-Hi、512 GiB、232-layer NAND，以及 65 nm 和 28 nm process proxies，並把 175.6 平方毫米的 package outline 當作 die-area proxy。來源本身揭露了 die-area 和 bit-density 的不一致，也沒有包含完整 interposer、substrate 和 package assembly。這些限制讓它適合初步探索，但不適合當成已驗證的製造 footprint。
 
-## 19 — REEL LCI: Database Background and Inventory Scope（補充）
+## 18 — REEL LCI: Database Background and Inventory Scope（補充）
 
-REEL 是 Repository of Electronics Environmental Line-items，LCI 指生命週期 inventory，也就是衝擊評估之前的製造投入與產出。這頁保留先前核對過的 v1.0 背景：520 datasets、18 categories，以及 Jonathan Balsvik 的方法與公開資料來源。完整 inventory 透過 Circa 授權取得；公開頁面可以看說明，但不能因此說我們已經取得或重建全部資料。返回按鈕回到第 15 頁。
+REEL 是 Repository of Electronics Environmental Line-items，LCI 指生命週期 inventory，也就是衝擊評估之前的製造投入與產出。這頁保留先前核對過的 v1.0 背景：520 datasets、18 categories，以及 Jonathan Balsvik 的方法與公開資料來源。完整 inventory 透過 Circa 授權取得；公開頁面可以看說明，但不能因此說我們已經取得或重建全部資料。返回按鈕回到第 14 頁。
 
-## 20 — Sources of the HBM/HBF Memory Parameters（補充）
+## 19 — Sources of the HBM/HBF Memory Parameters（補充）
 
 這張表把參數分成硬體 specification、prior-work-derived model 和 author assumption。HBF 的讀取能量依原論文沿用 MemExplorer 的兩倍 HBM 假設；寫入能量、頻寬與延遲有 SSD proxy 的成分，100,000 次 P/E 也是假設的 endurance。兩倍 pJ/bit 不等於兩倍整顆 device power。返回按鈕回到第 8 頁。

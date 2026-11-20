@@ -11,13 +11,13 @@ NAME = '2026-11-18-Research-Materials'
 QA = ROOT/'output/qa'
 PDF = ROOT/'output/pdf'/f'{NAME}.pdf'
 ZIP = ROOT/'output/overleaf/Research-Materials.zip'
-LABELS = ['EINDEX','GEO','RELATED','HELIX','THUNDER','WORKLOAD','MEMORY','PLACEMENT','PLACEMENTENERGY','ACCOUNT','GEOARCH','ENVIRONMENT','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES']
+LABELS = ['EINDEX','GEO','RELATED','HELIX','THUNDER','WORKLOAD','MEMORY','PLACEMENT','PLACEMENTENERGY','ACCOUNT','ENVIRONMENT','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES']
 PAGE = {label: i for i, label in enumerate(['COVER'] + LABELS)}  # label -> 0-based PDF page
-PAGES, MAIN_PAGES = len(PAGE), 14  # 20 pages: 14 main + 6 supplementary (REEL1-4, REELABOUT, MEMORYSOURCES)
-assert PAGES == 20 and PAGE['THANKYOU'] == MAIN_PAGES - 1
-# Last commit of the 22-page deck. Slides that the 20-slide reorganization only moves or renumbers are compared with it.
-REFERENCE_COMMIT = '61bd0a1133105b3ddcba8ab268dd0185ea0b2b3c'
-UNCHANGED_SINCE_REFERENCE = ['COVER','GEO','RELATED','HELIX','THUNDER','WORKLOAD','MEMORY','PLACEMENT','PLACEMENTENERGY','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES']
+PAGES, MAIN_PAGES = len(PAGE), 13  # 19 pages: 13 main + 6 supplementary (REEL1-4, REELABOUT, MEMORYSOURCES)
+assert PAGES == 19 and PAGE['THANKYOU'] == MAIN_PAGES - 1
+# Last commit of the 20-page deck (a280f04). Slides that the 19-slide simplification leaves unchanged or only renumbers are compared with it.
+REFERENCE_COMMIT = 'a280f04d21d525598a32ef839c78c3fe9f49baf2'
+UNCHANGED_SINCE_REFERENCE = ['COVER','GEO','RELATED','HELIX','THUNDER','WORKLOAD','MEMORY','PLACEMENT','PLACEMENTENERGY','ACCOUNT','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES']
 HELIX_BASE = '3f90a20ee7648052352fb19cc090c5500bfe06f9'
 HELIX_FIGURE = REPO/'2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png'
 HELIX_LOCAL_PATH = '../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png'
@@ -27,7 +27,7 @@ THUNDER_ORIGINAL = REPO/'2026-10-21-meeting/ThunderServe/ThunderServe_Fig05.png'
 THUNDER_FIGURE = ROOT/'figures/ThunderServe_Fig05_no_caption.png'
 THUNDER_ZIP_PATH = 'figures/ThunderServe_Fig05_no_caption.png'
 THUNDER_CROP_HEIGHT = 440
-REVISED_SLIDES = {'COVER':0, 'EINDEX':1, 'WORKLOAD':6, 'ACCOUNT':10, 'GEOARCH':11, 'ENVIRONMENT':12}  # label -> 0-based PDF page; refocus (2026-11-20) and 20-slide reorganization
+REVISED_SLIDES = {'COVER':0, 'EINDEX':1, 'WORKLOAD':6, 'ACCOUNT':10, 'ENVIRONMENT':11}  # label -> 0-based PDF page; refocus (2026-11-20), 20-slide reorganization and 19-slide simplification
 # Frames of slides 3-6 (latest Helix / ThunderServe layouts), hashed without their removed source footers.
 FROZEN_SLIDES_3_6 = {'GEO': '700bc9e62606ba398a4e1864cdf975cde829bf5afea2eca8c11019e08e568741', 'RELATED': 'bce101acdb51c519193a0cd36e447e96825e9030dfcfa48768e08c39469efa34', 'HELIX': '245c6e567a41dd791d6f45f1989205138268f28018a24b479e7150ac75769cee', 'THUNDER': 'd0a8034fb2f0838eb1328afe36b21ef4e1e954e6b697dc80e359d428e68df59e'}
 COVER_TEXT = 'Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs Workload-Aware Scheduling Across Compute and Memory Resources'
@@ -181,18 +181,14 @@ def validate(doc):
                     'Coordinated Cross-DC Scheduling','Carbon–SLO shares global data-center states, but regional schedulers make routing decisions independently.','Investigate coordinated cross-region scheduling to account for shared capacity, workload distribution, and SLO feasibility.',
                     'Carbon-Aware Cost Modeling','GreenCache considers operational and amortized embodied carbon for caching, but not cross-data-center routing.','Adapt carbon-aware cost modeling to heterogeneous GPU serving and geographic scheduling, starting with operational carbon.',
                     'Power-Aware Heterogeneous GPU Scheduling','Helix and ThunderServe study heterogeneous GPU placement and workload-aware allocation, mainly for performance or cost.','Explore power-aware scheduling across GPUs with different compute, memory, and energy characteristics.'],
-        'EINDEX': ['Contents','01 Previous Work and Research Background','Carbon–SLO, GreenCache, Helix, ThunderServe','02 Workload and Resource Characteristics','Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence','03 Research Gaps and Proposed Direction','Cross-DC Coordination, Carbon-Aware Cost Modeling, Power-Aware GPU Scheduling, Proposed Architecture','04 Experimental Plan and Roadmap','Academia Sinica GPU Cluster, LLMServingSim 2.0, Research Phases'],
-        'GEOARCH': ['Proposed Coordinated Scheduling Architecture','Proposed','Not Yet Evaluated','Global Carbon-Aware Scheduler','Coordinate cross-data-center routing using regional carbon intensity, predicted serving energy, shared capacity, and SLO feasibility.','Decision: Joint request routing / load allocation',
-                    'Data Center A','Data Center B','Local Heterogeneous GPU Scheduler','Workload-aware GPU allocation and serving placement','Compute-rich','Memory-rich','Low-power',
-                    'Request assignment and scheduling decisions','Predicted performance, energy, capacity, and SLO feasibility',
-                    'not implemented or evaluated','distributed regional schedulers','coordination overhead','snapshot freshness','network latency','queueing','Operational carbon is prioritized','embodied carbon is optional future work',
-                    'Coordinated routing uses workload-aware serving costs from heterogeneous GPU resources.'],
-        'ENVIRONMENT': ['Experimental Plan and Research Roadmap','Not Yet Evaluated','Real GPU Profiling','Academia Sinica RCITI GPU Cluster','Profile representative LLM workloads for heterogeneous GPU serving performance and power.',
-                        'Simulation and Evaluation','LLMServingSim 2.0','Foundation for calibrated heterogeneous GPU experiments and proposed scheduling extensions.',
-                        'Phase 1 — Workload-Aware Performance and Power Modeling','Profile representative workloads across heterogeneous GPUs and validate serving cost estimates.',
-                        'Phase 2 — Power-Aware Heterogeneous GPU Scheduling','Evaluate workload-aware allocation and placement across GPU compute, memory, and power configurations.',
-                        'Phase 3 — Coordinated Cross-DC Carbon-Aware Scheduling','Compare coordinated and independent regional routing under common workloads and latency SLOs.',
-                        'GPU types, counts and cluster access remain to be confirmed.','Dense LLM serving is the initial profiling workload','planned extensions that need calibration and validation'],
+        'EINDEX': ['Contents','01 Previous Work and Research Background','Carbon–SLO, GreenCache, Helix, ThunderServe','02 Workload and Resource Characteristics','Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence','03 Research Gaps and Proposed Direction','Cross-DC Coordination, Carbon-Aware Cost Modeling, Power-Aware GPU Scheduling','04 Experimental Environment','LLMServingSim 2.0, Academia Sinica RCITI GPU Cluster'],
+        'ENVIRONMENT': ['Experimental Environment: LLMServingSim 2.0 and Real GPU Profiling',
+                        'LLMServingSim 2.0 — Simulation','A profile-driven simulator for heterogeneous and disaggregated LLM serving systems.',
+                        'Hardware and Network Modeling','Heterogeneous GPU configurations, memory hierarchies, and ASTRA-Sim-based interconnect simulation.',
+                        'Serving Simulation','Multi-instance serving with configurable request routing, TP/PP parallelism, batching, and KV-cache management.',
+                        'Performance and power/energy modeling rely on hardware-specific profiles, configured parameters, and validation.',
+                        'Profiling and Validation',
+                        'Real GPU Profiling — Academia Sinica RCITI GPU Cluster','We plan to run representative LLM workloads on real GPUs to measure serving performance and power consumption.','Real measurements can provide hardware profiles and help validate simulation results.'],
         'PLACEMENT': ['Published MoE-based simulation evidence'],
         'PLACEMENTENERGY': ['Published MoE-based simulation evidence'],
     }
@@ -228,11 +224,11 @@ def validate(doc):
         assert method.y1 <= takeaway.y0 and takeaway.y1 <= thunder_page.rect.height * .9, 'ThunderServe text blocks overlap'
         assert bounds.y1 <= method.y0, 'Figure 5 overlaps the Method sentence'
     index=' '.join(doc[1].get_text().split())
-    for value in ['Previous Work and Research Background','Workload and Resource Characteristics','Research Gaps and Proposed Direction','Experimental Plan and Roadmap']:
+    for value in ['Previous Work and Research Background','Workload and Resource Characteristics','Research Gaps and Proposed Direction','Experimental Environment']:
         assert value in index, value
     assert 'Embodied Carbon' not in index
     # The index must not mention HBM/HBF in its cards; the index has no takeaway.
-    for banned in ['HBM','HBF','High Bandwidth','Flash','MoE','Previous Work and Research Gaps','Proposed Research Direction','Calibrate local serving costs','Power- and Carbon-Aware GPU Scheduling','Experimental Environment and Evaluation','Research Evidence Overview','From prior work and workload/memory evidence','energy- and carbon-efficient LLM serving','Research Question','Can workload-aware, coordinated']:
+    for banned in ['HBM','HBF','High Bandwidth','Flash','MoE','Previous Work and Research Gaps','Proposed Research Direction','Calibrate local serving costs','Power- and Carbon-Aware GPU Scheduling','Experimental Environment and Evaluation','Experimental Plan','Roadmap','Research Phases','Proposed Architecture','Research Evidence Overview','From prior work and workload/memory evidence','energy- and carbon-efficient LLM serving','Research Question','Can workload-aware, coordinated']:
         assert banned not in index, ('Obsolete or out-of-scope index text', banned)
     for card in ['Carbon–SLO, GreenCache, Helix, ThunderServe','LLMServingSim 2.0']:
         assert card in index, ('Index card text missing', card)
@@ -252,15 +248,15 @@ def validate(doc):
     sizes = [sp['size'] for b in cover.get_text('dict')['blocks'] for ln in b.get('lines',[]) for sp in ln['spans'] if sp['text'].strip() and sp['bbox'][3] < cover.rect.height-24]
     assert max(sizes) >= 20, 'Cover title must be large'
     # Slides 7 and 11-13: concise slides without HBM/HBF, MoE, novelty claims, removed layouts, GPU model names or result claims.
-    for label in ['WORKLOAD','ACCOUNT','GEOARCH','ENVIRONMENT']:
+    for label in ['WORKLOAD','ACCOUNT','ENVIRONMENT']:
         text = ' '.join(doc[names[label]['page']].get_text().split())
         for banned in ['HBM','HBF','MoE','Attention','Expert','Reported:','Implications to evaluate','Reported behavior above','novel','Novelty','What previous work provides','Weight and KV','Workload characteristics influence','TTFT: time','KV: key']:
             assert banned.lower() not in text.lower(), ('Out-of-scope text on '+label, banned)
-    for label in ['ACCOUNT','GEOARCH','ENVIRONMENT']:
+    for label in ['ACCOUNT','ENVIRONMENT']:
         text = ' '.join(doc[names[label]['page']].get_text().split())
         assert not re.search(r'\b(A100|H100|H200|B200|L40S?|V100|RTX|GB200)\b', text), ('GPU model name on '+label)
         assert '%' not in text, ('Unmeasured percentage on '+label)
-        for banned in ['outperform','unexplored','no prior work','first to','has no global','Co-Design','Baselines','Fair comparisons','held-out','Reported:','completed experiment','already includes']:
+        for banned in ['outperform','unexplored','no prior work','first to','has no global','Co-Design','Baselines','Fair comparisons','held-out','Reported:','completed experiment','already includes','out of the box']:
             assert banned.lower() not in text.lower(), ('Unsupported claim or detail on '+label, banned)
     workload_text = ' '.join(doc[names['WORKLOAD']['page']].get_text().split())
     for banned in ['Coding / Long-Prompt','Conversation / Long-Output','Categories can overlap','Characterizing','not universal definitions','may overlap with either','research opportunity']:
@@ -268,7 +264,7 @@ def validate(doc):
     account_text = ' '.join(doc[names['ACCOUNT']['page']].get_text().split())
     for banned in ['Carbon–SLO Geo-aware routing and SLO modeling','GreenCache Carbon-aware KV reuse','Helix Heterogeneous GPU placement','ThunderServe Phase/workload-aware','Research Direction:','Workload-Aware Performance and Power Modeling','TTFT/TPOT SLO feasibility','Optimize heterogeneous']:
         assert banned not in account_text, ('Obsolete research-direction content', banned)
-    for label in ['COVER','EINDEX','WORKLOAD','ACCOUNT','GEOARCH','ENVIRONMENT']:
+    for label in ['COVER','EINDEX','WORKLOAD','ACCOUNT','ENVIRONMENT']:
         page = doc[names[label]['page']]
         blocks = [fitz.Rect(b[:4]) for b in page.get_text('blocks') if b[4].strip()]
         for n,x in enumerate(blocks):
@@ -289,19 +285,23 @@ def validate(doc):
     assert len(prev) == len(opp) == 3, 'Each gap card needs one Previous Work and one Research Opportunity'
     assert all(o.x0 > p.x1 for p, o in zip(prev, opp)) and all(abs(p.y0 - o.y0) < 2 for p, o in zip(prev, opp)), 'Previous Work / Research Opportunity columns misplaced'
     assert max(b[3] for b in ac.get_text('blocks') if 'Research Material' not in b[4]) < ac.rect.height * .9, 'Gap cards collide with the footer'
-    # Slide 12: global scheduler above two parallel data centers; takeaway below them and above the footer.
-    ga = doc[names['GEOARCH']['page']]
-    glob, dca, dcb = ga.search_for('Global Carbon-Aware Scheduler')[0], ga.search_for('Data Center A')[0], ga.search_for('Data Center B')[0]
-    assert glob.y1 < dca.y0 and abs(dca.y0 - dcb.y0) < 2 and dca.x1 < dcb.x0, 'Architecture layers misplaced'
-    assert len(ga.search_for('Local Heterogeneous GPU Scheduler')) == 2 and len(ga.search_for('Request assignment')) == 2 and len(ga.search_for('Predicted performance')) == 2
-    take = ga.search_for('Coordinated routing uses')[0]
-    assert ga.search_for('Memory-rich')[-1].y1 < take.y0 and take.y1 < ga.search_for('Research Materials')[-1].y0 - 4, 'Architecture takeaway collides with the footer'
-    # Slide 13: two cards side by side above three ordered phases.
+    # Slide 12: simulator section on top, profiling-and-validation separator, real GPU profiling section below; no roadmap or architecture.
     en = doc[names['ENVIRONMENT']['page']]
-    c1, c2 = en.search_for('Real GPU Profiling')[0], en.search_for('Simulation and Evaluation')[0]
-    ph = [en.search_for(f'Phase {n} ')[0] for n in (1, 2, 3)]
-    assert abs(c1.y0 - c2.y0) < 2 and c1.x1 < c2.x0 and c2.y1 < ph[0].y0 < ph[1].y0 < ph[2].y0, 'Experimental plan layout misplaced'
-    assert max(b[3] for b in en.get_text('blocks') if 'GPU types, counts' in b[4]) < en.rect.height * .94, 'Experimental plan note collides with footer'
+    en_text = ' '.join(en.get_text().split())
+    for banned in ['Phase','Roadmap','Carbon','carbon','Dense','Baseline','Data Center','Global','Scheduler','Proposed','Not Yet Evaluated','Takeaway']:
+        assert banned not in en_text, ('Premature roadmap or architecture content on the environment slide', banned)
+    sim, hw, serving = en.search_for('LLMServingSim 2.0 —')[0], en.search_for('Hardware and Network Modeling')[0], en.search_for('Serving Simulation')[0]
+    mid, real = en.search_for('Profiling and Validation')[0], en.search_for('Real GPU Profiling —')[0]
+    assert sim.y1 < hw.y0 and abs(hw.y0 - serving.y0) < 2 and hw.x1 < serving.x0, 'Simulator capability panels misplaced'
+    assert serving.y1 < mid.y0 < real.y0, 'Simulation, Profiling and Validation, and real GPU sections out of order'
+    note = en.search_for('Performance and power/energy modeling')[0]
+    assert note.y1 < mid.y0 and (mid.y0 - sim.y0) > (real.y0 - mid.y0) * .9, 'Simulator section must be the larger upper section'
+    assert max(b[3] for b in en.get_text('blocks') if 'Research Materials' not in b[4]) < en.search_for('Research Materials')[-1].y0 - 4, 'Real GPU profiling card collides with the footer'
+    # No architecture, roadmap or research-phase content anywhere in the main presentation.
+    for page in list(doc)[:MAIN_PAGES]:
+        main_text = ' '.join(page.get_text().split())
+        for banned in ['Phase 1','Phase 2','Phase 3','Research Phases','Research Roadmap','Experimental Plan','Proposed Coordinated Scheduling Architecture','Global Carbon-Aware Scheduler','Local Heterogeneous GPU Scheduler','Data Center A','Compute-rich','Memory-rich','Low-power','Workload-Aware Performance and Power Modeling','Coordinated Cross-DC Carbon-Aware Scheduling']:
+            assert banned not in main_text, ('Removed architecture or roadmap content present', banned)
     assert round(100*(9.54/7.19-1),1)==32.7
     assert round(225.9/13.52,1)==16.7
     assert round(100*(1-(225.9/512)/(13.52/16)),1)==47.8
@@ -361,15 +361,15 @@ def main():
         frame=without_source(current[label]) if label=='PLACEMENT' else energy_layout(without_source(current[label]))
         assert frame.replace(note,'')==without_source(baseline[label]), ('Published HBF evidence changed',label)
         assert note in current[label], ('Published HBF caveat missing from slide body', label)
-    for label in ['GEOARCH','ENVIRONMENT']:
-        assert r'\proposed' in current[label], label
+    for label in ['ENVIRONMENT']:
         for obsolete in ['Attention Worker','Expert Worker','expert-weight','A/E disaggregation','HBM','HBF']:
             assert obsolete not in current[label], (label,obsolete)
-    assert 'DISAGG' not in current and 'NEXT' not in current, 'Standalone DISAGG / NEXT frames must stay removed'
-    # The 20-slide reorganization only moves these frames: they must be byte-identical to the 22-page deck.
+    assert not {'DISAGG','NEXT','GEOARCH'} & set(current), 'Standalone DISAGG / NEXT / GEOARCH frames must stay removed'
+    # The 19-slide simplification leaves these frames untouched: they must be byte-identical to the 20-page deck.
     reference_source=subprocess.check_output(['git','show',REFERENCE_COMMIT+':2026-11-18-meeting/'+NAME+'.tex'],cwd=REPO,text=True)
     reference_frames=frames(reference_source)
-    assert 'DISAGG' in reference_frames and 'NEXT' in reference_frames and len(reference_frames)==22, 'Unexpected reference deck'
+    assert 'GEOARCH' in reference_frames and len(reference_frames)==20, 'Unexpected reference deck'
+    assert 'GEOARCH' not in current, 'The premature GEOARCH architecture frame must stay removed'
     for label in UNCHANGED_SINCE_REFERENCE:
         assert current[label]==reference_frames[label], ('Frame changed by the reorganization',label)
     helix_baseline=subprocess.check_output(['git','show',HELIX_BASE+':2026-11-18-meeting/'+NAME+'.tex'],cwd=REPO,text=True)
@@ -390,7 +390,7 @@ def main():
             z.writestr('main.tex',source.replace(HELIX_LOCAL_PATH,HELIX_ZIP_PATH))
             z.write(HELIX_FIGURE,HELIX_ZIP_PATH)
             z.write(THUNDER_FIGURE,THUNDER_ZIP_PATH)
-            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\nSelf-contained Beamer source, original Helix Figure 3, and ThunderServe Figure 5 (printed caption removed); 20 pages.\n')
+            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\nSelf-contained Beamer source, original Helix Figure 3, and ThunderServe Figure 5 (printed caption removed); 19 pages.\n')
         isolated=temp/'isolated'
         with zipfile.ZipFile(ZIP) as z:
             assert z.testzip() is None
@@ -405,9 +405,9 @@ def main():
             assert x.get_pixmap().digest==y.get_pixmap().digest
             assert annotations(x)==annotations(y)
         # Every slide that was only moved or renumbered must render exactly as in the 22-page deck, compared by label
-        # above the page-number footer (the footer's "n / 22" becomes "n / 20"). Links are compared without page numbers.
+        # above the page-number footer (the footer's "n / 20" becomes "n / 19"). Links are compared without page numbers.
         reference=fitz.open(stream=subprocess.check_output(['git','show',REFERENCE_COMMIT+':2026-11-18-meeting/output/pdf/'+NAME+'.pdf'],cwd=REPO),filetype='pdf')
-        assert len(reference)==22
+        assert len(reference)==20
         ref_names,new_names=reference.resolve_names(),a.resolve_names()
         def link_signature(page): return [(l.get('uri'),l.get('nameddest'),tuple(round(v,2) for v in l['from'])) for l in page.get_links()]
         def return_numbers(page):
@@ -461,16 +461,16 @@ def main():
     (QA/'research-materials-geo-validation.json').write_text(json.dumps(dict(baseline_commit=base_commit,pdf_sha256=digest(PDF),current_page=3,label='GEO',preserved_scientific_claims=['Shared global snapshot and independent regional scheduling','Operational carbon only','A100-calibrated models'],authorized_change='Research direction now emphasizes calibrated workload-aware GPU/memory costs for routing; no total-carbon result claimed',primary_source='https://arxiv.org/abs/2610.14571v1'),indent=2)+'\n')
     (QA/'research-materials-helix-validation.json').write_text(json.dumps(dict(baseline_commit=HELIX_BASE,pdf_sha256=digest(PDF),changed_page=5,label='HELIX',figure=str(HELIX_FIGURE.relative_to(REPO)),figure_sha256=digest(HELIX_FIGURE),zip_asset_bytes_identical=True,moved_or_unchanged_pages_vs_22_page_reference=dict(text_equal=True,pixels_equal_at_3x_above_footer=True,links_equal=True),local_zip_parity=True),indent=2)+'\n')
     (QA/'validation.md').write_text("# Research Materials validation\n\n"
-        "- PASS: 20 widescreen pages (14 main + 6 supplementary); Thank You at 14, supplements at 15–20; DISAGG and NEXT frames removed.\n"
+        "- PASS: 19 widescreen pages (13 main + 6 supplementary); Thank You at 13, supplements at 14–19; DISAGG, NEXT and GEOARCH frames removed.\n"
         "- PASS: two local and two extracted ZIP pdfLaTeX passes; no warnings.\n"
         "- PASS: local/ZIP text, pixels and annotations match.\n"
-        "- PASS: four index cards (Previous Work and Research Background; Workload and Resource Characteristics; Research Gaps and Proposed Direction; Experimental Plan and Roadmap) target pages 3, 7, 11 and 13; no HBM/HBF wording in the card text or takeaway; embodied carbon is supplementary.\n"
-        "- PASS: backup round trips (HBM/HBF Memory Access Energy 8 <-> Sources 20; REEL 15 <-> REEL LCI 19), bounds, evidence values and unchanged evidence frames.\n"
+        "- PASS: four index cards (Previous Work and Research Background; Workload and Resource Characteristics; Research Gaps and Proposed Direction; Experimental Environment) target pages 3, 7, 11 and 12; no HBM/HBF wording in the card text or takeaway; embodied carbon is supplementary.\n"
+        "- PASS: backup round trips (HBM/HBF Memory Access Energy 8 <-> Sources 19; REEL 14 <-> REEL LCI 18), bounds, evidence values and unchanged evidence frames.\n"
         "- PASS: all text/image bounds fit; preserved evidence and new proposal contracts pass.\n"
         "- PASS: Helix Figure 3 retains original resolution and aspect ratio; ZIP asset bytes match.\n"
-        "- PASS: no slide carries a source footer (all 20 pages); citations remain in the speaker script and evidence register. The MoE scope note (pages 9-10) and static/background power note (page 10) are in the slide body.\n"
-        "- PASS: the 16 moved or unchanged slides (cover, pages 3-10, Thank You and supplements) are byte-identical in source to the 22-page deck (61bd0a1) and match it in text, 3x pixels above the page footer, and links.\n"
-        "- PASS: Slide 11 is three stacked gap cards (Previous Work vs. Research Opportunity) without a research-question box; slide 12 is the global/local coordinated architecture; slide 13 merges the experimental plan and three-phase roadmap; none contains HBM/HBF, GPU model names, percentages or result claims.\n"
+        "- PASS: no slide carries a source footer (all 19 pages); citations remain in the speaker script and evidence register. The MoE scope note (pages 9-10) and static/background power note (page 10) are in the slide body.\n"
+        "- PASS: the 17 unchanged or renumbered slides (cover, pages 3-11, Thank You and supplements) are byte-identical in source to the 20-page deck (a280f04) and match it in text, 3x pixels above the page footer, and links.\n"
+        "- PASS: Slide 11 is three stacked gap cards (Previous Work vs. Research Opportunity) without a research-question box; slide 12 introduces LLMServingSim 2.0 and real RCITI GPU profiling with a Profiling and Validation separator and no architecture, roadmap or research phases; neither contains HBM/HBF, GPU model names, percentages or result claims.\n"
         "- PASS: ThunderServe slide (page 6) uses ThunderServe Figure 5 with only the printed caption removed (pixel-identical to the original top 440 rows); Table 3 values and HBM/HBF content are absent from the slide; Figure 5 is included in the Overleaf ZIP.\n")
-    print('PASS: 20 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
+    print('PASS: 19 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()

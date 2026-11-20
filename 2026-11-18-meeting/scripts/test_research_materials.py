@@ -133,34 +133,37 @@ class NavigationContracts(unittest.TestCase):
     def test_gaps_old_direction_returns(self):
         self.add_text(build.PAGE['ACCOUNT'], 'Research Direction: Power- and Carbon-Aware Heterogeneous GPU Scheduling', (40, 150))
 
-    # Slide 12 (proposed coordinated architecture).
-    def test_architecture_missing_global_scheduler(self):
-        self.remove_text(build.PAGE['GEOARCH'], 'Global Carbon-Aware Scheduler')
+    # Slide 12 (experimental environment: LLMServingSim 2.0 and real GPU profiling).
+    def test_environment_missing_simulator(self):
+        self.remove_text(build.PAGE['ENVIRONMENT'], 'A profile-driven simulator')
 
-    def test_architecture_missing_feedback_flow(self):
-        self.remove_text(build.PAGE['GEOARCH'], 'Predicted performance')
+    def test_environment_missing_serving_capabilities(self):
+        self.remove_text(build.PAGE['ENVIRONMENT'], 'KV-cache management')
 
-    def test_architecture_missing_evaluation_caveat(self):
-        self.remove_text(build.PAGE['GEOARCH'], 'snapshot freshness')
-
-    def test_architecture_gpu_model_name_returns(self):
-        self.add_text(build.PAGE['GEOARCH'], 'Data Center A: A100 and H100', (40, 150))
-
-    def test_architecture_hbf_returns(self):
-        self.add_text(build.PAGE['GEOARCH'], 'HBF tier placement', (40, 150))
-
-    # Slide 13 (experimental plan and roadmap).
-    def test_plan_missing_profiling_card(self):
+    def test_environment_missing_real_gpu_profiling(self):
         self.remove_text(build.PAGE['ENVIRONMENT'], 'Academia Sinica RCITI GPU Cluster')
 
-    def test_plan_missing_phase(self):
-        self.remove_text(build.PAGE['ENVIRONMENT'], 'Phase 3')
+    def test_environment_missing_validation_separator(self):
+        self.remove_text(build.PAGE['ENVIRONMENT'], 'Profiling and Validation')
 
-    def test_plan_detailed_baselines_return(self):
+    def test_environment_missing_power_caveat(self):
+        self.remove_text(build.PAGE['ENVIRONMENT'], 'configured parameters')
+
+    def test_environment_research_phase_returns(self):
+        self.add_text(build.PAGE['ENVIRONMENT'], 'Phase 3 --- Coordinated Cross-DC Carbon-Aware Scheduling', (40, 150))
+
+    def test_environment_architecture_returns(self):
+        self.add_text(build.PAGE['ENVIRONMENT'], 'Global Carbon-Aware Scheduler', (40, 150))
+
+    def test_environment_baselines_return(self):
         self.add_text(build.PAGE['ENVIRONMENT'], 'Baselines: homogeneous GPUs, independent regional routing', (40, 150))
 
-    def test_plan_hbf_comodeling_returns(self):
+    def test_environment_hbf_returns(self):
         self.add_text(build.PAGE['ENVIRONMENT'], 'Workload-Aware HBM/HBF Co-Design', (40, 150))
+
+    def test_architecture_slide_returns_in_main_deck(self):
+        # Page 1-13 must never carry the removed architecture slide's content.
+        self.add_text(build.PAGE['ACCOUNT'], 'Data Center A Local Heterogeneous GPU Scheduler Compute-rich Memory-rich', (40, 150))
 
     def test_missing_geo_shared_state(self):
         def mutate(doc):
@@ -187,9 +190,6 @@ class NavigationContracts(unittest.TestCase):
 
     def test_missing_hbf_scope_note(self):
         self.remove_text(build.PAGE['PLACEMENTENERGY'], 'Published MoE-based simulation evidence')
-
-    def test_missing_cluster_access_boundary(self):
-        self.remove_text(build.PAGE['ENVIRONMENT'], 'cluster access remain to be confirmed')
 
     def test_missing_helix_figure(self):
         def mutate(doc):

@@ -6,15 +6,15 @@ Repository: https://github.com/LiangYuJUI/LLM-Serving-Slides.git. Actual startin
 
 ## Current contract
 
-**20 pages, 14 main and 6 supplementary.** Thank You is page 14. Footer equals physical PDF page, 1/20–20/20. The [page map](2026-11-18-Research-Materials-Page-Map.md) defines exact titles, stable labels and index destinations. English slides and Traditional Chinese speaker script.
+**19 pages, 13 main and 6 supplementary.** Thank You is page 13. Footer equals physical PDF page, 1/19–19/19. The [page map](2026-11-18-Research-Materials-Page-Map.md) defines exact titles, stable labels and index destinations. English slides and Traditional Chinese speaker script.
 
-Research direction (reorganized 2026-11-20): **coordinated, workload-aware, power- and carbon-aware LLM serving on heterogeneous GPUs**. Investigate whether workload-aware, coordinated heterogeneous GPU scheduling reduces serving energy and operational carbon under latency SLOs, using local heterogeneous GPU costs for cross-DC routing. This is a proposal, not an experimental result. GPU heterogeneity, prefill/decode splitting and prior placement algorithms are established work, and related carbon-aware work (e.g. GreenLLM) exists, so novelty remains to be established. HBM/HBF is kept only as published evidence (pages 8–10 and supplements) and is not a research commitment. Attention/expert disaggregation and the HBM/HBF co-design slide were removed from the proposed architecture.
+Research direction (simplified 2026-11-20): **coordinated, workload-aware, power- and carbon-aware LLM serving on heterogeneous GPUs**. Investigate whether workload-aware, coordinated heterogeneous GPU scheduling reduces serving energy and operational carbon under latency SLOs, using local heterogeneous GPU costs for cross-DC routing. This is a proposal, not an experimental result. GPU heterogeneity, prefill/decode splitting and prior placement algorithms are established work, and related carbon-aware work (e.g. GreenLLM) exists, so novelty remains to be established. HBM/HBF is kept only as published evidence (pages 8–10 and supplements) and is not a research commitment. Attention/expert disaggregation and the HBM/HBF co-design slide were removed from the proposed architecture.
 
 ## Design and preservation
 
 Madrid Beamer, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. Ink #243748, Muted #667B8B, Accent #347E74, AccentBlue #507DAD, SoftMint #E6F4EE, SoftLilac #F1EEF8, Paper #FBFCFE. Preserve the existing source-footer style, cards, tables and TikZ charts. New conceptual diagrams use native TikZ and cite the source of prior methods.
 
-Four index cards link to pages 3, 7, 11 and 13. No embodied-carbon chapter is exposed in the main index. REEL pages 15–18 and original supplements 19–20 preserve scientific content, units and charts. REEL original hashes remain enforced. GreenCache, Table 1 and both source supplements remain unchanged. Table 6 frames only add the MoE scope clarification to the source area. The GLM-5.2 comparison remains a published MoE simulation, not a Dense LLM measurement. Thank You remains unchanged.
+Four index cards link to pages 3, 7, 11 and 12. No embodied-carbon chapter is exposed in the main index. REEL pages 14–17 and original supplements 18–19 preserve scientific content, units and charts. REEL original hashes remain enforced. GreenCache, Table 1 and both source supplements remain unchanged. Table 6 frames only add the MoE scope clarification to the source area. The GLM-5.2 comparison remains a published MoE simulation, not a Dense LLM measurement. Thank You remains unchanged.
 
 ## New evidence and proposed evaluation
 
@@ -23,7 +23,7 @@ Four index cards link to pages 3, 7, 11 and 13. No embodied-carbon chapter is ex
 - Workloads: Coding and Conversation are relative characteristics of the cited workloads. Multi-turn/agentic reuse uses GreenCache and Characterizing HBF evidence. Proposed implications are marked separately, and categories can overlap.
 - RCITI: proposed Dense LLM profiling environment. GPU inventory, counts and access must be established before experiments. No available HBF hardware is claimed.
 - LLMServingSim 2.0: official overview and architecture reviewed on 2026-11-20. Documented heterogeneous/disaggregated serving, batching/scheduling, KV models, compute profiles and ASTRA-Sim communication. HBF access/placement, calibrated energy integration and geo carbon scheduling are proposed work requiring implementation and validation. Do not generalize published simulator accuracy to this new setup.
-- Roadmap: measure and calibrate (including held-out error), compare workload-aware memory/GPU placement, then evaluate operational carbon and SLOs across DCs.
+- Roadmap and scheduling architecture: removed from the deck on 2026-11-20 at the professor's request. The final main slide (page 12) only introduces the available environments, LLMServingSim 2.0 and planned real GPU profiling on the RCITI cluster, with no research phases or architecture commitment.
 
 ## Accounting and fair comparison
 
@@ -40,9 +40,9 @@ python3 -m venv /tmp/research-materials-qa
 /tmp/research-materials-qa/bin/python 2026-11-18-meeting/scripts/test_research_materials.py
 ```
 
-Requires pdfLaTeX, Beamer, TikZ and Latin Modern. The builder compiles twice locally and twice from the extracted self-contained Overleaf ZIP. It enforces 20 pages, all frame positions, full-width index links, supplement round trips, source citations, footer numbers, bounds, scientific values and evidence preservation. Local and ZIP text, rendered pixels and link annotations must match. Final-pass LaTeX warnings cause failure. Negative tests verify that broken navigation and missing evidence are rejected.
+Requires pdfLaTeX, Beamer, TikZ and Latin Modern. The builder compiles twice locally and twice from the extracted self-contained Overleaf ZIP. It enforces 19 pages, all frame positions, full-width index links, supplement round trips, source citations, footer numbers, bounds, scientific values and evidence preservation. Local and ZIP text, rendered pixels and link annotations must match. Final-pass LaTeX warnings cause failure. Negative tests verify that broken navigation and missing evidence are rejected.
 
-Artifacts: `output/pdf/2026-11-18-Research-Materials.pdf`, `output/overleaf/Research-Materials.zip`, `output/qa/pages/research-materials-01.png` through `-20.png`, and `output/qa/research-materials-montage.png`. QA records are in `output/qa/validation.md` and the research-materials JSON reports. Every rendered page must also be visually inspected. Unrelated decks and source papers are protected.
+Artifacts: `output/pdf/2026-11-18-Research-Materials.pdf`, `output/overleaf/Research-Materials.zip`, `output/qa/pages/research-materials-01.png` through `-19.png`, and `output/qa/research-materials-montage.png`. QA records are in `output/qa/validation.md` and the research-materials JSON reports. Every rendered page must also be visually inspected. Unrelated decks and source papers are protected.
 
 ## Preserved REEL provenance
 
