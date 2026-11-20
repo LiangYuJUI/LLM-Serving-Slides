@@ -98,8 +98,8 @@ class NavigationContracts(unittest.TestCase):
     def test_index_old_title_returns(self):
         self.add_text(1, 'Research Evidence Overview', (40, 150))
 
-    def test_index_missing_new_takeaway(self):
-        self.remove_text(1, 'energy- and carbon-efficient LLM serving')
+    def test_index_takeaway_returns(self):
+        self.add_text(1, 'Workload-aware heterogeneous GPU scheduling for energy- and carbon-efficient LLM serving.', (40, 150))
 
     # Slide 7 (workload table).
     def test_workload_missing_agentic_row(self):
