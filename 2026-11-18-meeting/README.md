@@ -103,23 +103,23 @@ python3 -m venv /tmp/carbonslo-qa
 - 最後一頁「heterogeneous GPU、HBM/HBF、attention/expert placement」是我們之後可能做的方向，不是這篇論文的結果。
 
 
-## Research Materials：22 頁研究提案
+## Research Materials：20 頁研究提案
 
 - [PDF](output/pdf/2026-11-18-Research-Materials.pdf)、[Beamer source](2026-11-18-Research-Materials.tex)、[Overleaf ZIP](output/overleaf/Research-Materials.zip)
 - [繁體中文講稿](2026-11-18-Research-Materials-Script.md)、[SPEC](2026-11-18-Research-Materials-SPEC.md)、[Evidence Register](2026-11-18-Power-Carbon-Slide-Evidence.md)、[頁碼對照](2026-11-18-Research-Materials-Page-Map.md)
 - [Montage](output/qa/research-materials-montage.png)、[QA](output/qa/validation.md)、[build checks](output/qa/research-materials-build.json)
 
-2026-11-21 起移除各頁底部 Source 註腳（引用仍保留於講稿與 Evidence Register）；MoE 範圍與靜態功耗的限制改放在第 10–11 頁正文。
+2026-11-21 起移除各頁底部 Source 註腳（引用仍保留於講稿與 Evidence Register）；MoE 範圍與靜態功耗的限制改放在第 9–10 頁正文。
 
-2026-11-20 依教授回饋修訂。主簡報 1–16，Thank You 在 16；補充 17–22。頁腳為 1/22–22/22，與 PDF 實際頁碼相同。索引連至 3、7、12、14。Embodied carbon 四頁移到 17–20，不列為主章節。REEL 背景往返 17↔21；記憶體來源往返 9↔22。
+2026-11-20 重整為 20 頁：主簡報 1–14（14 頁），補充 15–20（6 頁）。Thank You 在第 14 頁，頁腳為 1/20–20/20，與 PDF 實際頁碼相同。索引連至 3、7、11、13。HBM/HBF 已發表證據前移到第 8–10 頁；第 11 頁為研究缺口與方向，第 12 頁為協調式排程架構，第 13 頁合併實驗規劃與研究路線；原 DISAGG 與 NEXT 頁已移除。Embodied carbon 四頁在 15–18，REEL 背景在 19，記憶體參數來源在 20，皆為補充。REEL 背景往返 15↔19；記憶體來源往返 8↔20。
 
-研究主軸為 power- and carbon-aware LLM serving on heterogeneous GPUs：依 workload 特性、GPU 運算／記憶體／功耗差異與延遲 SLO 做排程，先校正本地效能／能量，再研究跨資料中心 operational carbon routing。第 1、2、7、8 頁已依此主軸改寫；HBM/HBF 證據頁保留，但不作為已確認的主要研究方向。新增 Helix、ThunderServe、工作負載比較、兩層架構，以及 RCITI／LLMServingSim 2.0 實驗規劃。原 Attention/Expert worker 提案已移除。
+研究主軸為 power- and carbon-aware LLM serving on heterogeneous GPUs：依 workload 特性、GPU 運算／記憶體／功耗差異與延遲 SLO 做排程，先校正本地效能／能量，再研究跨資料中心 operational carbon routing。第 1、2、7 頁以及第 11–13 頁已依此主軸改寫；HBM/HBF 證據頁（第 8–10 頁）保留為已發表證據，但不作為已確認的主要研究方向，也不列入議程。第 11 頁整理 Carbon–SLO、GreenCache、Helix、ThunderServe 留下的缺口，第 12 頁為全域／本地兩層的協調式排程概念架構，第 13 頁為 RCITI 與 LLMServingSim 2.0 的實驗規劃及三階段路線。原 Attention/Expert worker 提案與 HBM/HBF 共同設計頁已移除。
 
 ```sh
 python3 scripts/build_research_materials.py
 python3 scripts/test_research_materials.py
 ```
 
-需要 pdfLaTeX、PyMuPDF 和 Pillow。本機與 ZIP 各編譯兩次，檢查 22 頁、順序、連結、數值、REEL hash、來源保留、文字／像素／annotation 等價及頁面邊界。負向測試確認遺失連結或證據會被攔截。ZIP 的入口是 `main.tex`。
+需要 pdfLaTeX、PyMuPDF 和 Pillow。本機與 ZIP 各編譯兩次，檢查 20 頁、順序、連結、數值、REEL hash、來源保留、文字／像素／annotation 等價及頁面邊界。負向測試確認遺失連結或證據會被攔截。ZIP 的入口是 `main.tex`。
 
-科學限制：頁 10–11 是已發表的 GLM-5.2 MoE 模擬，不是我們的 Dense LLM 實驗。+32.7% 對應相同 H³ 8+8 配置的權重位置比較，排除 static/background power。RCITI GPU inventory、能量校正、HBF 與跨 DC 模擬擴充尚待驗證。REEL 的 GB/GiB、製程與生命週期配置仍有不確定性。沒有宣稱已測得節能或減碳成果。
+科學限制：頁 9–10 是已發表的 GLM-5.2 MoE 模擬，不是我們的 Dense LLM 實驗。+32.7% 對應相同 H³ 8+8 配置的權重位置比較，排除 static/background power。RCITI GPU inventory、能量校正、HBF 與跨 DC 模擬擴充尚待驗證。REEL 的 GB/GiB、製程與生命週期配置仍有不確定性。沒有宣稱已測得節能或減碳成果。

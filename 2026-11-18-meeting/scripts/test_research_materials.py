@@ -19,6 +19,18 @@ class NavigationContracts(unittest.TestCase):
             doc.xref_set_key(link['xref'], 'A/D', '(GEO)')
         self.reject(mutate)
 
+    def test_misrouted_gap_category(self):
+        def mutate(doc):
+            link = next(x for x in doc[1].get_links() if x.get('nameddest') == 'ACCOUNT')
+            doc.xref_set_key(link['xref'], 'A/D', '(ENVIRONMENT)')
+        self.reject(mutate)
+
+    def test_missing_gap_category(self):
+        def mutate(doc):
+            link = next(x for x in doc[1].get_links() if x.get('nameddest') == 'ACCOUNT')
+            doc[1].delete_link(link)
+        self.reject(mutate)
+
     def test_missing_category(self):
         def mutate(doc):
             link = next(x for x in doc[1].get_links() if x.get('nameddest') == 'ENVIRONMENT')
@@ -27,16 +39,18 @@ class NavigationContracts(unittest.TestCase):
 
     def test_missing_reel_supplement(self):
         def mutate(doc):
-            link = next(x for x in doc[16].get_links() if x.get('nameddest') == 'REELABOUT')
-            doc[16].delete_link(link)
+            page = doc[build.PAGE['REEL1']]
+            link = next(x for x in page.get_links() if x.get('nameddest') == 'REELABOUT')
+            page.delete_link(link)
         self.reject(mutate)
 
     def test_missing_reel_supplement_return(self):
         def mutate(doc):
             # The button and its automatic page reference both link back.
-            for link in doc[20].get_links():
+            page = doc[build.PAGE['REELABOUT']]
+            for link in page.get_links():
                 if link.get('nameddest') == 'REEL1':
-                    doc[20].delete_link(link)
+                    page.delete_link(link)
         self.reject(mutate)
 
     def test_valid_deck(self):
@@ -45,16 +59,18 @@ class NavigationContracts(unittest.TestCase):
 
     def test_missing_memory_supplement(self):
         def mutate(doc):
-            link = next(x for x in doc[8].get_links() if x.get('nameddest') == 'MEMORYSOURCES')
-            doc[8].delete_link(link)
+            page = doc[build.PAGE['MEMORY']]
+            link = next(x for x in page.get_links() if x.get('nameddest') == 'MEMORYSOURCES')
+            page.delete_link(link)
         self.reject(mutate)
 
     def test_missing_memory_supplement_return(self):
         def mutate(doc):
             # The button and its automatic page reference both link back.
-            for link in doc[21].get_links():
+            page = doc[build.PAGE['MEMORYSOURCES']]
+            for link in page.get_links():
                 if link.get('nameddest') == 'MEMORY':
-                    doc[21].delete_link(link)
+                    page.delete_link(link)
         self.reject(mutate)
 
     def add_text(self, page, text, point=(40, 150)):
@@ -92,15 +108,53 @@ class NavigationContracts(unittest.TestCase):
     def test_workload_hbf_returns(self):
         self.add_text(6, 'HBM/HBF data placement', (40, 150))
 
-    # Slide 8 (research direction).
-    def test_direction_missing_carbon_card(self):
-        self.remove_text(7, 'Carbon-Aware Scheduling')
+    # Slide 11 (research gaps and proposed direction).
+    def test_gaps_missing_carbon_card(self):
+        self.remove_text(build.PAGE['ACCOUNT'], 'Carbon-Aware Cost')
 
-    def test_direction_hbf_returns(self):
-        self.add_text(7, 'HBM/HBF capacity, latency and read/write energy', (40, 150))
+    def test_gaps_missing_research_question(self):
+        self.remove_text(build.PAGE['ACCOUNT'], 'satisfying latency SLOs')
 
-    def test_direction_novelty_claim_returns(self):
-        self.add_text(7, 'Novelty requires further comparison', (40, 150))
+    def test_gaps_hbf_returns(self):
+        self.add_text(build.PAGE['ACCOUNT'], 'HBM/HBF capacity, latency and read/write energy', (40, 150))
+
+    def test_gaps_novelty_claim_returns(self):
+        self.add_text(build.PAGE['ACCOUNT'], 'Novelty requires further comparison', (40, 150))
+
+    def test_gaps_unsupported_claim_returns(self):
+        self.add_text(build.PAGE['ACCOUNT'], 'Heterogeneous GPU carbon optimization is entirely unexplored', (40, 150))
+
+    def test_gaps_old_direction_returns(self):
+        self.add_text(build.PAGE['ACCOUNT'], 'Research Direction: Power- and Carbon-Aware Heterogeneous GPU Scheduling', (40, 150))
+
+    # Slide 12 (proposed coordinated architecture).
+    def test_architecture_missing_global_scheduler(self):
+        self.remove_text(build.PAGE['GEOARCH'], 'Global Carbon-Aware Scheduler')
+
+    def test_architecture_missing_feedback_flow(self):
+        self.remove_text(build.PAGE['GEOARCH'], 'Predicted performance')
+
+    def test_architecture_missing_evaluation_caveat(self):
+        self.remove_text(build.PAGE['GEOARCH'], 'snapshot freshness')
+
+    def test_architecture_gpu_model_name_returns(self):
+        self.add_text(build.PAGE['GEOARCH'], 'Data Center A: A100 and H100', (40, 150))
+
+    def test_architecture_hbf_returns(self):
+        self.add_text(build.PAGE['GEOARCH'], 'HBF tier placement', (40, 150))
+
+    # Slide 13 (experimental plan and roadmap).
+    def test_plan_missing_profiling_card(self):
+        self.remove_text(build.PAGE['ENVIRONMENT'], 'Academia Sinica RCITI GPU Cluster')
+
+    def test_plan_missing_phase(self):
+        self.remove_text(build.PAGE['ENVIRONMENT'], 'Phase 3')
+
+    def test_plan_detailed_baselines_return(self):
+        self.add_text(build.PAGE['ENVIRONMENT'], 'Baselines: homogeneous GPUs, independent regional routing', (40, 150))
+
+    def test_plan_hbf_comodeling_returns(self):
+        self.add_text(build.PAGE['ENVIRONMENT'], 'Workload-Aware HBM/HBF Co-Design', (40, 150))
 
     def test_missing_geo_shared_state(self):
         def mutate(doc):
@@ -119,21 +173,21 @@ class NavigationContracts(unittest.TestCase):
 
     def test_missing_thunder_figure(self):
         def mutate(doc):
-            page = doc[5]
+            page = doc[build.PAGE['THUNDER']]
             for im in page.get_image_info():
                 page.add_redact_annot(fitz.Rect(im['bbox']))
             page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_REMOVE)
         self.reject(mutate)
 
     def test_missing_hbf_scope_note(self):
-        self.remove_text(10, 'Published MoE-based simulation evidence')
+        self.remove_text(build.PAGE['PLACEMENTENERGY'], 'Published MoE-based simulation evidence')
 
-    def test_missing_simulator_boundary(self):
-        self.remove_text(13, 'No HBF hardware is assumed')
+    def test_missing_cluster_access_boundary(self):
+        self.remove_text(build.PAGE['ENVIRONMENT'], 'cluster access remain to be confirmed')
 
     def test_missing_helix_figure(self):
         def mutate(doc):
-            page = doc[4]
+            page = doc[build.PAGE['HELIX']]
             for im in page.get_image_info():
                 page.add_redact_annot(fitz.Rect(im['bbox']))
             page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_REMOVE)
@@ -141,19 +195,19 @@ class NavigationContracts(unittest.TestCase):
 
     # Source footers were removed from every slide; a returning footer must be rejected.
     def test_source_footer_returns(self):
-        self.add_text(3, 'Source: Carbon–SLO, Secs. III-A, III-C.', (40, 240))
+        self.add_text(build.PAGE['RELATED'], 'Source: Carbon–SLO, Secs. III-A, III-C.', (40, 240))
 
-    def test_missing_hbf_scope_note_on_slide_10(self):
-        self.remove_text(9, 'Published MoE-based simulation evidence')
+    def test_missing_hbf_scope_note_on_slide_9(self):
+        self.remove_text(build.PAGE['PLACEMENT'], 'Published MoE-based simulation evidence')
 
     def test_missing_static_power_note(self):
-        self.remove_text(10, 'static/background power excluded')
+        self.remove_text(build.PAGE['PLACEMENTENERGY'], 'static/background power excluded')
 
     def test_wrong_thank_you_position(self):
-        self.reject(lambda doc: doc.move_page(15, 17))
+        self.reject(lambda doc: doc.move_page(build.PAGE['THANKYOU'], build.PAGE['REEL2']))
 
     def test_wrong_page_count(self):
-        self.reject(lambda doc: doc.delete_page(13))
+        self.reject(lambda doc: doc.delete_page(build.PAGE['ENVIRONMENT']))
 
 if __name__ == '__main__':
     result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(NavigationContracts))

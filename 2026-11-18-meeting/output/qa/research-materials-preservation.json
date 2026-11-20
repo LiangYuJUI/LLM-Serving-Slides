@@ -1,46 +1,46 @@
 {
   "base_commit": "51548444d0d896c8302ad94a9c81cae3f2ed571d",
-  "pdf_sha256": "6b2cc69f29c9164b0d52a1245e36d9c51435f5a5fe05e6e16e683086e477ec27",
+  "pdf_sha256": "a51494f72f7e6330d73c672bd26b32ed0a748d80c409ebe5193b57b151bffb2d",
   "preserved_pages": [
     {
       "label": "MEMORY",
       "original_page": 10,
-      "current_page": 9,
+      "current_page": 8,
       "pixels_equal_above_footer": true,
       "external_citations_equal": true
     },
     {
       "label": "REEL1",
       "original_page": 6,
-      "current_page": 17,
+      "current_page": 15,
       "pixels_equal_above_footer": true,
       "external_citations_equal": true
     },
     {
       "label": "REEL2",
       "original_page": 7,
-      "current_page": 18,
+      "current_page": 16,
       "pixels_equal_above_footer": true,
       "external_citations_equal": true
     },
     {
       "label": "REEL3",
       "original_page": 8,
-      "current_page": 19,
+      "current_page": 17,
       "pixels_equal_above_footer": true,
       "external_citations_equal": true
     },
     {
       "label": "REEL4",
       "original_page": 9,
-      "current_page": 20,
+      "current_page": 18,
       "pixels_equal_above_footer": true,
       "external_citations_equal": true
     },
     {
       "label": "THANKYOU",
       "original_page": 15,
-      "current_page": 16,
+      "current_page": 14,
       "pixels_equal_above_footer": true,
       "external_citations_equal": true
     }

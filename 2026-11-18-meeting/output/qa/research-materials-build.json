@@ -1,11 +1,96 @@
 {
-  "pages": 22,
+  "pages": 20,
+  "main_pages": 14,
+  "supplementary_pages": 6,
+  "reference_commit": "61bd0a1133105b3ddcba8ab268dd0185ea0b2b3c",
+  "moved_or_unchanged_pages": [
+    {
+      "label": "COVER",
+      "reference_page": 1,
+      "current_page": 1
+    },
+    {
+      "label": "GEO",
+      "reference_page": 3,
+      "current_page": 3
+    },
+    {
+      "label": "RELATED",
+      "reference_page": 4,
+      "current_page": 4
+    },
+    {
+      "label": "HELIX",
+      "reference_page": 5,
+      "current_page": 5
+    },
+    {
+      "label": "THUNDER",
+      "reference_page": 6,
+      "current_page": 6
+    },
+    {
+      "label": "WORKLOAD",
+      "reference_page": 7,
+      "current_page": 7
+    },
+    {
+      "label": "MEMORY",
+      "reference_page": 9,
+      "current_page": 8
+    },
+    {
+      "label": "PLACEMENT",
+      "reference_page": 10,
+      "current_page": 9
+    },
+    {
+      "label": "PLACEMENTENERGY",
+      "reference_page": 11,
+      "current_page": 10
+    },
+    {
+      "label": "THANKYOU",
+      "reference_page": 16,
+      "current_page": 14
+    },
+    {
+      "label": "REEL1",
+      "reference_page": 17,
+      "current_page": 15
+    },
+    {
+      "label": "REEL2",
+      "reference_page": 18,
+      "current_page": 16
+    },
+    {
+      "label": "REEL3",
+      "reference_page": 19,
+      "current_page": 17
+    },
+    {
+      "label": "REEL4",
+      "reference_page": 20,
+      "current_page": 18
+    },
+    {
+      "label": "REELABOUT",
+      "reference_page": 21,
+      "current_page": 19
+    },
+    {
+      "label": "MEMORYSOURCES",
+      "reference_page": 22,
+      "current_page": 20
+    }
+  ],
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "e1adb9cbe0edc70f22a32ae3e97de5c5a7bc3da7d05c548f1d04258008d76ac5",
-  "pdf_sha256": "6b2cc69f29c9164b0d52a1245e36d9c51435f5a5fe05e6e16e683086e477ec27",
-  "zip_sha256": "101bc2d04d778d07e14693ed2d0b34df5221a6ebebc6aacea6fd72134ae7a058",
+  "source_sha256": "d64f4681558607f8861f61f495dd0e0a661a71811f7b5420e9a47b3acb23e485",
+  "pdf_sha256": "a51494f72f7e6330d73c672bd26b32ed0a748d80c409ebe5193b57b151bffb2d",
+  "zip_sha256": "3e466304333057d4cebd0241b71bcac36672486c00125ec48781836701d9d924",
   "preserved_frame_hashes": {
     "REEL1": "2e6c42ab7c6183cd8c21e882e46bdff3f08761af861eb1434a617e8b1ca7cc34",
     "REEL2": "67c208ee185b642def61e2b5cd1a5c71cbff1c4e5fcb0bb22650023b400a003c",
@@ -15,17 +100,17 @@
   "category_destinations": {
     "GEO": 3,
     "WORKLOAD": 7,
-    "DISAGG": 12,
-    "ENVIRONMENT": 14
+    "ACCOUNT": 11,
+    "ENVIRONMENT": 13
   },
   "supplement_round_trips": {
     "REEL1_REELABOUT": [
-      17,
-      21
+      15,
+      19
     ],
     "MEMORY_MEMORYSOURCES": [
-      9,
-      22
+      8,
+      20
     ]
   },
   "parity": {

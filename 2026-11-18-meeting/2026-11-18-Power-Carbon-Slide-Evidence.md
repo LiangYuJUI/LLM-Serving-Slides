@@ -1,6 +1,6 @@
 # Research Materials evidence register
 
-Revised 2026-11-20 (Asia/Taipei). **22 pages: main 1–16, supplements 17–22.** Published evidence, modeling assumptions and our proposed work are distinct. No experiment or simulator integration was performed for this slide revision.
+Revised 2026-11-20 (Asia/Taipei). **20 pages: main 1–14, supplements 15–20** (reorganized from the 22-page deck at `61bd0a113310`). Published evidence, modeling assumptions and our proposed work are distinct. No experiment or simulator integration was performed for this slide revision.
 
 ## Primary sources and verification scope
 
@@ -21,27 +21,25 @@ Revised 2026-11-20 (Asia/Taipei). **22 pages: main 1–16, supplements 17–22.*
 | PDF | Topic | Source / location | Evidence | Boundary |
 |---|---|---|---|---|
 | 1 | Power- and Carbon-Aware LLM Serving on Heterogeneous GPUs | User scope | Research title and subtitle only; no presenter or institution metadata | No experimental result |
-| 2 | Research Evidence Overview | C, G, L, T, H, S | Four-card index → 3, 7, 12, 14; heterogeneous GPU scheduling focus; no HBM/HBF wording in cards or takeaway | No embodied-carbon chapter; no demonstrated power or carbon result |
+| 2 | Research Evidence Overview | C, G, L, T, H, S | Four-card index → 3, 7, 11, 13; heterogeneous GPU scheduling focus; no HBM/HBF wording in cards or takeaway | No embodied-carbon chapter; no demonstrated power or carbon result |
 | 3 | Carbon–SLO: Shared State, Regional Decisions | C Secs. III-A, III-C, IV-A, V-C, VI; Fig. 6(c) | Shared state, independent regional scheduling, A100 profiles | Our synthesis connects local energy/SLO costs to routing |
 | 4 | GreenCache: Carbon-Aware SSD Cache Sizing | G Secs. 3.2.1, 4.1–4.2, 5.4–5.5 | SSD cache size; operational and allocated embodied carbon | No joint heterogeneous GPU/HBM/HBF placement |
 | 5 | Helix: Heterogeneous GPU Placement | L Secs. 3–5, 6.1–6.4 | Profiling, max-flow/MILP and runtime scheduling | Real single-cluster prototype; geo and high-heterogeneity simulations |
 | 6 | ThunderServe: Workload-Aware Serving | T Secs. 3.2–3.4, 5.1, 5.3; Table 3 | LLaMA-30B Coding 8/4; Conversation 4/8 prefill/decode replicas | Replica counts, not physical GPU counts |
 | 7 | Different Workloads, Different Resource Requirements | T Sec. 3.4, Fig. 6, Table 3; G Secs. 2–3 | Qualitative Coding / Conversation prompt-output contrast as evaluated in ThunderServe; multi-turn/agentic prefix and KV reuse | Not universal workload definitions; multi-turn/agentic is an interaction pattern that may overlap; no new quantitative claim |
-| 8 | Research Direction: Power- and Carbon-Aware Heterogeneous GPU Scheduling | C, G, L, T (context only) | Three proposed research parts: workload-aware performance/power modeling, heterogeneous GPU scheduling, carbon-aware scheduling | Proposal only; no selected algorithm, measured result or novelty claim; cross-DC routing is an extension of calibrated local scheduling |
-| 9 | HBM and HBF Memory Access Energy | H Table 1, Sec. 5.1 | 24/375 GB; 1000/1000 and 1000/8 GB/s; 0.1/20 and 0.1/250 µs; 3.4/6.8 and 3.4/100 pJ/bit; 100,000 P/E | Modeled parameters; provenance at page 22 |
-| 10 | Workload Completion Time Comparison | H Table 6 | GLM-5.2, 16 simulated GPUs, TP16/EP16, 100k turns; 11,354 / 4,543 / 4,538 s | Published MoE simulation; 8+0 vs 8+8 is unequal memory hardware |
-| 11 | Modeled Serving Energy Comparison | H Table 6 | 9.11 / 7.19 / 9.54 MJ; +32.7% = (9.54/7.19−1)×100 | Same H³ 8+8 weight-placement comparison; excludes static/background |
-| 12 | Proposed Workload-Aware GPU/Memory Placement | Our proposal informed by L, T, G, H | GPU choice, memory configuration, weights, active/reusable KV, optional phases | No MoE-specific architecture or demonstrated savings |
-| 13 | Proposed Serving and Scheduling Architecture | Our proposal informed by C, G, L | Global request/session routing; local hardware and memory placement | Operational carbon primary; embodied later with adequate data |
-| 14 | Experimental Environment and Simulator | User-specified RCITI environment; S overview and architecture | Real Dense LLM profiling ↔ simulator calibration and validation | Inventory/access unconfirmed; no actual HBF hardware assumed |
-| 15 | Research Roadmap and Evaluation Plan | Our planned evaluation; C, T, H, S | Calibration → placement → geo scheduling; fair baselines | Report errors, resources, trace, precision and SLOs |
-| 16 | Thank You | Closing | Thank You | No claim |
-| 17 | HBM/HBF Embodied Carbon Evidence | R catalogue, dataset, methodology Sec. 4.4.4 | Prospective HBF model, public methodology | Not verified production carbon |
-| 18 | Embodied Carbon per Memory Stack | R HBF/HBM articles | 13.52 / 19.81 / ≈20.6 / 225.9 kg; 16.7× | 16/24/36 GB vs 512 GiB; not capacity matched |
-| 19 | Embodied Carbon per Nominal Capacity Unit | R published values; our division | 0.845 / 0.825 / 0.572 / 0.441; 47.8% | Nominal capacity index; GB/GiB unresolved |
-| 20 | HBF Carbon Estimate: Assumptions and Limitations | R dataset and methodology | 16-Hi, 512 GiB, 232-layer, 65/28 nm, 175.6 mm² proxy | No verified production data; package assembly excluded |
-| 21 | REEL LCI: Database Background and Inventory Scope | R official website, verified 2026-11-17 | 520 datasets, 18 categories; inventory scope | Returns to 17; does not validate the HBF model |
-| 22 | Sources of the HBM/HBF Memory Parameters | H Table 1 and cited references | Micron, Lenovo, H³, Ma/Patterson, Moon, MemExplorer, Son and SSD proxies | Returns to 9; 2× read energy is not measured device power |
+| 8 | HBM and HBF Memory Access Energy | H Table 1, Sec. 5.1 | 24/375 GB; 1000/1000 and 1000/8 GB/s; 0.1/20 and 0.1/250 µs; 3.4/6.8 and 3.4/100 pJ/bit; 100,000 P/E | Modeled parameters; provenance at page 20; published evidence, not our measurement |
+| 9 | Workload Completion Time Comparison | H Table 6 | GLM-5.2, 16 simulated GPUs, TP16/EP16, 100k turns; 11,354 / 4,543 / 4,538 s | Published MoE simulation; 8+0 vs 8+8 is unequal memory hardware |
+| 10 | Modeled Serving Energy Comparison | H Table 6 | 9.11 / 7.19 / 9.54 MJ; +32.7% = (9.54/7.19−1)×100 | Same H³ 8+8 weight-placement comparison; excludes static/background; does not commit this research to HBF |
+| 11 | Research Gaps and Proposed Direction | C Secs. III-A, III-C (Global Provisioner, shared snapshot, independent regional decisions); G Secs. 2.3, 3.2.1 (operational and amortized embodied carbon, caching only); L, T (heterogeneous placement, workload-aware allocation) | Three gap cards: coordinated cross-DC scheduling, carbon-aware cost modeling, power-aware heterogeneous GPU scheduling; one research question | Research hypothesis only; does not claim Carbon–SLO lacks a global component or that coordination is superior; heterogeneous-GPU carbon optimization is not claimed unexplored (e.g. GreenLLM); novelty unestablished; operational carbon first, embodied carbon later |
+| 12 | Proposed Coordinated Scheduling Architecture | Our proposal informed by C, G, L | Global Carbon-Aware Scheduler (joint request routing / load allocation) over two data centers with local heterogeneous GPU schedulers; decisions down, predicted performance/energy/capacity/SLO feasibility up | Conceptual, not implemented or evaluated; may be executed by distributed regional schedulers; coordination overhead, snapshot freshness, network latency and queueing to be evaluated; illustrative GPU groups, no model names |
+| 13 | Experimental Plan and Research Roadmap | User-specified RCITI environment; S overview and architecture; our planned evaluation | RCITI profiling; LLMServingSim 2.0 foundation; three phases: performance/power modeling, power-aware heterogeneous scheduling, coordinated cross-DC carbon-aware scheduling | GPU types and access unconfirmed; Dense LLM first; simulator carbon and multi-DC extensions are planned; baselines and methodology are in the speaker script; no HBF hardware assumed |
+| 14 | Thank You | Closing | Thank You | No claim |
+| 15 | HBM/HBF Embodied Carbon Evidence | R catalogue, dataset, methodology Sec. 4.4.4 | Prospective HBF model, public methodology | Not verified production carbon |
+| 16 | Embodied Carbon per Memory Stack | R HBF/HBM articles | 13.52 / 19.81 / ≈20.6 / 225.9 kg; 16.7× | 16/24/36 GB vs 512 GiB; not capacity matched |
+| 17 | Embodied Carbon per Nominal Capacity Unit | R published values; our division | 0.845 / 0.825 / 0.572 / 0.441; 47.8% | Nominal capacity index; GB/GiB unresolved |
+| 18 | HBF Carbon Estimate: Assumptions and Limitations | R dataset and methodology | 16-Hi, 512 GiB, 232-layer, 65/28 nm, 175.6 mm² proxy | No verified production data; package assembly excluded |
+| 19 | REEL LCI: Database Background and Inventory Scope | R official website, verified 2026-11-17 | 520 datasets, 18 categories; inventory scope | Returns to 15; does not validate the HBF model |
+| 20 | Sources of the HBM/HBF Memory Parameters | H Table 1 and cited references | Micron, Lenovo, H³, Ma/Patterson, Moon, MemExplorer, Son and SSD proxies | Returns to 8; 2× read energy is not measured device power |
 
 ## HBF controlled comparison and energy boundary
 
