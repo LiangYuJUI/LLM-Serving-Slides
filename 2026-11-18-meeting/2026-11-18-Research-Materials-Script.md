@@ -26,7 +26,15 @@ Helix 研究如何讓不同型號的 GPU 一起執行 LLM serving。圖左的 Co
 
 ## 6 — ThunderServe: Workload-Aware Serving
 
-ThunderServe 利用 prefill 通常偏重計算、decode 通常較受記憶體頻寬影響的差異，聯合決定 GPU grouping、phase assignment、parallelism 和 routing。Table 3 的 LLaMA-30B 例子很直接：Coding 是八個 prefill、四個 decode replicas；Conversation 則是四個 prefill、八個 decode。這是 replica 數量，不是 GPU 張數，兩個部署都使用論文的三十二張 cloud GPU 資源。這頁只比較部署比例，沒有把不同硬體 baseline 的 throughput 混在一起。
+ThunderServe 主要研究不同 Workload 下，如何有效分配異質 GPU 資源。
+
+因為 Prefill 通常比較吃計算能力，而 Decode 比較受到記憶體頻寬限制，所以作者把兩個階段分開執行。
+
+從這張圖可以看到，Coordinator 會把 Request 分配到不同的 Prefill Replicas，再透過 Routing 送到適合的 Decode Replicas。作者除了決定 Routing，也會一起考慮 GPU Grouping、Phase Assignment 和 Parallel Configuration。
+
+比較有趣的是 Table 3，同樣使用 32 張異質 GPU，Coding 的配置是 8 個 Prefill 和 4 個 Decode Replicas，而 Conversation 則是 4 個 Prefill 和 8 個 Decode Replicas。
+
+這說明不同 Workload 可能需要不同的資源配置。
 
 ## 7 — Different LLM Workload Characteristics
 

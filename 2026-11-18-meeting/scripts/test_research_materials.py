@@ -59,7 +59,7 @@ class NavigationContracts(unittest.TestCase):
 
     def test_missing_geo_shared_state(self):
         def mutate(doc):
-            for rect in doc[2].search_for('Global Provisioner'):
+            for rect in doc[2].search_for('same snapshot'):
                 doc[2].add_redact_annot(rect)
             doc[2].apply_redactions()
         self.reject(mutate)
@@ -72,8 +72,13 @@ class NavigationContracts(unittest.TestCase):
             doc[page].apply_redactions()
         self.reject(mutate)
 
-    def test_missing_thunder_replica_row(self):
-        self.remove_text(5, 'Conversation')
+    def test_missing_thunder_figure(self):
+        def mutate(doc):
+            page = doc[5]
+            for im in page.get_image_info():
+                page.add_redact_annot(fitz.Rect(im['bbox']))
+            page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_REMOVE)
+        self.reject(mutate)
 
     def test_missing_hbf_scope_note(self):
         self.remove_text(10, 'Published MoE-based simulation evidence')

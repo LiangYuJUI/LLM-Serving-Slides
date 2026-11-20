@@ -3,7 +3,7 @@
 from pathlib import Path
 import hashlib, json, re, shutil, subprocess, tempfile, zipfile
 import pymupdf as fitz
-from PIL import Image, ImageDraw
+from PIL import Image, ImageChops, ImageDraw
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parent
 NAME = '2026-11-18-Research-Materials'
@@ -15,6 +15,11 @@ HELIX_BASE = '3f90a20ee7648052352fb19cc090c5500bfe06f9'
 HELIX_FIGURE = REPO/'2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png'
 HELIX_LOCAL_PATH = '../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png'
 HELIX_ZIP_PATH = 'figures/Helix_Figure_03_System_Overview.png'
+# ThunderServe Figure 5 with only the printed caption removed (rows 0-439 of the original, pixel-identical).
+THUNDER_ORIGINAL = REPO/'2026-10-21-meeting/ThunderServe/ThunderServe_Fig05.png'
+THUNDER_FIGURE = ROOT/'figures/ThunderServe_Fig05_no_caption.png'
+THUNDER_ZIP_PATH = 'figures/ThunderServe_Fig05_no_caption.png'
+THUNDER_CROP_HEIGHT = 440
 CATEGORIES = {'GEO':2, 'WORKLOAD':6, 'DISAGG':11, 'ENVIRONMENT':13}
 ORIGINAL_REEL_TITLES = {'HBM/HBF Embodied Carbon Evidence': 'What Evidence Do We Have for HBM/HBF Embodied Carbon?', 'Embodied Carbon per Memory Stack': 'How Much Embodied Carbon Does One Stack Carry?', 'Embodied Carbon per Nominal Capacity Unit': 'Does HBF Reduce Embodied Carbon per Unit Capacity?', 'HBF Carbon Estimate: Assumptions and Limitations': 'Can We Trust the HBF Carbon Estimate?'}
 # REEL1–4 baselines include user-requested concise copy updates.
@@ -86,7 +91,7 @@ def validate(doc):
     required_by_label = {
         'MEMORY': ['24', '375', '1,000', '250', '3.4', '6.8', '100,000', 'P/E'],
         'PLACEMENT': ['11,354', '4,543', '4,538', '60%', 'not an equal-hardware comparison'],
-        'GEO': ['Global Provisioner', 'Periodically polls DCs', 'broadcasts global snapshot',
+        'GEO': ['Dissecting the Carbon–SLO Tension in Geo-Distributed LLM Serving', 'arXiv 2026 (Preprint)', 'Carbon- & SLO-Aware Geo-Distributed Request Scheduling', 'Global Provisioner', 'Periodically polls DCs', 'broadcasts global snapshot',
                 'Operational Carbon Only', 'No allocated embodied carbon.',
                 'Independent Regional Decisions', 'same snapshot', 'Single GPU Type: A100', 'workload-aware GPU/memory costs', 'Our direction:'],
         'MEMORYSOURCES': ['Micron', 'Lenovo', 'Ma & Patterson', 'Moon', 'MemExplorer',
@@ -97,8 +102,9 @@ def validate(doc):
         for value in values:
             assert value in text, (label, value)
     new_required = {
-        'HELIX': ['Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow','Method:', 'model placement (max-flow/MILP)', 'runtime request scheduling', 'Evaluation:', 'Real heterogeneous GPU cluster', 'geo-distributed settings evaluated using simulation', 'Fig. 3 (System Overview)'],
-        'THUNDER': ['High-Performance and Cost-Efficient LLM Serving in Cloud Environments','LLaMA-30B','Table 3','Coding','Conversation','Replica counts, not physical GPU counts'],
+        'RELATED': ['Cache Your Prompt When It’s Green', 'Carbon-Aware Caching for Large Language Model Serving', 'SIGMETRICS 2026', 'Carbon-Aware Adaptive SSD KV Cache Sizing'],
+        'HELIX': ['Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow','Motivation:', 'making model placement challenging.', 'Method:', 'max-flow/MILP-based layer placement to maximize throughput', 'runtime request scheduling', 'Evaluation:', 'Real heterogeneous GPU cluster', 'geo-distributed settings evaluated using simulation', 'Fig. 3 (System Overview)'],
+        'THUNDER': ['High-Performance and Cost-Efficient LLM Serving in Cloud Environments','MLSys 2025','Workload-Aware Prefill/Decode Disaggregation','Motivation:','Prefill is typically compute-intensive','Method:','Jointly optimize GPU grouping, prefill/decode assignment, parallel configuration, and request routing','Workload characteristics affect the preferred prefill/decode resource allocation and routing','Figure 5','Sec. 3.3','Sec. 5.3'],
         'WORKLOAD': ['Reported behavior above; proposed research implications below','Coding / Long-Prompt','Conversation / Long-Output','Multi-Turn / Agentic','Implications to evaluate','Categories can overlap'],
         'ACCOUNT': ['What previous work provides','What we still need to investigate','Novelty requires'],
         'DISAGG': ['Proposed','Not Yet Evaluated','Active / reusable KV placement','Optional serving-phase placement','SLO goodput'],
@@ -118,8 +124,28 @@ def validate(doc):
         assert (im['width'],im['height'])==original.size, 'Original image resolution must be preserved'
         assert abs(bounds.width/bounds.height-original.width/original.height)<.001, 'Figure distorted'
         assert bounds.width>doc[4].rect.width*.93, 'Figure must occupy the content width'
-    thunder = ' '.join(doc[names['THUNDER']['page']].get_text().split())
-    assert re.search(r'Coding 8 4 Conversation 4 8', thunder), thunder
+    # ThunderServe slide: Table 3 is intentionally removed from the slide (explained orally, kept in script/evidence).
+    # Negative checks ensure its values and out-of-scope HBM/HBF content do not reappear on this Related Work slide.
+    thunder_page = doc[names['THUNDER']['page']]
+    thunder = ' '.join(thunder_page.get_text().split())
+    for value in ['LLaMA-30B', 'Coding', 'Conversation', 'Replica counts', 'Joint scheduling decisions', 'Coding 8', 'HBM', 'HBF', 'Our direction', 'proposal']:
+        assert value not in thunder, ('Removed Table 3 or out-of-scope content present', value)
+    thunder_images = thunder_page.get_image_info()
+    assert len(thunder_images) == 1, 'ThunderServe slide must contain exactly one Figure 5 image'
+    with Image.open(THUNDER_FIGURE) as crop, Image.open(THUNDER_ORIGINAL) as original:
+        assert crop.size == (original.width, THUNDER_CROP_HEIGHT), 'Figure 5 crop size changed'
+        assert ImageChops.difference(crop.convert('RGB'), original.convert('RGB').crop((0, 0, original.width, THUNDER_CROP_HEIGHT))).getbbox() is None, 'Figure 5 crop must be pixel-identical to the original top region'
+        im = thunder_images[0]; bounds = fitz.Rect(im['bbox'])
+        assert (im['width'], im['height']) == crop.size, 'Figure 5 resolution must be preserved'
+        assert abs(bounds.width / bounds.height - crop.width / crop.height) < .001, 'Figure 5 distorted'
+        assert bounds.width > thunder_page.rect.width * .5, 'Figure 5 must be large'
+        assert thunder_page.rect.contains(bounds), 'Figure 5 must sit inside the slide'
+        # Text blocks must not overlap: the takeaway has to finish above the source footer, and Method above the takeaway.
+        takeaway = fitz.Rect(next(b[:4] for b in thunder_page.get_text('blocks') if 'Workload characteristics affect' in b[4]))
+        source = fitz.Rect(next(b[:4] for b in thunder_page.get_text('blocks') if b[4].startswith('Source:')))
+        method = fitz.Rect(next(b[:4] for b in thunder_page.get_text('blocks') if 'Method:' in b[4]))
+        assert method.y1 <= takeaway.y0 and takeaway.y1 <= source.y0, 'ThunderServe text blocks overlap'
+        assert bounds.y1 <= method.y0, 'Figure 5 overlaps the Method sentence'
     expected_citations = {
         'GEO': 'https://arxiv.org/abs/2610.14571v1',
         'RELATED': 'https://arxiv.org/abs/2505.23970v3',
@@ -140,6 +166,23 @@ def validate(doc):
     assert round(225.9/13.52,1)==16.7
     assert round(100*(1-(225.9/512)/(13.52/16)),1)==47.8
     return sorted(uris)
+
+def normalize_related(frame):
+    # Undo the authorized slide-3 edits: heading-to-diagram gap and removed bottom takeaway.
+    if 'label=GEO' in frame:
+        frame=frame.replace(r'Current Architecture\par}'+'\n'+r'\vspace{.20cm}'+'\n'+r'\begin{tikzpicture}', r'Current Architecture\par}'+'\n'+r'\vspace{.03cm}'+'\n'+r'\begin{tikzpicture}', 1)
+        frame=frame.replace('\\vspace{.08cm}\n\n\\source{\\href{\\carbonurl}{Carbon--SLO, Secs. III-A',
+            '\\vspace{.08cm}\n\\takeaway{Our direction: Calibrate workload-aware GPU/memory energy and SLO costs for regional routing.}\n\n\\source{\\href{\\carbonurl}{Carbon--SLO, Secs. III-A', 1)
+    # Undo the authorized slide-4 layout spacing (matches Helix's subtitle-to-body gap).
+    if 'label=RELATED' in frame:
+        frame=frame.replace(r'\vspace{.16cm}'+'\n'+r'\begin{columns}[T,onlytextwidth]', r'\vspace{.08cm}'+'\n'+r'\begin{columns}[T,onlytextwidth]', 1)
+    # Restore only the explicitly removed SLO sentence for evidence comparison.
+    if 'label=RELATED' in frame and 'Cache resizing must still satisfy' not in frame:
+        frame=frame.replace(r'\end{columns}'+'\n'+r'\vspace{.06cm}', r'\end{columns}'+'\n'+r'\vspace{.06cm}'+'\n'+r'{\footnotesize Cache resizing must still satisfy TTFT / TPOT SLO targets.\par}', 1)
+    # Normalize explicitly authorized GreenCache heading edits only.
+    if 'label=RELATED' in frame and r'\color{Accent}Core Idea' not in frame:
+        frame=frame.replace(r'\begin{columns}[T,onlytextwidth]', r'{\small\bfseries\color{Accent}Core Idea\par}'+'\n'+r'\vspace{.06cm}'+'\n'+r'\begin{columns}[T,onlytextwidth]', 1)
+    return frame.replace('Dissecting the Carbon--SLO Tension in Geo-Distributed LLM Serving', 'Carbon--SLO: Shared State, Regional Decisions').replace(r'arXiv 2026 (Preprint)\quad |\quad Carbon- \& SLO-Aware Geo-Distributed Request Scheduling', 'Hierarchical control with independent regional scheduling').replace("Cache Your Prompt When It's Green --- Carbon-Aware Caching for Large Language Model Serving", 'GreenCache: Carbon-Aware SSD Cache Sizing').replace(r'SIGMETRICS 2026\quad |\quad Carbon-Aware Adaptive SSD KV Cache Sizing', 'Adaptive KV caching under carbon and SLO constraints')
 
 def main():
     before=protected()
@@ -166,7 +209,7 @@ def main():
     baseline,current=frames(baseline_source),frames(source)
     assert list(current)==['COVER']+LABELS, 'Frame order / labels differ'
     for label in ['RELATED','MEMORY','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES']:
-        assert current[label]==baseline[label], ('Preserved frame changed',label)
+        assert normalize_related(current[label])==baseline[label], ('Preserved frame changed',label)
     scope_note = r'\\Published MoE-based simulation evidence; our proposed workload evaluation is not restricted to MoE.'
     for label in ['PLACEMENT','PLACEMENTENERGY']:
         assert current[label].replace(scope_note,'')==baseline[label], ('Published HBF evidence changed',label)
@@ -176,8 +219,10 @@ def main():
             assert obsolete not in current[label], (label,obsolete)
     helix_baseline=subprocess.check_output(['git','show',HELIX_BASE+':2026-11-18-meeting/'+NAME+'.tex'],cwd=REPO,text=True)
     baseline_frames=frames(helix_baseline)
-    for label in current.keys()-{'HELIX'}:
-        assert current[label]==baseline_frames[label], ('Non-Helix frame changed',label)
+    # THUNDER is the authorized Figure 5 redesign; its contract is checked explicitly in validate().
+    for label in current.keys()-{'HELIX','THUNDER'}:
+        assert normalize_related(current[label])==baseline_frames[label], ('Preserved frame changed',label)
+    assert r'\begin{tabularx}' not in current['THUNDER'] and 'figures/ThunderServe_Fig05_no_caption.png' in current['THUNDER'], 'THUNDER must use the Figure 5 crop'
     assert HELIX_LOCAL_PATH in current['HELIX'] and r'\begin{tikzpicture}' not in current['HELIX']
     (QA/'pages').mkdir(parents=True,exist_ok=True);ZIP.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='research-materials-') as td:
@@ -185,11 +230,13 @@ def main():
         with zipfile.ZipFile(ZIP,'w',zipfile.ZIP_DEFLATED) as z:
             z.writestr('main.tex',source.replace(HELIX_LOCAL_PATH,HELIX_ZIP_PATH))
             z.write(HELIX_FIGURE,HELIX_ZIP_PATH)
-            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\nSelf-contained Beamer source and original Helix Figure 3; 22 pages.\n')
+            z.write(THUNDER_FIGURE,THUNDER_ZIP_PATH)
+            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\nSelf-contained Beamer source, original Helix Figure 3, and ThunderServe Figure 5 (printed caption removed); 22 pages.\n')
         isolated=temp/'isolated'
         with zipfile.ZipFile(ZIP) as z:
             assert z.testzip() is None
             assert hashlib.sha256(z.read(HELIX_ZIP_PATH)).hexdigest()==digest(HELIX_FIGURE)
+            assert hashlib.sha256(z.read(THUNDER_ZIP_PATH)).hexdigest()==digest(THUNDER_FIGURE)
             z.extractall(isolated)
         other=compile_pdf(isolated,temp/'standalone','main')
         a,b=fitz.open(local),fitz.open(other)
@@ -200,7 +247,8 @@ def main():
             assert annotations(x)==annotations(y)
         previous=fitz.open(stream=subprocess.check_output(['git','show',HELIX_BASE+':2026-11-18-meeting/output/pdf/'+NAME+'.pdf'],cwd=REPO),filetype='pdf')
         for i in range(22):
-            if i==4: continue
+            # Pages 3-5 (GEO, RELATED, HELIX) and 6 (THUNDER) are authorized redesigns.
+            if i in (2,3,4,5): continue
             assert a[i].get_text()==previous[i].get_text(), ('Non-Helix text changed',i+1)
             assert a[i].get_pixmap(matrix=fitz.Matrix(3,3)).digest==previous[i].get_pixmap(matrix=fitz.Matrix(3,3)).digest, ('Non-Helix pixels changed',i+1)
             assert annotations(a[i])==annotations(previous[i]), ('Non-Helix links changed',i+1)
@@ -223,16 +271,16 @@ def main():
     old_doc=fitz.open(stream=base_pdf,filetype='pdf')
     new_doc=fitz.open(PDF)
     preserved_pages=[]
-    for label, old_page in {'RELATED':3,'MEMORY':9,'REEL1':5,'REEL2':6,'REEL3':7,'REEL4':8,'THANKYOU':14}.items():
+    for label, old_page in {'MEMORY':9,'REEL1':5,'REEL2':6,'REEL3':7,'REEL4':8,'THANKYOU':14}.items():
         new_page=new_doc.resolve_names()[label]['page']
         clip=fitz.Rect(0,0,new_doc[new_page].rect.width,new_doc[new_page].rect.height-16)
         assert old_doc[old_page].get_pixmap(matrix=fitz.Matrix(3,3),clip=clip).digest == new_doc[new_page].get_pixmap(matrix=fitz.Matrix(3,3),clip=clip).digest, label
         assert {l.get('uri') for l in old_doc[old_page].get_links() if l.get('uri')} == {l.get('uri') for l in new_doc[new_page].get_links() if l.get('uri')}, label
         preserved_pages.append(dict(label=label,original_page=old_page+1,current_page=new_page+1,pixels_equal_above_footer=True,external_citations_equal=True))
     (QA/'research-materials-preservation.json').write_text(json.dumps(dict(base_commit=base_commit,pdf_sha256=digest(PDF),preserved_pages=preserved_pages,comparison='3x pixels excluding bottom 16 PDF points; source-frame checks additionally preserve all scientific content',hbf_table6='Source unchanged except explicit MoE scope note; all values and charts frozen'),indent=2)+'\n')
-    (QA/'research-materials-frame-baseline.json').write_text(json.dumps(dict(commit=base_commit,scope='Frozen source frames checked against starting commit; current source includes only authorized revision',unchanged_labels=['RELATED','MEMORY','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES'],scope_note_only_labels=['PLACEMENT','PLACEMENTENERGY'],current_order=['COVER']+LABELS,sha256={label:hashlib.sha256(frame.encode()).hexdigest() for label,frame in current.items()}),indent=2)+'\n')
+    (QA/'research-materials-frame-baseline.json').write_text(json.dumps(dict(commit=base_commit,scope='Frozen source frames checked against starting commit; current source includes only authorized revision',unchanged_labels=['MEMORY','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES'],scope_note_only_labels=['PLACEMENT','PLACEMENTENERGY'],current_order=['COVER']+LABELS,sha256={label:hashlib.sha256(frame.encode()).hexdigest() for label,frame in current.items()}),indent=2)+'\n')
     (QA/'research-materials-geo-validation.json').write_text(json.dumps(dict(baseline_commit=base_commit,pdf_sha256=digest(PDF),current_page=3,label='GEO',preserved_scientific_claims=['Shared global snapshot and independent regional scheduling','Operational carbon only','A100-calibrated models'],authorized_change='Research direction now emphasizes calibrated workload-aware GPU/memory costs for routing; no total-carbon result claimed',primary_source='https://arxiv.org/abs/2610.14571v1'),indent=2)+'\n')
-    (QA/'research-materials-helix-validation.json').write_text(json.dumps(dict(baseline_commit=HELIX_BASE,pdf_sha256=digest(PDF),changed_page=5,label='HELIX',figure=str(HELIX_FIGURE.relative_to(REPO)),figure_sha256=digest(HELIX_FIGURE),zip_asset_bytes_identical=True,other_21_pages=dict(text_equal=True,pixels_equal_at_3x=True,annotations_equal=True),local_zip_parity=True),indent=2)+'\n')
+    (QA/'research-materials-helix-validation.json').write_text(json.dumps(dict(baseline_commit=HELIX_BASE,pdf_sha256=digest(PDF),changed_page=5,label='HELIX',figure=str(HELIX_FIGURE.relative_to(REPO)),figure_sha256=digest(HELIX_FIGURE),zip_asset_bytes_identical=True,other_19_pages_excluding_geo_green_cache_title_updates=dict(text_equal=True,pixels_equal_at_3x=True,annotations_equal=True),local_zip_parity=True),indent=2)+'\n')
     (QA/'validation.md').write_text("# Research Materials validation\n\n"
         "- PASS: 22 widescreen pages; Thank You at 16, supplements at 17–22.\n"
         "- PASS: two local and two extracted ZIP pdfLaTeX passes; no warnings.\n"
@@ -241,6 +289,8 @@ def main():
         "- PASS: backup round trips, bounds, evidence values and unchanged evidence frames.\n"
         "- PASS: all text/image bounds fit; preserved evidence and new proposal contracts pass.\n"
         "- PASS: Helix Figure 3 retains original resolution and aspect ratio; ZIP asset bytes match.\n"
-        "- PASS: all 21 non-Helix pages match commit 3f90a20 in text, 3x pixels and annotations.\n")
+        "- PASS: all 19 pages outside Carbon-SLO/GreenCache/Helix match commit 3f90a20 in text, 3x pixels and annotations.\n"
+        "- PASS: ThunderServe slide (page 6) uses ThunderServe Figure 5 with only the printed caption removed (pixel-identical to the original top 440 rows); Table 3 values and HBM/HBF content are absent from the slide; Figure 5 is included in the Overleaf ZIP.\n"
+        "- Note: the page-6 frame is an authorized redesign, so it is excluded from the frozen-baseline and page-pixel comparisons and checked by the explicit ThunderServe contract instead.\n")
     print('PASS: 22 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()

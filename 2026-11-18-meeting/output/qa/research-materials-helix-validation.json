@@ -1,18 +1,15 @@
 {
   "baseline_commit": "3f90a20ee7648052352fb19cc090c5500bfe06f9",
-  "pdf_sha256": "b97097ce1c7f533285487e102b68016fadfbb5c526e2f153c274cadd9fba3b60",
+  "pdf_sha256": "e1c475afc1eb5e6317f3d8a08550a610ef685551132d8835aa416853da0a9458",
   "changed_page": 5,
   "label": "HELIX",
   "figure": "2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png",
   "figure_sha256": "603c393d325958236c0e7aecd4a36b8a0c2a42553793704bd155f535117fc10f",
   "zip_asset_bytes_identical": true,
-  "other_21_pages": {
+  "other_19_pages_excluding_geo_green_cache_title_updates": {
     "text_equal": true,
     "pixels_equal_at_3x": true,
     "annotations_equal": true
   },
-  "local_zip_parity": true,
-  "visual_review": "Rendered slide 5 inspected at 3x: original labels/colors and full figure visible; readable text; no clipping or overlap; source footer clear.",
-  "speaker_script_other_sections_unchanged": true,
-  "regression_tests_passed": 14
+  "local_zip_parity": true
 }

@@ -106,14 +106,20 @@ at ([xshift=.48cm,yshift=.16cm]current page.south west) {Source: #1};
 \source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\helixurl}{Helix}; \href{\thunderurl}{ThunderServe}; \href{\hbfurl}{Characterizing HBF}; \href{\simurl}{LLMServingSim 2.0}.}
 \end{frame}
 
-\begin{frame}[t,label=GEO]{Carbon--SLO: Shared State, Regional Decisions}
+\begingroup
+% Local two-line title treatment for the original paper title.
+\setbeamerfont{frametitle}{size=\fontsize{12}{14}\selectfont,series=\bfseries}
+\setbeamertemplate{frametitle}{\nointerlineskip
+\begin{beamercolorbox}[wd=\paperwidth,ht=.92cm,dp=.14cm,leftskip=.55cm,rightskip=.48cm]{frametitle}
+\usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
+\begin{frame}[t,label=GEO]{Dissecting the Carbon--SLO Tension in Geo-Distributed LLM Serving}
 \relax
-{\small\color{Muted}Hierarchical control with independent regional scheduling\par}
+{\small\color{Muted}arXiv 2026 (Preprint)\quad |\quad Carbon- \& SLO-Aware Geo-Distributed Request Scheduling\par}
 \vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.54\textwidth}
 {\small\bfseries\color{Accent}Current Architecture\par}
-\vspace{.03cm}
+\vspace{.20cm}
 \begin{tikzpicture}[>=Latex,every node/.style={align=center,text=Ink},
 box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \node[box,fill=SoftMint,text width=6.6cm] (global) at (3.65,0) {\textbf{Global Provisioner}\\CI $\cdot$ Batch $\cdot$ Queue $\cdot$ KV $\cdot$ RTT\\\scriptsize Periodically polls DCs; broadcasts global snapshot};
@@ -140,17 +146,21 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \end{column}
 \end{columns}
 \vspace{.08cm}
-\takeaway{Our direction: Calibrate workload-aware GPU/memory energy and SLO costs for regional routing.}
 
 \source{\href{\carbonurl}{Carbon--SLO, Secs. III-A, III-C, IV-A, V-C, VI; Fig. 6(c)}. Diagram and research direction: our synthesis.}
 \end{frame}
+\endgroup
 
-\begin{frame}[t,label=RELATED]{GreenCache: Carbon-Aware SSD Cache Sizing}
+\begingroup
+% Local two-line paper title; retain the shared style on all other slides.
+\setbeamerfont{frametitle}{size=\fontsize{12}{14}\selectfont,series=\bfseries}
+\setbeamertemplate{frametitle}{\nointerlineskip
+\begin{beamercolorbox}[wd=\paperwidth,ht=1.12cm,dp=.14cm,leftskip=.55cm,rightskip=.48cm]{frametitle}
+\usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
+\begin{frame}[t,label=RELATED]{Cache Your Prompt When It's Green --- Carbon-Aware Caching for Large Language Model Serving}
 \relax
-{\footnotesize\color{Muted}Adaptive KV caching under carbon and SLO constraints\par}
-\vspace{.08cm}
-{\small\bfseries\color{Accent}Core Idea\par}
-\vspace{.06cm}
+{\footnotesize\color{Muted}SIGMETRICS 2026\quad |\quad Carbon-Aware Adaptive SSD KV Cache Sizing\par}
+\vspace{.16cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.30\textwidth}
 \card{mintbox}{Inputs}{\footnotesize Predicted CI\\[3pt]Request Rate\\[3pt]Power / SLO Profiles}
@@ -163,7 +173,6 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \end{column}
 \end{columns}
 \vspace{.06cm}
-{\footnotesize Cache resizing must still satisfy TTFT / TPOT SLO targets.\par}
 \vspace{.10cm}
 {\small\bfseries\color{Accent}Limitations\par}
 \vspace{.08cm}
@@ -174,44 +183,49 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \takeaway{GreenCache optimizes SSD KV-cache capacity for total carbon, but not GPU/memory placement across data centers.}
 \source{\href{\greenurl}{GreenCache v3, Secs. 3.2.1, 4.1--4.2, 5.4--5.5}.}
 \end{frame}
+\endgroup
 
-\begin{frame}[t,label=HELIX]{Helix: Heterogeneous GPU Placement}
+\begingroup
+% Local two-line title treatment; other frames retain the shared template.
+\setbeamerfont{frametitle}{size=\fontsize{12}{14}\selectfont,series=\bfseries}
+\setbeamertemplate{frametitle}{\nointerlineskip
+\begin{beamercolorbox}[wd=\paperwidth,ht=1.12cm,dp=.14cm,leftskip=.55cm,rightskip=.48cm]{frametitle}
+\usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
+\begin{frame}[t,label=HELIX]{Helix: Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow}
 \relax
-{\small\bfseries\color{Accent}Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow\par}
-{\footnotesize\color{Muted}ASPLOS 2025\quad |\quad Heterogeneous GPU Placement \& Scheduling\par}
+{\footnotesize\color{Muted}ASPLOS 2025\quad |\quad LLM Layer-to-GPU Placement \& Request Scheduling\par}
 \vspace{.16cm}
 \noindent\includegraphics[width=\linewidth]{../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png}\par
 \vspace{.14cm}
-{\footnotesize\textbf{Method:} GPU/network profiling $\rightarrow$ model placement (max-flow/MILP) $\rightarrow$ runtime request scheduling.\par}
+{\small\textbf{Motivation:} Heterogeneous GPUs differ in compute throughput, memory capacity, and network bandwidth, making model placement challenging.\par}
 \vspace{.08cm}
-{\footnotesize\textbf{Evaluation:} Real heterogeneous GPU cluster; geo-distributed settings evaluated using simulation.\par}
-\takeaway{Helix establishes heterogeneous GPU placement and scheduling. Our direction considers workload-dependent energy and HBM/HBF memory configurations.}
+{\small\textbf{Method:} GPU/network profiling $\rightarrow$ max-flow/MILP-based layer placement to maximize throughput $\rightarrow$ runtime request scheduling.\par}
+\vspace{.08cm}
+{\small\textbf{Evaluation:} Real heterogeneous GPU cluster; geo-distributed settings evaluated using simulation.\par}
 \source{\href{\helixurl}{Mei et al., Helix, ASPLOS 2025, Fig. 3 (System Overview); Secs. 3--5 and 6.1--6.4}.}
 \end{frame}
+\endgroup
 
+\begingroup
+% Local two-line title treatment matching the Helix slide.
+\setbeamerfont{frametitle}{size=\fontsize{12}{14}\selectfont,series=\bfseries}
+\setbeamertemplate{frametitle}{\nointerlineskip
+\begin{beamercolorbox}[wd=\paperwidth,ht=1.12cm,dp=.14cm,leftskip=.55cm,rightskip=.48cm]{frametitle}
+\usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
 \begin{frame}[t,label=THUNDER]{ThunderServe: Workload-Aware Serving}
 \relax
 {\small\bfseries\color{Accent}High-Performance and Cost-Efficient LLM Serving in Cloud Environments\par}
-{\footnotesize\color{Muted}MLSys 2025\quad Published workload-aware phase allocation\par}
-\vspace{.18cm}
-{\small Prefill is typically compute-intensive. Decode is typically more memory-bandwidth-sensitive.\par}
-\vspace{.18cm}
-\compactcard{mintbox}{Joint scheduling decisions}{GPU grouping, prefill/decode assignment, parallelism and request routing. Resource ratios depend on workload.}
-\vspace{.22cm}
-{\small\bfseries LLaMA-30B deployment in Table 3\par}
-\vspace{.08cm}
-{\small\renewcommand{\arraystretch}{1.4}
-\begin{tabularx}{\linewidth}{@{}Xrr@{}}\toprule
-\textbf{Workload} & \textbf{Prefill replicas} & \textbf{Decode replicas}\\\midrule
-Coding & 8 & 4\\
-Conversation & 4 & 8\\\bottomrule
-\end{tabularx}\par}
-\vspace{.12cm}
-{\footnotesize\color{Muted}Replica counts, not physical GPU counts. Both deployments use the paper's 32-GPU cloud pool.\par}
-\vspace{.08cm}
-\takeaway{Different workloads require different compute, memory-bandwidth and serving-resource allocations.}
-\source{\href{\thunderurl}{ThunderServe, MLSys 2025, Secs. 3.2--3.4, 5.1, 5.3; Table 3}. Counts summed from the original PDF.}
+{\footnotesize\color{Muted}MLSys 2025\quad |\quad Workload-Aware Prefill/Decode Disaggregation \& Scheduling\par}
+\vspace{.04cm}
+{\small\textbf{Motivation:} Prefill is typically compute-intensive, while decode is more memory-bandwidth-sensitive.\par}
+\begin{center}
+\includegraphics[width=8.2cm]{figures/ThunderServe_Fig05_no_caption.png}
+\end{center}
+{\small\textbf{Method:} Jointly optimize GPU grouping, prefill/decode assignment, parallel configuration, and request routing.\par}
+\takeaway{Workload characteristics affect the preferred prefill/decode resource allocation and routing.}
+\source{\href{\thunderurl}{ThunderServe, MLSys 2025, Sec. 3.3, Figure 5; Sec. 5.3, Table 3}.}
 \end{frame}
+\endgroup
 
 \begin{frame}[t,label=WORKLOAD]{Different LLM Workload Characteristics}
 \relax

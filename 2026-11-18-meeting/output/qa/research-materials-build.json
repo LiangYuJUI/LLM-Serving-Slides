@@ -3,9 +3,9 @@
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "7c7ee8995d27c0971cbde79e76aa37067b46a612907e26c3dfd638ad6a759ace",
-  "pdf_sha256": "b97097ce1c7f533285487e102b68016fadfbb5c526e2f153c274cadd9fba3b60",
-  "zip_sha256": "5bc8dd7fdd283ef3553166d885a31141ba649efd6adea3fe47ce873fc7215cf5",
+  "source_sha256": "f652f248d269d9748932459b2bc49caaf877ddc391ea570083e66a59d2861268",
+  "pdf_sha256": "e1c475afc1eb5e6317f3d8a08550a610ef685551132d8835aa416853da0a9458",
+  "zip_sha256": "32f1cc73d647ddac919a0b2ebb398198a356ddf4b5f1a91e52bba70ba299fd04",
   "preserved_frame_hashes": {
     "REEL1": "a48e62133c24df47d87ca15285fc999607b32e1ee2b5933999f2570035c1bbd3",
     "REEL2": "893e24ef3c3b3dc2d50e559402ce0ff48e0243a0fd4d36627d20ad8a3cb59965",
@@ -33,7 +33,7 @@
     "pixels": true,
     "annotations": true
   },
-  "protected_files": 11073,
+  "protected_files": 11075,
   "uris": [
     "https://arxiv.org/abs/2505.23970v3",
     "https://arxiv.org/abs/2602.23036",
