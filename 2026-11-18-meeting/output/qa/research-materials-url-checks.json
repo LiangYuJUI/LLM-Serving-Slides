@@ -1,83 +1,441 @@
 {
-  "access_date": "2026-11-17 Asia/Taipei",
-  "checks": [
+  "access_date": "2026-11-20 Asia/Taipei",
+  "pdf_sha256": "524ff3fa4631fa68838f5dd1894d57122da093205b696839c7a9b2c1949eceb7",
+  "scope": "All current external PDF annotations checked. Remote availability is separate from clickability.",
+  "current_annotations": [
     {
-      "url": "https://arxiv.org/abs/2505.23970v3",
-      "status": 200,
-      "final_url": "https://arxiv.org/abs/2505.23970v3",
-      "ok": true
+      "page": 2,
+      "uri": "https://arxiv.org/abs/2610.14571v1",
+      "clickable": true
     },
     {
-      "url": "https://arxiv.org/abs/2511.00807v1",
-      "status": 200,
-      "final_url": "https://arxiv.org/abs/2511.00807v1",
-      "ok": true
+      "page": 2,
+      "uri": "https://arxiv.org/abs/2505.23970v3",
+      "clickable": true
     },
     {
-      "url": "https://arxiv.org/abs/2512.13525",
-      "status": 200,
-      "final_url": "https://arxiv.org/abs/2512.13525",
-      "ok": true
+      "page": 2,
+      "uri": "https://doi.org/10.1145/3669940.3707215",
+      "clickable": true
     },
     {
-      "url": "https://arxiv.org/abs/2608.01891",
-      "status": 200,
-      "final_url": "https://arxiv.org/abs/2608.01891",
-      "ok": true
+      "page": 2,
+      "uri": "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
+      "clickable": true
     },
     {
-      "url": "https://arxiv.org/abs/2609.39131v2",
-      "status": 200,
-      "final_url": "https://arxiv.org/abs/2609.39131v2",
-      "ok": true
+      "page": 2,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
     },
     {
-      "url": "https://arxiv.org/abs/2610.14571v1",
-      "status": 200,
-      "final_url": "https://arxiv.org/abs/2610.14571v1",
-      "ok": true
+      "page": 2,
+      "uri": "https://llmservingsim.ai/docs/getting-started/overview",
+      "clickable": true
     },
     {
-      "url": "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
-      "status": 200,
-      "final_url": "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
-      "ok": true
+      "page": 3,
+      "uri": "https://arxiv.org/abs/2610.14571v1",
+      "clickable": true
     },
     {
-      "url": "https://reellci.com/d/hbf-gen1-16hi/",
-      "status": 200,
-      "final_url": "https://reellci.com/d/hbf-gen1-16hi/",
-      "ok": true
+      "page": 4,
+      "uri": "https://arxiv.org/abs/2505.23970v3",
+      "clickable": true
     },
     {
-      "url": "https://reellci.com/explorer/?category=memory_components",
-      "status": 200,
-      "final_url": "https://reellci.com/explorer/?category=memory_components",
-      "ok": true
+      "page": 5,
+      "uri": "https://doi.org/10.1145/3669940.3707215",
+      "clickable": true
     },
     {
-      "url": "https://reellci.com/insights/hbm-footprint-inversion.html",
-      "status": 200,
-      "final_url": "https://reellci.com/insights/hbm-footprint-inversion.html",
-      "ok": true
+      "page": 6,
+      "uri": "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
+      "clickable": true
     },
     {
-      "url": "https://reellci.com/insights/the-hbf-inversion.html",
-      "status": 200,
-      "final_url": "https://reellci.com/insights/the-hbf-inversion.html",
-      "ok": true
+      "page": 7,
+      "uri": "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
+      "clickable": true
     },
     {
-      "url": "https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/",
-      "status": 200,
-      "final_url": "https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/",
-      "ok": true
+      "page": 7,
+      "uri": "https://arxiv.org/abs/2505.23970v3",
+      "clickable": true
     },
     {
-      "url": "https://reellci.com/",
-      "status": 200,
-      "final_url": "https://reellci.com/",
-      "ok": true
+      "page": 7,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 7,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 8,
+      "uri": "https://arxiv.org/abs/2610.14571v1",
+      "clickable": true
+    },
+    {
+      "page": 8,
+      "uri": "https://arxiv.org/abs/2505.23970v3",
+      "clickable": true
+    },
+    {
+      "page": 8,
+      "uri": "https://doi.org/10.1145/3669940.3707215",
+      "clickable": true
+    },
+    {
+      "page": 8,
+      "uri": "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
+      "clickable": true
+    },
+    {
+      "page": 8,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 9,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 9,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 10,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 10,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 11,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 11,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 12,
+      "uri": "https://doi.org/10.1145/3669940.3707215",
+      "clickable": true
+    },
+    {
+      "page": 12,
+      "uri": "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
+      "clickable": true
+    },
+    {
+      "page": 12,
+      "uri": "https://arxiv.org/abs/2505.23970v3",
+      "clickable": true
+    },
+    {
+      "page": 12,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 13,
+      "uri": "https://arxiv.org/abs/2610.14571v1",
+      "clickable": true
+    },
+    {
+      "page": 13,
+      "uri": "https://arxiv.org/abs/2505.23970v3",
+      "clickable": true
+    },
+    {
+      "page": 13,
+      "uri": "https://doi.org/10.1145/3669940.3707215",
+      "clickable": true
+    },
+    {
+      "page": 14,
+      "uri": "https://llmservingsim.ai/docs/getting-started/overview",
+      "clickable": true
+    },
+    {
+      "page": 14,
+      "uri": "https://llmservingsim.ai/docs/simulator/architecture",
+      "clickable": true
+    },
+    {
+      "page": 14,
+      "uri": "https://arxiv.org/abs/2602.23036",
+      "clickable": true
+    },
+    {
+      "page": 15,
+      "uri": "https://arxiv.org/abs/2610.14571v1",
+      "clickable": true
+    },
+    {
+      "page": 15,
+      "uri": "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
+      "clickable": true
+    },
+    {
+      "page": 15,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 15,
+      "uri": "https://llmservingsim.ai/docs/getting-started/overview",
+      "clickable": true
+    },
+    {
+      "page": 17,
+      "uri": "https://reellci.com/insights/the-hbf-inversion.html",
+      "clickable": true
+    },
+    {
+      "page": 17,
+      "uri": "https://reellci.com/explorer/?category=memory_components",
+      "clickable": true
+    },
+    {
+      "page": 17,
+      "uri": "https://reellci.com/d/hbf-gen1-16hi/",
+      "clickable": true
+    },
+    {
+      "page": 17,
+      "uri": "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
+      "clickable": true
+    },
+    {
+      "page": 17,
+      "uri": "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
+      "clickable": true
+    },
+    {
+      "page": 18,
+      "uri": "https://reellci.com/insights/the-hbf-inversion.html",
+      "clickable": true
+    },
+    {
+      "page": 18,
+      "uri": "https://reellci.com/insights/hbm-footprint-inversion.html",
+      "clickable": true
+    },
+    {
+      "page": 18,
+      "uri": "https://reellci.com/explorer/?category=memory_components",
+      "clickable": true
+    },
+    {
+      "page": 19,
+      "uri": "https://reellci.com/insights/the-hbf-inversion.html",
+      "clickable": true
+    },
+    {
+      "page": 19,
+      "uri": "https://reellci.com/insights/hbm-footprint-inversion.html",
+      "clickable": true
+    },
+    {
+      "page": 19,
+      "uri": "https://reellci.com/explorer/?category=memory_components",
+      "clickable": true
+    },
+    {
+      "page": 20,
+      "uri": "https://reellci.com/d/hbf-gen1-16hi/",
+      "clickable": true
+    },
+    {
+      "page": 20,
+      "uri": "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
+      "clickable": true
+    },
+    {
+      "page": 21,
+      "uri": "https://reellci.com/",
+      "clickable": true
+    },
+    {
+      "page": 21,
+      "uri": "https://reellci.com/",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://www.micron.com/products/memory/hbm/hbm3e",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://doi.org/10.1109/LCA.2026.3660969",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://doi.org/10.1109/LCA.2026.3660969",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://doi.org/10.1109/MC.2026.3652916",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://doi.org/10.1109/LCA.2026.3660969",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://doi.org/10.1109/MC.2026.3652916",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://doi.org/10.1109/IEDM45741.2023.10413890",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://arxiv.org/abs/2604.16007v1",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://doi.org/10.1109/IEDM45741.2023.10413890",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://doi.org/10.1109/LCA.2026.3705817",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
+    },
+    {
+      "page": 22,
+      "uri": "https://arxiv.org/abs/2609.39131v2",
+      "clickable": true
     }
-  ]
+  ],
+  "new_primary_sources_reviewed": [
+    "https://doi.org/10.1145/3669940.3707215",
+    "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
+    "https://llmservingsim.ai/docs/getting-started/overview",
+    "https://llmservingsim.ai/docs/simulator/architecture"
+  ],
+  "historical_remote_checks": {
+    "access_date": "2026-11-17 Asia/Taipei",
+    "checks": [
+      {
+        "url": "https://arxiv.org/abs/2505.23970v3",
+        "status": 200,
+        "final_url": "https://arxiv.org/abs/2505.23970v3",
+        "ok": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2511.00807v1",
+        "status": 200,
+        "final_url": "https://arxiv.org/abs/2511.00807v1",
+        "ok": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2512.13525",
+        "status": 200,
+        "final_url": "https://arxiv.org/abs/2512.13525",
+        "ok": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2608.01891",
+        "status": 200,
+        "final_url": "https://arxiv.org/abs/2608.01891",
+        "ok": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2609.39131v2",
+        "status": 200,
+        "final_url": "https://arxiv.org/abs/2609.39131v2",
+        "ok": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2610.14571v1",
+        "status": 200,
+        "final_url": "https://arxiv.org/abs/2610.14571v1",
+        "ok": true
+      },
+      {
+        "url": "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
+        "status": 200,
+        "final_url": "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
+        "ok": true
+      },
+      {
+        "url": "https://reellci.com/d/hbf-gen1-16hi/",
+        "status": 200,
+        "final_url": "https://reellci.com/d/hbf-gen1-16hi/",
+        "ok": true
+      },
+      {
+        "url": "https://reellci.com/explorer/?category=memory_components",
+        "status": 200,
+        "final_url": "https://reellci.com/explorer/?category=memory_components",
+        "ok": true
+      },
+      {
+        "url": "https://reellci.com/insights/hbm-footprint-inversion.html",
+        "status": 200,
+        "final_url": "https://reellci.com/insights/hbm-footprint-inversion.html",
+        "ok": true
+      },
+      {
+        "url": "https://reellci.com/insights/the-hbf-inversion.html",
+        "status": 200,
+        "final_url": "https://reellci.com/insights/the-hbf-inversion.html",
+        "ok": true
+      },
+      {
+        "url": "https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/",
+        "status": 200,
+        "final_url": "https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/",
+        "ok": true
+      },
+      {
+        "url": "https://reellci.com/",
+        "status": 200,
+        "final_url": "https://reellci.com/",
+        "ok": true
+      }
+    ]
+  }
 }

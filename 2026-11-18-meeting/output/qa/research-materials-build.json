@@ -1,11 +1,11 @@
 {
-  "pages": 17,
+  "pages": 22,
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "b03d26436bbbb4e26d07264d6c94dfe45c3410af7332c715448d1153385fdb82",
-  "pdf_sha256": "862caff45f7d0f9001e118f25f777117ebaf09f1102bf2e03b74105ad10d9591",
-  "zip_sha256": "f34360d2e6b93b32897db3203843f8fb152868b4e5bc4e58e71e23ed32866297",
+  "source_sha256": "4fd8c059f27e877ba997d1a4d1debd51b3f81db080898c9897b1bf85c4985ad2",
+  "pdf_sha256": "524ff3fa4631fa68838f5dd1894d57122da093205b696839c7a9b2c1949eceb7",
+  "zip_sha256": "b028df276122e07bc4532bb0150e15a403e732e9e4d79ca3216a96071237b07c",
   "preserved_frame_hashes": {
     "REEL1": "a48e62133c24df47d87ca15285fc999607b32e1ee2b5933999f2570035c1bbd3",
     "REEL2": "893e24ef3c3b3dc2d50e559402ce0ff48e0243a0fd4d36627d20ad8a3cb59965",
@@ -14,36 +14,47 @@
   },
   "category_destinations": {
     "GEO": 3,
-    "REEL1": 6,
-    "MEMORY": 10,
-    "DISAGG": 13
+    "WORKLOAD": 7,
+    "DISAGG": 12,
+    "ENVIRONMENT": 14
   },
-  "return_links": 0,
+  "supplement_round_trips": {
+    "REEL1_REELABOUT": [
+      17,
+      21
+    ],
+    "MEMORY_MEMORYSOURCES": [
+      9,
+      22
+    ]
+  },
   "parity": {
     "text": true,
     "pixels": true,
     "annotations": true
   },
-  "protected_files": 11071,
+  "protected_files": 11073,
   "uris": [
     "https://arxiv.org/abs/2505.23970v3",
-    "https://arxiv.org/abs/2512.13525",
+    "https://arxiv.org/abs/2602.23036",
     "https://arxiv.org/abs/2604.16007v1",
-    "https://arxiv.org/abs/2608.01891",
     "https://arxiv.org/abs/2609.39131v2",
     "https://arxiv.org/abs/2610.14571v1",
     "https://doi.org/10.1109/IEDM45741.2023.10413890",
     "https://doi.org/10.1109/LCA.2026.3660969",
     "https://doi.org/10.1109/LCA.2026.3705817",
     "https://doi.org/10.1109/MC.2026.3652916",
+    "https://doi.org/10.1145/3669940.3707215",
     "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu",
+    "https://llmservingsim.ai/docs/getting-started/overview",
+    "https://llmservingsim.ai/docs/simulator/architecture",
+    "https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf",
     "https://reellci.com/",
     "https://reellci.com/REEL%20LCI%20Methodology%20Report%20v1.0.pdf",
     "https://reellci.com/d/hbf-gen1-16hi/",
     "https://reellci.com/explorer/?category=memory_components",
     "https://reellci.com/insights/hbm-footprint-inversion.html",
     "https://reellci.com/insights/the-hbf-inversion.html",
-    "https://www.micron.com/products/memory/hbm/hbm3e",
-    "https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/"
+    "https://www.micron.com/products/memory/hbm/hbm3e"
   ]
 }

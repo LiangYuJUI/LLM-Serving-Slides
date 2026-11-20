@@ -1,15 +1,13 @@
 {
-  "baseline_commit": "6452d5bd13d52da8ca5452845f863b8458adcc8f",
-  "pdf_sha256": "caf26ce59ea7a8841c826aab1d3978b0e01f476b9f097b801704e2d5b096c094",
-  "changed_page": 7,
-  "other_17_pages": {
-    "pixels_identical": true,
-    "text_identical": true,
-    "link_targets_and_rectangles_identical": true
-  },
-  "visual_review": "Slide 7 inspected after requested removal of the extension/allocation note; no clipping or overlap.",
-  "primary_source": "https://arxiv.org/abs/2610.14571v1",
-  "evidence": "Numerical Figure 6(c) callout removed at user request; source citation retained as support for coordination limitation.",
-  "scope": "Only GEO frame changed; fixed non-GEO frame hashes verified. Scripts synchronized to existing 18-page deck without removing numeric, source, navigation, bounds or parity checks.",
-  "gpu_scope": "Carbon-SLO Sec. VI states latency/power models calibrated on A100; heterogeneous GPUs are our proposed extension."
+  "baseline_commit": "51548444d0d896c8302ad94a9c81cae3f2ed571d",
+  "pdf_sha256": "524ff3fa4631fa68838f5dd1894d57122da093205b696839c7a9b2c1949eceb7",
+  "current_page": 3,
+  "label": "GEO",
+  "preserved_scientific_claims": [
+    "Shared global snapshot and independent regional scheduling",
+    "Operational carbon only",
+    "A100-calibrated models"
+  ],
+  "authorized_change": "Research direction now emphasizes calibrated workload-aware GPU/memory costs for routing; no total-carbon result claimed",
+  "primary_source": "https://arxiv.org/abs/2610.14571v1"
 }

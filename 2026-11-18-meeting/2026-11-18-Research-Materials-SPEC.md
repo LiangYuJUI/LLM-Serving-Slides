@@ -1,43 +1,52 @@
-# Research Materials specification and evidence register
+# Research Materials specification
 
-Meeting: November 18, 2026. Author: Yu-Jui Liang. Advisor: Hsiang-Yun Cheng. National Taiwan University / Academia Sinica.
+Meeting: 2026-11-18. Revised: **2026-11-20, Asia/Taipei**. Yu-Jui Liang; advisor Hsiang-Yun Cheng; National Taiwan University / Academia Sinica.
 
-Repository: https://github.com/LiangYuJUI/LLM-Serving-Slides.git
-Current expansion verified on **2026-11-17 (Asia/Taipei)** from clean `main` at `9d09be3`, equal to `origin/main` after fetch. Original REEL research accessed 2026-11-13; its preserved source register follows below.
+Repository: https://github.com/LiangYuJUI/LLM-Serving-Slides.git. Actual starting HEAD was clean `51548444d0d896c8302ad94a9c81cae3f2ed571d`. This revision supersedes the earlier 17-page contract and the earlier preference not to update speaker notes.
 
-## Current 17-page contract
+## Current contract
 
-The present deck is exactly **17 pages**, numbered **1/17–17/17**. Narrative order is Previous Work, Embodied Carbon Evidence, HBM/HBF Performance and Energy, then the proposed research direction. Thank you is slide 15. Slides 16–17 are backups and are not index chapters. This is evidence and a proposal, not a completed system evaluation.
+**22 pages, 16 main and 6 supplementary.** Thank You is page 16. Footer equals physical PDF page, 1/22–22/22. The [page map](2026-11-18-Research-Materials-Page-Map.md) defines exact titles, stable labels and index destinations. English slides and Traditional Chinese speaker script.
 
-| PDF page | Label | Role |
-|---|---|---|
-| 1 | COVER | Research Materials & Supporting Evidence |
-| 2 | EINDEX | Four-chapter index for Carbon- and Power-Aware Cross-DC LLM Serving |
-| 3 | GEO | Carbon–SLO previous work |
-| 4 | RELATED | GreenCache previous work |
-| 5 | ACCOUNT | Reusable methods and missing inputs |
-| 6 | REEL1 | Embodied-carbon evidence; links to REELABOUT |
-| 7 | REEL2 | Carbon per stack |
-| 8 | REEL3 | Carbon per nominal capacity unit |
-| 9 | REEL4 | HBF carbon assumptions and limitations |
-| 10 | MEMORY | HBM/HBF parameters; links to MEMORYSOURCES |
-| 11 | PLACEMENT | Workload completion time |
-| 12 | PLACEMENTENERGY | Modeled serving energy, including 7.19 / 9.54 MJ and +32.7% |
-| 13 | DISAGG | Proposed HBM/HBF-aware placement |
-| 14 | NEXT | Research plan |
-| 15 | THANKYOU | Thank you |
-| 16 | REELABOUT | REEL backup; returns to REEL1 |
-| 17 | MEMORYSOURCES | Parameter-source backup; returns to MEMORY |
+Research direction: **Workload-Aware, Power- and Carbon-Aware LLM Serving with Heterogeneous GPUs and HBM/HBF Memory Co-Design**. Investigate whether measured workload-dependent GPU/memory choices reduce serving energy under latency SLOs, then use those costs for cross-DC request/session routing. This is a proposal, not an experimental result. GPU heterogeneity, prefill/decode splitting and prior placement algorithms are established work. Attention/expert disaggregation is removed from the proposed architecture.
 
-Index cards link to `GEO`, `REEL1`, `MEMORY` and `DISAGG`. Navigation uses frame labels. There is no per-slide “Back to Evidence Index” button. REEL1–4 frame bodies stay frozen by SHA-256 aside from the authorized title and supplement-link normalization. Sections below this contract that mention 16 pages, a GPU frame, FREESH as a main slide, or Carbon–SLO Fig. 2 inside this deck describe earlier drafts.
+## Design and preservation
 
-## Scope and design
+Madrid Beamer, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. Ink #243748, Muted #667B8B, Accent #347E74, AccentBlue #507DAD, SoftMint #E6F4EE, SoftLilac #F1EEF8, Paper #FBFCFE. Preserve the existing source-footer style, cards, tables and TikZ charts. New conceptual diagrams use native TikZ and cite the source of prior methods.
 
-Madrid, 16:9, Latin Modern, 0.48 cm margins and original title/footer geometry. Ink #243748, Muted #667B8B, Accent #347E74, AccentBlue #507DAD, SoftMint #E6F4EE, SoftLilac #F1EEF8, Paper #FBFCFE. Preserve `source`, `takeaway`, `card`, `researchquestion`, and `carbonchart`. Tables and diagrams on the evidence slides are native LaTeX/TikZ. Existing carbon charts retain zero baselines and their data.
+Four index cards link to pages 3, 7, 12 and 14. No embodied-carbon chapter is exposed in the main index. REEL pages 17–20 and original supplements 21–22 preserve scientific content, units and charts. REEL original hashes remain enforced. GreenCache, Table 1 and both source supplements remain unchanged. Table 6 frames only add the MoE scope clarification to the source area. The GLM-5.2 comparison remains a published MoE simulation, not a Dense LLM measurement. Thank You remains unchanged.
 
-## Historical page notes
+## New evidence and proposed evaluation
 
-The following original REEL register is retained for scientific provenance. Historical REEL slides 1–4 are now slides 6–9. The per-capacity chart is PDF page 8.
+- Helix: ASPLOS 2025 max-flow/MILP placement and runtime scheduling. Single-cluster prototype versus simulated cross-region/high-heterogeneity settings are distinguished.
+- ThunderServe: MLSys 2025 Table 3, LLaMA-30B. Coding has 8 prefill / 4 decode replicas; Conversation has 4 / 8. These are replicas, not GPU counts. No throughput comparison between different hardware baselines is imported.
+- Workloads: Coding and Conversation are relative characteristics of the cited workloads. Multi-turn/agentic reuse uses GreenCache and Characterizing HBF evidence. Proposed implications are marked separately, and categories can overlap.
+- RCITI: proposed Dense LLM profiling environment. GPU inventory, counts and access must be established before experiments. No available HBF hardware is claimed.
+- LLMServingSim 2.0: official overview and architecture reviewed on 2026-11-20. Documented heterogeneous/disaggregated serving, batching/scheduling, KV models, compute profiles and ASTRA-Sim communication. HBF access/placement, calibrated energy integration and geo carbon scheduling are proposed work requiring implementation and validation. Do not generalize published simulator accuracy to this new setup.
+- Roadmap: measure and calibrate (including held-out error), compare workload-aware memory/GPU placement, then evaluate operational carbon and SLOs across DCs.
+
+## Accounting and fair comparison
+
+Report hardware count, memory capacity, precision, model, workload trace and SLO constraints. Separate capacity expansion from policy gains. Measure power over time to obtain energy; GPU telemetry alone does not measure whole-server energy. Model memory/link energy without double counting telemetry-covered components. Include idle/background terms for the planned serving-energy model, and apply PUE once at the appropriate IT-energy boundary. Global routing should account for WAN delay and session/cache locality or migration costs.
+
+Operational energy/carbon is primary. Allocated embodied carbon is a later extension conditional on defensible lifecycle data, lifetime/utilization allocation and component boundaries. Never add memory-stack footprints to a GPU footprint that already includes them.
+
+## Build and validation
+
+```sh
+python3 -m venv /tmp/research-materials-qa
+/tmp/research-materials-qa/bin/pip install pymupdf pillow
+/tmp/research-materials-qa/bin/python 2026-11-18-meeting/scripts/build_research_materials.py
+/tmp/research-materials-qa/bin/python 2026-11-18-meeting/scripts/test_research_materials.py
+```
+
+Requires pdfLaTeX, Beamer, TikZ and Latin Modern. The builder compiles twice locally and twice from the extracted self-contained Overleaf ZIP. It enforces 22 pages, all frame positions, full-width index links, supplement round trips, source citations, footer numbers, bounds, scientific values and evidence preservation. Local and ZIP text, rendered pixels and link annotations must match. Final-pass LaTeX warnings cause failure. Negative tests verify that broken navigation and missing evidence are rejected.
+
+Artifacts: `output/pdf/2026-11-18-Research-Materials.pdf`, `output/overleaf/Research-Materials.zip`, `output/qa/pages/research-materials-01.png` through `-22.png`, and `output/qa/research-materials-montage.png`. QA records are in `output/qa/validation.md` and the research-materials JSON reports. Every rendered page must also be visually inspected. Unrelated decks and source papers are protected.
+
+## Preserved REEL provenance
+
+The following scientific source register was established on 2026-11-13 and rechecked in the earlier revision on 2026-11-17. Moving it into supplements does not provide independent validation or new inventory access. Current pages are 17–20.
 
 ## Source register and access results
 
@@ -69,7 +78,7 @@ All carbon inputs below are **REEL LCI model estimates reported in v1.0 insights
 
 No v0.1 results were used. B rounds HBM3 values to 13.5 and 19.8; A gives 13.52 and 19.81. This is consistent with rounding, so the chart retains A's precision without manufacturing extra digits for HBM3E.
 
-The y-axis on current PDF page 8 (REEL3) is **kg CO2e / nominal capacity unit**. This is an arithmetic index based on the label numerals, not a physical-unit-harmonized carbon intensity. No assumption that GB equals GiB is made. The explicit units remain beside each bar.
+The y-axis on current PDF page 19 (REEL3) is **kg CO2e / nominal capacity unit**. This is an arithmetic index based on the label numerals, not a physical-unit-harmonized carbon intensity. No assumption that GB equals GiB is made. The explicit units remain beside each bar.
 
 Derived comparisons, always using unrounded inputs:
 
@@ -96,77 +105,14 @@ The source's TRL/sample timing is an authored model status, not an independent a
 | Slide / claim | Source / location | Evidence type and limitation |
 |---|---|---|
 | Cover / topic and identity | User's requested identity; A/D | Meeting metadata, not external scientific claim |
-| 1 / common framework and available memory families | D Sec. 4.4; E catalogue | Public methodology and listed dataset coverage |
-| 1 / HBF lacks production data | C, Sampling procedure; D Sec. 4.4.4 | Source-declared prospective model |
-| 1 / preliminary sensitivity use | A screening-level framing plus our judgment | Intended use, not validation guarantee |
-| 2 / stack values and capacity labels | A chart; B listed results; E/F/G/H names | Published model outputs, units retained |
-| 2 / 16.7x | Formula above | Our calculation |
-| 3 / four normalized bars and 47.8% | A/B inputs plus explicit formula above | Our nominal index, not verified per-GiB comparison |
-| 3 / capacity cannot establish serving performance | Methodological limitation of capacity-only index | Does not claim measured bandwidth/latency equivalence |
-| 4 / current process, geometry, yield assumptions | C Overview | Model proxies, not vendor manufacturing recipe |
-| 4 / die-area/bit-density conflict; package gaps | C Limitations and unquantified flows | Model's own disclosure |
-| 4 / omitted package burdens | C Production covered; F boundary | Include in system accounting separately |
-| 4 / uncertainty band and caution | D PDF p. 68 / printed p. 66; C | Published band; not validated around A's GWP center |
-| 5 / proposed attention/expert worker roles | Existing `2026-11-11-Research-Direction.tex` | Research hypothesis; no completed evaluation asserted |
-| 5 / total-carbon equation and metrics | Our proposed accounting and existing research direction | Proposed evaluation, not REEL measured system result |
-
-## System accounting interpretation
-
-The final equation defines total carbon over the same declared service workload/window. Allocated embodied carbon requires documented lifetime and hardware-use allocation, counts of GPU/memory/other components, and package boundaries. Operational carbon requires energy and matching electricity carbon intensity. For fair comparisons fix model, precision, request trace and SLO thresholds; report hardware resources explicitly. Do not add stack footprints on top of a GPU footprint that already includes its memory. Do not equate power with energy or claim a lower nominal index proves total savings. Simulator integration, energy calibration and system results are outside this task.
-
-## Build and validation workflow
-
-Run `python3 2026-11-18-meeting/scripts/build_research_materials.py` from any directory using Python with PyMuPDF and Pillow plus pdfLaTeX/Beamer/TikZ/Latin Modern. An isolated environment can be created with `python3 -m venv /tmp/research-materials-qa` then `/tmp/research-materials-qa/bin/pip install pymupdf pillow`.
-
-The current workflow compiles twice locally, packages `output/overleaf/Research-Materials.zip` with self-contained `main.tex`, extracts that ZIP and compiles twice. It checks 17 pages, the four-chapter order, text/image bounds, named backup links, source URI annotations, numeric evidence, four preserved REEL frame hashes, local/ZIP parity and protected file hashes. It rejects layout and reference warnings. It renders `research-materials-01.png` through `-17.png` at 3× and a montage.
-
-Deliverables: existing `.tex`, existing PDF path, Traditional Chinese Script, this SPEC, Power-Carbon evidence register, README and scoped Cross-DC backlog updates. QA: `output/qa/validation.md`, `research-materials-build.json`, `research-materials-url-checks.json`, `research-materials-preservation.json`, page PNGs and montage. URL availability is recorded separately from valid clickable PDF annotations. Visual review must inspect every generated page.
-
-## Scientific acceptance
-
-- HBF Table 1 and Tables 6–7 verified in original v2; distinguish assumed pJ/bit, simulated MJ and real measured GPU W.
-- Page 5 labels static/background exclusion, hardware difference and no SLO guarantee; Table 7 breakdown uses the correct GLM 1× column.
-- FREESH column includes its runtime LLF queue and DVFS, while distinguishing profiled pool planning from explicit batch-state projection.
-- No generic “geo + heterogeneity + DVFS is novel” claim. Janus/AFlex operator partitions differ, and MemExplorer quantitative verification remains open.
-- Operational energy and embodied component boundaries count each term once. PUE is applied once. Same workload/window/SLO required.
-- Four REEL slides retain all values, nominal GB/GiB warning, manufacturing uncertainty, package exclusions and prospective-model status.
-- Carbon–SLO, GreenCache and Research Direction PDFs and all unrelated tracked files retain their baseline hashes.
-
-Current final automated/visual findings are recorded in `output/qa/validation.md`; scientific unknowns are listed in the evidence register. Historical six-page QA is superseded by the 16-page build.
-
-## Numbering update
-
-Per user request, slide number equals physical PDF page, including the cover. PDF pages 2–14 retain their content and internal destinations. Page 16 is a simple Thank you / Questions & Discussion closing slide, with an index return link and no scientific claim or source requirement.
-
-Slide 9 source-link update: the `REEL LCI v1.0` card title links directly to the original HBF article, https://reellci.com/insights/the-hbf-inversion.html. Scientific text and rendered appearance remain unchanged. The preserved-frame check normalizes only this authorized hyperlink wrapper and separately verifies the title annotation target.
-
-REEL supplement: slide 9’s `About REEL / LCI` links to named destination `REELABOUT` (slide 15), which returns to `REEL1` (slide 9). The original external article link remains. Supplement statements and the 520/18 v1.0 counts were verified against https://reellci.com/ on 2026-11-17. It describes a database rather than asserting government or academic institutional status.
-
-## Descriptive title update
-
-All 14 content/supplement frame titles use descriptive headings rather than questions. Cover and Thank you are unchanged. REEL scientific content remains frozen; preservation checks normalize the four explicitly authorized title replacements before comparing original frame hashes.
-
-
-### Slide 9 concise copy update
-
-Slide 9 uses the user-provided research question, three points in each evidence card and concise takeaway. The original article, source citations and supplement navigation remain. REEL1 now has a refreshed frozen hash for this authorized copy; REEL2–4 retain their original baselines.
-
-
-### Slide 10 concise comparison update
-
-Slide 10 uses the requested screening-estimate subtitle, manufacturing-carbon chart, 16.7× comparison, capacity-difference card and concise takeaway. Axis ticks are 0/60/120/180/240; bar values and capacity labels (16 GB, 24 GB, 36 GB, 512 GiB) remain. Source links and model-estimate qualification remain in the footer. REEL2 frozen hash reflects this authorized update.
-
-
-### Slide 11 concise nominal-normalization update
-
-Slide 11 uses the user-provided subtitle, GB/GiB qualification and concise 47.8% comparison card. Axis ticks are 0/0.25/0.5/0.75/1. Bar values, capacity labels, units and source links remain. REEL3 frozen hash reflects this authorized update.
-
-
-### Slide 12 concise assumptions and limitations
-
-Slide 12 uses the user-provided three model assumptions, three limitations, takeaway and two linked sources. REEL4 frozen hash reflects this authorized update. Speaker scripts are not updated for this or future deck revisions, per user preference.
-
-
-### Slide 4 concise access-energy comparison
-
-Slide 4 uses the user-specified question title (an explicit exception to the earlier descriptive-title preference), publication label, read/write table, units and modeled-data qualification, takeaway and linked Table 1 citation. Ratios are 6.8/3.4 = 2 and 100/3.4 rounded to 29.4. No speaker-script update.
+| 17 / common framework and available memory families | D Sec. 4.4; E catalogue | Public methodology and listed dataset coverage |
+| 17 / HBF lacks production data | C, Sampling procedure; D Sec. 4.4.4 | Source-declared prospective model |
+| 17 / preliminary sensitivity use | A screening-level framing plus our judgment | Intended use, not validation guarantee |
+| 18 / stack values and capacity labels | A chart; B listed results; E/F/G/H names | Published model outputs, units retained |
+| 18 / 16.7x | Formula above | Our calculation |
+| 19 / four normalized bars and 47.8% | A/B inputs plus explicit formula above | Our nominal index, not verified per-GiB comparison |
+| 19 / capacity cannot establish serving performance | Methodological limitation of capacity-only index | Does not claim measured bandwidth/latency equivalence |
+| 20 / current process, geometry, yield assumptions | C Overview | Model proxies, not vendor manufacturing recipe |
+| 20 / die-area/bit-density conflict; package gaps | C Limitations and unquantified flows | Model's own disclosure |
+| 20 / omitted package burdens | C Production covered; F boundary | Include in system accounting separately |
+| 20 / uncertainty band and caution | D PDF p. 68 / printed p. 66; C | Published band; not validated around A's GWP center |

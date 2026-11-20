@@ -1,31 +1,38 @@
 # Research Materials page map
 
-For the Notion update after the 2026-11-18 narrative reorder. Frame labels are unchanged. Slide 13 and 14 content was not redesigned in this pass.
+Revised 2026-11-20 (Asia/Taipei) after the November 18 professor meeting. Baseline: `51548444d0d896c8302ad94a9c81cae3f2ed571d`.
 
-| New | Label | Was | Topic |
+Exactly **22 PDF pages: 16 main + 6 supplementary**. Physical page and footer number agree (1/22–22/22). Thank You is page 16. The REEL section is supplementary, not a main chapter.
+
+| PDF / footer | Label | Previous page | Topic |
 |---|---|---|---|
-| 1 | COVER | 1 | Cover |
-| 2 | EINDEX | 2 | Four-chapter evidence index |
-| 3 | GEO | 6 | Carbon–SLO previous work |
-| 4 | RELATED | 7 | GreenCache previous work |
-| 5 | ACCOUNT | 8 | Reusable methods and research inputs |
-| 6 | REEL1 | 9 | Embodied-carbon evidence |
-| 7 | REEL2 | 10 | Carbon per stack |
-| 8 | REEL3 | 11 | Carbon per nominal capacity |
-| 9 | REEL4 | 12 | HBF carbon assumptions |
-| 10 | MEMORY | 3 | HBM/HBF access parameters |
-| 11 | PLACEMENT | 4 | Workload completion time |
-| 12 | PLACEMENTENERGY | 5 | Modeled serving energy |
-| 13 | DISAGG | 13 | Proposed local placement |
-| 14 | NEXT | 14 | Research plan |
-| 15 | THANKYOU | 15 | Thank you |
-| 16 | REELABOUT | 16 | REEL backup |
-| 17 | MEMORYSOURCES | 17 | HBM/HBF parameter-source backup |
+| 1 | `COVER` | 1 | Research Overview |
+| 2 | `EINDEX` | 2 | Research Evidence Overview |
+| 3 | `GEO` | 3 | Carbon–SLO: Shared State, Regional Decisions |
+| 4 | `RELATED` | 4 | GreenCache: Carbon-Aware SSD Cache Sizing |
+| 5 | `HELIX` | New | Helix: Heterogeneous GPU Placement |
+| 6 | `THUNDER` | New | ThunderServe: Workload-Aware Serving |
+| 7 | `WORKLOAD` | New | Different LLM Workload Characteristics |
+| 8 | `ACCOUNT` | 5 | Research Gaps and Required Models |
+| 9 | `MEMORY` | 10 | HBM and HBF Memory Access Energy |
+| 10 | `PLACEMENT` | 11 | Workload Completion Time Comparison |
+| 11 | `PLACEMENTENERGY` | 12 | Modeled Serving Energy Comparison |
+| 12 | `DISAGG` | 13 | Proposed Workload-Aware GPU/Memory Placement |
+| 13 | `GEOARCH` | New | Proposed Serving and Scheduling Architecture |
+| 14 | `ENVIRONMENT` | New | Experimental Environment and Simulator |
+| 15 | `NEXT` | 14 | Research Roadmap and Evaluation Plan |
+| 16 | `THANKYOU` | 15 | Thank You |
+| 17 | `REEL1` | 6 | HBM/HBF Embodied Carbon Evidence |
+| 18 | `REEL2` | 7 | Embodied Carbon per Memory Stack |
+| 19 | `REEL3` | 8 | Embodied Carbon per Nominal Capacity Unit |
+| 20 | `REEL4` | 9 | HBF Carbon Estimate: Assumptions and Limitations |
+| 21 | `REELABOUT` | 16 | REEL LCI: Database Background and Inventory Scope |
+| 22 | `MEMORYSOURCES` | 17 | Sources of the HBM/HBF Memory Parameters |
 
-Notion scripts written against the pre-reorder numbering:
+## Navigation
 
-- Old slides 6–8 → new slides 3–5
-- Old slides 9–12 → new slides 6–9
-- Old slides 3–5 → new slides 10–12
-- Old slides 13–14 stay slides 13–14
-- Thank you stays slide 15; backups stay slides 16–17
+- Index cards: `GEO` → 3, `WORKLOAD` → 7, `DISAGG` → 12, `ENVIRONMENT` → 14.
+- REEL background round trip: `REEL1` (17) ↔ `REELABOUT` (21).
+- Memory provenance round trip: `MEMORY` (9) ↔ `MEMORYSOURCES` (22).
+- `DISAGG` is retained as a stable destination name only. Its content is now general workload-aware GPU/memory placement, with no Attention/Expert worker proposal.
+- Existing historical Notion exports are snapshots. Use this page map and the revised speaker script for current narration.

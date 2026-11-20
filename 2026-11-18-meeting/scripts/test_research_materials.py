@@ -15,28 +15,28 @@ class NavigationContracts(unittest.TestCase):
 
     def test_misrouted_category(self):
         def mutate(doc):
-            link = next(x for x in doc[1].get_links() if x.get('nameddest') == 'MEMORY')
+            link = next(x for x in doc[1].get_links() if x.get('nameddest') == 'WORKLOAD')
             doc.xref_set_key(link['xref'], 'A/D', '(GEO)')
         self.reject(mutate)
 
     def test_missing_category(self):
         def mutate(doc):
-            link = next(x for x in doc[1].get_links() if x.get('nameddest') == 'REEL1')
+            link = next(x for x in doc[1].get_links() if x.get('nameddest') == 'ENVIRONMENT')
             doc[1].delete_link(link)
         self.reject(mutate)
 
     def test_missing_reel_supplement(self):
         def mutate(doc):
-            link = next(x for x in doc[5].get_links() if x.get('nameddest') == 'REELABOUT')
-            doc[5].delete_link(link)
+            link = next(x for x in doc[16].get_links() if x.get('nameddest') == 'REELABOUT')
+            doc[16].delete_link(link)
         self.reject(mutate)
 
     def test_missing_reel_supplement_return(self):
         def mutate(doc):
             # The button and its automatic page reference both link back.
-            for link in doc[15].get_links():
+            for link in doc[20].get_links():
                 if link.get('nameddest') == 'REEL1':
-                    doc[15].delete_link(link)
+                    doc[20].delete_link(link)
         self.reject(mutate)
 
     def test_valid_deck(self):
@@ -45,16 +45,16 @@ class NavigationContracts(unittest.TestCase):
 
     def test_missing_memory_supplement(self):
         def mutate(doc):
-            link = next(x for x in doc[9].get_links() if x.get('nameddest') == 'MEMORYSOURCES')
-            doc[9].delete_link(link)
+            link = next(x for x in doc[8].get_links() if x.get('nameddest') == 'MEMORYSOURCES')
+            doc[8].delete_link(link)
         self.reject(mutate)
 
     def test_missing_memory_supplement_return(self):
         def mutate(doc):
             # The button and its automatic page reference both link back.
-            for link in doc[16].get_links():
+            for link in doc[21].get_links():
                 if link.get('nameddest') == 'MEMORY':
-                    doc[16].delete_link(link)
+                    doc[21].delete_link(link)
         self.reject(mutate)
 
     def test_missing_geo_shared_state(self):
@@ -63,6 +63,32 @@ class NavigationContracts(unittest.TestCase):
                 doc[2].add_redact_annot(rect)
             doc[2].apply_redactions()
         self.reject(mutate)
+
+    def remove_text(self, page, text):
+        def mutate(doc):
+            rects = doc[page].search_for(text)
+            self.assertTrue(rects, text)
+            for rect in rects: doc[page].add_redact_annot(rect)
+            doc[page].apply_redactions()
+        self.reject(mutate)
+
+    def test_missing_thunder_replica_row(self):
+        self.remove_text(5, 'Conversation')
+
+    def test_missing_hbf_scope_note(self):
+        self.remove_text(10, 'Published MoE-based simulation evidence')
+
+    def test_missing_simulator_boundary(self):
+        self.remove_text(13, 'No HBF hardware is assumed')
+
+    def test_missing_helix_citation(self):
+        def mutate(doc):
+            for link in doc[4].get_links():
+                if link.get('uri'): doc[4].delete_link(link)
+        self.reject(mutate)
+
+    def test_wrong_thank_you_position(self):
+        self.reject(lambda doc: doc.move_page(15, 17))
 
     def test_wrong_page_count(self):
         self.reject(lambda doc: doc.delete_page(13))

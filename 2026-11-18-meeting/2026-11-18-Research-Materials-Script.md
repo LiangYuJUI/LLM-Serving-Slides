@@ -1,102 +1,101 @@
-# Research Materials & Supporting Evidence — 講稿
+# Research Materials 講稿
 
-2026 年 11 月 18 日研究會議。主講 Yu-Jui Liang，指導教授 Hsiang-Yun Cheng。
-封面為 slide 1。全稿 17 頁，頁碼 1/17–17/17。敘事順序是 Previous Work、Embodied Carbon、HBM/HBF Performance and Energy，最後才是 Proposed Research。這是證據與提案，不是已完成的減碳實驗。
+2026-11-18 會議後修訂，更新日期：2026-11-20（Asia/Taipei）。主簡報 1–16，補充 17–22，頁腳與 PDF 實際頁碼一致。本稿取代舊版 Attention/Expert 架構的講法。英文投影片區分已發表證據、模型假設，以及尚未驗證的研究提案。
 
-研究主題：Carbon- and Power-Aware Cross-Data-Center LLM Serving with Heterogeneous GPU and HBM/HBF Memory Co-Design。
+## 1 — Research Overview
 
-## 1 — 封面
+老師，依照上次的建議，我把研究主軸改成工作負載導向的 GPU 與 HBM/HBF 記憶體配置，不再以 MoE 的 Attention/Expert 分離作為提案。核心問題是：不同工作負載適合什麼 GPU、記憶體配置與資料位置，能不能在滿足延遲 SLO 的前提下降低 serving energy？先把這個本地成本量準，再研究它如何影響跨資料中心的碳感知排程。今天呈現的是研究規劃與文獻證據，還沒有我們自己的節能結果。
 
-今天的順序是：先看前人研究留下的缺口，再看我們已找到的製造碳排資料，接著用 HBM/HBF 的效能與能耗說明瓶頸，最後才提出自己的架構和研究計畫。
+## 2 — Research Evidence Overview
 
-## 2 — 證據地圖
+簡報分成四部分。先看 Carbon–SLO、GreenCache、Helix 和 ThunderServe 已經提供的方法，再比較工作負載需求與 HBM/HBF 的效能、能量證據。接著說明我們的本地配置與跨資料中心架構，最後交代中研院實驗環境、LLMServingSim 2.0 和三階段評估計畫。Embodied carbon 的資料保留在最後的補充頁，主線先以 operational energy 和 carbon 為主。
 
-主題是 Carbon- and Power-Aware Cross-DC LLM Serving。四張卡片對應四個章節：前人工作、HBM/HBF embodied carbon、記憶體效能與能耗，以及我們的提案。Backup 不放在這四章裡。
+## 3 — Carbon–SLO: Shared State, Regional Decisions
 
-## 3 — Carbon–SLO：共享狀態、各自決策
+Carbon–SLO 已經研究跨資料中心的請求路由，會考慮碳強度、queue、batch、KV 狀態與網路延遲。上層定期收集並廣播共同快照，各區域仍然獨立決策，所以同時選到同一個低碳站點時，可能出現壅塞。這篇主要計算 operational carbon，效能與功率模型校正在 A100 上。我們可以沿用它的路由與 SLO 思考方式，但需要重新建立不同工作負載、GPU 與記憶體配置的本地成本。異質 GPU 本身不是新貢獻。
 
-Carbon–SLO 的 Global Provisioner 週期性收集各資料中心的碳強度、batch、queue、KV 和 RTT，再廣播同一份 snapshot。區域 scheduler 仍各自決定，所以可能同時把流量送進同一個低碳資料中心。
+## 4 — GreenCache: Carbon-Aware SSD Cache Sizing
 
-三個限制直接構成我們的動機。它只計 operational carbon，沒有 allocated embodied carbon。區域決策彼此獨立。模型校準在單一 GPU 型號 A100 上，還沒有 heterogeneous GPU。這頁是前人架構與缺口，不是我們的實驗結果。
+GreenCache 的決策是 SSD KV cache 要配置多大。保留 cache 可以減少重複 prefill，卻也增加分攤到服務上的儲存設備 embodied carbon，因此它在碳強度、請求量與 SLO 限制下調整容量。這提醒我們，cache reuse 的好處要和保留、寫入及搬移資料的成本一起看。不過它不是跨資料中心排程，也沒有解決異質 GPU 與 HBM/HBF 的聯合配置。
 
-## 4 — GreenCache：碳感知的 SSD cache
+## 5 — Helix: Heterogeneous GPU Placement
 
-GreenCache 用預測的碳強度、請求率，以及功率和 SLO profile，每小時用 ILP 選 SSD 上的 KV cache 容量，目標是在 TTFT / TPOT 之下降低 total carbon。Cache 變大可以少做 prefill；cache 變小則降低分攤的 embodied carbon。
+Helix 說明異質 GPU placement 已經有完整的研究。它先量測 GPU 與網路特性，用 max-flow graph 表達系統，再以 MILP 尋找以 throughput 為目標的模型配置，runtime 根據這個配置排請求。這裡要區分實驗範圍：單一 cluster 有真實 prototype，跨區域和更高異質性的設定則是 simulation。我們不把 max-flow 方法或異質 GPU 當成自己的創新，而是進一步研究工作負載對功率、能量和 HBM/HBF 配置的影響。
 
-它已經同時考慮 operational 和 allocated embodied carbon，但範圍停在本地 SSD cache。沒有跨資料中心路由，沒有 heterogeneous GPU 或 HBM/HBF placement，也沒有分開的 prefill / decode 功率模型。SSD KV cache 不能直接當成 HBF expert storage。
+## 6 — ThunderServe: Workload-Aware Serving
 
-## 5 — 可沿用的方法與還缺的輸入
+ThunderServe 利用 prefill 通常偏重計算、decode 通常較受記憶體頻寬影響的差異，聯合決定 GPU grouping、phase assignment、parallelism 和 routing。Table 3 的 LLaMA-30B 例子很直接：Coding 是八個 prefill、四個 decode replicas；Conversation 則是四個 prefill、八個 decode。這是 replica 數量，不是 GPU 張數，兩個部署都使用論文的三十二張 cloud GPU 資源。這頁只比較部署比例，沒有把不同硬體 baseline 的 throughput 混在一起。
 
-Carbon–SLO 提供 SLO-aware geo scheduling、batching 和 queueing simulation，以及 GPU power、CI、PUE、WAN RTT。GreenCache 提供 KV reuse、adaptive cache sizing 和 total-carbon accounting，以及多輪 workload、cache profile 和碳模型。
+## 7 — Different LLM Workload Characteristics
 
-還缺的是 heterogeneous GPU power、HBM/HBF 的存取能量、容量和傳輸成本，以及 MoE expert traces、KV reuse 和 HBM/HBF embodied-carbon estimates。下一章先看製造碳排資料，再看記憶體能耗；整合本身仍是提案。
+這頁是新方向的重要出發點。ThunderServe 的 Coding 工作負載相對長輸入、短輸出，因此 prefill 需求較高；Conversation 相對短輸入、長輸出，因此需要較多持續 decode 的資源。多輪或 agentic 工作負載還多了一個維度：前一輪的 prefix 和 KV 可能繼續使用，session state 需要保留多久、值得用多少容量，都會改變成本。上半部是文獻觀察，下半部是我們要驗證的配置意涵。三類可以重疊，也不能把所有 coding 或 conversation 都固定成同一種長度分布。
 
-## 6 — HBM/HBF 製造碳排證據
+TTFT 是第一個 token 出現前的時間，TPOT 是後續每個輸出 token 的時間。這些需求會影響 GPU 分配、記憶體頻寬、KV 保留與資料搬移，所以不能只依模型大小決定配置。
 
-目前可追查的起點是 REEL LCI v1.0。同一個方法架構裡有 HBM3、HBM3E、HBM4 和 HBF，但完整 inventory 需要授權。HBF 是前瞻工程模型，沒有量產碳排驗證。這頁支持敏感度分析，不能說成已驗證的 HBF production measurement。About REEL / LCI 會開到第 16 頁。
+## 8 — Research Gaps and Required Models
 
-## 7 — 每個 stack 的製造碳排
+前面的文獻分別提供了 geo routing、碳感知 cache、異質 GPU placement，以及 phase 和 workload-aware allocation。我們需要補的是可校正的工作負載功率與能量模型、HBM/HBF 的讀寫與延遲成本、權重和 KV 的資料位置，以及通訊與端到端 SLO 的影響。接著再問，這些本地成本會不會改變跨資料中心的選擇。這是具體要研究的整合問題，不是宣稱過去沒有任何人考慮過其中幾個因素；新穎性還要繼續比對相關系統。
 
-REEL v1.0 的 screening estimates：HBM3 8-Hi 16 GB 是 13.52 kg，12-Hi 24 GB 是 19.81 kg，HBM3E 12-Hi 36 GB 約 20.6 kg。HBF Gen 1 512 GiB 是 225.9 kg，約為 HBM3 8-Hi 的 16.7 倍。這不是等容量比較。數字是文章公布的模型估計，不是廠商實測。
+## 9 — HBM and HBF Memory Access Energy
 
-## 8 — 每單位標示容量的製造碳排
+這頁保留 Characterizing HBF 的 Table 1。HBF 的容量較大，但在這個模型中，讀取能量是 6.8 pJ/bit，HBM 是 3.4；HBF 寫入能量與啟動延遲也更高，寫入頻寬則低很多。因此不能直接從容量推論節能。這些參數混合了硬體規格、先前研究與 SSD proxy，不是 HBF 生產晶片的實測數據。右下角可以跳到第 22 頁逐項看來源。
 
-把 stack 碳排除以標示容量後，四個指標約是 0.845、0.825、0.572 和 0.441。依這個名義正規化，HBF 比 HBM3 8-Hi 低約 47.8%。HBM 標 GB、HBF 標 GiB，所以只能稱 nominal capacity unit，不能說已驗證每 GiB 降低 47.8%，也不能由此推論服務能耗較低。
+## 10 — Workload Completion Time Comparison
 
-## 9 — HBF 碳排估計的假設與限制
+這是原論文的 GLM-5.2 模擬，涉及 MoE，我保留它作為已發表的記憶體證據，沒有把它改成 Dense LLM 結果。三種配置的完成時間分別是 11,354、4,543 和 4,538 秒。從 HBM-only 到 H³ 看起來約縮短六成，但 H³ 增加了 HBF 容量，8+0 和 8+8 並不是相同記憶體硬體的比較。這只能說明此模擬中額外容量的價值，不能當成我們配置演算法的收益，也沒有因此證明延遲 SLO 一定滿足。
 
-模型假設是 16-Hi、512 GiB、232-layer NAND，以及 65 nm / 28 nm 製程代理，並用 175.6 mm² 封裝外框代理 die 面積。限制是沒有驗證過的量產碳排、面積與位元密度不一致，而且 interposer、substrate 和 package assembly 不在這個 stack 邊界內。可以做初步建模，不能當成已驗證的製造足跡。
+## 11 — Modeled Serving Energy Comparison
 
-## 10 — HBM 與 HBF 的存取參數
+相同三種配置的 modeled energy 是 9.11、7.19 和 9.54 MJ。最重要的受控比較是後兩者：同樣 H³ 8+8，只改權重位置，從 HBM 放到 HBF 後，完成時間幾乎不變，但 modeled energy 增加 32.7%。這個百分比不是相對 HBM-only 算的。論文模型排除了 static/background power，所以也不能把這個值說成整機耗電增加。它支持的重點是資料位置會影響能量，不能預設 HBF 一定省電。
 
-Characterizing HBF 的 Table 1：每 stack 容量 24 GB 對 375 GB，讀頻寬都假設 1,000 GB/s，寫頻寬 1,000 對 8 GB/s，讀取啟動 0.1 對 20 µs，寫入啟動 0.1 對 250 µs。讀取能量 3.4 對 6.8 pJ/bit，寫入 3.4 對 100。HBF 寫入與部分延遲使用 SSD proxy，P/E cycles 假設 100,000。容量優勢不能單獨代表省能。參數來源在第 17 頁。
+## 12 — Proposed Workload-Aware GPU/Memory Placement
 
-## 11 — 工作完成時間
+新的本地配置提案有三個部分。輸入是 workload 特徵、GPU 的效能與功率 profile、HBM/HBF 參數，以及延遲 SLO；決策則包括選哪種 GPU、配置多少資源、使用什麼記憶體組合，以及權重、active KV 和 reusable KV 放在哪裡。Prefill/decode phase placement 可以是候選決策，但只有在有利時才使用，也不是新提出的技術。
 
-同一個 GLM-5.2、16 張模擬 GPU、TP16/EP16、100k-turn 設定。HBM-only 8+0 是 11,354 秒；H³ 8+8 不論 weights 放 HBM 或 HBF，都約 4,540 秒。完成時間大約少 60%，但 HBM-only 只有 8 個 stack，不是等硬體比較。這是模擬，表示多出來的容量在這個設定下可以縮短完成時間。
+評估時一起看 latency、TTFT、TPOT、throughput、SLO goodput、能量和搬移成本。Goodput 指符合 SLO 的有效服務量。頻繁寫入、熱資料或低延遲資料，可能需要和冷的、以讀為主的資料不同的配置。這整頁都還是待驗證的提案。
 
-## 12 — 模擬服務能耗
+## 13 — Proposed Serving and Scheduling Architecture
 
-同一組設定的模型能量是 HBM-only 9.11 MJ、H³ HBM weights 7.19 MJ、H³ HBF weights 9.54 MJ。要比較的是相同 8+8 硬體：HBF weights 比 HBM weights 高 32.7%。兩種 H³ 的完成時間幾乎一樣。這個 32.7% 排除 static/background power，不能解讀成整機耗電增加 32.7%，也不能把 HBM-only 和 H³ 當成相同容量。重點是：記憶體容量帶來的好處，不一定變成能耗下降。
+整體分成兩層。Global scheduler 決定 request 或 session 要送到哪個資料中心，輸入包含 CI、PUE、queue、workload、WAN RTT，以及本地預測的能量與 SLO 可行性。進入選定的資料中心後，local serving 再決定 GPU 資源、serving placement 和記憶體資料位置。
 
-## 13 — 提案：HBM/HBF-aware attention–expert placement
+圖中的雙向箭頭表示路由往下、校正後的成本回傳上層，不是跨 WAN 執行每一層 Attention 或 Expert。Session 的 cache locality、搬移成本，以及狀態快照過期都需要在後續模型處理。主要先評估 operational energy/carbon，embodied carbon 等生命週期資料與分攤方式足夠可信之後再擴充。
 
-這是 Proposed / Not yet evaluated。同一資料中心內，HBM-rich attention worker 負責 attention 和 active KV；HBF-rich expert worker 負責 MoE expert，hot weights 在 HBM、cold weights 在 HBF。中間傳的是 activation / hidden state。Expert computation 在 GPU 上，HBF 只存資料。
+## 14 — Experimental Environment and Simulator
 
-可能的好處是讓容量和存取特性對上兩種工作負載。還要評估 HBF read energy、inter-GPU transfer、GPU waiting power 和 SLO。只有這些代價小於容量與放置的收益，這個分工才值得做。Janus、AFlex 和 MemExplorer 只放在來源；AFlex 是 attention/FFN，不是 MoE attention/expert。
+實驗會以中研院資訊科技創新研究中心 RCITI 的 GPU cluster 作為真實量測環境。第一步是確認實際可用的 GPU 與存取條件，再跑代表性的 Dense LLM 工作負載，量測 latency、throughput、power 並積分得到 energy。現在沒有宣稱任何 GPU 型號、張數或功率結果，也沒有假設 cluster 有 HBF。
 
-## 14 — 研究計畫
+LLMServingSim 2.0 的官方文件已描述異質／分離式 serving、batching、scheduling、KV 模型、profiled compute 和 ASTRA-Sim 通訊。右下方的 HBF access、能量整合與跨資料中心碳排程，是我們需要開發或驗證的部分，不能當成現成能力。真實資料校正支援的 GPU 行為，再用 held-out 情境驗證；假想 HBF 則要另外做參數敏感度分析。
 
-上層 geo scheduler 用碳強度、PUE、queue / workload 和 WAN RTT，只做 request 或 session routing。選定資料中心之後，才做本地的 heterogeneous GPU、HBM/HBF placement 和 attention/expert workers。不是每一層 attention/expert 都走 WAN。
+## 15 — Research Roadmap and Evaluation Plan
 
-順序是：先建立 GPU 功率和 HBM/HBF 存取模型，再比較記憶體配置、hot/cold placement 和資料中心內的 A/E；最後才把本地成本放進跨資料中心路由，並分開評估 operational 與 allocated embodied carbon。指標是 serving energy、TTFT / TPOT、SLO goodput 和 total carbon。這是提案，上述論文沒有證明這個系統已經節能或減碳。
+計畫分成三階段。先確認 RCITI 資源，建立 Dense LLM workloads、量測 GPU 效能與能量，校正 simulator 並報告 held-out error。第二階段比較 workload-aware placement，包含 GPU 異質性、HBM-only 與 HBM/HBF、權重和 KV 位置，以及讀寫和搬移成本。第三階段才把校正後的成本帶入跨資料中心路由，評估 operational carbon 與 SLO。
 
-## 15 — Thank you
+Baseline 要包含 homogeneous 對 heterogeneous、workload-unaware 對 aware、HBM-only 對 hybrid，以及簡單 SLO-aware 對 carbon-aware routing。每組都交代 GPU 數量、容量、precision、同一份 trace 和 SLO；如果多了硬體容量，要把容量收益和策略收益分開。順序是先把本地模型量準，再談配置，最後談跨站減碳。
 
-謝謝老師。想先確認本地 HBM/HBF placement 的能量與 SLO 代價，再決定如何接到跨資料中心的碳排排程。
+## 16 — Thank You
 
-## 16 — REEL LCI 補充
+以上是依照老師建議調整後的方向。想請老師幫忙確認，先以 Dense LLM 的 workload-aware GPU／記憶體能量模型作為第一階段，是否適合。後面保留 embodied carbon 和記憶體參數來源，方便需要時補充討論。
 
-從第 6 頁的 About REEL / LCI 進來，講完返回第 6 頁。REEL 是 Repository of Electronics Environmental Line-items；LCI 是生命週期盤查，還不是碳足跡本身。Jonathan Balsvik 建立 v1.0，公開說明有 520 個資料集、18 個類別。完整 inventory 數量透過 Circa 授權。官網是 https://reellci.com/。
+## 17 — HBM/HBF Embodied Carbon Evidence（補充）
 
-## 17 — HBM/HBF 參數來源
+REEL LCI 提供可追溯的半導體製造模型與公開方法，可以當作初步比較或敏感度分析的起點。HBF 仍是 prospective model，並沒有經過我們獨立重建或生產資料驗證。完整 inventory 也不是公開頁面就能全部取得。右上角的 About REEL 可以到第 21 頁看資料庫背景。
 
-從第 10 頁的 Parameter Sources 進來，講完返回第 10 頁。讀寫能量、頻寬、啟動時間和耐久度分別來自 Micron、Lenovo、Ma and Patterson、Moon、MemExplorer、H³ 與 SSD proxy。6.8 pJ/bit 是沿用 MemExplorer 的 2 倍 HBM 假設，不是量到的 2 倍裝置功率。100 pJ/bit、8 GB/s、250 µs 和 100,000 P/E cycles 含 SSD 或假設，不是量產 HBF 實測。
+## 18 — Embodied Carbon per Memory Stack（補充）
 
-## 可能的提問
+這裡保留 REEL 公布的每 stack screening estimates：HBM3 兩種配置是 13.52 和 19.81 kg CO₂e，HBM3E 約 20.6，HBF 是 225.9。HBF 對第一個 HBM3 stack 約高 16.7 倍，但容量標示分別是 512 GiB 和 16 GB，所以不是 capacity-matched 比較，更不是 serving carbon 的直接排名。
 
-### Q1. REEL 的數字可以當 HBF 量產碳排嗎？
+## 19 — Embodied Carbon per Nominal Capacity Unit（補充）
 
-不可以。它是可追查的前瞻模型。公開方法能檢查邊界和假設，但沒有量產驗證，完整 inventory 也還沒重算 GWP。
+這頁把已公布的 footprint 除以標示的容量數字，得到 0.845、0.825、0.572 和 0.441。47.8% 是這個 nominal index 的計算結果。因為 HBM 標示 GB、HBF 標示 GiB，還沒建立一致的實際單位，所以不能說是經過驗證的每 GiB 減碳幅度，也不能用它推論整個服務會減碳。
 
-### Q2. 47.8% 是否代表 HBF 更省碳？
+## 20 — HBF Carbon Estimate: Assumptions and Limitations（補充）
 
-不代表。那是未轉換 GB/GiB 的名義容量指標，而且不含服務能耗、壽命和 SLO。容量變大不表示製造排放消失。
+模型使用 16-Hi、512 GiB、232-layer NAND，以及 65 nm 和 28 nm process proxies，並把 175.6 平方毫米的 package outline 當作 die-area proxy。來源本身揭露了 die-area 和 bit-density 的不一致，也沒有包含完整 interposer、substrate 和 package assembly。這些限制讓它適合初步探索，但不適合當成已驗證的製造 footprint。
 
-### Q3. 32.7% 是整機多耗的電嗎？
+## 21 — REEL LCI: Database Background and Inventory Scope（補充）
 
-不是。分母是同一 H³ 8+8 配置、weights 放在 HBM 的 7.19 MJ。模型不含 static/background power。HBM-only 的 9.11 MJ 是另一種容量，不能和這個百分比混用。
+REEL 是 Repository of Electronics Environmental Line-items，LCI 指生命週期 inventory，也就是衝擊評估之前的製造投入與產出。這頁保留先前核對過的 v1.0 背景：520 datasets、18 categories，以及 Jonathan Balsvik 的方法與公開資料來源。完整 inventory 透過 Circa 授權取得；公開頁面可以看說明，但不能因此說我們已經取得或重建全部資料。返回按鈕回到第 17 頁。
 
-### Q4. Attention/expert 分工是新貢獻嗎？
+## 22 — Sources of the HBM/HBF Memory Parameters（補充）
 
-不是。Janus 已有 attention/expert 分離，AFlex 是 attention/FFN。我們要驗證的是 HBM/HBF 放置、傳輸和等待能量能不能覆蓋容量收益，以及之後如何接到跨資料中心路由。目前沒有自己的節能結果。
+這張表把參數分成硬體 specification、prior-work-derived model 和 author assumption。HBF 的讀取能量依原論文沿用 MemExplorer 的兩倍 HBM 假設；寫入能量、頻寬與延遲有 SSD proxy 的成分，100,000 次 P/E 也是假設的 endurance。兩倍 pJ/bit 不等於兩倍整顆 device power。返回按鈕回到第 9 頁。

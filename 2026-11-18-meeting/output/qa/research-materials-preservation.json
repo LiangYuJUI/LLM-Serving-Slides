@@ -1,39 +1,68 @@
 {
-  "base_commit": "9d09be3",
-  "preserved_REEL_pages": [
+  "base_commit": "51548444d0d896c8302ad94a9c81cae3f2ed571d",
+  "pdf_sha256": "524ff3fa4631fa68838f5dd1894d57122da093205b696839c7a9b2c1949eceb7",
+  "preserved_pages": [
     {
-      "original_page": 2,
-      "current_page": 9,
-      "text_equal": true,
-      "pixels_equal": true
-    },
-    {
-      "original_page": 3,
-      "current_page": 10,
-      "text_equal": true,
-      "pixels_equal": true
-    },
-    {
+      "label": "RELATED",
       "original_page": 4,
-      "current_page": 11,
-      "text_equal": true,
-      "pixels_equal": true
+      "current_page": 4,
+      "pixels_equal_above_footer": true,
+      "external_citations_equal": true
     },
     {
-      "original_page": 5,
-      "current_page": 12,
-      "text_equal": true,
-      "pixels_equal": true
+      "label": "MEMORY",
+      "original_page": 10,
+      "current_page": 9,
+      "pixels_equal_above_footer": true,
+      "external_citations_equal": true
+    },
+    {
+      "label": "REEL1",
+      "original_page": 6,
+      "current_page": 17,
+      "pixels_equal_above_footer": true,
+      "external_citations_equal": true
+    },
+    {
+      "label": "REEL2",
+      "original_page": 7,
+      "current_page": 18,
+      "pixels_equal_above_footer": true,
+      "external_citations_equal": true
+    },
+    {
+      "label": "REEL3",
+      "original_page": 8,
+      "current_page": 19,
+      "pixels_equal_above_footer": true,
+      "external_citations_equal": true
+    },
+    {
+      "label": "REEL4",
+      "original_page": 9,
+      "current_page": 20,
+      "pixels_equal_above_footer": true,
+      "external_citations_equal": true
+    },
+    {
+      "label": "THANKYOU",
+      "original_page": 15,
+      "current_page": 16,
+      "pixels_equal_above_footer": true,
+      "external_citations_equal": true
     }
   ],
-  "comparison": "3x pixels and text excluding footer bottom 16 PDF points",
-  "tracked_files_baseline": 502,
+  "comparison": "3x pixels excluding bottom 16 PDF points; source-frame checks additionally preserve all scientific content",
+  "hbf_table6": "Source unchanged except explicit MoE scope note; all values and charts frozen",
+  "unrelated_tracked_files_unchanged": true,
   "changed_tracked_files": [
-    "2026-11-18-meeting/2026-11-18-Cross-DC-Power-Carbon-Research-SPEC.md",
+    "2026-11-18-meeting/2026-11-18-Power-Carbon-Slide-Evidence.md",
+    "2026-11-18-meeting/2026-11-18-Research-Materials-Page-Map.md",
     "2026-11-18-meeting/2026-11-18-Research-Materials-SPEC.md",
     "2026-11-18-meeting/2026-11-18-Research-Materials-Script.md",
     "2026-11-18-meeting/2026-11-18-Research-Materials.tex",
     "2026-11-18-meeting/README.md",
+    "2026-11-18-meeting/output/overleaf/Research-Materials.zip",
     "2026-11-18-meeting/output/pdf/2026-11-18-Research-Materials.pdf",
     "2026-11-18-meeting/output/qa/pages/research-materials-01.png",
     "2026-11-18-meeting/output/qa/pages/research-materials-02.png",
@@ -41,37 +70,26 @@
     "2026-11-18-meeting/output/qa/pages/research-materials-04.png",
     "2026-11-18-meeting/output/qa/pages/research-materials-05.png",
     "2026-11-18-meeting/output/qa/pages/research-materials-06.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-07.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-08.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-09.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-10.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-11.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-12.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-13.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-14.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-15.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-16.png",
+    "2026-11-18-meeting/output/qa/pages/research-materials-17.png",
+    "2026-11-18-meeting/output/qa/research-materials-build.json",
+    "2026-11-18-meeting/output/qa/research-materials-frame-baseline.json",
+    "2026-11-18-meeting/output/qa/research-materials-geo-validation.json",
     "2026-11-18-meeting/output/qa/research-materials-montage.png",
+    "2026-11-18-meeting/output/qa/research-materials-navigation-tests.json",
+    "2026-11-18-meeting/output/qa/research-materials-preservation.json",
+    "2026-11-18-meeting/output/qa/research-materials-url-checks.json",
     "2026-11-18-meeting/output/qa/validation.md",
-    "2026-11-18-meeting/scripts/build_research_materials.py"
-  ],
-  "unrelated_tracked_files_unchanged": true,
-  "retrieved_primary_pdf_sha256": {
-    "characterizing": "86bfb40031444a9cc0ee759c582d4d37f18108d9df1ff5fdbf37aa23e67a7990",
-    "freesh": "cc966acaa2cf4974fc7113fd0ef9b24b77920aa18d05516bbca26b23129545f6",
-    "aflex": "680e6161f411c0dff52742a24712930b0d34f42122779241c44edb8f0bd6b208"
-  },
-  "numbering_update": {
-    "compared_to_commit": "4a0ab7bb4e12e7081790f40e5b0752db8e32ae50",
-    "pages_2_through_14_pixels_unchanged_above_footer": true,
-    "current_pdf_sha256": "12ccee6aa8cafaad549393493dd9ffc3fb4056d81b7eed624de466b059612f94"
-  },
-  "title_hyperlink_update": {
-    "all_15_pages_pixel_and_text_identical": true,
-    "compared_to_commit": "61831bd70d2eae40c057d696786a9ebe278398ba",
-    "pdf_sha256": "bef8274cb0144f8eb9edbc9e209406b66a2415f621f0a29f123de9b2a5297741",
-    "slide_9_title_url": "https://reellci.com/insights/the-hbf-inversion.html"
-  },
-  "reel_supplement_update": {
-    "compared_to_commit": "c6be9fd019e1ec4ab6200ce3c1acc837d03004e7",
-    "unchanged_above_footer": "All prior pages except slide 9 (added supplement link); Thank you moved from 15 to 16.",
-    "pdf_sha256": "95242cfa46ac454ae9dba0ed72f58dd4d0621d992cc670be6abb2d462af81f2e",
-    "slide_9_to_15_and_return_verified": true
-  },
-  "descriptive_title_update": {
-    "compared_to_commit": "e2b5f927dc6d3493a0571da170b5fa4174457d3e",
-    "all_pages_pixel_identical_below_top_30_points": true,
-    "all_link_targets_and_rectangles_unchanged": true,
-    "pdf_sha256": "4aa456dfc973f74f667e84e3e6d9b10131518ded42cca8aab9de6c578b820944"
-  }
+    "2026-11-18-meeting/scripts/build_research_materials.py",
+    "2026-11-18-meeting/scripts/test_research_materials.py"
+  ]
 }

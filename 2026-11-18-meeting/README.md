@@ -103,23 +103,21 @@ python3 -m venv /tmp/carbonslo-qa
 - 最後一頁「heterogeneous GPU、HBM/HBF、attention/expert placement」是我們之後可能做的方向，不是這篇論文的結果。
 
 
-## Research Materials：17 頁 Evidence Deck
+## Research Materials：22 頁研究提案
 
-- [PDF](output/pdf/2026-11-18-Research-Materials.pdf)、[TeX](2026-11-18-Research-Materials.tex)、[Overleaf ZIP](output/overleaf/Research-Materials.zip)
-- [繁體中文講稿](2026-11-18-Research-Materials-Script.md)、[SPEC](2026-11-18-Research-Materials-SPEC.md)、[逐頁 Evidence Register](2026-11-18-Power-Carbon-Slide-Evidence.md)、[頁碼對照](2026-11-18-Research-Materials-Page-Map.md)
-- [Montage](output/qa/research-materials-montage.png)、[QA 報告](output/qa/validation.md)、[build checks](output/qa/research-materials-build.json)
+- [PDF](output/pdf/2026-11-18-Research-Materials.pdf)、[Beamer source](2026-11-18-Research-Materials.tex)、[Overleaf ZIP](output/overleaf/Research-Materials.zip)
+- [繁體中文講稿](2026-11-18-Research-Materials-Script.md)、[SPEC](2026-11-18-Research-Materials-SPEC.md)、[Evidence Register](2026-11-18-Power-Carbon-Slide-Evidence.md)、[頁碼對照](2026-11-18-Research-Materials-Page-Map.md)
+- [Montage](output/qa/research-materials-montage.png)、[QA](output/qa/validation.md)、[build checks](output/qa/research-materials-build.json)
 
-封面是 slide 1，頁碼 1/17–17/17。順序是 Previous Work（3–5）、Embodied Carbon（6–9）、HBM/HBF Performance and Energy（10–12）、提案（13–14）。Thank you 是第 15 頁。第 16、17 頁是 REEL 與參數來源 backup，不進 Slide 2 的四個章節。四張索引分別連到 `GEO`、`REEL1`、`MEMORY`、`DISAGG`。
+2026-11-20 依教授回饋修訂。主簡報 1–16，Thank You 在 16；補充 17–22。頁腳為 1/22–22/22，與 PDF 實際頁碼相同。索引連至 3、7、12、14。Embodied carbon 四頁移到 17–20，不列為主章節。REEL 背景往返 17↔21；記憶體來源往返 9↔22。
 
-編譯（使用具 PyMuPDF/Pillow 的環境）：
+新方向為 workload-aware heterogeneous GPU 與 HBM/HBF memory co-design，先校正本地效能／能量，再研究跨資料中心 operational carbon routing。新增 Helix、ThunderServe、工作負載比較、兩層架構，以及 RCITI／LLMServingSim 2.0 實驗規劃。原 Attention/Expert worker 提案已移除。
 
-```bash
+```sh
 python3 scripts/build_research_materials.py
 python3 scripts/test_research_materials.py
 ```
 
-本機 pdfLaTeX 兩次，再把只含 `main.tex` 的 ZIP 解壓後編譯兩次。腳本檢查 17 頁、章節順序、backup 往返、實驗數值、REEL frame hash，以及文字、像素和連結是否一致。
+需要 pdfLaTeX、PyMuPDF 和 Pillow。本機與 ZIP 各編譯兩次，檢查 22 頁、順序、連結、數值、REEL hash、來源保留、文字／像素／annotation 等價及頁面邊界。負向測試確認遺失連結或證據會被攔截。ZIP 的入口是 `main.tex`。
 
-科學限制：H³ 的 +32.7% 是相同 8+8 配置的模擬能量，排除 static/background power，不是整機耗電。HBM-only 與 H³ 容量不同。REEL 的 GB/GiB 與製造不確定性尚未解決。Slide 13–14 是提案，沒有節能或減碳結果。
-
-REEL 補充頁是 slide 16，從 slide 6 進入並返回 slide 6。參數來源是 slide 17，從 slide 10 進入並返回 slide 10。
+科學限制：頁 10–11 是已發表的 GLM-5.2 MoE 模擬，不是我們的 Dense LLM 實驗。+32.7% 對應相同 H³ 8+8 配置的權重位置比較，排除 static/background power。RCITI GPU inventory、能量校正、HBF 與跨 DC 模擬擴充尚待驗證。REEL 的 GB/GiB、製程與生命週期配置仍有不確定性。沒有宣稱已測得節能或減碳成果。

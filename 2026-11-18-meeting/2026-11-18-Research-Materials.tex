@@ -31,7 +31,7 @@
 \hspace{.48cm}\scriptsize\hfill Research Materials\enspace |\enspace\insertframenumber\,/\,\inserttotalframenumber\end{beamercolorbox}}
 \setbeamersize{text margin left=.48cm,text margin right=.48cm}
 
-\hypersetup{pdftitle={Research Materials \& Supporting Evidence},pdfauthor={Yu-Jui Liang}}
+\hypersetup{pdftitle={Workload-Aware, Power- and Carbon-Aware LLM Serving},pdfauthor={Yu-Jui Liang}}
 \newcommand{\srcA}{https://reellci.com/insights/the-hbf-inversion.html}
 \newcommand{\srcB}{https://reellci.com/insights/hbm-footprint-inversion.html}
 \newcommand{\srcC}{https://reellci.com/d/hbf-gen1-16hi/}
@@ -70,12 +70,22 @@ at ([xshift=.48cm,yshift=.16cm]current page.south west) {Source: #1};
 \newcommand{\memurl}{https://www.microsoft.com/en-us/research/publication/memexplorer-navigating-the-heterogeneous-memory-design-space-for-agentic-inference-npus/}
 \newcommand{\indexcard}[4]{\hyperlink{#1}{\begin{beamercolorbox}[wd=\linewidth,sep=.13cm,rounded=true]{#2}\small\textbf{#3}\quad\footnotesize #4\end{beamercolorbox}}\par\vspace{.12cm}}
 \newcommand{\researchinputcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.10cm]{#1}{\footnotesize\bfseries\color{Accent}#2}\par\vspace{.03cm}{\scriptsize\raggedright #3\par}\end{beamercolorbox}}
+
+\newcommand{\helixurl}{https://doi.org/10.1145/3669940.3707215}
+\newcommand{\thunderurl}{https://proceedings.mlsys.org/paper_files/paper/2025/file/c2a0e26dd9ee7d57e92bb1c24b39659a-Paper-Conference.pdf}
+\newcommand{\simurl}{https://llmservingsim.ai/docs/getting-started/overview}
+\newcommand{\simarchurl}{https://llmservingsim.ai/docs/simulator/architecture}
+\newcommand{\proposed}{{\footnotesize\color{Accent}\bfseries Proposed --- Not Yet Evaluated\par}\vspace{.12cm}}
+\tikzset{flowbox/.style={rounded corners=3pt,inner sep=7pt,align=left,font=\footnotesize,text=Ink},flowarrow/.style={-Latex,thick,Accent}}
 \begin{document}
+
 \begin{frame}[c,label=COVER]
 \relax
-{\LARGE\bfseries Research Materials\par\vspace{.10cm}\& Supporting Evidence\par}
+{\small\color{Muted}Research Overview\par}
+\vspace{.18cm}
+{\LARGE\bfseries Workload-Aware, Power- and\\[3pt]Carbon-Aware LLM Serving\par}
 \vspace{.30cm}
-{\large Cross-Data-Center Carbon- and Power-Aware LLM Serving\\with Heterogeneous GPU and HBM/HBF Memory Co-Design\par}
+{\large Heterogeneous GPUs, HBM/HBF Memory Co-Design\\and Cross-Data-Center Scheduling\par}
 \vspace{.22cm}
 {\color{Accent}\rule{2.2cm}{1.2pt}\par}
 \vspace{.22cm}
@@ -86,14 +96,14 @@ at ([xshift=.48cm,yshift=.16cm]current page.south west) {Source: #1};
 
 \begin{frame}[t,label=EINDEX]{Research Evidence Overview}
 \relax
-{\footnotesize\color{Muted}Carbon- and Power-Aware Cross-DC LLM Serving\par}
-\vspace{.04cm}
-\indexcard{GEO}{mintbox}{01\quad Previous Work \& Research Gaps}{Carbon--SLO, GreenCache, Reusable Methods}
-\indexcard{REEL1}{lilacbox}{02\quad HBM/HBF Embodied Carbon}{REEL LCI, Manufacturing Footprint, Limitations}
-\indexcard{MEMORY}{mintbox}{03\quad HBM/HBF Performance \& Energy}{Memory Parameters, Completion Time, Weight Placement}
-\indexcard{DISAGG}{lilacbox}{04\quad Proposed Research Direction}{Attention/Expert Placement, Energy Models, Geo Scheduling}
-\takeaway{Prior methods, embodied-carbon evidence, and memory-energy limits frame the proposed design.}
-\source{Evidence map: \href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\srcD}{REEL LCI}; \href{\hbfurl}{Characterizing HBF}. Proposal on \hyperlink{DISAGG}{page \ref{DISAGG}}.}
+{\footnotesize\color{Muted}Workload-aware serving from local GPU/memory placement to cross-DC routing\par}
+\vspace{.12cm}
+\indexcard{GEO}{mintbox}{01\quad Previous Work and Research Gaps}{\\Carbon--SLO, GreenCache, Helix, ThunderServe}
+\indexcard{WORKLOAD}{lilacbox}{02\quad Workload and HBM/HBF Evidence}{\\Workload Characteristics, Memory Performance, Serving Energy}
+\indexcard{DISAGG}{mintbox}{03\quad Proposed Research Direction}{\\Workload-Aware GPU/Memory Placement, Cross-DC Scheduling}
+\indexcard{ENVIRONMENT}{lilacbox}{04\quad Experimental Environment and Evaluation}{\\Academia Sinica GPU Cluster, LLMServingSim 2.0, Research Roadmap}
+\takeaway{Calibrate local serving costs before evaluating carbon-aware routing.}
+\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\helixurl}{Helix}; \href{\thunderurl}{ThunderServe}; \href{\hbfurl}{Characterizing HBF}; \href{\simurl}{LLMServingSim 2.0}.}
 \end{frame}
 
 \begin{frame}[t,label=GEO]{Carbon--SLO: Shared State, Regional Decisions}
@@ -126,11 +136,11 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \vspace{.03cm}
 \compactcard{lilacbox}{Limitation 2 -- Coordination}{\textbf{Independent Regional Decisions}\\Concurrent decisions on the same snapshot.}
 \vspace{.10cm}
-\compactcard{mintbox}{Limitation 3 -- GPU Heterogeneity}{\textbf{Single GPU Type: A100}\\Models calibrated on A100 GPUs.\\Our direction: heterogeneous GPUs.}
+\compactcard{mintbox}{Limitation 3 -- GPU Heterogeneity}{\textbf{Single GPU Type: A100}\\Models calibrated on A100 GPUs.\\Our direction: workload-aware GPU/memory costs.}
 \end{column}
 \end{columns}
 \vspace{.08cm}
-\takeaway{Our direction: Cross-region coordination + HBM/HBF-aware energy/SLO + Total carbon}
+\takeaway{Our direction: Calibrate workload-aware GPU/memory energy and SLO costs for regional routing.}
 
 \source{\href{\carbonurl}{Carbon--SLO, Secs. III-A, III-C, IV-A, V-C, VI; Fig. 6(c)}. Diagram and research direction: our synthesis.}
 \end{frame}
@@ -165,42 +175,280 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \source{\href{\greenurl}{GreenCache v3, Secs. 3.2.1, 4.1--4.2, 5.4--5.5}.}
 \end{frame}
 
-\begin{frame}[t,label=ACCOUNT]{Previous Work: Reusable Methods and Research Inputs}
+\begin{frame}[t,label=HELIX]{Helix: Heterogeneous GPU Placement}
 \relax
-{\footnotesize\color{Muted}Carbon--SLO and GreenCache as foundations for our research\par}
-\vspace{.02cm}
+{\small\bfseries\color{Accent}Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow\par}
+{\footnotesize\color{Muted}ASPLOS 2025\quad Published placement and scheduling method\par}
+\vspace{.25cm}
+\begin{tikzpicture}
+\node[flowbox,fill=SoftMint,text width=3.8cm] (a) at (2.05,0) {\textbf{GPU / network profiling}\\[5pt]Compute throughput\\Memory capacity\\Network bandwidth};
+\node[flowbox,fill=SoftLilac,text width=4.0cm] (b) at (7.45,0) {\textbf{Max-flow graph + MILP}\\[5pt]Choose model placement\\Maximize flow as a\\throughput objective};
+\node[flowbox,fill=SoftMint,text width=3.7cm] (c) at (12.85,0) {\textbf{Runtime scheduling}\\[5pt]Route requests through\\the placed model\\using computed flow};
+\draw[flowarrow] (a)--(b);\draw[flowarrow] (b)--(c);
+\end{tikzpicture}\par
+\vspace{.24cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.49\textwidth}
-\card{mintbox}{\href{\carbonurl}{Carbon--SLO}}{\footnotesize
-\textbf{Geo-Distributed Serving}\\[3pt]
-\textbf{Methods}\\[2pt]
-SLO-aware geo scheduling; batching and queueing simulation\\[3pt]
-\textbf{Research Inputs}\\[2pt]
-GPU power/latency profiles, CI, PUE and WAN RTT}
+\card{mintbox}{Real-system evidence}{\footnotesize Single-cluster prototype on heterogeneous GPUs. GPU profiles inform placement.}
 \end{column}
 \begin{column}{.49\textwidth}
-\card{lilacbox}{\href{\greenurl}{GreenCache}}{\footnotesize
-\textbf{Carbon-Aware KV Caching}\\[3pt]
-\textbf{Methods}\\[2pt]
-KV reuse and adaptive cache sizing; total-carbon accounting\\[3pt]
-\textbf{Research Inputs}\\[2pt]
-Multi-turn workload traces, cache/power profiles and carbon models}
+\card{lilacbox}{Simulation evidence}{\footnotesize Geo-distributed and higher-heterogeneity settings use a simulator.}
 \end{column}
 \end{columns}
-\vspace{.02cm}
-{\small\bfseries\color{Accent}Additional Research Requirements\par}
-\vspace{-.15cm}
+\vspace{.16cm}
+\takeaway{GPU heterogeneity is established. Our question concerns workload-dependent energy and HBM/HBF configurations.}
+\source{\href{\helixurl}{Mei et al., Helix, ASPLOS 2025, Secs. 3--5 and 6.1--6.4}. Diagram: synthesis of the published method.}
+\end{frame}
+
+\begin{frame}[t,label=THUNDER]{ThunderServe: Workload-Aware Serving}
+\relax
+{\small\bfseries\color{Accent}High-Performance and Cost-Efficient LLM Serving in Cloud Environments\par}
+{\footnotesize\color{Muted}MLSys 2025\quad Published workload-aware phase allocation\par}
+\vspace{.18cm}
+{\small Prefill is typically compute-intensive. Decode is typically more memory-bandwidth-sensitive.\par}
+\vspace{.18cm}
+\compactcard{mintbox}{Joint scheduling decisions}{GPU grouping, prefill/decode assignment, parallelism and request routing. Resource ratios depend on workload.}
+\vspace{.22cm}
+{\small\bfseries LLaMA-30B deployment in Table 3\par}
+\vspace{.08cm}
+{\small\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{}Xrr@{}}\toprule
+\textbf{Workload} & \textbf{Prefill replicas} & \textbf{Decode replicas}\\\midrule
+Coding & 8 & 4\\
+Conversation & 4 & 8\\\bottomrule
+\end{tabularx}\par}
+\vspace{.12cm}
+{\footnotesize\color{Muted}Replica counts, not physical GPU counts. Both deployments use the paper's 32-GPU cloud pool.\par}
+\vspace{.08cm}
+\takeaway{Different workloads require different compute, memory-bandwidth and serving-resource allocations.}
+\source{\href{\thunderurl}{ThunderServe, MLSys 2025, Secs. 3.2--3.4, 5.1, 5.3; Table 3}. Counts summed from the original PDF.}
+\end{frame}
+
+\begin{frame}[t,label=WORKLOAD]{Different LLM Workload Characteristics}
+\relax
+{\footnotesize\color{Muted}Reported behavior above; proposed research implications below\par}
+\vspace{.18cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.49\textwidth}
-\compactcard{mintbox}{Hardware / Memory Models}{Heterogeneous GPU power; HBM/HBF access energy, capacity and transfer costs}
+\begin{column}{.32\textwidth}
+\card{mintbox}{Coding / Long-Prompt}{\footnotesize
+\textbf{Reported: ThunderServe}\\[5pt]
+Relatively longer inputs\\[3pt]Relatively shorter outputs\\[3pt]Higher prefill demand}
+\vspace{.18cm}
+{\small\bfseries\color{Accent}Implications to evaluate\par}
+\vspace{.08cm}
+{\footnotesize Compute-intensive prefill\\[5pt]TTFT sensitivity\\[5pt]Prefill GPU allocation\par}
 \end{column}
-\begin{column}{.49\textwidth}
-\compactcard{lilacbox}{Workload / Carbon Data}{MoE expert-access traces, KV reuse and HBM/HBF embodied-carbon estimates}
+\begin{column}{.32\textwidth}
+\card{lilacbox}{Conversation / Long-Output}{\footnotesize
+\textbf{Reported: ThunderServe}\\[5pt]
+Relatively shorter inputs\\[3pt]Relatively longer outputs\\[3pt]Greater decode demand}
+\vspace{.18cm}
+{\small\bfseries\color{Accent}Implications to evaluate\par}
+\vspace{.08cm}
+{\footnotesize Sustained token generation\\[5pt]Memory-bandwidth pressure\\[5pt]TPOT sensitivity\par}
+\end{column}
+\begin{column}{.32\textwidth}
+\card{mintbox}{Multi-Turn / Agentic}{\footnotesize
+\textbf{Reported: caching studies}\\[5pt]
+Related requests and reuse\\[3pt]Longer-lived session state\\[3pt]Variable cache capacity needs}
+\vspace{.18cm}
+{\small\bfseries\color{Accent}Implications to evaluate\par}
+\vspace{.08cm}
+{\footnotesize KV retention and capacity\\[5pt]HBM/HBF data placement\\[5pt]Read/write and movement costs\par}
 \end{column}
 \end{columns}
+\vspace{.22cm}
+{\scriptsize\color{Muted}TTFT: time to first token. TPOT: time per output token. KV: key--value cache. Categories can overlap.\par}
+\takeaway{Different workload characteristics lead to different compute, memory and scheduling requirements.}
+\source{\href{\thunderurl}{ThunderServe, Sec. 3.4, Fig. 6, Table 3}; \href{\greenurl}{GreenCache, Secs. 2--3}; \href{\hbfurl}{Characterizing HBF, Secs. 1, 3.2--3.3, 4.2}.}
+\end{frame}
+
+\begin{frame}[t,label=ACCOUNT]{Research Gaps and Required Models}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.46\textwidth}
+\card{mintbox}{What previous work provides}{\footnotesize
+\textbf{Carbon--SLO}\\Geo-aware routing and SLO modeling\\[4pt]
+\textbf{GreenCache}\\Carbon-aware KV reuse and caching\\[4pt]
+\textbf{Helix}\\Heterogeneous GPU placement\\[4pt]
+\textbf{ThunderServe}\\Phase/workload-aware resource allocation}
+\end{column}
+\begin{column}{.51\textwidth}
+\card{lilacbox}{What we still need to investigate}{\footnotesize
+Workload-sensitive GPU power and energy\\[4pt]
+HBM/HBF capacity, latency and read/write energy\\[4pt]
+Weight and KV placement with communication costs\\[4pt]
+End-to-end serving SLO feasibility\\[4pt]
+Effect of calibrated local costs on cross-DC routing}
+\end{column}
+\end{columns}
+\vspace{.14cm}
+\compactcard{mintbox}{Our research opportunity}{Combine measured workload-dependent serving profiles with heterogeneous GPU/HBM/HBF exploration. Evaluate power, performance and operational carbon under common SLOs.}
+\vspace{.12cm}
+{\footnotesize\color{Muted}A proposed integration to investigate. Novelty requires further comparison with related systems.\par}
+\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\helixurl}{Helix}; \href{\thunderurl}{ThunderServe}; \href{\hbfurl}{Characterizing HBF}. Gap and integration: our synthesis.}
+\end{frame}
+
+\begin{frame}[t,label=MEMORY]{HBM and HBF Memory Access Energy}
+\relax
+{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
+\vspace{.16cm}
+{\small\renewcommand{\arraystretch}{1.06}
+\begin{tabularx}{\linewidth}{@{}Xcc@{}}
+\toprule
+\textbf{Parameter} & \textbf{HBM} & \textbf{HBF}\\
+\midrule
+Capacity (GB/stack) & 24 & 375\\
+Read bandwidth (GB/s) & 1,000 & 1,000\\
+Write bandwidth (GB/s) & 1,000 & 8\\
+Read startup ($\mu$s) & 0.1 & 20\\
+Write startup ($\mu$s) & 0.1 & 250\\
+\rowcolor{SoftMint}Read energy (pJ/bit) & 3.4 & 6.8\\
+\rowcolor{SoftLilac}Write energy (pJ/bit) & 3.4 & 100\\
+Assumed P/E cycles & --- & 100,000\\
+\bottomrule
+\end{tabularx}\par}
+\vspace{.14cm}
+{\footnotesize\color{Muted}Modeled parameters, not measured HBF silicon results.\hfill\hyperlink{MEMORYSOURCES}{\beamergotobutton{Parameter Sources}}\par}
+\vspace{.13cm}
+\compactcard{mintbox}{Key takeaway}{HBF offers more capacity, but bandwidth, latency and access energy must all be modeled.}
+\source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving v2, Table 1, PDF p. 6}.}
+\end{frame}
+
+\begin{frame}[t,label=PLACEMENT]{Workload Completion Time Comparison}
+\relax
+{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
+{\footnotesize\color{Muted}GLM-5.2 | 16 simulated GPUs | TP16/EP16 | 100k turns\par}
+\vspace{.17cm}
+{\small\bfseries Workload Completion Time (s)\par}
+\vspace{.05cm}
+{\centering
+\begin{tikzpicture}[x=1cm,y=.0001833cm]
+
+\foreach \y/\label in {0/0,6000/{6,000},12000/{12,000}}{
+\draw[gridline] (0,\y)--(12.8,\y);
+\node[anchor=east,font=\scriptsize,text=Muted] at (-.12,\y){\label};}
+\draw[Muted] (0,0)--(12.8,0);
+\foreach \x/\v/\value/\shade in {2.2/11354/{11,354}/AccentBlue,6.4/4543/{4,543}/Accent,10.6/4538/{4,538}/Accent!65}{
+\fill[\shade] (\x-.72,0) rectangle (\x+.72,\v);
+\node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+190){\value};}
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (2.2,-300){HBM-only (8+0)};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (6.4,-300){H$^3$ (8+8), HBM weights};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (10.6,-300){H$^3$ (8+8), HBF weights};
+\end{tikzpicture}\par}
+\vspace{.15cm}
+\card{mintbox}{$\sim$60\% shorter completion time}{H$^3$ adds memory capacity; not an equal-hardware comparison.}
+\takeaway{Additional HBF capacity can improve workload completion time in this simulated setting.}
+\source{\href{\hbfurl}{Table 6, PDF p. 8}.\\Published MoE-based simulation evidence; our proposed workload evaluation is not restricted to MoE.}
+\end{frame}
+
+\begin{frame}[t,label=PLACEMENTENERGY]{Modeled Serving Energy Comparison}
+\relax
+{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
+{\footnotesize\color{Muted}GLM-5.2 | 16 simulated GPUs | TP16/EP16 | 100k turns\par}
+\vspace{.17cm}
+{\small\bfseries Modeled Workload Energy (MJ)\par}
+\vspace{.05cm}
+{\centering
+\begin{tikzpicture}[x=1cm,y=.22cm]
+\fill[SoftMint] (4.65,0) rectangle (12.35,10.9);
+\foreach \y/\label in {0/0,5/5,10/10}{
+\draw[gridline] (0,\y)--(12.8,\y);
+\node[anchor=east,font=\scriptsize,text=Muted] at (-.12,\y){\label};}
+\draw[Muted] (0,0)--(12.8,0);
+\foreach \x/\v/\value/\shade in {2.2/9.11/9.11/AccentBlue,6.4/7.19/7.19/Accent,10.6/9.54/9.54/Accent!65}{
+\fill[\shade] (\x-.72,0) rectangle (\x+.72,\v);
+\node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+.16){\value};}
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (2.2,-.25){HBM-only (8+0)};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (6.4,-.25){H$^3$ (8+8), HBM weights};
+\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (10.6,-.25){H$^3$ (8+8), HBF weights};
+\end{tikzpicture}\par}
+\vspace{.15cm}
+\card{mintbox}{+32.7\% modeled energy}{H$^3$: HBF weights vs. HBM weights, same 8+8 hardware.}
+\takeaway{Weight placement significantly affects modeled serving energy, even with similar completion times.}
+\source{\href{\hbfurl}{Table 6, PDF p. 8}. Simulation-based energy; static/background power excluded.\\Published MoE-based simulation evidence; our proposed workload evaluation is not restricted to MoE.}
+\end{frame}
+
+\begin{frame}[t,label=DISAGG]{Proposed Workload-Aware GPU/Memory Placement}
+\proposed
+\begin{tikzpicture}
+\node[flowbox,fill=SoftMint,text width=3.6cm,minimum height=2.9cm] (a) at (1.95,0) {\textbf{Inputs}\\[7pt]Workload characteristics\\[5pt]GPU performance / power\\[5pt]HBM/HBF parameters\\[5pt]Latency / SLO targets};
+\node[flowbox,fill=SoftLilac,text width=5.0cm,minimum height=2.9cm] (b) at (7.5,0) {\textbf{Optimization decisions}\\[7pt]1. GPU selection and allocation\\[4pt]2. HBM/HBF configuration\\[4pt]3. Model weight placement\\[4pt]4. Active / reusable KV placement\\[4pt]5. Optional serving-phase placement};
+\node[flowbox,fill=SoftMint,text width=3.3cm,minimum height=2.9cm] (c) at (13.0,0) {\textbf{Evaluation}\\[7pt]Latency, TTFT / TPOT\\[5pt]SLO goodput\\Throughput\\[5pt]GPU / memory energy\\[5pt]Data movement overhead};
+\draw[flowarrow] (a)--(b);\draw[flowarrow] (b)--(c);
+\end{tikzpicture}\par
+\vspace{.16cm}
+{\footnotesize Hot, frequently written or latency-sensitive data may require different tiers from cold/read-mostly data. HBF energy savings must be measured or modeled, not assumed.\par}
+\vspace{.12cm}
+\compactcard{mintbox}{Research question}{Can workload-aware GPU and HBM/HBF placement reduce serving energy while satisfying latency SLOs?}
+\vspace{.08cm}
+{\scriptsize\color{Muted}SLO: service-level objective. Goodput counts work completed within the specified SLOs.\par}
+\source{Proposal informed by \href{\helixurl}{Helix}, \href{\thunderurl}{ThunderServe}, \href{\greenurl}{GreenCache} and \href{\hbfurl}{Characterizing HBF}. No measured improvement claimed.}
+\end{frame}
+
+\begin{frame}[t,label=GEOARCH]{Proposed Serving and Scheduling Architecture}
+\proposed
+\begin{tikzpicture}
+\node[flowbox,fill=SoftMint,text width=13.95cm] (g) at (7.25,0) {\textbf{Level 1: Global Cross-DC Scheduler}\\[4pt]
+CI, PUE, queues / workload, WAN RTT, predicted energy and SLO feasibility\\[4pt]
+\textbf{Decision: request/session routing to a data center}};
+\node[flowbox,fill=SoftLilac,text width=6.1cm,anchor=north] (a) at (3.35,-1.35) {\textbf{DC A: Local Workload-Aware Serving}\\[3pt]GPU inventory/profiles, HBM/HBF setup\\Memory / inter-GPU costs, request features\\[3pt]\textbf{Decide:} GPU allocation and serving placement\\Memory tier and data placement};
+\node[flowbox,fill=SoftLilac,text width=6.1cm,anchor=north] (b) at (11.2,-1.35) {\textbf{DC B: Local Workload-Aware Serving}\\[3pt]GPU inventory/profiles, HBM/HBF setup\\Memory / inter-GPU costs, request features\\[3pt]\textbf{Decide:} GPU allocation and serving placement\\Memory tier and data placement};
+\draw[<->,thick,Accent] ([xshift=-3.9cm]g.south)--(a.north);
+\draw[<->,thick,Accent] ([xshift=3.95cm]g.south)--(b.north);
+\node[font=\scriptsize,text=Muted,fill=Paper] at (7.25,-1.08) {Routing down; calibrated costs up};
+\end{tikzpicture}\par
 \vspace{.06cm}
-{\footnotesize\bfseries\color{Accent}Extend geo scheduling and KV caching with HBM/HBF-aware placement and total-carbon evaluation.\par}
-\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\hbfurl}{Characterizing HBF}; \href{\srcC}{REEL LCI}. Research integration is our proposal.}
+{\footnotesize Primary scope: \textbf{operational energy/carbon}. Embodied carbon needs lifecycle data and allocation.\par}
+\vspace{.04cm}
+{\scriptsize\color{Muted}CI: carbon intensity. PUE: power usage effectiveness. WAN RTT: wide-area network round-trip time.\par}
+{\footnotesize\bfseries\color{Accent}Calibrated local serving costs inform global routing.\par}
+\source{Proposed two-level design informed by \href{\carbonurl}{Carbon--SLO}, \href{\greenurl}{GreenCache} and \href{\helixurl}{Helix}. Coordination and savings remain to be evaluated.}
+\end{frame}
+
+\begin{frame}[t,label=ENVIRONMENT]{Experimental Environment and Simulator}
+\proposed
+\begin{tikzpicture}
+\node[flowbox,fill=SoftMint,text width=5.7cm,anchor=north west] (a) at (0,0) {\textbf{Real: Academia Sinica RCITI GPU Cluster}\\[3pt]
+\scriptsize Research Center for\\Information Technology Innovation\\[9pt]
+\footnotesize Inventory available GPUs\\[5pt]Run representative Dense LLM workloads\\[5pt]Profile latency, throughput and power\\[5pt]Collect workload / serving metrics\\[5pt]Calibrate and validate supported hardware};
+\node[flowbox,fill=SoftLilac,text width=5.7cm,anchor=north east] (b) at (15.04,0) {\textbf{Simulation: LLMServingSim 2.0}\\[8pt]
+\footnotesize\textbf{Documented capabilities}\\[4pt]Heterogeneous / disaggregated serving\\Batching, scheduling and KV-cache models\\Profiled compute and ASTRA-Sim network\\[7pt]
+\textbf{Planned extensions / validation}\\[4pt]HBF access and placement, energy estimates\\Multiple DCs and carbon-aware routing};
+\draw[flowarrow] ([yshift=.3cm]a.east)--([yshift=.3cm]b.west)
+node[midway,above=3pt,align=center,font=\scriptsize,text=Accent] {Profiles /\\calibration};
+\draw[flowarrow] ([yshift=-.65cm]b.west)--([yshift=-.65cm]a.east)
+node[midway,below=3pt,align=center,font=\scriptsize,text=Accent] {Predictions /\\validation};
+\end{tikzpicture}\par
+\vspace{.18cm}
+{\footnotesize GPU types/counts and cluster access remain to be confirmed. No HBF hardware is assumed. Hypothetical HBF behavior needs sensitivity analysis and independent validation.\par}
+\vspace{.10cm}
+\takeaway{Real GPU measurements calibrate supported behavior; simulation explores hypothetical HBM/HBF and geo scenarios.}
+\source{\href{\simurl}{LLMServingSim official overview}; \href{\simarchurl}{architecture documentation}; \href{https://arxiv.org/abs/2602.23036}{LLMServingSim 2.0 paper}. Reviewed 2026-11-20. RCITI experiment: proposed.}
+\end{frame}
+
+\begin{frame}[t,label=NEXT]{Research Roadmap and Evaluation Plan}
+\proposed
+\compactcard{mintbox}{Phase 1 -- GPU Profiling and Simulator Calibration}{Inventory RCITI GPUs and Dense LLM workloads. Measure TTFT/TPOT, throughput, power and energy. Report held-out calibration error.}
+\vspace{.02cm}
+\compactcard{lilacbox}{Phase 2 -- Workload-Aware HBM/HBF Co-Design}{Compare workloads, GPU and HBM/HBF configurations, weight/KV placement, access energy and data movement under common SLOs.}
+\vspace{.02cm}
+\compactcard{mintbox}{Phase 3 -- Cross-DC Carbon-Aware Scheduling}{Integrate local costs with CI, PUE, queues and WAN RTT. Evaluate operational carbon and SLOs. Defer embodied carbon pending lifecycle data.}
+\vspace{0cm}
+{\footnotesize\textbf{Baselines:} homogeneous / heterogeneous GPUs; workload-unaware / aware placement;\\
+HBM-only / HBM+HBF; simple SLO-aware / carbon-aware routing.\par}
+\vspace{0cm}
+{\footnotesize\textbf{Fair comparisons:} disclose GPU count, memory capacity, precision, workload trace and SLOs. Separate capacity gains from policy gains.\par}
+{\footnotesize\bfseries\color{Accent}Validate local models, evaluate placement, then integrate costs into cross-DC routing.\par}
+\source{Proposed evaluation informed by \href{\carbonurl}{Carbon--SLO}, \href{\thunderurl}{ThunderServe}, \href{\hbfurl}{Characterizing HBF} and \href{\simurl}{LLMServingSim}.}
+\end{frame}
+
+\begin{frame}[c,label=THANKYOU]
+\centering
+{\fontsize{42}{50}\selectfont\bfseries\color{Ink}Thank you\par}
+\vspace{.35cm}
+{\color{Accent}\rule{2.2cm}{1.2pt}\par}
+\vspace{.35cm}
+{\large Questions \& Discussion\par}
 \end{frame}
 
 \begin{frame}[t,label=REEL1]{HBM/HBF Embodied Carbon Evidence}
@@ -279,150 +527,6 @@ Interposer, substrate and package-level assembly excluded}
 \vspace{.22cm}
 \takeaway{Suitable for preliminary carbon modeling, but not validated HBF manufacturing footprints.}
 \source{\href{\srcC}{REEL LCI v1.0 HBF dataset}; \href{\srcD}{Methodology Report, Sec. 4.4.4}.}
-\end{frame}
-\begin{frame}[t,label=MEMORY]{HBM and HBF Memory Access Energy}
-\relax
-{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
-\vspace{.16cm}
-{\small\renewcommand{\arraystretch}{1.06}
-\begin{tabularx}{\linewidth}{@{}Xcc@{}}
-\toprule
-\textbf{Parameter} & \textbf{HBM} & \textbf{HBF}\\
-\midrule
-Capacity (GB/stack) & 24 & 375\\
-Read bandwidth (GB/s) & 1,000 & 1,000\\
-Write bandwidth (GB/s) & 1,000 & 8\\
-Read startup ($\mu$s) & 0.1 & 20\\
-Write startup ($\mu$s) & 0.1 & 250\\
-\rowcolor{SoftMint}Read energy (pJ/bit) & 3.4 & 6.8\\
-\rowcolor{SoftLilac}Write energy (pJ/bit) & 3.4 & 100\\
-Assumed P/E cycles & --- & 100,000\\
-\bottomrule
-\end{tabularx}\par}
-\vspace{.14cm}
-{\footnotesize\color{Muted}Modeled parameters, not measured HBF silicon results.\hfill\hyperlink{MEMORYSOURCES}{\beamergotobutton{Parameter Sources}}\par}
-\vspace{.13cm}
-\compactcard{mintbox}{Key takeaway}{HBF offers more capacity, but bandwidth, latency and access energy must all be modeled.}
-\source{\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving v2, Table 1, PDF p. 6}.}
-\end{frame}
-
-\begin{frame}[t,label=PLACEMENT]{Workload Completion Time Comparison}
-\relax
-{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
-{\footnotesize\color{Muted}GLM-5.2 | 16 simulated GPUs | TP16/EP16 | 100k turns\par}
-\vspace{.17cm}
-{\small\bfseries Workload Completion Time (s)\par}
-\vspace{.05cm}
-{\centering
-\begin{tikzpicture}[x=1cm,y=.0001833cm]
-
-\foreach \y/\label in {0/0,6000/{6,000},12000/{12,000}}{
-\draw[gridline] (0,\y)--(12.8,\y);
-\node[anchor=east,font=\scriptsize,text=Muted] at (-.12,\y){\label};}
-\draw[Muted] (0,0)--(12.8,0);
-\foreach \x/\v/\value/\shade in {2.2/11354/{11,354}/AccentBlue,6.4/4543/{4,543}/Accent,10.6/4538/{4,538}/Accent!65}{
-\fill[\shade] (\x-.72,0) rectangle (\x+.72,\v);
-\node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+190){\value};}
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (2.2,-300){HBM-only (8+0)};
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (6.4,-300){H$^3$ (8+8), HBM weights};
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (10.6,-300){H$^3$ (8+8), HBF weights};
-\end{tikzpicture}\par}
-\vspace{.15cm}
-\card{mintbox}{$\sim$60\% shorter completion time}{H$^3$ adds memory capacity; not an equal-hardware comparison.}
-\takeaway{Additional HBF capacity can improve workload completion time in this simulated setting.}
-\source{\href{\hbfurl}{Table 6, PDF p. 8}.}
-\end{frame}
-
-\begin{frame}[t,label=PLACEMENTENERGY]{Modeled Serving Energy Comparison}
-\relax
-{\small\bfseries\color{Accent}\href{\hbfurl}{Characterizing High Bandwidth Flash for LLM Serving (2026)}\par}
-{\footnotesize\color{Muted}GLM-5.2 | 16 simulated GPUs | TP16/EP16 | 100k turns\par}
-\vspace{.17cm}
-{\small\bfseries Modeled Workload Energy (MJ)\par}
-\vspace{.05cm}
-{\centering
-\begin{tikzpicture}[x=1cm,y=.22cm]
-\fill[SoftMint] (4.65,0) rectangle (12.35,10.9);
-\foreach \y/\label in {0/0,5/5,10/10}{
-\draw[gridline] (0,\y)--(12.8,\y);
-\node[anchor=east,font=\scriptsize,text=Muted] at (-.12,\y){\label};}
-\draw[Muted] (0,0)--(12.8,0);
-\foreach \x/\v/\value/\shade in {2.2/9.11/9.11/AccentBlue,6.4/7.19/7.19/Accent,10.6/9.54/9.54/Accent!65}{
-\fill[\shade] (\x-.72,0) rectangle (\x+.72,\v);
-\node[anchor=south,font=\small\bfseries,text=Ink] at (\x,\v+.16){\value};}
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (2.2,-.25){HBM-only (8+0)};
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (6.4,-.25){H$^3$ (8+8), HBM weights};
-\node[anchor=north,font=\footnotesize,align=center,text=Ink] at (10.6,-.25){H$^3$ (8+8), HBF weights};
-\end{tikzpicture}\par}
-\vspace{.15cm}
-\card{mintbox}{+32.7\% modeled energy}{H$^3$: HBF weights vs. HBM weights, same 8+8 hardware.}
-\takeaway{Weight placement significantly affects modeled serving energy, even with similar completion times.}
-\source{\href{\hbfurl}{Table 6, PDF p. 8}. Simulation-based energy; static/background power excluded.}
-\end{frame}
-
-\begin{frame}[t,label=DISAGG]{Proposed HBM/HBF-Aware Attention--Expert Placement}
-\relax
-{\small\bfseries\color{Accent}Proposed Architecture\hfill\footnotesize Proposed / Not yet evaluated\par}
-\vspace{.08cm}
-\noindent\begin{tikzpicture}[>=Latex,every node/.style={outer sep=0pt}]
-\node[fill=SoftMint,rounded corners=3pt,inner sep=8pt,anchor=north west] (a) at (0,0)
-{\parbox[t][1.92cm][t]{5.35cm}{\small\bfseries HBM-rich Attention Worker\\[6pt]\footnotesize Attention computation\\[3pt]Active KV cache in HBM}};
-\node[fill=SoftLilac,rounded corners=3pt,inner sep=8pt,anchor=north east] (e) at (15.04cm,0)
-{\parbox[t][1.92cm][t]{5.35cm}{\small\bfseries HBF-rich Expert Worker\\[6pt]\footnotesize MoE expert computation\\[3pt]Hot weights in HBM\\[3pt]Cold weights in HBF}};
-\draw[<->,line width=.9pt,Accent] (a.east)--(e.west)
-node[midway,above=8pt,align=center,inner sep=1pt,text width=2.95cm,font=\scriptsize\bfseries,text=Accent] {Activation /\\[-1pt]\mbox{Hidden-State} Transfer}
-node[midway,below=7pt,align=center,inner sep=1pt,text width=2.95cm,font=\scriptsize,text=Muted] {Within one data center};
-\end{tikzpicture}\par
-\vspace{.06cm}
-{\footnotesize\color{Muted}Expert computation runs on the GPU. HBF stores cold weights and does not execute experts.\par}
-\vspace{.10cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.49\textwidth}
-\card{mintbox}{Potential Benefit}{Match HBM/HBF capacity and access characteristics to Attention and MoE expert workloads.}
-\end{column}
-\begin{column}{.49\textwidth}
-\card{lilacbox}{Costs to Evaluate}{HBF read energy $\cdot$ Inter-GPU transfer\\GPU waiting power $\cdot$ SLO impact}
-\end{column}
-\end{columns}
-\takeaway{Memory-aware disaggregation is beneficial only if capacity and placement gains outweigh energy and communication costs.}
-\source{\href{https://arxiv.org/abs/2512.13525}{Janus}~--- Attention/Expert disaggregation;
-\href{https://arxiv.org/abs/2608.01891}{AFlex}~--- Attention/FFN (not MoE A/E);\\
-\href{\memurl}{MemExplorer}~--- heterogeneous memory;
-\href{\hbfurl}{Characterizing HBF}~--- HBM/HBF energy assumptions.}
-\end{frame}
-
-\begin{frame}[t,label=NEXT]{Research Plan: Memory-Aware Serving to Geo Scheduling}
-\relax
-\compactcard{mintbox}{Level 1 -- Geo Scheduler}{Carbon intensity $\cdot$ PUE $\cdot$ Queue / Workload $\cdot$ WAN RTT\\\textbf{Decision:} Request / session routing across data centers}
-\vspace{.03cm}
-\centerline{\color{Accent}\footnotesize$\downarrow$~Selected Data Center}
-\vspace{.02cm}
-\compactcard{lilacbox}{Level 2 -- Local Memory-Aware Serving}{Heterogeneous GPUs $\cdot$ HBM/HBF placement $\cdot$ Attention/Expert workers\\\textbf{Decision:} Compute, KV-cache and expert-weight placement}
-\vspace{.06cm}
-{\small\bfseries\color{Accent}Research Roadmap\hfill\footnotesize Proposed / Not yet evaluated\par}
-\vspace{.05cm}
-{\footnotesize\raggedright\hangindent=1.7em\hangafter=1\textbf{\color{Accent}1\quad Energy Model Calibration}\enspace
-Establish GPU power and HBM/HBF memory-access models.\par}
-\vspace{.09cm}
-{\footnotesize\raggedright\hangindent=1.7em\hangafter=1\textbf{\color{Accent}2\quad Local Placement Evaluation}\enspace
-Compare memory configurations, hot/cold placement and within-DC A/E disaggregation under common SLOs.\par}
-\vspace{.09cm}
-{\footnotesize\raggedright\hangindent=1.7em\hangafter=1\textbf{\color{Accent}3\quad Geo Scheduling + Total Carbon}\enspace
-Integrate calibrated local costs into cross-DC routing and evaluate operational plus allocated embodied carbon.\par}
-\vspace{.08cm}
-{\footnotesize\bfseries\color{Accent}Evaluation Metrics:}\enspace{\footnotesize Serving Energy $\cdot$ TTFT / TPOT $\cdot$ SLO Goodput $\cdot$ Total Carbon\par}
-\vspace{.04cm}
-{\small\bfseries\color{Accent}Validate local HBM/HBF placement benefits before extending to geo-distributed carbon optimization.\par}
-\source{\href{\carbonurl}{Carbon--SLO}; \href{\greenurl}{GreenCache}; \href{\hbfurl}{Characterizing HBF}; \href{\srcD}{REEL LCI}.
-Proposed system and roadmap, not results from these papers.}
-\end{frame}
-\begin{frame}[c,label=THANKYOU]
-\centering
-{\fontsize{42}{50}\selectfont\bfseries\color{Ink}Thank you\par}
-\vspace{.35cm}
-{\color{Accent}\rule{2.2cm}{1.2pt}\par}
-\vspace{.35cm}
-{\large Questions \& Discussion\par}
 \end{frame}
 
 \begin{frame}[t,label=REELABOUT]{REEL LCI: Database Background and Inventory Scope}
