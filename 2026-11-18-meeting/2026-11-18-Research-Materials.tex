@@ -225,9 +225,8 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 
 \begin{frame}[t,label=WORKLOAD]{Different Workloads, Different Resource Requirements}
 \relax
-{\footnotesize\color{Muted}Workload characteristics influence GPU compute, memory, and scheduling demand.\par}
-\vspace{.30cm}
-{\renewcommand{\arraystretch}{1.95}
+\vspace{.12cm}
+{\renewcommand{\arraystretch}{2.5}
 \begin{tabularx}{\linewidth}{@{}>{\bfseries}p{4.0cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{Workload} & \textbf{Characteristics} & \textbf{Resource Requirements}\\
@@ -237,8 +236,7 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \rowcolor{SoftMint}Multi-Turn / Agentic & Repeated context, potential prefix/KV reuse & Memory capacity, KV retention and reuse\\
 \bottomrule
 \end{tabularx}\par}
-\vspace{.22cm}
-{\scriptsize\color{Muted}Coding and Conversation follow the workloads evaluated in ThunderServe, not universal definitions. Multi-Turn / Agentic is an interaction pattern that may overlap with either.\\TTFT: time to first token. KV: key--value cache.\par}
+\vspace{.25cm}
 \takeaway{Different LLM workloads require different compute, memory, and scheduling resources.}
 \source{\href{\thunderurl}{ThunderServe, Sec. 3.4, Fig. 6, Table 3}; \href{\greenurl}{GreenCache, Secs. 2--3}.}
 \end{frame}

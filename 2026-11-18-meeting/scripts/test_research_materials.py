@@ -83,8 +83,11 @@ class NavigationContracts(unittest.TestCase):
     def test_workload_missing_agentic_row(self):
         self.remove_text(6, 'Repeated context')
 
-    def test_workload_missing_scope_note(self):
-        self.remove_text(6, 'not universal definitions')
+    def test_workload_scope_note_returns(self):
+        self.add_text(6, 'Coding and Conversation follow the workloads evaluated in ThunderServe, not universal definitions.', (40, 150))
+
+    def test_workload_subtitle_returns(self):
+        self.add_text(6, 'Workload characteristics influence GPU compute, memory, and scheduling demand.', (40, 150))
 
     def test_workload_hbf_returns(self):
         self.add_text(6, 'HBM/HBF data placement', (40, 150))
