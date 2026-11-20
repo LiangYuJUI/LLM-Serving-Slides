@@ -118,8 +118,8 @@ class NavigationContracts(unittest.TestCase):
     def test_gaps_missing_carbon_card(self):
         self.remove_text(build.PAGE['ACCOUNT'], 'Carbon-Aware Cost')
 
-    def test_gaps_missing_research_question(self):
-        self.remove_text(build.PAGE['ACCOUNT'], 'satisfying latency SLOs')
+    def test_gaps_research_question_returns(self):
+        self.add_text(build.PAGE['ACCOUNT'], 'Research Question: Can workload-aware, coordinated GPU scheduling reduce energy?', (40, 150))
 
     def test_gaps_hbf_returns(self):
         self.add_text(build.PAGE['ACCOUNT'], 'HBM/HBF capacity, latency and read/write energy', (40, 150))

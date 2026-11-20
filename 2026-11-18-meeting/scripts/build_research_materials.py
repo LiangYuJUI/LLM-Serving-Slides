@@ -180,8 +180,7 @@ def validate(doc):
         'ACCOUNT': ['Research Gaps and Proposed Direction',
                     'Coordinated Cross-DC Scheduling','Carbon–SLO shares global data-center states, but regional schedulers make routing decisions independently.','Investigate coordinated cross-region scheduling to account for shared capacity, workload distribution, and SLO feasibility.',
                     'Carbon-Aware Cost Modeling','GreenCache considers operational and amortized embodied carbon for caching, but not cross-data-center routing.','Adapt carbon-aware cost modeling to heterogeneous GPU serving and geographic scheduling, starting with operational carbon.',
-                    'Power-Aware Heterogeneous GPU Scheduling','Helix and ThunderServe study heterogeneous GPU placement and workload-aware allocation, mainly for performance or cost.','Explore power-aware scheduling across GPUs with different compute, memory, and energy characteristics.',
-                    'Research Question: Can workload-aware, coordinated heterogeneous GPU scheduling reduce serving energy and operational carbon while satisfying latency SLOs?'],
+                    'Power-Aware Heterogeneous GPU Scheduling','Helix and ThunderServe study heterogeneous GPU placement and workload-aware allocation, mainly for performance or cost.','Explore power-aware scheduling across GPUs with different compute, memory, and energy characteristics.'],
         'EINDEX': ['Contents','01 Previous Work and Research Background','Carbon–SLO, GreenCache, Helix, ThunderServe','02 Workload and Resource Characteristics','Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence','03 Research Gaps and Proposed Direction','Cross-DC Coordination, Carbon-Aware Cost Modeling, Power-Aware GPU Scheduling, Proposed Architecture','04 Experimental Plan and Roadmap','Academia Sinica GPU Cluster, LLMServingSim 2.0, Research Phases'],
         'GEOARCH': ['Proposed Coordinated Scheduling Architecture','Proposed','Not Yet Evaluated','Global Carbon-Aware Scheduler','Coordinate cross-data-center routing using regional carbon intensity, predicted serving energy, shared capacity, and SLO feasibility.','Decision: Joint request routing / load allocation',
                     'Data Center A','Data Center B','Local Heterogeneous GPU Scheduler','Workload-aware GPU allocation and serving placement','Compute-rich','Memory-rich','Low-power',
@@ -233,7 +232,7 @@ def validate(doc):
         assert value in index, value
     assert 'Embodied Carbon' not in index
     # The index must not mention HBM/HBF in its cards; the index has no takeaway.
-    for banned in ['HBM','HBF','High Bandwidth','Flash','MoE','Previous Work and Research Gaps','Proposed Research Direction','Calibrate local serving costs','Power- and Carbon-Aware GPU Scheduling','Experimental Environment and Evaluation','Research Evidence Overview','From prior work and workload/memory evidence','energy- and carbon-efficient LLM serving']:
+    for banned in ['HBM','HBF','High Bandwidth','Flash','MoE','Previous Work and Research Gaps','Proposed Research Direction','Calibrate local serving costs','Power- and Carbon-Aware GPU Scheduling','Experimental Environment and Evaluation','Research Evidence Overview','From prior work and workload/memory evidence','energy- and carbon-efficient LLM serving','Research Question','Can workload-aware, coordinated']:
         assert banned not in index, ('Obsolete or out-of-scope index text', banned)
     for card in ['Carbon–SLO, GreenCache, Helix, ThunderServe','LLMServingSim 2.0']:
         assert card in index, ('Index card text missing', card)
@@ -282,15 +281,14 @@ def validate(doc):
     assert row_y['Coding'] < row_y['Conversation'] < row_y['Multi-Turn / Agentic'], 'Workload rows out of order'
     for header, row_text in [('Characteristics','Longer prompts'),('Resource Requirements','Prefill compute')]:
         assert abs(wl.search_for(header)[-1].x0 - wl.search_for(row_text)[0].x0) < 2, ('Table column misaligned', header)
-    # Slide 11: three stacked gap cards (Previous Work visually distinct from Research Opportunity) and one research question above the footer.
+    # Slide 11: three stacked gap cards (Previous Work visually distinct from Research Opportunity) and no research-question box.
     ac = doc[names['ACCOUNT']['page']]
     heads = [ac.search_for(h)[0] for h in ['Coordinated Cross-DC','Carbon-Aware Cost','Power-Aware']]
     assert heads[0].y0 < heads[1].y0 < heads[2].y0 and max(abs(h.x0-heads[0].x0) for h in heads) < 2, 'Gap cards must be stacked and aligned'
     prev, opp = ac.search_for('Previous Work'), ac.search_for('Research Opportunity')
     assert len(prev) == len(opp) == 3, 'Each gap card needs one Previous Work and one Research Opportunity'
     assert all(o.x0 > p.x1 for p, o in zip(prev, opp)) and all(abs(p.y0 - o.y0) < 2 for p, o in zip(prev, opp)), 'Previous Work / Research Opportunity columns misplaced'
-    question = ac.search_for('Research Question:')[0]; last = ac.search_for('Explore power-aware scheduling')[0]
-    assert last.y1 < question.y0 and max(b[3] for b in ac.get_text('blocks') if 'Research Question' in b[4]) < ac.rect.height * .9, 'Research question collides with cards or footer'
+    assert max(b[3] for b in ac.get_text('blocks') if 'Research Material' not in b[4]) < ac.rect.height * .9, 'Gap cards collide with the footer'
     # Slide 12: global scheduler above two parallel data centers; takeaway below them and above the footer.
     ga = doc[names['GEOARCH']['page']]
     glob, dca, dcb = ga.search_for('Global Carbon-Aware Scheduler')[0], ga.search_for('Data Center A')[0], ga.search_for('Data Center B')[0]
@@ -472,7 +470,7 @@ def main():
         "- PASS: Helix Figure 3 retains original resolution and aspect ratio; ZIP asset bytes match.\n"
         "- PASS: no slide carries a source footer (all 20 pages); citations remain in the speaker script and evidence register. The MoE scope note (pages 9-10) and static/background power note (page 10) are in the slide body.\n"
         "- PASS: the 16 moved or unchanged slides (cover, pages 3-10, Thank You and supplements) are byte-identical in source to the 22-page deck (61bd0a1) and match it in text, 3x pixels above the page footer, and links.\n"
-        "- PASS: Slide 11 is three stacked gap cards (Previous Work vs. Research Opportunity) plus one research question; slide 12 is the global/local coordinated architecture; slide 13 merges the experimental plan and three-phase roadmap; none contains HBM/HBF, GPU model names, percentages or result claims.\n"
+        "- PASS: Slide 11 is three stacked gap cards (Previous Work vs. Research Opportunity) without a research-question box; slide 12 is the global/local coordinated architecture; slide 13 merges the experimental plan and three-phase roadmap; none contains HBM/HBF, GPU model names, percentages or result claims.\n"
         "- PASS: ThunderServe slide (page 6) uses ThunderServe Figure 5 with only the printed caption removed (pixel-identical to the original top 440 rows); Table 3 values and HBM/HBF content are absent from the slide; Figure 5 is included in the Overleaf ZIP.\n")
     print('PASS: 20 pages; warning-free local/ZIP builds; navigation and preserved-content checks.')
 if __name__=='__main__':main()

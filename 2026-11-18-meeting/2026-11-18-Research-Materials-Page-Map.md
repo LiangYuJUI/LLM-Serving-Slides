@@ -16,7 +16,7 @@ Exactly **20 PDF pages: 14 main + 6 supplementary**. Physical page and footer nu
 | 8 | `MEMORY` | 9 | HBM and HBF Memory Access Energy | Moved earlier |
 | 9 | `PLACEMENT` | 10 | Workload Completion Time Comparison | Moved earlier |
 | 10 | `PLACEMENTENERGY` | 11 | Modeled Serving Energy Comparison | Moved earlier |
-| 11 | `ACCOUNT` | 8 | Research Gaps and Proposed Direction | Redesigned (three gap cards and one research question) |
+| 11 | `ACCOUNT` | 8 | Research Gaps and Proposed Direction | Redesigned (three gap cards; no research-question box) |
 | 12 | `GEOARCH` | 13 | Proposed Coordinated Scheduling Architecture | Redesigned (global scheduler over two heterogeneous data centers) |
 | 13 | `ENVIRONMENT` | 14 and 15 | Experimental Plan and Research Roadmap | Merged from `ENVIRONMENT` and `NEXT` |
 | 14 | `THANKYOU` | 16 | Thank You | Moved earlier |

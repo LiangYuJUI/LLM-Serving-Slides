@@ -308,14 +308,12 @@ Assumed P/E cycles & --- & 100,000\\
 
 
 \begin{frame}[t,label=ACCOUNT]{Research Gaps and Proposed Direction}
-\vspace{-.22cm}
+\vspace{-.05cm}
 \gapcard{mintbox}{Coordinated Cross-DC Scheduling}{Carbon--SLO shares global data-center states, but regional schedulers make routing decisions independently.}{Investigate coordinated cross-region scheduling to account for shared capacity, workload distribution, and SLO feasibility.}
-\vspace{.05cm}
+\vspace{.14cm}
 \gapcard{lilacbox}{Carbon-Aware Cost Modeling}{GreenCache considers operational and amortized embodied carbon for caching, but not cross-data-center routing.}{Adapt carbon-aware cost modeling to heterogeneous GPU serving and geographic scheduling, starting with operational carbon.}
-\vspace{.05cm}
+\vspace{.14cm}
 \gapcard{mintbox}{Power-Aware Heterogeneous GPU Scheduling}{Helix and ThunderServe study heterogeneous GPU placement and workload-aware allocation, mainly for performance or cost.}{Explore power-aware scheduling across GPUs with different compute, memory, and energy characteristics.}
-\vspace{.05cm}
-\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.09cm]{lilacbox}{\footnotesize\bfseries\color{Accent}Research Question:\ }{\footnotesize\bfseries Can workload-aware, coordinated heterogeneous GPU scheduling reduce serving energy and operational carbon while satisfying latency SLOs?\par}\end{beamercolorbox}
 \end{frame}
 
 \begin{frame}[t,label=GEOARCH]{Proposed Coordinated Scheduling Architecture}
