@@ -1,139 +1,37 @@
 {
-  "pages": 19,
-  "main_pages": 13,
+  "pages": 20,
+  "main_pages": 14,
   "supplementary_pages": 6,
-  "reference_commit": "a280f04d21d525598a32ef839c78c3fe9f49baf2",
-  "moved_or_unchanged_pages": [
-    {
-      "label": "COVER",
-      "reference_page": 1,
-      "current_page": 1
-    },
-    {
-      "label": "GEO",
-      "reference_page": 3,
-      "current_page": 3
-    },
-    {
-      "label": "RELATED",
-      "reference_page": 4,
-      "current_page": 4
-    },
-    {
-      "label": "HELIX",
-      "reference_page": 5,
-      "current_page": 5
-    },
-    {
-      "label": "THUNDER",
-      "reference_page": 6,
-      "current_page": 6
-    },
-    {
-      "label": "WORKLOAD",
-      "reference_page": 7,
-      "current_page": 7
-    },
-    {
-      "label": "MEMORY",
-      "reference_page": 8,
-      "current_page": 8
-    },
-    {
-      "label": "PLACEMENT",
-      "reference_page": 9,
-      "current_page": 9
-    },
-    {
-      "label": "PLACEMENTENERGY",
-      "reference_page": 10,
-      "current_page": 10
-    },
-    {
-      "label": "ACCOUNT",
-      "reference_page": 11,
-      "current_page": 11
-    },
-    {
-      "label": "THANKYOU",
-      "reference_page": 14,
-      "current_page": 13
-    },
-    {
-      "label": "REEL1",
-      "reference_page": 15,
-      "current_page": 14
-    },
-    {
-      "label": "REEL2",
-      "reference_page": 16,
-      "current_page": 15
-    },
-    {
-      "label": "REEL3",
-      "reference_page": 17,
-      "current_page": 16
-    },
-    {
-      "label": "REEL4",
-      "reference_page": 18,
-      "current_page": 17
-    },
-    {
-      "label": "REELABOUT",
-      "reference_page": 19,
-      "current_page": 18
-    },
-    {
-      "label": "MEMORYSOURCES",
-      "reference_page": 20,
-      "current_page": 19
-    }
-  ],
+  "pdf_sha256": "2de7434a148d430806cf2fa25a3622312c0e47f8415213a9bfdd7478d80dbaf0",
+  "zip_sha256": "2c4a49f6fb58dd1b70df26506ef63ed5bc38d271172ddccd822dc05c98c83fea",
+  "source_sha256": "0312b85c2f186b7d1c2679c088d01314c70b8e9a0fd53553e2b6098ac2fbeac1",
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "source_sha256": "751670f6ad0c13fd4ee8f7289db097763c13989ec60c0bcb690583744cce2dea",
-  "pdf_sha256": "355ea778d6abeb29bb27a7f79e31c4d1d67a1ead780222d56d25203853ccfd13",
-  "zip_sha256": "7030da2733ea1ec021a510dc0a4ec16cd0841cbde360f42899b2663814fb4165",
-  "preserved_frame_hashes": {
-    "REEL1": "2e6c42ab7c6183cd8c21e882e46bdff3f08761af861eb1434a617e8b1ca7cc34",
-    "REEL2": "67c208ee185b642def61e2b5cd1a5c71cbff1c4e5fcb0bb22650023b400a003c",
-    "REEL3": "eafaf33665b01ff8a1a3e3a5ee71026570d942a16a2d43dba81cae33fbf85269",
-    "REEL4": "a4b1e49c1f9bdbda33d5cf6f955c9b5165b005556d82963b7bf826c85b0ade99"
-  },
-  "category_destinations": {
+  "links": 28,
+  "contents_destinations": {
     "GEO": 3,
-    "WORKLOAD": 7,
-    "ACCOUNT": 11,
-    "ENVIRONMENT": 12
+    "WORKLOAD": 8,
+    "ACCOUNT": 12,
+    "ENVIRONMENT": 13
   },
-  "supplement_round_trips": {
-    "REEL1_REELABOUT": [
-      14,
-      18
-    ],
-    "MEMORY_MEMORYSOURCES": [
-      8,
-      19
-    ]
-  },
-  "parity": {
+  "pdf_zip_parity": {
     "text": true,
     "pixels": true,
     "annotations": true
   },
-  "protected_files": 11075,
-  "uris": [
-    "https://arxiv.org/abs/2604.16007v1",
-    "https://arxiv.org/abs/2609.39131v2",
-    "https://doi.org/10.1109/IEDM45741.2023.10413890",
-    "https://doi.org/10.1109/LCA.2026.3660969",
-    "https://doi.org/10.1109/LCA.2026.3705817",
-    "https://doi.org/10.1109/MC.2026.3652916",
-    "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu",
-    "https://reellci.com/",
-    "https://reellci.com/insights/the-hbf-inversion.html",
-    "https://www.micron.com/products/memory/hbm/hbm3e"
+  "unchanged_frames": [
+    "COVER",
+    "ENVIRONMENT",
+    "MEMORY",
+    "MEMORYSOURCES",
+    "PLACEMENT",
+    "PLACEMENTENERGY",
+    "REEL1",
+    "REEL2",
+    "REEL3",
+    "REEL4",
+    "REELABOUT",
+    "THANKYOU"
   ]
 }

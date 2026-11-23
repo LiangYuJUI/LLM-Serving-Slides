@@ -55,7 +55,8 @@
 \node[chartlabel,anchor=north] at (\x,-#2*.035){\lab\\\cap};}
 \end{tikzpicture}}
 
-\newcommand{\compactcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.10cm]{#1}{\small\bfseries\color{Accent}#2}\par\vspace{.04cm}{\footnotesize\raggedright #3\par}\end{beamercolorbox}}
+\newcommand{\compactcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.05cm]{#1}{\small\bfseries\color{Accent}#2}\par\vspace{.04cm}{\footnotesize\raggedright #3\par}\end{beamercolorbox}}
+\newcommand{\mainidea}[1]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.06cm]{lilacbox}{\footnotesize\bfseries\color{Accent}Main Idea}\quad{\footnotesize\raggedright #1}\end{beamercolorbox}}
 \newcommand{\carbonurl}{https://arxiv.org/abs/2610.14571v1}
 \newcommand{\hbfurl}{https://arxiv.org/abs/2609.39131v2}
 \newcommand{\greenurl}{https://arxiv.org/abs/2505.23970v3}
@@ -85,7 +86,7 @@
 \begin{frame}[t,label=EINDEX]{Contents}
 \relax
 \vspace{.12cm}
-\indexcard{GEO}{mintbox}{01\quad Previous Work and Research Background}{\\Carbon--SLO, GreenCache, Helix, ThunderServe}
+\indexcard{GEO}{mintbox}{01\quad Previous Work and Research Background}{\\Carbon--SLO, GreenCache, Helix, ThunderServe, Prism, Scepsy}
 \indexcard{WORKLOAD}{lilacbox}{02\quad Workload and Resource Characteristics}{\\Workload Patterns, GPU/Memory Characteristics, Published Performance and Energy Evidence}
 \indexcard{ACCOUNT}{mintbox}{03\quad Research Gaps and Proposed Direction}{\\Cross-DC Coordination, Carbon-Aware Cost Modeling, Power-Aware GPU Scheduling}
 \indexcard{ENVIRONMENT}{lilacbox}{04\quad Experimental Environment}{\\LLMServingSim 2.0, Academia Sinica CITI GPU Cluster}
@@ -100,12 +101,14 @@
 \begin{frame}[t,label=GEO]{Dissecting the Carbon--SLO Tension in Geo-Distributed LLM Serving}
 \relax
 {\small\color{Muted}arXiv 2026 (Preprint)\quad |\quad Carbon- \& SLO-Aware Geo-Distributed Request Scheduling\par}
-\vspace{.08cm}
+\vspace{.04cm}
+\mainidea{Predict load-dependent serving latency and energy, then route requests to minimize operational carbon under TTFT/TPOT SLOs.}
+\vspace{-.10cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.54\textwidth}
 {\small\bfseries\color{Accent}Current Architecture\par}
-\vspace{.20cm}
-\begin{tikzpicture}[>=Latex,every node/.style={align=center,text=Ink},
+\vspace{.03cm}
+\begin{tikzpicture}[scale=.91,transform shape,>=Latex,every node/.style={align=center,text=Ink},
 box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \node[box,fill=SoftMint,text width=6.6cm] (global) at (3.65,0) {\textbf{Global Provisioner}\\CI $\cdot$ Batch $\cdot$ Queue $\cdot$ KV $\cdot$ RTT\\\scriptsize Periodically polls DCs; broadcasts global snapshot};
 \node[box,fill=SoftLilac,text width=2.75cm] (r1) at (1.75,-1.65) {Regional Scheduler 1};
@@ -116,21 +119,21 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \draw[->,thick,AccentBlue] (r1.south)--([xshift=-.65cm]dc.north);
 \draw[->,thick,AccentBlue] (r2.south)--([xshift=.65cm]dc.north);
 \end{tikzpicture}
-{\footnotesize\itshape Concurrent routing can overload the same DC.\par}
+\parbox{\linewidth}{\footnotesize\itshape\raggedright Concurrent routing can overload the same DC.\par}
 \vspace{.03cm}
 
 \end{column}
 \begin{column}{.43\textwidth}
 {\small\bfseries\color{Accent}Limitations\par}
-\vspace{.03cm}
+\vspace{.01cm}
 \compactcard{mintbox}{Limitation 1 -- Carbon Scope}{\textbf{Operational Carbon Only}\\No allocated embodied carbon.}
-\vspace{.03cm}
+\vspace{.01cm}
 \compactcard{lilacbox}{Limitation 2 -- Coordination}{\textbf{Independent Regional Decisions}\\Concurrent decisions on the same snapshot.}
-\vspace{.10cm}
+\vspace{.03cm}
 \compactcard{mintbox}{Limitation 3 -- GPU Heterogeneity}{\textbf{Single GPU Type: A100}\\Models calibrated on A100 GPUs.\\Our direction: workload-aware GPU/memory costs.}
 \end{column}
 \end{columns}
-\vspace{.08cm}
+\vspace{.01cm}
 
 \end{frame}
 \endgroup
@@ -144,7 +147,9 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \begin{frame}[t,label=RELATED]{Cache Your Prompt When It's Green --- Carbon-Aware Caching for Large Language Model Serving}
 \relax
 {\footnotesize\color{Muted}SIGMETRICS 2026\quad |\quad Carbon-Aware Adaptive SSD KV Cache Sizing\par}
-\vspace{.16cm}
+\vspace{.06cm}
+\mainidea{Dynamically size SSD-backed KV caches to balance prefill-energy savings, embodied carbon, and latency SLOs.}
+\vspace{.09cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.30\textwidth}
 \card{mintbox}{Inputs}{\footnotesize Predicted CI\\[3pt]Request Rate\\[3pt]Power / SLO Profiles}
@@ -156,15 +161,14 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \card{mintbox}{Trade-off}{\footnotesize More Cache: Save Prefill Energy\\[3pt]Less Cache: Lower Allocated Embodied Carbon}
 \end{column}
 \end{columns}
-\vspace{.06cm}
-\vspace{.10cm}
+\vspace{.02cm}
 {\small\bfseries\color{Accent}Limitations\par}
 \vspace{.08cm}
 {\small 1. No cross-data-center request scheduling.\\[3pt]
 2. No heterogeneous GPU or HBM/HBF memory placement.\\[3pt]
 3. Prefill-focused carbon objective; no separate prefill/decode power models.\par}
-\vspace{.08cm}
-\takeaway{GreenCache optimizes SSD KV-cache capacity for total carbon, but not GPU/memory placement across data centers.}
+\vspace{.03cm}
+\takeaway{GreenCache sizes SSD KV caches for total carbon, but not GPU placement across data centers.}
 \end{frame}
 \endgroup
 
@@ -177,13 +181,15 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \begin{frame}[t,label=HELIX]{Helix: Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow}
 \relax
 {\footnotesize\color{Muted}ASPLOS 2025\quad |\quad LLM Layer-to-GPU Placement \& Request Scheduling\par}
-\vspace{.16cm}
+\vspace{.05cm}
+\mainidea{Use max-flow-based layer placement and request scheduling to improve throughput across heterogeneous GPUs and networks.}
+\vspace{.07cm}
 \noindent\includegraphics[width=\linewidth]{../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png}\par
-\vspace{.14cm}
+\vspace{.06cm}
 {\small\textbf{Motivation:} Heterogeneous GPUs differ in compute throughput, memory capacity, and network bandwidth, making model placement challenging.\par}
-\vspace{.08cm}
-{\small\textbf{Method:} GPU/network profiling $\rightarrow$ max-flow/MILP-based layer placement to maximize throughput $\rightarrow$ runtime request scheduling.\par}
-\vspace{.08cm}
+\vspace{.03cm}
+{\small\textbf{Method:} Profile GPUs and links; use max-flow/MILP for layer placement, then schedule requests at runtime.\par}
+\vspace{.03cm}
 {\small\textbf{Evaluation:} Real heterogeneous GPU cluster; geo-distributed settings evaluated using simulation.\par}
 \end{frame}
 \endgroup
@@ -198,14 +204,40 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \relax
 {\footnotesize\color{Muted}MLSys 2025\quad |\quad Workload-Aware Prefill/Decode Placement \& Scheduling\par}
 \vspace{.02cm}
+\mainidea{Jointly optimize prefill/decode resource allocation, parallelism, and request routing for different workloads.}
+\vspace{.03cm}
 \begin{center}
-\includegraphics[width=8.2cm]{figures/ThunderServe_Fig05_no_caption.png}
+\includegraphics[width=7.4cm]{figures/ThunderServe_Fig05_no_caption.png}
 \end{center}
-{\small\textbf{Motivation:} Prefill is typically compute-intensive, while decode is more memory-bandwidth-sensitive.\par}
-{\small\textbf{Method:} Jointly optimize GPU grouping, prefill/decode assignment, parallel configuration, and request routing.\par}
+{\footnotesize\textbf{Motivation:} Prefill is compute-intensive; decode is more memory-bandwidth-sensitive.\par}
+{\footnotesize\textbf{Method:} Separately allocate prefill/decode capacity; choose TP/PP configurations and route requests. Phase allocation and TP/PP are distinct decisions.\par}
 \takeaway{Workload characteristics affect the preferred prefill/decode resource allocation and routing.}
 \end{frame}
 \endgroup
+
+\begin{frame}[t,label=PRISM]{From Single-Model to Multi-Model Deployment}
+\vspace{.08cm}
+{\small\color{Muted}Production clusters and agentic workflows increasingly serve many LLMs on limited GPUs.\par}
+\vspace{.18cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.485\textwidth}
+\card{mintbox}{Prism (OSDI 2026)}{\begin{itemize}\setlength{\itemsep}{.12cm}
+\item Memory ballooning: GPU memory as an elastic resource lent and reclaimed across models at runtime
+\item Goal: SLO attainment \& cost, environment: homogeneous H100s
+\end{itemize}}
+\end{column}
+\begin{column}{.485\textwidth}
+\card{lilacbox}{Scepsy (arXiv 2026)}{\begin{itemize}\setlength{\itemsep}{.12cm}
+\item Workflow runtime is unpredictable, but each LLM's share of it is stable $\rightarrow$ give each LLM GPUs in proportion to its share
+\item Goal: latency at target throughput, environment: homogeneous RTX A6000s
+\end{itemize}}
+\end{column}
+\end{columns}
+\vspace{.14cm}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.12cm]{mintbox}
+{\small\bfseries\color{AccentBlue}Multi-model deployment on heterogeneous environments with carbon awareness remains less explored. How should allocation change when carbon is the objective?}
+\end{beamercolorbox}
+\end{frame}
 
 \begin{frame}[t,label=WORKLOAD]{Different Workloads, Different Resource Requirements}
 \relax
@@ -311,7 +343,7 @@ Assumed P/E cycles & --- & 100,000\\
 \vspace{.14cm}
 \gapcard{lilacbox}{Carbon-Aware Cost Modeling}{GreenCache considers operational and amortized embodied carbon for caching, but not cross-data-center routing.}{Adapt carbon-aware cost modeling to heterogeneous GPU serving and geographic scheduling, starting with operational carbon.}
 \vspace{.14cm}
-\gapcard{mintbox}{Power-Aware Heterogeneous GPU Scheduling}{Helix and ThunderServe study heterogeneous GPU placement and workload-aware allocation, mainly for performance or cost.}{Explore power-aware scheduling across GPUs with different compute, memory, and energy characteristics.}
+\gapcard{mintbox}{Power-Aware Heterogeneous GPU Scheduling}{Helix and ThunderServe focus on performance-oriented placement and allocation. Prism and Scepsy address multi-model sharing, primarily under performance and cost objectives.}{Investigate power- and carbon-aware GPU allocation across heterogeneous resources, with multi-model serving as a potential extension.}
 \end{frame}
 
 \begin{frame}[t,label=ENVIRONMENT]{Experimental Environment: LLMServingSim 2.0 and Real GPU Profiling}
