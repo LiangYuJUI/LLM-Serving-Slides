@@ -1,19 +1,44 @@
 {
-  "pages": 20,
+  "pages": 26,
   "main_pages": 14,
   "supplementary_pages": 6,
-  "pdf_sha256": "2de7434a148d430806cf2fa25a3622312c0e47f8415213a9bfdd7478d80dbaf0",
-  "zip_sha256": "2c4a49f6fb58dd1b70df26506ef63ed5bc38d271172ddccd822dc05c98c83fea",
-  "source_sha256": "0312b85c2f186b7d1c2679c088d01314c70b8e9a0fd53553e2b6098ac2fbeac1",
+  "previous_work_backup_pages": 6,
+  "pdf_sha256": "d7460ff954b86d3c11b68d6f929d0ff24ef404df4150d4aee4ddedbf0bd7c652",
+  "zip_sha256": "ae9d703ac64e2ba9c39ccf3b259b3a1c0fac9e1d2a1a82dfb7062f5d74d17de7",
+  "source_sha256": "a6279e1d0fbfb00367f3651e423fae2dae60cd1991fd0f85635788b95256df9b",
   "local_passes": 2,
   "zip_passes": 2,
   "warnings": [],
-  "links": 28,
+  "links": 40,
   "contents_destinations": {
     "GEO": 3,
     "WORKLOAD": 8,
     "ACCOUNT": 12,
     "ENVIRONMENT": 13
+  },
+  "main_to_backup": {
+    "GEO": [
+      21,
+      22
+    ],
+    "RELATED": [
+      23
+    ],
+    "HELIX": [
+      24,
+      25
+    ],
+    "THUNDER": [
+      26
+    ]
+  },
+  "backup_to_main": {
+    "PW_CARBON_ARCH": 3,
+    "PW_CARBON_MILP": 3,
+    "PW_GREENCACHE": 4,
+    "PW_HELIX_FLOW": 5,
+    "PW_HELIX_MILP": 5,
+    "PW_THUNDER": 6
   },
   "pdf_zip_parity": {
     "text": true,

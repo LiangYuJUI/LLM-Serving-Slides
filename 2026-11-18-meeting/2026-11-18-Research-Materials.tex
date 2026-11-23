@@ -56,6 +56,7 @@
 \end{tikzpicture}}
 
 \newcommand{\compactcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.05cm]{#1}{\small\bfseries\color{Accent}#2}\par\vspace{.04cm}{\footnotesize\raggedright #3\par}\end{beamercolorbox}}
+\newcommand{\backupcard}[3]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.045cm]{#1}{\footnotesize\bfseries\color{Accent}#2}\par\vspace{.015cm}{\scriptsize\raggedright #3\par}\end{beamercolorbox}}
 \newcommand{\mainidea}[1]{\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.06cm]{lilacbox}{\footnotesize\bfseries\color{Accent}Main Idea}\quad{\footnotesize\raggedright #1}\end{beamercolorbox}}
 \newcommand{\carbonurl}{https://arxiv.org/abs/2610.14571v1}
 \newcommand{\hbfurl}{https://arxiv.org/abs/2609.39131v2}
@@ -133,7 +134,8 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \compactcard{mintbox}{Limitation 3 -- GPU Heterogeneity}{\textbf{Single GPU Type: A100}\\Models calibrated on A100 GPUs.\\Our direction: workload-aware GPU/memory costs.}
 \end{column}
 \end{columns}
-\vspace{.01cm}
+\vspace{.03cm}
+{\scriptsize\hyperlink{PW_CARBON_ARCH}{\textcolor{Accent}{\underline{Simulator Details}}}\quad\hyperlink{PW_CARBON_MILP}{\textcolor{Accent}{\underline{Facility MILP}}}}\hfill{\scriptsize\color{Muted}RTT: Round-Trip Time\par}
 
 \end{frame}
 \endgroup
@@ -155,7 +157,7 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \card{mintbox}{Inputs}{\footnotesize Predicted CI\\[3pt]Request Rate\\[3pt]Power / SLO Profiles}
 \end{column}
 \begin{column}{.32\textwidth}
-\card{lilacbox}{Optimization}{\footnotesize Hourly ILP\\[3pt]Select SSD KV Cache Capacity\\[3pt]Minimize Total Carbon}
+\card{lilacbox}{\hyperlink{PW_GREENCACHE}{\textcolor{Accent}{\underline{Optimization}}}}{\footnotesize Hourly ILP\\[3pt]Select SSD KV Cache Capacity\\[3pt]Minimize Total Carbon}
 \end{column}
 \begin{column}{.34\textwidth}
 \card{mintbox}{Trade-off}{\footnotesize More Cache: Save Prefill Energy\\[3pt]Less Cache: Lower Allocated Embodied Carbon}
@@ -182,7 +184,7 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \relax
 {\footnotesize\color{Muted}ASPLOS 2025\quad |\quad LLM Layer-to-GPU Placement \& Request Scheduling\par}
 \vspace{.05cm}
-\mainidea{Use max-flow-based layer placement and request scheduling to improve throughput across heterogeneous GPUs and networks.}
+\mainidea{Use \hyperlink{PW_HELIX_FLOW}{\textcolor{Accent}{\underline{max-flow}}}-based \hyperlink{PW_HELIX_MILP}{\textcolor{Accent}{\underline{layer placement}}} and request scheduling to improve throughput across heterogeneous GPUs and networks.}
 \vspace{.07cm}
 \noindent\includegraphics[width=\linewidth]{../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png}\par
 \vspace{.06cm}
@@ -204,7 +206,7 @@ box/.style={rounded corners=3pt,inner sep=5pt,font=\footnotesize}]
 \relax
 {\footnotesize\color{Muted}MLSys 2025\quad |\quad Workload-Aware Prefill/Decode Placement \& Scheduling\par}
 \vspace{.02cm}
-\mainidea{Jointly optimize prefill/decode resource allocation, parallelism, and request routing for different workloads.}
+\mainidea{Jointly optimize \hyperlink{PW_THUNDER}{\textcolor{Accent}{\underline{prefill/decode resource allocation, parallelism, and request routing}}} for different workloads.}
 \vspace{.03cm}
 \begin{center}
 \includegraphics[width=7.4cm]{figures/ThunderServe_Fig05_no_caption.png}
@@ -518,6 +520,163 @@ P/E cycles & N/A & \href{https://doi.org/10.1109/LCA.2026.3705817}{Son et al. (2
 {\scriptsize\color{Muted}The 2$\times$ HBF read-energy assumption is not equivalent to a measured 2$\times$ device power ratio.\par}
 \vspace{.08cm}
 \hyperlink{MEMORY}{\beamerreturnbutton{Back to Slide \ref{MEMORY}}}
+\end{frame}
+
+
+% Previous-work detail backups. These reuse the original source explanations and figures.
+\begin{frame}[t,label=PW_CARBON_ARCH]{Carbon--SLO: Geo-Distributed Simulator}
+{\scriptsize\color{Muted}Topcu et al., ``Dissecting the Carbon--SLO Tension in Geo-Distributed LLM Serving,'' arXiv 2026, Sec.~III-C, Fig.~3.\par}
+\vspace{.08cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.58\textwidth}
+\centering\includegraphics[width=\linewidth,height=4.55cm,keepaspectratio]{figures/PreviousWork_CarbonSLO_Fig03.png}
+\end{column}
+\begin{column}{.40\textwidth}
+{\scriptsize\bfseries\color{Accent}Figure 3: request and state flow}\par\vspace{.06cm}
+\compactcard{mintbox}{1. Request}{Load generator sends each request to a Regional Scheduler.}
+\vspace{.04cm}
+\compactcard{lilacbox}{2--3. Route}{The scheduler serves locally or forwards the request. A remote route pays RTT; the peer scheduler places it.}
+\vspace{.04cm}
+\compactcard{mintbox}{4--5. Provision}{Global Provisioner polls datacenter states and broadcasts a shared snapshot with the RTT matrix.}
+\vspace{.06cm}
+{\footnotesize Inside each datacenter, node placement is round-robin; the serving engine uses continuous batching.\par}
+\end{column}
+\end{columns}
+\vspace{.06cm}
+{\scriptsize\color{Muted}Source: Carbon--SLO, Fig.~3 and Secs.~III-A, III-C.\hfill\hyperlink{GEO}{\beamerreturnbutton{Back to Main Slide 3}}\par}
+\end{frame}
+
+\begin{frame}[t,label=PW_CARBON_MILP]{Carbon--SLO: Facility MILP Routing}
+{\scriptsize\color{Muted}Topcu et al., ``Dissecting the Carbon--SLO Tension in Geo-Distributed LLM Serving,'' arXiv 2026, Sec.~IV-C.\par}
+\vspace{.10cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.46\textwidth}
+\compactcard{mintbox}{1. Predict TTFT and TPOT}{Estimate each request--datacenter pair using the latest provisioner state and inter-region RTT.}
+\vspace{.08cm}
+\compactcard{lilacbox}{2. Filter SLO-feasible datacenters}{Keep pairs whose predicted TTFT and TPOT meet both budgets. $F_r$ denotes this predicted feasible set.}
+\vspace{.08cm}
+\compactcard{mintbox}{4. Execute and evaluate}{The simulator records actual TTFT, TPOT, operational carbon, and SLO violations. A passing prediction does not guarantee compliance.}
+\end{column}
+\begin{column}{.52\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.12cm]{lilacbox}
+{\small\bfseries\color{Accent}3. Solve Facility MILP}\par\vspace{.05cm}
+{\scriptsize Feasibility is predicted before this solve. The MILP assigns requests to datacenters; it does not place model layers across sites.}\par
+\setlength{\abovedisplayskip}{4pt}\setlength{\belowdisplayskip}{3pt}
+\[
+\begin{aligned}
+&\min\sum_{r,d}c_{r,d}x_{r,d}+\sum_d f_d y_d\\[2pt]
+&\sum_{d\in F_r}x_{r,d}=1\qquad
+\sum_r x_{r,d}\le H_d y_d
+\end{aligned}
+\]
+{\scriptsize $x_{r,d}$: request assignment; $y_d$: datacenter used in the routing window; $c_{r,d}$: marginal carbon cost; $f_d$: shared fixed/batch carbon cost; $H_d$: remaining capacity.\par}
+\end{beamercolorbox}
+\end{column}
+\end{columns}
+\vspace{.08cm}
+{\scriptsize\color{Muted}The shared fixed cost models activating serving capacity for the window; $y_d$ is not a datacenter shutdown control. Source: Carbon--SLO, Sec.~IV-C.\hfill\hyperlink{GEO}{\beamerreturnbutton{Back to Main Slide 3}}\par}
+\end{frame}
+
+\begin{frame}[t,label=PW_GREENCACHE]{GreenCache: Optimization and Execution}
+{\scriptsize\color{Muted}``Cache Your Prompt When It's Green,'' SIGMETRICS 2026, Secs.~5.4--5.5, 6.1, 6.4, Fig.~10.\par}
+\vspace{.08cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.59\textwidth}
+\centering\includegraphics[width=\linewidth,height=4.0cm,keepaspectratio]{figures/PreviousWork_GreenCache_Fig10.png}
+\end{column}
+\begin{column}{.39\textwidth}
+\backupcard{mintbox}{SLO Input}{Predefined TTFT / TPOT thresholds; at least 90\% attainment for each.}
+\vspace{.045cm}
+\backupcard{lilacbox}{Constraint Solver}{The ILP selects the lowest-carbon feasible SSD cache capacity, accounting for operational and allocated embodied carbon.}
+\vspace{.045cm}
+\backupcard{mintbox}{Cache Manager}{Resizes SSD allocation to the selected capacity. LCS then ranks entries for eviction within that budget.}
+\vspace{.045cm}
+\backupcard{lilacbox}{LLM Server and Cache}{LMCache/vLLM serves requests and reuses stored KV while optimization runs.}
+\end{column}
+\end{columns}
+\vspace{.08cm}
+\takeaway{The ILP chooses capacity; LCS chooses which cache entries to retain or evict.}
+{\scriptsize\color{Muted}Source: GreenCache, Fig.~10 and Secs.~5.4--5.5, 6.1, 6.4.\hfill\hyperlink{RELATED}{\beamerreturnbutton{Back to Main Slide 4}}\par}
+\end{frame}
+
+\begin{frame}[t,label=PW_HELIX_FLOW]{Helix: Max-Flow Model of Serving}
+{\scriptsize\color{Muted}Mei et al., ``Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow,'' ASPLOS 2025, Sec.~4.3, Fig.~2.\par}
+\vspace{.06cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.39\textwidth}
+\compactcard{mintbox}{Node splitting}{Each compute node is split into input/output vertices; the internal edge capacity limits GPU token throughput.}
+\vspace{.06cm}
+\compactcard{lilacbox}{Network capacity}{Link bandwidth divided by payload size gives a token-rate capacity for each network edge.}
+\vspace{.06cm}
+\compactcard{mintbox}{Source, sink, conservation}{The source injects token flow and the sink collects it. Flow entering and leaving each node must match.}
+\vspace{.08cm}
+{\footnotesize For a fixed placement $\Psi$, $F(\Psi)=\operatorname{MaxFlow}(G(\Psi))$ models steady-state serving throughput.\par}
+\end{column}
+\begin{column}{.59\textwidth}
+\centering
+\includegraphics[width=\linewidth,height=2.95cm,keepaspectratio,trim=0 980bp 0 0,clip]{figures/PreviousWork_Helix_Figure_02.png}\par
+\vspace{.04cm}{\scriptsize\color{Muted}(a) Physical links and layer placement\par}
+\includegraphics[width=\linewidth,height=2.35cm,keepaspectratio,trim=0 170bp 0 840bp,clip]{figures/PreviousWork_Helix_Figure_02.png}\par
+{\scriptsize\color{Muted}(b) Capacities in tokens/s\par}
+\end{column}
+\end{columns}
+\vspace{.05cm}
+{\scriptsize\color{Muted}Max Flow evaluates throughput for a fixed placement; the next slide jointly searches placement and flow. Source: Helix, Sec.~4.3, Fig.~2.\hfill\hyperlink{HELIX}{\beamerreturnbutton{Back to Main Slide 5}}\par}
+\end{frame}
+
+\begin{frame}[t,label=PW_HELIX_MILP]{Helix: MILP Placement and Flow}
+{\scriptsize\color{Muted}Mei et al., ``Serving Large Language Models over Heterogeneous GPUs and Network via Max-Flow,'' ASPLOS 2025, Secs.~4.4--4.6.\par}
+\vspace{.08cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.31\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,rounded=true,sep=.16cm]{mintbox}
+{\small\bfseries\color{Accent}Objective}\par\vspace{.08cm}
+\[
+\max\sum_i f_{\mathrm{source},i}
+\]
+{\footnotesize Maximize aggregate serving throughput by optimizing layer placement and flow together.\par}
+\end{beamercolorbox}
+\vspace{.08cm}
+{\footnotesize Max Flow evaluates a fixed placement. The MILP chooses placement and flow jointly.\par}
+\end{column}
+\begin{column}{.67\textwidth}
+\compactcard{lilacbox}{1. Layer placement and memory}{Assign each GPU a contiguous layer range that fits its memory budget.}
+\vspace{.045cm}
+\compactcard{mintbox}{2. Flow conservation}{Keep incoming and outgoing token rates equal at every worker.}
+\vspace{.045cm}
+\compactcard{lilacbox}{3. Compute constraints}{Limit each GPU's token rate to its profiled processing capacity.}
+\vspace{.045cm}
+\compactcard{mintbox}{4. Connectivity and network}{Permit only valid forward layer hops and keep traffic within link capacity.}
+\vspace{.06cm}
+{\footnotesize Helix optimizes feasible pipeline paths under compute, memory, and network constraints; it does not optimize operational carbon or p99 latency.\par}
+\end{column}
+\end{columns}
+\vspace{.08cm}
+{\scriptsize\color{Muted}Source: Helix, Secs.~4.4--4.6.\hfill\hyperlink{HELIX}{\beamerreturnbutton{Back to Main Slide 5}}\par}
+\end{frame}
+
+\begin{frame}[t,label=PW_THUNDER]{ThunderServe: Two-Level Scheduling}
+{\scriptsize\color{Muted}ThunderServe, MLSys 2025, Secs.~3.2--3.4, Fig.~3.\par}
+\vspace{.08cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.59\textwidth}
+\centering\includegraphics[width=\linewidth,height=4.75cm,keepaspectratio]{figures/PreviousWork_ThunderServe_Fig03.png}
+\end{column}
+\begin{column}{.39\textwidth}
+{\scriptsize\bfseries\color{Accent}UPPER LEVEL --- TABU SEARCH}\par\vspace{.04cm}
+\compactcard{mintbox}{1. GPU group construction}{Build candidate GPU groups for serving.}
+\vspace{.04cm}
+\compactcard{lilacbox}{2. Phase designation}{Assign groups to prefill or decode.}
+\vspace{.10cm}
+{\scriptsize\bfseries\color{Accent}LOWER LEVEL --- CONFIGURATION}\par\vspace{.04cm}
+\compactcard{mintbox}{3. TP / PP configuration}{Choose tensor and pipeline parallelism for each phase.}
+\vspace{.04cm}
+\compactcard{lilacbox}{4. Routing and KV transfer}{Route prefill/decode requests with network-aware KV cache transfer cost.}
+\end{column}
+\end{columns}
+\vspace{.08cm}
+{\footnotesize Phase allocation and TP/PP configuration are separate decisions. Replica counts are not GPU counts.\par}
+{\scriptsize\color{Muted}Source: ThunderServe, MLSys 2025, Secs.~3.2--3.4, Fig.~3.\hfill\hyperlink{THUNDER}{\beamerreturnbutton{Back to Main Slide 6}}\par}
 \end{frame}
 
 \end{document}

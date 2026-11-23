@@ -15,10 +15,19 @@ HELIX_FIGURE = REPO / '2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_
 HELIX_LOCAL = '../2026-11-04-meeting/Helix/Without-Caption/Helix_Figure_03_System_Overview.png'
 HELIX_ZIP = 'figures/Helix_Figure_03_System_Overview.png'
 THUNDER_FIGURE = ROOT / 'figures/ThunderServe_Fig05_no_caption.png'
-LABELS = ['EINDEX','GEO','RELATED','HELIX','THUNDER','PRISM','WORKLOAD','MEMORY','PLACEMENT','PLACEMENTENERGY','ACCOUNT','ENVIRONMENT','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES']
+LABELS = ['EINDEX','GEO','RELATED','HELIX','THUNDER','PRISM','WORKLOAD','MEMORY','PLACEMENT','PLACEMENTENERGY','ACCOUNT','ENVIRONMENT','THANKYOU','REEL1','REEL2','REEL3','REEL4','REELABOUT','MEMORYSOURCES','PW_CARBON_ARCH','PW_CARBON_MILP','PW_GREENCACHE','PW_HELIX_FLOW','PW_HELIX_MILP','PW_THUNDER']
 PAGE = {label:i for i,label in enumerate(['COVER']+LABELS)}
-PAGES, MAIN_PAGES = 20, 14
+PAGES, MAIN_PAGES = 26, 14
 CATEGORIES = {'GEO':2,'WORKLOAD':7,'ACCOUNT':11,'ENVIRONMENT':12}
+BACKUP_MAIN = {'PW_CARBON_ARCH':'GEO','PW_CARBON_MILP':'GEO','PW_GREENCACHE':'RELATED','PW_HELIX_FLOW':'HELIX','PW_HELIX_MILP':'HELIX','PW_THUNDER':'THUNDER'}
+BACKUP_REQUIRED = {
+ 'PW_CARBON_ARCH':['Carbon–SLO: Geo-Distributed Simulator','Figure 3','Regional Scheduler','RTT','datacenter states','RTT matrix','continuous batching'],
+ 'PW_CARBON_MILP':['Carbon–SLO: Facility MILP Routing','Predict TTFT and TPOT','Filter SLO-feasible datacenters','Solve Facility MILP','Execute and evaluate','shared fixed/batch carbon cost','does not guarantee compliance','not a datacenter shutdown control'],
+ 'PW_GREENCACHE':['GreenCache: Optimization and Execution','Fig. 10','SLO Input','Constraint Solver','Cache Manager','LLM Server and Cache','ILP selects the lowest-carbon feasible SSD cache capacity','LCS then ranks entries for eviction','LMCache/vLLM'],
+ 'PW_HELIX_FLOW':['Helix: Max-Flow Model of Serving','Node splitting','Network capacity','Source, sink, conservation','MaxFlow','fixed placement','tokens/s'],
+ 'PW_HELIX_MILP':['Helix: MILP Placement and Flow','Layer placement and memory','Flow conservation','Compute constraints','Connectivity and network','Maximize aggregate serving throughput','does not optimize operational carbon or p99 latency'],
+ 'PW_THUNDER':['ThunderServe: Two-Level Scheduling','ThunderServe, MLSys 2025','UPPER LEVEL','GPU group construction','Phase designation','LOWER LEVEL','TP / PP configuration','Routing and KV transfer','Replica counts are not GPU counts']
+}
 
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -41,9 +50,10 @@ def validate(doc):
     assert names['COVER']['page']==0
     for label,page in PAGE.items(): assert names[label]['page']==page,(label,names[label])
     assert 'Thank you' in doc[13].get_text()
+    assert [names[label]['page'] for label in ['PW_CARBON_ARCH','PW_CARBON_MILP','PW_GREENCACHE','PW_HELIX_FLOW','PW_HELIX_MILP','PW_THUNDER']]==list(range(20,26))
     for page,p in enumerate(doc):
         text=p.get_text()
-        assert re.search(rf'Research Materials\s*\|\s*{page+1}\s*/\s*20',text), (page+1,text[-100:])
+        assert re.search(rf'Research Materials\s*\|\s*{page+1}\s*/\s*{PAGES}',text), (page+1,text[-100:])
         assert abs(p.rect.width/p.rect.height-16/9)<.001
         for link in p.get_links():
             if link.get('nameddest'):
@@ -60,6 +70,18 @@ def validate(doc):
     for label,page in CATEGORIES.items():
         links=[l for l in index.get_links() if l.get('nameddest')==label]
         assert len(links)==1 and links[0]['page']==page and links[0]['from'].width>index.rect.width*.9,(label,links)
+    # Each Main Previous Work link and each Backup return must follow stable Beamer labels.
+    for backup,main in BACKUP_MAIN.items():
+        src=doc[PAGE[main]]; dst=doc[PAGE[backup]]
+        assert any(link.get('nameddest')==backup and link['page']==PAGE[backup] for link in src.get_links()),(main,backup,'missing main-to-backup')
+        returns=[link for link in dst.get_links() if link.get('nameddest')==main and link['page']==PAGE[main]]
+        assert len(returns)==1 and 'Back to Main Slide' in dst.get_textbox(returns[0]['from']),(backup,main,'missing return')
+        for link in src.get_links():
+            if link.get('nameddest')==backup:
+                assert dst.rect.contains(fitz.Rect(link['from'])) and src.rect.contains(fitz.Rect(link['from']))
+    for label,phrases in BACKUP_REQUIRED.items():
+        text=normalized(doc[PAGE[label]])
+        for phrase in phrases: assert phrase in text,(label,phrase)
     # Main to supplement and supplement return destinations must remain valid after the insertion.
     for main,supp in [('MEMORY','MEMORYSOURCES'),('REEL1','REELABOUT')]:
         p=doc[PAGE[main]]; q=doc[PAGE[supp]]
@@ -70,7 +92,7 @@ def validate(doc):
     assert all(term in normalized(doc[PAGE['REELABOUT']]) for term in ['Repository of Electronics Environmental Line-items','Life cycle inventory','Jonathan Balsvik','520 datasets','18 categories'])
     assert 'https://reellci.com/' in normalized(doc[PAGE['REELABOUT']])
     requirements={
-      'GEO':['Main Idea','Predict load-dependent serving latency and energy','Current Architecture','Global Provisioner','Regional Scheduler','Limitations'],
+      'GEO':['Main Idea','Predict load-dependent serving latency and energy','Current Architecture','Global Provisioner','Regional Scheduler','Limitations','RTT: Round-Trip Time'],
       'RELATED':['Main Idea','Dynamically size SSD-backed KV caches','Inputs','Optimization','Trade-off','Limitations','GreenCache sizes'],
       'HELIX':['Main Idea','Use max-flow-based layer placement','Motivation:','Method:','Evaluation:'],
       'THUNDER':['Main Idea','Jointly optimize prefill/decode resource allocation','Motivation:','Method:','TP/PP are distinct decisions','Workload characteristics affect'],
@@ -92,6 +114,8 @@ def validate(doc):
         for value in phrases: assert value in text,(label,value)
     assert len(doc[PAGE['HELIX']].get_image_info())==1
     assert len(doc[PAGE['THUNDER']].get_image_info())==1
+    for label,count in {'PW_CARBON_ARCH':1,'PW_GREENCACHE':1,'PW_HELIX_FLOW':2,'PW_HELIX_MILP':0,'PW_THUNDER':1}.items():
+        assert len(doc[PAGE[label]].get_image_info())==count,(label,count)
     assert 'Different LLM workloads require different compute, memory, and scheduling resources.' in normalized(doc[PAGE['WORKLOAD']])
     return sum(len(p.get_links()) for p in doc)
 
@@ -114,12 +138,20 @@ def main():
             z.writestr('main.tex',current.replace(HELIX_LOCAL,HELIX_ZIP))
             z.write(HELIX_FIGURE,HELIX_ZIP)
             z.write(THUNDER_FIGURE,'figures/ThunderServe_Fig05_no_caption.png')
-            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\n20-page deck with Helix Figure 3 and ThunderServe Figure 5.\n')
+            backup_assets={
+                'figures/PreviousWork_CarbonSLO_Fig03.png': ROOT/'figures/PreviousWork_CarbonSLO_Fig03.png',
+                'figures/PreviousWork_GreenCache_Fig10.png': ROOT/'figures/PreviousWork_GreenCache_Fig10.png',
+                'figures/PreviousWork_Helix_Figure_02.png': ROOT/'figures/PreviousWork_Helix_Figure_02.png',
+                'figures/PreviousWork_ThunderServe_Fig03.png': ROOT/'figures/PreviousWork_ThunderServe_Fig03.png',
+            }
+            for arc,path in backup_assets.items(): z.write(path,arc)
+            z.writestr('README.txt','Main file: main.tex\nCompiler: pdfLaTeX\nCompile twice for numbering and navigation.\n26-page deck; all original figures required by the main and Previous Work backup slides are included.\n')
         isolated=tmp/'isolated'
         with zipfile.ZipFile(ZIP) as z:
             assert z.testzip() is None
             assert hashlib.sha256(z.read(HELIX_ZIP)).hexdigest()==sha(HELIX_FIGURE)
             assert hashlib.sha256(z.read('figures/ThunderServe_Fig05_no_caption.png')).hexdigest()==sha(THUNDER_FIGURE)
+            for arc,path in backup_assets.items(): assert hashlib.sha256(z.read(arc)).hexdigest()==sha(path),(arc,'asset mismatch')
             z.extractall(isolated)
         zipped=compile_pdf(isolated,'main',tmp/'zipbuild')
         a,b=fitz.open(local),fitz.open(zipped)
@@ -132,17 +164,17 @@ def main():
         QA.mkdir(parents=True,exist_ok=True)
         render_dir=QA/'pages'; render_dir.mkdir(exist_ok=True)
         for i,p in enumerate(a,1): p.get_pixmap(matrix=fitz.Matrix(3,3)).save(render_dir/f'research-materials-{i:02d}.png')
-        # Keep the review montage synchronized with the rendered 20-page deck.
+        # Keep the review montage synchronized with the rendered 26-page deck.
         montage=Image.new('RGB',(1600,((PAGES+1)//2)*470),'#D8E4EB')
         for n in range(PAGES):
             image=Image.open(render_dir/f'research-materials-{n+1:02d}.png').convert('RGB'); image.thumbnail((800,450))
             x=(n%2)*800; y=(n//2)*470; montage.paste(image,(x,y))
             ImageDraw.Draw(montage).text((x+12,y+452),f'{n+1}/{PAGES}',fill='#243748')
         montage.save(QA/'research-materials-montage.png')
-        report={'pages':20,'main_pages':14,'supplementary_pages':6,'pdf_sha256':sha(PDF),'zip_sha256':sha(ZIP),'source_sha256':sha(SOURCE),'local_passes':2,'zip_passes':2,'warnings':[],'links':links,'contents_destinations':{k:v+1 for k,v in CATEGORIES.items()},'pdf_zip_parity':{'text':True,'pixels':True,'annotations':True},'unchanged_frames':sorted(old.keys()-allowed)}
+        report={'pages':26,'main_pages':14,'supplementary_pages':6,'previous_work_backup_pages':6,'pdf_sha256':sha(PDF),'zip_sha256':sha(ZIP),'source_sha256':sha(SOURCE),'local_passes':2,'zip_passes':2,'warnings':[],'links':links,'contents_destinations':{k:v+1 for k,v in CATEGORIES.items()},'main_to_backup':{'GEO':[PAGE['PW_CARBON_ARCH']+1,PAGE['PW_CARBON_MILP']+1],'RELATED':[PAGE['PW_GREENCACHE']+1],'HELIX':[PAGE['PW_HELIX_FLOW']+1,PAGE['PW_HELIX_MILP']+1],'THUNDER':[PAGE['PW_THUNDER']+1]},'backup_to_main':{label:PAGE[target]+1 for label,target in BACKUP_MAIN.items()},'pdf_zip_parity':{'text':True,'pixels':True,'annotations':True},'unchanged_frames':sorted(old.keys()-allowed)}
         (QA/'research-materials-build.json').write_text(json.dumps(report,indent=2)+'\n')
-        (QA/'validation.md').write_text('# Research Materials validation\n\n- PASS: 20 widescreen pages (14 main + 6 supplementary); Thank You at page 14.\n- PASS: local and extracted Overleaf ZIP compiled in two pdfLaTeX passes each with no warnings.\n- PASS: local PDF and ZIP PDF match in text, rendered pixels, and link annotations.\n- PASS: four Contents cards target pages 3, 8, 12, and 13; main/supplement links round-trip.\n- PASS: all 20 footers, page bounds, named destinations, retained research evidence, and new slide content validated.\n')
+        (QA/'validation.md').write_text('# Research Materials validation\n\n- PASS: 26 widescreen pages (14 main + 6 existing supplements + 6 Previous Work backups); Thank You at page 14.\n- PASS: local and extracted Overleaf ZIP compiled in two pdfLaTeX passes each with no warnings.\n- PASS: local PDF and ZIP PDF match in text, rendered pixels, and link annotations.\n- PASS: four Contents cards target pages 3, 8, 12, and 13; existing supplement links round-trip.\n- PASS: Previous Work links 3→21/22, 4→23, 5→24/25, 6→26; every Backup returns to its Main slide.\n- PASS: all 26 footers, page bounds, figures, destinations, retained evidence, and backup content validated.\n')
         a.close(); b.close()
-    print(f'PASS: 20 pages; warning-free local/ZIP builds; {links} links validated; PDF and ZIP render identically.')
+    print(f'PASS: 26 pages; warning-free local/ZIP builds; {links} links validated; PDF and ZIP render identically.')
 
 if __name__=='__main__': main()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mutation checks for the current 20-page Research Materials deck contracts."""
+"""Mutation checks for the current 26-page Research Materials deck contracts."""
 import json
 import unittest
 import pymupdf as fitz
@@ -22,7 +22,7 @@ class DeckContracts(unittest.TestCase):
         self.rejects(mutate)
 
     def test_valid_deck(self):
-        with fitz.open(build.PDF) as doc: self.assertEqual(build.validate(doc),28)
+        with fitz.open(build.PDF) as doc: self.assertEqual(build.validate(doc),40)
 
     def test_page_count(self): self.rejects(lambda doc: doc.delete_page(7))
     def test_contents_destination(self):
@@ -32,6 +32,7 @@ class DeckContracts(unittest.TestCase):
         self.rejects(mutate)
     def test_thank_you_position(self): self.remove_phrase('THANKYOU','Thank you')
     def test_main_idea_required(self): self.remove_phrase('HELIX','Use max-flow-based layer placement')
+    def test_rtt_definition_required(self): self.remove_phrase('GEO','RTT: Round-Trip Time')
     def test_prism_memory_method_required(self): self.remove_phrase('PRISM','Memory ballooning')
     def test_first_goal_required(self): self.remove_phrase('PRISM','Goal: SLO attainment')
     def test_scepsy_allocation_required(self): self.remove_phrase('PRISM','give each LLM GPUs in proportion')
@@ -51,6 +52,29 @@ class DeckContracts(unittest.TestCase):
             for link in p.get_links():
                 if link.get('nameddest')=='MEMORY': p.delete_link(link)
         self.rejects(mutate)
+
+    def test_each_backup_main_link_required(self):
+        for backup,main in build.BACKUP_MAIN.items():
+            with self.subTest(backup=backup):
+                def mutate(doc):
+                    p=doc[build.PAGE[main]]
+                    for link in p.get_links():
+                        if link.get('nameddest')==backup: p.delete_link(link)
+                self.rejects(mutate)
+
+    def test_each_backup_return_link_required(self):
+        for backup,main in build.BACKUP_MAIN.items():
+            with self.subTest(backup=backup):
+                def mutate(doc):
+                    p=doc[build.PAGE[backup]]
+                    for link in p.get_links():
+                        if link.get('nameddest')==main: p.delete_link(link)
+                self.rejects(mutate)
+
+    def test_backup_required_text(self):
+        for label,phrases in build.BACKUP_REQUIRED.items():
+            with self.subTest(backup=label):
+                self.remove_phrase(label,phrases[0])
 
 if __name__=='__main__':
     result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(DeckContracts))
