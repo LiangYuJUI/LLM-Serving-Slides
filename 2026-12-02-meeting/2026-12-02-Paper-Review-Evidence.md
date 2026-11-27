@@ -1,0 +1,19 @@
+# Paper Review Evidence Register
+
+| Claim | Slide | Source | Section / figure / page | Conditions / limitations | Status |
+|---|---:|---|---|---|---|
+| Kareto full title, authors, v1 date (25 Feb 2026) | 1 | [arXiv:2603.08739v1](https://arxiv.org/abs/2603.08739v1) | title page | Preprint; no conference status claimed | Verified from primary source |
+| HBM capacity motivates DRAM/SSD KV tiers; fixed configurations do not adapt to varying workloads | 1 | Kareto v1 | Abstract, §§1–2 | Authors' motivation | Verified from primary source |
+| Kareto implements its own end-to-end trace replay simulator; inputs include trace arrival/token characteristics and configured system/tier parameters; outputs include throughput, TTFT, hit rate/cost | 2 | Kareto v1 | §3, Fig. 4, §5 | The paper's simulator, not LLMServingSim | Verified from primary source |
+| Simulator validation maximum deviations: mean TTFT 19.2%, throughput 6.5%, hit rate 2.0% | 2–3 | Kareto v1 | §5.4, Fig. 17, PDF p. 13 | GPU-only, GPU+DRAM, GPU+disk comparisons on real GPU server; not every configuration | Verified from primary source |
+| Trace-driven evaluation mixes open-dataset and synthetic workloads | 2 | [Kareto v1](https://arxiv.org/abs/2603.08739v1) | §5 workload setup | Traces A/B derive from open-source datasets; Trace C is synthetically generated to represent agent-based requests. Do not describe all three as production traces | Verified from primary source |
+| Against fixed 1024 GB DRAM: +9.3% throughput, −58.3% latency, −20.2% cost | 3 | Kareto v1 | Abstract, §§5.2–5.3 | Different respective objective runs; maxima must not be combined into one configuration | Verified from primary source |
+| Figure 6 shows reuse ratio versus DRAM/SSD capacity for high- and low-density workloads | 3 | Kareto v1 | Fig. 6, PDF p. 6 | Source axes use DRAM Total (GB), Disk Capacity (GB), reuse ratio, and TTFT (ms) | Verified from primary source |
+| Kareto tunes group-specific TTL using prefix-tree/KV access patterns | 2–3 | Kareto v1 | Abstract, §4 | Does not optimize power or carbon | Verified from primary source |
+| EcoServe title/authors and version/status | 4 | [arXiv:2502.05043v2](https://arxiv.org/abs/2502.05043); [Microsoft Research publication page](https://www.microsoft.com/en-us/research/publication/ecoserve-designing-carbon-aware-ai-inference-systems/) | arXiv history and official research page | Current version v2, revised 15 Mar 2025; official page lists arXiv (Feb 2025), with no conference venue listed there | Verified from primary source |
+| EcoServe abstract-level claims | 4–6 | [arXiv:2502.05043v2](https://arxiv.org/abs/2502.05043v2) | Abstract | Claims refer to authors’ studied traces/configurations | Verified from primary source |
+| GPUs dominate operational carbon; host systems dominate embodied carbon in evaluated system | 4 | EcoServe | Abstract, §3, Fig. 6 | Specific evaluated configurations and assumptions; not universal | Verified from primary source |
+| Reduce / Reuse / Rightsize / Recycle meaning | 5 | EcoServe | §1; §4 | See exact operating choices described in paper | Verified from primary source |
+| Up to 47% carbon reduction at comparable performance | 6 | EcoServe | §6.1, Fig. 15, PDF p. 10 | Relative to performance-, energy-, and cost-optimized design points; experiments assume iso-throughput; up to maximum | Verified from primary source |
+| Kareto's performance/cost optima may differ from energy optima | 3 | Research question | Proposed question based on Kareto's objective scope | No measured result or novelty claim | Hypothesis to validate |
+| Original EcoServe Fig. 6 component-carbon breakdown | 4 | EcoServe v2 | Fig. 6, PDF p. 4 | A100 system and paper-stated lifetime/grid assumptions; component shares are configuration-specific | Verified from primary source |
