@@ -28,7 +28,7 @@ assert [research_text.index(f"Topic {topic}:") for topic in "ABC"] == sorted(res
 for path in [
     "2026-12-02-Paper-Review-Evidence.md", "2026-12-02-Research-Discussion-Evidence.md",
     "2026-12-02-Research-Discussion-SPEC.md", "README.md", "deck_manifest.json",
-    "output/pdf/2026-12-02-Paper-Review.pdf", "output/overleaf/Paper-Review.zip",
+    "output/pdf/2026-12-02-Kareto.pdf", "output/overleaf/Paper-Review.zip",
     "output/qa/paper-review-montage.png",
 ]:
     assert (root / path).is_file(), path

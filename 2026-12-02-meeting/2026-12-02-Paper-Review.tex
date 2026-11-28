@@ -19,13 +19,29 @@
 \setbeamercolor{footline}{fg=Muted,bg=Paper}
 \setbeamercolor{block title}{fg=Accent,bg=Paper}
 \setbeamercolor{block body}{fg=Ink,bg=Paper}
+\setbeamercolor{motivationblocka}{fg=Ink,bg=SoftMint}
+\setbeamercolor{motivationblockb}{fg=Ink,bg=SoftLilac}
+\setbeamercolor{motivationblockc}{fg=Ink,bg=AccentBlue!12}
 \setbeamerfont{frametitle}{size=\large,series=\bfseries}
 \setbeamertemplate{headline}{}
 \setbeamertemplate{navigation symbols}{}
 \setbeamersize{text margin left=.55cm,text margin right=.55cm}
 \setbeamertemplate{frametitle}{\nointerlineskip\begin{beamercolorbox}[wd=\paperwidth,ht=.73cm,dp=.14cm,leftskip=.58cm]{frametitle}\usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
-\setbeamertemplate{footline}{\begin{beamercolorbox}[wd=\paperwidth,ht=.31cm,dp=.14cm]{footline}\hspace{.55cm}\scriptsize\ifnum\value{framenumber}<20 Kareto Paper Review\hfill Main \insertframenumber/19\else Research backup\hfill B\number\numexpr\value{framenumber}-19\relax\fi\hspace{.55cm}\end{beamercolorbox}}
-\newcommand{\src}[1]{\par\vspace{.03cm}{\tiny\color{Muted}#1}}
+\setbeamerfont{footline}{size=\tiny}
+\newcommand{\slidesource}{}
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=.40cm,dp=.12cm,leftskip=.45cm,rightskip=.45cm]{footline}%
+      \hbox to \dimexpr\paperwidth-.9cm\relax{%
+        \parbox[c][.40cm][c]{.80\paperwidth}{\raggedright\tiny\color{Muted}\slidesource}%
+        \hfil\makebox[.12\paperwidth][r]{\tiny\color{Muted}%
+          \ifnum\value{framenumber}<17
+            Main\space\ifnum\value{framenumber}<10 0\fi\insertframenumber\space/\space16
+          \else
+            B\ifnum\numexpr\value{framenumber}-16\relax<10 0\fi\number\numexpr\value{framenumber}-16\relax
+          \fi}}%
+    \end{beamercolorbox}}}
+\newcommand{\src}[1]{\gdef\slidesource{#1}}
 \newcommand{\take}[1]{\vspace{.05cm}\begin{beamercolorbox}[wd=\linewidth,sep=.07cm]{mintbox}\small\bfseries\color{Accent}#1\end{beamercolorbox}}
 \newcommand{\tagline}[1]{{\small\color{Muted}#1\par}\vspace{.1cm}}
 \newcommand{\jump}[2]{\hfill\hyperlink{#1}{\beamergotobutton{#2}}}
@@ -36,46 +52,70 @@
 \newcommand{\target}[1]{\hypertarget{#1}{}}
 \begin{document}
 
-% MAIN SLIDES (18)
+% MAIN SLIDES (16)
 \begin{frame}[t]
-\vspace{.20cm}
-{\large\bfseries Adaptive Multi-Objective Tiered Storage Configuration for KV Cache in LLM Service\par}
-\vspace{.12cm}{\normalsize\color{Accent}Kareto | arXiv preprint | Workload-Aware KV Cache Storage Provisioning\par}
-\vspace{.02cm}{\small\color{Muted}arXiv:2603.08739v1 | 25 February 2026\par}
-\vspace{.06cm}{\small Xianzhe Zheng et al. | Zhejiang University and Alibaba Group\par}
+\vspace*{\fill}
+{\LARGE\bfseries Adaptive Multi-Objective Tiered Storage\\Configuration for KV Cache in LLM Service\par}
+\vspace{.55cm}
+{\large Xianzhe Zheng et al.\par}
 \vspace{.12cm}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.35\textwidth}\centering
-\begin{tikzpicture}[>=Latex,node distance=.24cm,box/.style={draw=Accent,rounded corners=2pt,text width=3.25cm,minimum width=3.55cm,minimum height=.60cm,align=center,font=\small}]
-\node[box,fill=SoftMint](h){GPU HBM\\fast access, limited capacity};
-\node[box,fill=SoftLilac,below=of h](d){Host DRAM\\larger capacity, higher access latency};
-\node[box,fill=AccentBlue!12,below=of d](s){SSD / disk\\cost-effective capacity, lower I/O bandwidth};
+{\color{Muted}Zhejiang University\\Alibaba Group\\arXiv:2603.08739v1 \quad 25 February 2026}\par
+\vspace{.75cm}
+\textbf{Research meeting: 2 December 2026}\\[.12cm]
+Yu-Jui Liang\quad Advisor: Hsiang-Yun Cheng\\
+National Taiwan University / Academia Sinica
+\par\vfill
+\src{Source: Kareto v1, Abstract and §§1–2, pp. 1–2. Preprint; no venue claim.}
+\end{frame}
+
+\begin{frame}[t]{Motivation \& Key Observations}
+\target{main-motivation}\tagline{LLM serving needs both fast access and economical capacity}
+\vspace{.1cm}
+{\centering
+\begin{tikzpicture}[>=Latex,node distance=.45cm,box/.style={draw=Accent,rounded corners=2pt,text width=3.65cm,minimum width=3.85cm,minimum height=1.05cm,align=center,font=\footnotesize}]
+\node[box,fill=SoftMint](h){GPU HBM\\Fast access\\Limited capacity};
+\node[box,fill=SoftLilac,right=of h](d){Host DRAM\\More capacity\\Higher latency};
+\node[box,fill=AccentBlue!12,right=of d](s){SSD / disk\\Economical capacity\\Lower bandwidth};
 \draw[<->,thick,Accent](h)--(d);\draw[<->,thick,AccentBlue](d)--(s);
-\end{tikzpicture}
-\end{column}
-\begin{column}{.53\textwidth}
-\begin{tabularx}{\linewidth}{>{\bfseries\color{Accent}}p{2.35cm}X}
-Limited HBM & Long contexts and concurrent requests increase KV-cache capacity requirements.\\[.11cm]
-Static provisioning & Predefined capacities can over-provision or under-provision storage.\\[.11cm]
-Workload diversity & Reuse patterns and request density change the value of each tier.
-\end{tabularx}
-\end{column}
-\end{columns}
-{\small\bfseries\color{Accent}Kareto adapts storage to workload and service objectives.\par}
+\end{tikzpicture}\par}
+\vspace{.12cm}
+\begin{beamercolorbox}[wd=\linewidth,sep=.09cm,rounded=true]{motivationblocka}
+{\small\bfseries\color{Accent}Limited HBM}\par
+{\small Long contexts and concurrent requests need more KV-cache capacity.}
+\end{beamercolorbox}
+\vspace{.08cm}
+\begin{beamercolorbox}[wd=\linewidth,sep=.09cm,rounded=true]{motivationblockb}
+{\small\bfseries\color{Accent}Static provisioning}\par
+{\small Fixed capacities can leave storage over- or under-provisioned.}
+\end{beamercolorbox}
+\vspace{.08cm}
+\begin{beamercolorbox}[wd=\linewidth,sep=.09cm,rounded=true]{motivationblockc}
+{\small\bfseries\color{Accent}Workload diversity}\par
+{\small Reuse patterns and request density change the value of each tier.}
+\end{beamercolorbox}
 \src{Source: Kareto v1, Abstract and §§1–2, pp. 1–2. Preprint; no venue claim.}
 \end{frame}
 
 \begin{frame}[t]{Workload-Dependent KV Cache Reuse}
-\target{main-reuse}\tagline{Reuse-hit concentration differs sharply across workloads}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.67\textwidth}\pic{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig02.png}{1.0}{3.0cm}\end{column}
-\begin{column}{.31\textwidth}
-{\Large\bfseries 31.95\%\par}{\small of Trace A KV blocks account for 90\% of reuse hits.\par}\vspace{.3cm}
-{\Large\bfseries 0.67\%\par}{\small of Trace B KV blocks account for 90\% of reuse hits.\par}\vspace{.25cm}
-\small Trace A: interactive chatbot.\\Trace B: programmatic API, with concentrated shared-prefix reuse.\\[.12cm]\textbf{These are reuse-hit concentration values, not overall cache hit rates.}
-\end{column}
-\end{columns}
-{\small\bfseries\color{Accent}The effective KV-cache working set depends on workload-specific reuse patterns.\par}
+\target{main-reuse}\tagline{Share of KV blocks that accounts for 90\% of reuse hits}
+\vspace{.55cm}
+\begin{center}
+\begin{tikzpicture}[x=.23cm,y=1cm,font=\small]
+  \foreach \x/\label in {0/0\%,10/10\%,20/20\%,30/30\%,35/35\%}{
+    \draw[Muted!35] (\x,.12) -- (\x,2.0);
+    \node[anchor=north,color=Muted] at (\x,.08) {\label};
+  }
+  \node[anchor=east,align=right,text width=5.0cm] at (-.8,1.48) {Trace A --- Interactive Chatbot};
+  \fill[Accent] (0,1.28) rectangle (31.95,1.68);
+  \node[anchor=west,font=\large\bfseries,color=Ink] at (33,1.48) {31.95\%};
+  \node[anchor=east,align=right,text width=5.0cm] at (-.8,.58) {Trace B --- Programmatic API};
+  \fill[Accent] (0,.38) rectangle (.67,.78);
+  \node[anchor=west,font=\large\bfseries,color=Ink] at (2,.58) {0.67\%};
+\end{tikzpicture}
+\end{center}
+\vspace{.35cm}
+\begin{center}\small\textcolor{Accent}{\rule{.35cm}{.12cm}}\quad Green bars show the KV-block share that contributes 90\% of reuse hits.\end{center}
+\take{Reuse hits are concentrated in a much smaller share of Trace B's KV blocks.}
 \src{Source: Kareto v1, Section 3.1, Figure 2, p. 3.}\jump{backup-lifetime}{TTL detail}
 \end{frame}
 
@@ -84,57 +124,84 @@ Workload diversity & Reuse patterns and request density change the value of each
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.62\textwidth}\pic{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig03.png}{1.0}{4.6cm}\end{column}
 \begin{column}{.35\textwidth}
-\begin{block}{Reported example}\small Increasing capacity from 250 GB to 1,000 GB yields about 21\% higher reuse ratio.\\[.18cm]Increasing from 1,000 GB to 2,000 GB yields less than 7\% additional improvement.\end{block}
-\small The effective cache size is a workload property. Beyond saturation, storage cost can keep rising while reuse gains taper.
+\begin{block}{Capacity and reuse}\small Cache capacity can grow without a proportional increase in reuse ratio. As capacity gets larger, the reuse gains gradually taper.\end{block}
 \end{column}
 \end{columns}
-\take{Capacity planning must account for diminishing returns, not capacity alone.}
+\take{More cache capacity helps, but reuse gains taper as the cache grows.}
 \src{Source: Kareto v1, Section 3.1.2, Figure 3, p. 4.}\jump{backup-lifetime}{TTL and lifetime}
 \end{frame}
 
 \begin{frame}[t]{Workload Density Changes the Value of SSD Prefetching}
 \target{main-density}\tagline{Kareto uses existing queue time as a prefetch window; it does not add queueing deliberately}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}\centering{\large\bfseries Compute-abundant / low density\par}\vspace{.2cm}
-\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small]
-\draw[->,thick](0,0)--(5.8,0) node[right]{time};\draw[fill=SoftLilac,draw=AccentBlue](.2,.25) rectangle (1.3,.72);\node at (.75,.48){short queue};
-\draw[fill=SoftMint,draw=Accent](1.55,.25) rectangle (3.0,.72);\node at (2.27,.48){GPU work};
-\draw[fill=AccentBlue!15,draw=AccentBlue](.2,-.85) rectangle (1.0,-.38);\node at (.6,-.62){SSD read};\draw[dashed,thick,AccentBlue](1,-.62)--(1.8,-.62);\draw[->,thick,AccentBlue](1.8,-.62)--(1.8,-.16);\node[align=left] at (3.7,-.62){may miss queue window;\\recompute or wait};
+\begin{center}
+{\small\bfseries Compute-abundant / low density\par}
+\begin{tikzpicture}[x=1.55cm,y=.95cm,>=Latex,font=\small]
+\draw[->,thick](0,0)--(8.2,0) node[right]{time};
+\draw[rounded corners=2pt,fill=SoftLilac,draw=AccentBlue](.2,.22) rectangle (1.85,.66);\node at (1.025,.44){short queue};
+\draw[rounded corners=2pt,fill=AccentBlue!15,draw=AccentBlue](1.88,.22) rectangle (3.15,.66);\node at (2.515,.44){I/O wait};
+\draw[rounded corners=2pt,fill=SoftMint,draw=Accent](3.18,.22) rectangle (5.8,.66);\node at (4.49,.44){GPU work};
+\draw[rounded corners=2pt,fill=AccentBlue!15,draw=AccentBlue](.2,-.62) rectangle (3.15,-.22);\node at (1.675,-.42){SSD read};
+\draw[->,thick,AccentBlue](3.15,-.22)--(3.15,.14);
 \end{tikzpicture}
-\small Short queues limit prefetch opportunity; disk reload can be slower than recomputation.
-\end{column}
-\begin{column}{.48\textwidth}\centering{\large\bfseries Compute-constrained / high density\par}\vspace{.2cm}
-\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small]
-\draw[->,thick](0,0)--(5.8,0) node[right]{time};\draw[fill=SoftLilac,draw=AccentBlue](.2,.25) rectangle (2.5,.72);\node at (1.35,.48){existing queue};
-\draw[fill=SoftMint,draw=Accent](2.7,.25) rectangle (4.3,.72);\node at (3.5,.48){GPU work};
-\draw[fill=AccentBlue!15,draw=AccentBlue](.2,-.85) rectangle (2.05,-.38);\node at (1.12,-.62){SSD read};\draw[->,thick,AccentBlue](2.05,-.62)--(2.45,-.16);\node at (3.9,-.62){ready before use};
+\par\footnotesize Short queues cannot hide disk reads, so the request waits for I/O or recomputes.
+\vspace{.15cm}
+
+{\small\bfseries Compute-constrained / high density\par}
+\begin{tikzpicture}[x=1.55cm,y=.95cm,>=Latex,font=\small]
+\draw[->,thick](0,0)--(8.2,0) node[right]{time};
+\draw[rounded corners=2pt,fill=SoftLilac,draw=AccentBlue](.2,.22) rectangle (3.65,.66);\node at (1.925,.44){existing queue};
+\draw[rounded corners=2pt,fill=SoftMint,draw=Accent](3.68,.22) rectangle (6.4,.66);\node at (5.04,.44){GPU work};
+\draw[rounded corners=2pt,fill=AccentBlue!15,draw=AccentBlue](.2,-.62) rectangle (2.9,-.22);\node at (1.55,-.42){SSD read};
+\draw[->,thick,AccentBlue](2.9,-.22)--(3.2,.14);\node[anchor=west] at (3.28,-.42){ready before use};
 \end{tikzpicture}
-\small Longer existing queues can hide more disk I/O and enable cache reuse.
-\end{column}
-\end{columns}
-\vspace{-.02cm}{\concept\par}
+\par\footnotesize Longer existing queues can hide more disk I/O and enable cache reuse.
+\end{center}
 \take{SSD caching helps when its data becomes ready before dependent GPU computation.}
 \src{Source: Kareto v1, Section 3.3, observations 1–4, pp. 5–6.}\jump{backup-density}{Figures 5–6}
 \end{frame}
 
 \begin{frame}[t]{Density Changes Reuse, Throughput, and TTFT}
-\target{main-density-data}\tagline{Figure 5 compares capacity effects in compute-bound and compute-abundant settings}
-\pic{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig05.png}{.98}{3.9cm}
-\begin{columns}[T,onlytextwidth]\begin{column}{.48\textwidth}\small\textbf{Compute-bound / 1 instance} More capacity reduces redundant prefill; throughput can rise with reuse.\end{column}\begin{column}{.48\textwidth}\small\textbf{Compute-abundant / 4 instances} Throughput approaches request arrivals; capacity chiefly affects latency and reuse.\end{column}\end{columns}
-\take{The same capacity increase has different value as workload density changes.}
+\target{main-density-data}\tagline{The same capacity increase affects service metrics differently across workload densities}
+\vspace{.55cm}
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\linewidth}{>{\bfseries\color{Accent}}p{2.3cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Metric} & \textbf{Compute-Constrained (Low Density)} & \textbf{Compute-Abundant (High Density)} \\
+\midrule
+Reuse Ratio & Increasing capacity usually raises reuse. & Increasing capacity can also raise reuse. \\
+Throughput & Less recomputation may improve throughput. & Workload arrivals limit throughput gains. \\
+TTFT & Less prefill and queueing can improve TTFT. & Capacity mainly improves individual request latency. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\vspace{.3cm}
+\take{Workload density changes how capacity gains translate into performance.}
 \src{Original Figure 5, Kareto v1, Section 3.3, p. 5.}\jump{backup-density}{Figure 5 detail}\jump{backup-density-full}{Figure 6 detail}
 \end{frame}
 
 \begin{frame}[t]{Kareto Optimizes Throughput, Latency, and Economic Cost}
 \target{main-objectives}\tagline{The objectives define a Pareto set, not one universal optimum}
+\begin{center}\small\textbf{Multi-objective formulation}\quad $\min_{\mathbf{x}\in\mathcal{X}}\left(\mathbb{E}[L(\mathbf{x})],-\mathbb{E}[T(\mathbf{x})],C(\mathbf{x})\right)$\end{center}
+\vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.47\textwidth}
-\begin{block}{Problem formulation}\large\[
-\min_{\mathbf{x}\in\mathcal{X}}\left(\mathbb{E}[L(\mathbf{x})],-\mathbb{E}[T(\mathbf{x})],C(\mathbf{x})\right)
-\]\end{block}
-\small Decision space includes workload, compute, storage medium, and management policy. Evaluated planner sweeps DRAM capacity and TTL while holding the medium fixed to ESSD PL1.
+{\small\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{>{\bfseries\color{Accent}}p{2.4cm}>{\raggedright\arraybackslash}X}
+\toprule
+Objective & Optimization Direction \\
+\midrule
+Latency & Lower is better \\
+Throughput & Higher is better \\
+Economic Cost & Lower is better \\
+\bottomrule
+\end{tabularx}}
 \end{column}
-\begin{column}{.50\textwidth}\pic{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig08.png}{1.0}{3.9cm}\small Original two-instance comparison: pure DRAM, pure disk, and hybrid with 256 GB DRAM plus varying disk. Hybrid trades cost against latency while maintaining throughput.\end{column}
+\begin{column}{.50\textwidth}
+\begin{block}{Storage configurations}\small The authors compare pure DRAM, pure disk, and hybrid configurations using 256 GB DRAM with different disk capacities.\end{block}
+\small Hybrid storage can combine DRAM's faster access with SSD's lower capacity cost, offering different cost-performance trade-offs.
+\end{column}
 \end{columns}
 \take{Different service objectives favor different non-dominated storage configurations.}
 \src{Source: Kareto v1, Section 3.1, Eqs. 1–2 and Figure 8, pp. 3–4, 7. Cost is economic expenditure, not energy.}\jump{backup-bandwidth}{Bandwidth sensitivity}
@@ -142,167 +209,261 @@ Workload diversity & Reuse patterns and request density change the value of each
 
 \begin{frame}[t]{Kareto Uses an End-to-End Discrete-Event Simulator}
 \target{main-simulator}\tagline{The authors develop their own trace-driven simulator; it is not LLMServingSim}
-\pic{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig04.png}{.40}{2.55cm}
-\begin{center}\begin{tikzpicture}[>=Latex,node distance=.28cm,box/.style={draw=Accent,rounded corners=2pt,fill=SoftMint,minimum height=.54cm,text width=2.35cm,align=center,font=\scriptsize}]
-\node[box](a){Request traces + system / tier configuration};\node[box,right=of a,fill=SoftLilac,text width=2.9cm](b){Kareto end-to-end discrete-event simulator};\node[box,right=of b,fill=AccentBlue!12](c){Throughput, mean TTFT, reuse, economic cost};\draw[->,thick,Accent](a)--(b);\draw[->,thick,Accent](b)--(c);
-\end{tikzpicture}\end{center}
-\take{The simulator captures interactions among inference execution, KV-cache management, and storage tiers.}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.40\textwidth}
+\centering\includegraphics[height=5.65cm,keepaspectratio]{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig04.png}
+\end{column}
+\begin{column}{.57\textwidth}
+\small\textbf{KV Cache Simulator}\par
+\footnotesize Tracks prefix-tree reuse and KV placement across DRAM and disk/SSD, including cache hits, insertions, and evictions.\par\vspace{.14cm}
+\small\textbf{Request Metadata}\par
+\footnotesize Replays timestamps, input length, cache-hit length, and decode length.\par\vspace{.14cm}
+\small\textbf{Scheduler \& Queue}\par
+\footnotesize Models waiting and running requests, scheduling decisions, and batch formation.\par\vspace{.14cm}
+\small\textbf{Performance Modeling}\par
+\footnotesize Uses offline profiling samples to predict execution latency and cache-transfer time.
+\end{column}
+\end{columns}
 \src{Figure 4 and Section 3.2, p. 4. Figure 4 is displayed with original panels and labels.}\jump{backup-simulator}{Architecture detail}
 \end{frame}
 
-\begin{frame}[t]{Empirical GPU Profiling Feeds Execution-Time Models}
-\target{main-profiling}\tagline{Kernel execution time is profiled on target GPUs and interpolated across lengths}
+\begin{frame}[t]{Adaptive Pareto Search for Storage Configuration}
+\target{main-search}\tagline{Simulation-driven configuration planning using historical workload traces}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.51\textwidth}\centering\begin{tikzpicture}[>=Latex,node distance=.15cm,box/.style={draw=Accent,rounded corners=2pt,minimum height=.52cm,text width=3.5cm,align=center,font=\scriptsize}]
-\node[box,fill=SoftMint](a){Attention + FFN kernel profiling};\node[box,fill=SoftLilac,below=of a](b){Input length + context-size samples};\node[box,fill=AccentBlue!12,below=of b](c){Interpolation into event durations};\node[box,fill=SoftMint,below=of c](d){Queue, batch, KV tiers + layer-wise prefetch};\draw[->,thick](a)--(b);\draw[->,thick](b)--(c);\draw[->,thick](c)--(d);\end{tikzpicture}\end{column}
-\begin{column}{.45\textwidth}\small\textbf{Simulator models}\\Request arrivals / queueing; inference and batching; radix-tree prefix reuse; hierarchical placement, eviction, storage I/O, and prefetch stalls.\\[.15cm]\textbf{Outputs}\\Throughput, mean TTFT, cache reuse, and economic cost.\end{column}
+\begin{column}{.55\textwidth}
+\centering\includegraphics[width=\linewidth,height=4.8cm,keepaspectratio]{Kareto-Adaptive-Tiered-KV-Cache-2026/With-Caption/Kareto_Fig09.png}
+\end{column}
+\begin{column}{.42\textwidth}
+\scriptsize
+\textbf{Workload Traces}\par Recent requests seed planning and replay.\par\vspace{.06cm}
+\textbf{Parameter Planner}\par Proposes DRAM-capacity and disk-TTL configurations.\par\vspace{.06cm}
+\textbf{Group TTL Manager}\par Assigns retention TTLs to reused prefix groups.\par\vspace{.06cm}
+\textbf{Adaptive Searcher}\par Prunes weak regions and refines valuable candidates.\par\vspace{.06cm}
+\textbf{Performance Simulator}\par Evaluates throughput, latency, and economic cost.\par\vspace{.06cm}
+\textbf{Pareto Selector}\par Keeps non-dominated configurations.\par\vspace{.06cm}
+\textbf{Online Serving System}\par Applies the selected configuration and tracks outcomes.
+\end{column}
 \end{columns}
-\vspace{.12cm}\small Kareto's GPU profiling models execution time. It does not report the four phase-specific power models proposed later here.
-\take{The published simulator supports performance exploration; energy fidelity remains a separate research task.}
-\src{Source: Kareto v1, Section 3.2 and Figure 4, p. 4. Profiling-table structure is not fully disclosed.}\jump{backup-simulator}{Simulator details}
+\src{Original Figure 9. Kareto v1, Sections 4.1–4.2; Algorithm 1 and Section 5.3.1, Figure 13.}\jump{backup-overview}{System workflow}\jump{backup-search}{Search ablation}
 \end{frame}
 
-\begin{frame}[t]{Adaptive Pareto Search Refines High-Impact Regions}
-\target{main-search}\tagline{Coarse sampling identifies where further simulation is useful}
+\begin{frame}[t]{Group-Specific TTL Optimization under a Shared Storage Budget}
+\target{main-groupttl}\tagline{Different KV cache reuse patterns require different retention policies}
+{\footnotesize\bfseries Workload-Aware Grouping\par}
+\begin{itemize}\footnotesize
+\setlength{\topsep}{0pt}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}
+\item Partition KV blocks into groups based on frequently reused prefix subtrees.
+\item Assign different TTLs according to each group's reuse patterns.
+\item Allocate disk retention resources under a shared storage budget.
+\end{itemize}
+\setlength{\abovedisplayskip}{1pt}\setlength{\belowdisplayskip}{1pt}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.56\textwidth}\centering\begin{tikzpicture}[>=Latex,scale=.88,transform shape,font=\small]
-\draw[->,thick](0,0)--(5.8,0) node[right]{DRAM capacity};\draw[->,thick](0,0)--(0,3.3) node[above]{disk TTL};
-\draw[gray!50](1.4,0)--(1.4,2.8);\draw[gray!50](2.8,0)--(2.8,2.8);\draw[gray!50](4.2,0)--(4.2,2.8);\draw[gray!50](0,1.4)--(5.4,1.4);
-\draw[Accent,very thick] plot[smooth] coordinates{(.4,2.5)(1.2,2.1)(2.0,1.7)(2.8,1.25)(3.7,.8)(4.7,.35)};
-\foreach \x/\y in {.5/2.4,1.6/1.8,2.7/1.3,3.8/.8,4.8/.35}{\fill[AccentBlue] (\x,\y) circle (2.2pt);}
-\foreach \x/\y in {2.2/1.58,2.5/1.43,3.0/1.13,3.3/.98}{\fill[Accent] (\x,\y) circle (2.4pt);}
-\node[align=center] at (2.5,2.55){refine where\\performance / cost changes};\node[align=center] at (4.8,1.25){prune flat\\regions};
-\end{tikzpicture}\par{\concept}\end{column}
-\begin{column}{.40\textwidth}\begin{enumerate}\small\item Start from a coarse DRAM–TTL grid.\item Expand while marginal gains justify more capacity.\item Add points in high-variation regions.\item Pareto-filter evaluated configurations.\end{enumerate}\small The reported ablation uses fewer search evaluations than grid search with similar hypervolume. It does not establish a mathematical global optimum.\end{column}
+\begin{column}{.48\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,sep=.04cm,rounded=true]{motivationblocka}
+{\small\bfseries 1. Per-Group TTL Selection\par}
+\[
+ROI_g(t)=\frac{H_g(t)}{C_g(t)}
+\]
+\footnotesize Choose each group's ROI-efficient TTL to maximize cache hits per unit of storage capacity-time.
+\end{beamercolorbox}
+\end{column}
+\begin{column}{.48\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,sep=.04cm,rounded=true]{motivationblockb}
+{\small\bfseries 2. Global TTL Optimization\par}
+\[
+\begin{aligned}
+\max_{\mathbf t}\quad&\sum_g H_g(t_g)\\
+\text{s.t.}\quad&\sum_g C_g(t_g)\leq B
+\end{aligned}
+\]
+\footnotesize Adjust group TTLs to maximize total cache hits within the shared storage budget.
+\end{beamercolorbox}
+\end{column}
 \end{columns}
-\take{Adaptive exploration spends simulations where configuration changes matter.}
-\src{Source: Kareto v1, Section 4.2, Algorithm 1; Section 5.3.1, Figure 13.}\jump{backup-search}{Search ablation}
-\end{frame}
-
-\begin{frame}[t]{Group TTL Allocates Disk Retention by Reuse Pattern}
-\target{main-groupttl}\tagline{TTL means time-to-live: the duration a KV block remains in the disk tier}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.52\textwidth}\pic{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig10.png}{.98}{3.65cm}\small A few prefix-tree subtrees account for most reuse events.\end{column}
-\begin{column}{.45\textwidth}\centering\begin{tikzpicture}[>=Latex,node distance=.12cm,box/.style={draw=Accent,rounded corners=2pt,fill=SoftMint,text width=3.35cm,minimum height=.40cm,align=center,font=\scriptsize}]
-\node[box](a){Find frequently reused prefix subtrees};\node[box,below=of a,fill=SoftLilac](b){Estimate hits $H_g(t)$ and capacity-time $C_g(t)$};\node[box,below=of b,fill=AccentBlue!12](c){Choose per-group ROI $H_g(t)/C_g(t)$};\node[box,below=of c](d){Adjust TTLs under shared storage budget};\draw[->,thick](a)--(b);\draw[->,thick](b)--(c);\draw[->,thick](c)--(d);\end{tikzpicture}\end{column}
-\end{columns}
-\scriptsize ROI means hits per capacity-time, not profit or energy saved. TTL applies to disk retention.\par\vspace{.04cm}\take{Workload-aware TTL complements capacity exploration.}
+\vspace{.08cm}
+{\scriptsize\textbf{Notation:} $H_g(t)$: cache hits; $C_g(t)$: storage capacity-time consumption; $B$: total storage capacity-time budget.}\par
+\take{Group-specific TTLs maximize cache reuse under limited disk storage resources.}
 \src{Source: Kareto v1, Sections 4.1–4.3, Figures 9–11, Algorithms 1–2.}\jump{backup-groupttl}{Reuse groups}\jump{backup-groupttl-formula}{ROI allocation}
 \end{frame}
 
 \begin{frame}[t]{Evaluation Uses Three Trace Types and Two Cluster Scales}
 \target{main-setup}\tagline{The paper evaluates a Qwen3-480B / SGLang serving setup with ESSD PL1}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{1.25cm}X}\toprule
+\textbf{Trace} & \textbf{Workload}\\\midrule
+A & Interactive chatbot; derived from an open-source dataset.\\
+B & Programmatic API with shared prompts; derived from an open-source dataset.\\
+C & Synthetic agent workload reflecting internal request characteristics.\\\bottomrule
+\end{tabularx}
+\vspace{.08cm}
+\begin{beamercolorbox}[wd=\linewidth,sep=.08cm,rounded=true]{motivationblockc}
+{\footnotesize Each two-hour trace contains 40k–170k requests. Trace C is synthetic; not all traces are production.}
+\end{beamercolorbox}
+\vspace{.20cm}
+\begin{beamercolorbox}[wd=\linewidth,sep=.10cm,rounded=true]{motivationblockb}
+{\small\bfseries System and scenarios\par}\vspace{.04cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.50\textwidth}\begin{tabularx}{\linewidth}{lX}\toprule\textbf{Trace}&\textbf{Workload}\\\midrule
-A&Interactive chatbot; open-source dataset derived\\
-B&Programmatic API; shared prompts, open-source dataset derived\\
-C&Synthetic agent workload reflecting internal request characteristics\\\bottomrule\end{tabularx}\par\vspace{.12cm}\small Each trace spans two hours and contains 40k–170k requests. Trace C is synthetic; the traces are not all production traces.\end{column}
-\begin{column}{.47\textwidth}\begin{block}{System and scenarios}\small Model: Qwen3-480B\\Serving engine: SGLang\\Storage: Alibaba Cloud ESSD PL1\\1 instance: compute-constrained\\4 instances: compute-abundant\\Baseline: fixed 1,024 GB DRAM\end{block}\scriptsize Instance counts refer to cloud compute instances, not GPU counts. Exact accelerator / parallelism configuration for the emulated evaluation is not confirmed in the paper.\end{column}
+\begin{column}{.47\linewidth}
+\small Model: Qwen3-480B\par Serving engine: SGLang\par Storage: Alibaba Cloud ESSD PL1\par Baseline: fixed 1,024 GB DRAM
+\end{column}
+\begin{column}{.49\linewidth}
+\small 1 instance: compute-constrained\par 4 instances: compute-abundant\par
+\scriptsize Instances are cloud compute instances, not GPU counts. The paper does not specify the accelerator model/count or parallelism used in the emulated evaluation.
+\end{column}
 \end{columns}
+\end{beamercolorbox}
 \take{Workload provenance and compute scale shape how the reported outcomes should be read.}
 \src{Source: Kareto v1, Sections 3.3 and 5.1–5.2, pp. 5, 9–10.}\jump{backup-bandwidth}{Storage sensitivity}
 \end{frame}
 
-\begin{frame}[t]{Simulator Fidelity Is Validated on Three Storage Configurations}
-\target{main-validation}\tagline{Real-system comparisons isolate GPU-only, GPU + host DRAM, and GPU + disk}
-\pic{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig17.png}{.96}{3.0cm}
-\begin{columns}[T,onlytextwidth]\begin{column}{.32\textwidth}\centering{\Large\bfseries 19.2\%}\par\small maximum mean-TTFT deviation\end{column}\begin{column}{.32\textwidth}\centering{\Large\bfseries 6.5\%}\par\small maximum throughput deviation\end{column}\begin{column}{.32\textwidth}\centering{\Large\bfseries 2.0\%}\par\small maximum cache-hit-rate deviation\end{column}\end{columns}
-\small GPU-only means the KV-cache tier is GPU memory; it does not mean CPU/host resources are absent. These are maximum deviations for the tested metrics and configurations, not average errors or validation of power, energy, carbon, or TPOT.
-\take{Validation supports simulation-driven exploration within the evaluated configurations.}
-\src{Source: Kareto v1, Section 5.4, Figure 17 (HTML calls this Figure 19), pp. 13–14.}\jump{backup-validation}{Validation details}
-\end{frame}
-
-\begin{frame}[t]{Adaptive Provisioning Improves Distinct Objectives}
-\target{main-gains}\tagline{Compared with fixed 1,024 GB DRAM; maxima come from separate objective-specific choices}
-\pic{Kareto-Adaptive-Tiered-KV-Cache-2026/Without-Caption/Kareto_Fig12.png}{.85}{3.3cm}
-\begin{columns}[T,onlytextwidth]\begin{column}{.32\textwidth}\centering{\Large\bfseries +9.3\%}\par\small maximum throughput\end{column}\begin{column}{.32\textwidth}\centering{\Large\bfseries $-58.3\%$}\par\small maximum mean TTFT\end{column}\begin{column}{.32\textwidth}\centering{\Large\bfseries $-20.2\%$}\par\small maximum economic cost\end{column}\end{columns}
-\small Under 1 instance, storage can reduce redundant prefill work; under 4 instances, throughput is arrival-limited and right-sizing mainly reduces cost. Search and group TTL benefits vary by workload and density.
-\take{These separate maxima are not simultaneous gains from one configuration.}
-\src{Source: Kareto v1, Sections 5.2–5.3, Figure 12, pp. 10–14. Cost means economic expenditure.}\jump{backup-ablation}{Ablations}
-\end{frame}
-
-\begin{frame}[t]{Kareto and GreenCache Address Complementary Decisions}
-\target{main-priorwork}\tagline{Prior work contributes complementary methods and objectives}
+\begin{frame}[t]{Simulator Validation and Optimization Results}
+\target{main-validation}\target{main-gains}\tagline{Real-system validation and workload-aware storage optimization}
+{\small\bfseries\color{Accent}Simulator Validation\par}\vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}\begin{block}{Kareto | arXiv:2603.08739v1}\small Multi-tier KV configuration; workload-aware reuse; adaptive capacity and disk group TTL; end-to-end performance simulation.\par\smallskip\textbf{Objectives:} throughput, mean TTFT, economic cost.\par\textbf{Boundary:} no explicit energy or carbon optimization.\end{block}\end{column}
-\begin{column}{.48\textwidth}\begin{block}{GreenCache | arXiv:2505.23970v3}\small Carbon-aware cache sizing and Least Carbon Savings replacement; operational and embodied carbon; TTFT / TPOT constraints.\par\smallskip\textbf{Power inputs:} CPU/GPU measured; DRAM/SSD use typical specification values.\par\textbf{Boundary:} storage energy not activity-measured.\end{block}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.12cm,center,rounded=true]{motivationblocka}{\LARGE\bfseries 19.2\%\par}\small Max. mean TTFT deviation\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.12cm,center,rounded=true]{motivationblockb}{\LARGE\bfseries 6.5\%\par}\small Max. throughput deviation\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.12cm,center,rounded=true]{motivationblockc}{\LARGE\bfseries 2.0\%\par}\small Max. cache hit rate deviation\end{beamercolorbox}\end{column}
 \end{columns}
-\take{The papers address complementary decisions with different objectives.}
-\src{Sources: Kareto v1 Sections 3–5; GreenCache Sections 3, 5–6.}\jump{backup-accounting}{Accounting boundaries}
-\end{frame}
-
-\begin{frame}[t]{Energy-Aware Multi-Tier Cache Management Is a Gap to Validate}
-\target{main-hypothesis}\tagline{Proposed direction: lower energy and carbon while meeting service constraints}
+\vspace{.08cm}{\small Validated against real systems with GPU-only, GPU + DRAM, and GPU + disk caching.}\par
+\vspace{.22cm}
+{\small\bfseries\color{Accent}Adaptive Provisioning Results\par}\vspace{.08cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}\begin{block}{Research hypotheses}\small Performance-optimal and cost-optimal configurations may differ from energy-optimal configurations.\par\smallskip A higher cache hit rate may not always reduce total system energy.\end{block}\begin{block}{Stage 1 objective}\small Minimize system energy subject to TTFT and TPOT SLOs, required goodput, memory capacity, and applicable power budget.\end{block}\end{column}
-\begin{column}{.48\textwidth}\begin{block}{Potential gap to validate}\small Jointly model cache retention, tier placement, movement, and recomputation with measured component energy. Then consider operational and embodied carbon under declared workload, SLO, and lifecycle boundaries.\end{block}\begin{block}{Novelty boundary}\small This is a candidate gap, not a claim that no prior work exists. GreenCache already performs carbon-aware sizing and replacement.\end{block}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.12cm,center,rounded=true]{motivationblocka}{\LARGE\bfseries +9.3\%\par}\small Throughput\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.12cm,center,rounded=true]{motivationblockb}{\LARGE\bfseries $-58.3\%$\par}\small Mean TTFT\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.12cm,center,rounded=true]{motivationblockc}{\LARGE\bfseries $-20.2\%$\par}\small Economic cost\end{beamercolorbox}\end{column}
 \end{columns}
-\take{Test these hypotheses under equal workload and SLO constraints.}
-\src{Proposed research direction informed by Kareto v1 and GreenCache v3.}\jump{backup-break-even}{Break-even model}\jump{backup-accounting}{Accounting}
+\vspace{.08cm}{\small Maximum improvements over fixed 1,024 GB DRAM, obtained from separate configurations.}
+\take{Simulation-driven configuration planning improves performance and economic cost.}
+\src{Kareto v1: §5.4, Figure 17 (HTML calls this Figure 19), pp. 13–14; §§5.2–5.3, Figure 12, pp. 10–14. Cost is economic expenditure.}\jump{backup-validation}{Validation details}\jump{backup-ablation}{Optimization ablations}
 \end{frame}
 
-
-
-\begin{frame}[t]{Energy-Aware Cache Decisions Must Respect Data Availability}
-\target{main-decision}\tagline{Proposed decision path for a request under performance, capacity, and energy constraints}
-\centering\begin{tikzpicture}[>=Latex,font=\scriptsize,box/.style={draw=Accent,rounded corners=2pt,fill=SoftMint,text width=4.3cm,minimum height=.46cm,align=center},act/.style={draw=AccentBlue,rounded corners=2pt,fill=SoftLilac,text width=2.25cm,minimum height=.58cm,align=center}]
-\node[box] (r) at (5.5,0) {Request + prefix lookup};
-\node[act] (h) at (1.45,-1.05) {Reuse valid HBM KV};
-\node[act] (d) at (4.15,-1.05) {Restore valid DRAM KV};
-\node[act] (s) at (6.85,-1.05) {Restore valid SSD KV};
-\node[act] (c) at (9.55,-1.05) {Recompute missing prefix};
-\node[box,text width=5.6cm] (e) at (5.5,-2.0) {Estimate latency, energy, and SLO feasibility};
-\node[box,text width=5.6cm,fill=AccentBlue!12] (o) at (5.5,-2.75) {Select an energy-efficient feasible action};
-\draw[->,thick](r)--(h);\draw[->,thick](r)--(d);\draw[->,thick](r)--(s);\draw[->,thick](r)--(c);\draw[->,thick](h)--(e);\draw[->,thick](d)--(e);\draw[->,thick](s)--(e);\draw[->,thick](c)--(e);\draw[->,thick](e)--(o);
-\end{tikzpicture}\\{\proposal}
-\small Restore is feasible only when requested KV data exists and is valid in that tier. Recomputation includes Attention and FFN across Transformer layers.
-\take{The proposed policy considers retention, placement, transfers, and recomputation under SLOs.}
-\src{Proposed research direction; not a Kareto or GreenCache evaluated result.}\jump{backup-break-even}{Energy model}
-\end{frame}
-
-\begin{frame}[t]{GPU Models Should Separate Prefill and Decode Operations}
-\target{main-phase-model}\tagline{First-stage proposal: fit latency, power, and energy for four operation categories}
-\begin{center}\begin{tikzpicture}[font=\small,cell/.style={draw=Accent,minimum width=5.7cm,minimum height=1.30cm,align=left,inner sep=.16cm},head/.style={fill=SoftMint,draw=Accent,minimum width=5.7cm,minimum height=.52cm,align=center,font=\bfseries}]
-\node[head](h1){Attention};\node[head,right=0pt of h1](h2){FFN / Expert};
-\node[cell,below=0pt of h1,anchor=north west] (p1) at ([yshift=0pt]h1.south west) {\textbf{Prefill}\\Prompt computation, attention operations, KV writes};
-\node[cell,right=0pt of p1,fill=SoftLilac] (p2) {\textbf{Prefill}\\Matrix work, weight access, expert activation};
-\node[cell,below=0pt of p1,fill=AccentBlue!8] (d1) {\textbf{Decode}\\Historical KV reads, context length, attention};
-\node[cell,right=0pt of d1,fill=AccentBlue!8] (d2) {\textbf{Decode}\\Weight access, batching efficiency, experts};
-\end{tikzpicture}\end{center}
-\begin{columns}[T,onlytextwidth]\begin{column}{.48\textwidth}\small\textbf{Model outputs:} latency (ms), power (W), energy (J).\\\textbf{Parameters:} GPU, batch, new tokens, prefix/context length, model, precision, traffic, frequency, expert activation.\end{column}\begin{column}{.48\textwidth}\small Begin with dense Attention and FFN; model MoE expert operations later. Calibrate against measurements. No Attention/Expert disaggregation is assumed.\end{column}\end{columns}
-\take{Phase- and operation-aware model fidelity must be measured, not assumed from detail.}
-\src{Proposed research framework: not an evaluated result.}\jump{backup-accounting}{Energy accounting}
-\end{frame}
-
-\begin{frame}[t]{System Energy Requires Consistent Component Accounting}
-\target{main-energy}\tagline{Count measured system power over time; account for shared work and overlapping activity}
+\begin{frame}[t]{Kareto and GreenCache: Complementary Approaches}
+\target{main-priorwork}\tagline{Performance-driven and carbon-aware KV cache management}
+\vspace{-.16cm}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}\begin{block}{Proposed accounting boundary}\small GPU board and HBM accesses; CPU; host DRAM idle/read/write; SSD idle/read/write; PCIe and relevant interconnect; server baseline; shared batch work; prefetch and I/O contention.\end{block}
-\small\[
-\begin{aligned}
-E_{IT}&=\int P_{IT}(t)\,dt\\
-C_{op}&=\sum_t E_{IT,t}\cdot PUE_t\cdot CI_t\\
-C_{total}&=C_{op}+C_{emb,alloc}
-\end{aligned}
-\]
+\begin{column}{.485\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,sep=.025cm,center,rounded=true]{motivationblocka}
+{\normalsize\bfseries Kareto}
+\end{beamercolorbox}
 \end{column}
-\begin{column}{.48\textwidth}\small\textbf{Avoid accounting errors}\\Do not add HBM energy on top of a GPU-board measurement that already includes it.\\Do not add isolated per-request estimates to shared batch energy.\\Account for concurrent work and overlap. Apply PUE once.\\Treat embodied carbon as lifecycle allocation; eviction does not undo manufacturing emissions.\\At fixed CI and PUE, energy and operational-carbon rankings match. Occupancy reduction may not reduce physical idle power.\end{column}
+\begin{column}{.485\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,sep=.025cm,center,rounded=true]{motivationblockb}
+{\normalsize\bfseries GreenCache}
+\end{beamercolorbox}
+\end{column}
 \end{columns}
-\take{Energy and carbon rankings depend on a validated boundary and consistent allocation.}
-\src{Proposed research methodology. GreenCache distinguishes operational and embodied carbon.}\jump{backup-accounting}{Full boundaries}
+\vspace{0cm}
+{\footnotesize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{.90}
+\begin{tabularx}{\linewidth}{>{\bfseries\color{Accent}\raggedright\arraybackslash}p{2.15cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\toprule
+Optimization objective & Throughput, TTFT, economic cost & Operational and embodied carbon under SLOs \\
+Memory hierarchy & HBM, host DRAM, SSD & HBM, host DRAM, SSD \\
+Optimization method & Adaptive capacity and group-specific TTL & Carbon-aware SSD sizing and cache replacement \\
+Evaluation method & Profiling-based discrete-event simulator & LMCache / vLLM prototype with trace replay \\
+Power modeling & No explicit power or energy model reported & Measured CPU/GPU power; specification-based DRAM/SSD power \\
+\bottomrule
+\end{tabularx}}\par
+\vspace{0cm}
+{\scriptsize\bfseries\color{Accent}Key Takeaway for Our Research}\par\vspace{0cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.485\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=0cm,center,rounded=true]{motivationblocka}\scriptsize Multi-tier simulation and adaptive configuration search\end{beamercolorbox}\end{column}
+\begin{column}{.485\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=0cm,center,rounded=true]{motivationblockb}\scriptsize Carbon accounting and carbon-aware optimization\end{beamercolorbox}\end{column}
+\end{columns}
+\vspace{0cm}{\scriptsize\bfseries\color{Accent}Combine simulation-driven cache optimization with fine-grained energy and carbon modeling.\par}
+\src{Sources: Kareto v1, Sections 3–5; GreenCache v3, Sections 3, 5–6.}\jump{backup-accounting}{Accounting boundaries}
 \end{frame}
 
-\begin{frame}[t]{A Validated Energy Model Can Guide SLO-Constrained Optimization}
-\target{main-plan}\tagline{Proposed implementation sequence; LLMServingSim 2.0 remains a candidate foundation}
+\begin{frame}[t]{Potential Research Directions and Research Gaps}
+\target{main-hypothesis}\target{main-decision}\tagline{Research opportunities informed by Kareto and GreenCache}
+\vspace{-.10cm}
+{\footnotesize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\linewidth}{>{\bfseries\color{Accent}\raggedright\arraybackslash}p{3.15cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Research Direction} & \textbf{Potential Gap} & \textbf{Research Opportunity} \\
+\midrule
+Fine-Grained Energy Modeling & Limited activity-aware energy modeling in the reviewed work. & Model GPU operations, storage I/O, and data transfers. \\
+Energy-Aware Cache Configuration & Performance- and cost-optimal configurations may not be energy-optimal. & Optimize cache capacity and group-specific TTL for energy efficiency. \\
+Energy-Aware Cache Placement and Reuse & Higher cache hit rates may not always reduce system energy. & Explore tier placement and restore vs. recompute decisions. \\
+\bottomrule
+\end{tabularx}}
+\vspace{.04cm}
+\begin{beamercolorbox}[wd=\linewidth,sep=.045cm,center,rounded=true]{motivationblocka}
+{\small\bfseries Common Evaluation Criteria}\par\vspace{.025cm}
+{\small System energy $\cdot$ TTFT / TPOT SLOs $\cdot$ Goodput $\cdot$ Resource constraints}
+\end{beamercolorbox}
+\vspace{.04cm}
+{\small Possible extension: operational and embodied carbon.\par}
+\vspace{.02cm}\begin{beamercolorbox}[wd=\linewidth,sep=.04cm]{mintbox}\small\bfseries\color{Accent}Validate research gaps before selecting the final optimization problem.\end{beamercolorbox}
+\src{Candidate research directions informed by Kareto v1 and GreenCache v3.}\jump{backup-break-even}{Break-even model}\jump{backup-accounting}{Accounting}
+\end{frame}
+
+\begin{frame}[t]{Phase- and Operation-Aware GPU Energy Modeling}
+\target{main-phase-model}\tagline{Modeling approach inspired by Kareto and Carbon--SLO}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.55\textwidth}\centering\begin{tikzpicture}[>=Latex,node distance=.14cm,font=\scriptsize,box/.style={draw=Accent,rounded corners=2pt,fill=SoftMint,text width=4.6cm,minimum height=.40cm,align=center}]
-\node[box](a){Audit and reproduce an existing serving-simulator baseline};\node[box,below=of a,fill=SoftLilac](b){Add Kareto-inspired HBM–DRAM–SSD cache behavior};\node[box,below=of b,fill=AccentBlue!12](c){Calibrate GPU, storage, transfer energy + carbon/SLO accounting};\node[box,below=of c,fill=SoftMint](d){Evaluate energy- and carbon-aware cache optimization};
-\draw[->,thick](a)--(b);\draw[->,thick](b)--(c);\draw[->,thick](c)--(d);
-\end{tikzpicture}\\{\proposal}\end{column}
-\begin{column}{.42\textwidth}\scriptsize\textbf{Next steps}\par 1. Audit simulators and power models.\par 2. Reproduce a baseline.\par 3. Profile GPU operations.\par 4. Calibrate storage / transfer energy.\par 5. Compare restore and recompute.\par 6. Test equal workload and SLOs.\par 7. Design policies after gap validation.\par\smallskip\textbf{Scope:} one server; available GPUs; HBM–DRAM–SSD. No HBF.\end{column}
+\begin{column}{.485\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,sep=.07cm,rounded=true]{motivationblocka}
+{\small\bfseries Kareto}\par\vspace{.035cm}
+{\footnotesize\bfseries Operation-Aware Modeling}\par
+{\footnotesize Profile Attention and FFN execution latency separately.}
+\end{beamercolorbox}
+\end{column}
+\begin{column}{.485\textwidth}
+\begin{beamercolorbox}[wd=\linewidth,sep=.07cm,rounded=true]{motivationblockb}
+{\small\bfseries Carbon--SLO}\par\vspace{.035cm}
+{\footnotesize\bfseries Phase-Aware Modeling}\par
+{\footnotesize Model prefill and decode power and energy separately.}
+\end{beamercolorbox}
+\end{column}
 \end{columns}
-\take{Validated fine-grained energy models can provide a foundation for SLO-constrained KV-cache optimization.}
-\src{Proposed research plan. LLMServingSim power docs do not establish SSD KV migration timing or I/O contention.}\jump{backup-accounting}{Energy break-even}
+\vspace{.14cm}
+{\small\bfseries\color{Accent}Proposed Fine-Grained GPU Models}\par\vspace{.06cm}
+{\footnotesize
+\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{>{\bfseries\color{Accent}\centering\arraybackslash}m{1.7cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+\toprule
+ & \textbf{Attention} & \textbf{FFN} \\
+\midrule
+\textbf{Prefill} & \shortstack{\textbf{Prefill Attention}\\Latency $\cdot$ Power $\cdot$ Energy} & \shortstack{\textbf{Prefill FFN}\\Latency $\cdot$ Power $\cdot$ Energy} \\
+\textbf{Decode} & \shortstack{\textbf{Decode Attention}\\Latency $\cdot$ Power $\cdot$ Energy} & \shortstack{\textbf{Decode FFN}\\Latency $\cdot$ Power $\cdot$ Energy} \\
+\bottomrule
+\end{tabularx}}
+\vspace{.15cm}
+\begin{beamercolorbox}[wd=\linewidth,sep=.07cm,rounded=true]{motivationblockc}
+{\small\bfseries GPU Energy \& Operational Carbon Estimation}\par
+{\footnotesize Calibrate with hardware measurements and integrate into a serving simulator.}
+\end{beamercolorbox}
+\take{Explore finer-grained energy modeling by combining phase and operation characteristics.}
+\src{Inspired by Kareto v1, §§3–5, and Carbon--SLO, arXiv:2610.14571v1. Proposed model, not evaluated.}\jump{backup-accounting}{Energy accounting}
+\end{frame}
+
+\begin{frame}[t]{System-Level Energy and Carbon Modeling}
+\target{main-energy}\tagline{Extend GPU energy modeling to computation, storage, and data movement}
+\vspace{-.08cm}
+{\small\bfseries\color{Accent}System Energy Components}\par\vspace{.035cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.05cm,rounded=true]{motivationblocka}{\small\bfseries GPU / HBM}\par{\footnotesize Computation and memory access}\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.05cm,rounded=true]{motivationblockb}{\small\bfseries Host DRAM}\par{\footnotesize Idle, read, and write}\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.05cm,rounded=true]{motivationblockc}{\small\bfseries SSD}\par{\footnotesize Idle, read, and write}\end{beamercolorbox}\end{column}
+\end{columns}
+\vspace{.05cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.05cm,rounded=true]{motivationblocka}{\small\bfseries Data Transfer}\par{\footnotesize PCIe and interconnect}\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.05cm,rounded=true]{motivationblockb}{\small\bfseries CPU}\par{\footnotesize Host processing}\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.05cm,rounded=true]{motivationblockc}{\small\bfseries Server Baseline}\par{\footnotesize Other system power}\end{beamercolorbox}\end{column}
+\end{columns}
+\vspace{.14cm}
+{\small\bfseries\color{Accent}Energy and Carbon Accounting}\par\vspace{.04cm}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.055cm,rounded=true]{motivationblocka}{\footnotesize\bfseries Power $\to$ Energy}\par{\small $E_{\mathrm{IT}}=\int P_{\mathrm{IT}}(t)\,dt$}\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.055cm,rounded=true]{motivationblockb}{\footnotesize\bfseries Energy + PUE + Carbon Intensity $\to$ Operational Carbon}\end{beamercolorbox}\end{column}
+\begin{column}{.32\textwidth}\begin{beamercolorbox}[wd=\linewidth,sep=.055cm,rounded=true]{motivationblockc}{\footnotesize\bfseries Operational + Allocated Embodied Carbon $\to$ Total Carbon}\end{beamercolorbox}\end{column}
+\end{columns}
+\vspace{.06cm}{\scriptsize Explore activity-aware models across computation, storage I/O, and data transfers; use consistent boundaries to avoid double counting.\par}
+\vspace{-.05cm}\take{Fine-grained system energy modeling can support energy- and carbon-aware cache management.}
+\src{Proposed modeling scope informed by GreenCache and Carbon--SLO.}\jump{backup-accounting}{Accounting Details}
 \end{frame}
 
 % BACKUP SLIDES
@@ -429,13 +590,13 @@ E_{discard}=pE_{recompute}
 \node[box](a){Retain KV\\offload + storage + restore};\node[box,right=of a,fill=SoftLilac](b){Discard KV\\future recomputation};\draw[<->,thick,AccentBlue](a)--(b) node[midway,above]{compare energy};
 \end{tikzpicture}\end{center}
 \centering Potentially energy-efficient if $E_{retain}<E_{discard}$.\\[.18cm]\small Assumptions: one possible future reuse; $p$ is reuse probability. Shared batch energy, overlapping work, opportunity cost, and physical idle power need additional modeling. Allocated retention cost is not necessarily avoidable idle energy.
-\src{Proposed analytical model: not an evaluated result.}\back{main-decision}{Decision path}\back{main-plan}{Research plan}
+\src{Proposed analytical model: not an evaluated result.}\back{main-decision}{Research directions}\back{main-phase-model}{GPU energy model}
 \end{frame}
 
 \begin{frame}[t]{Backup B17 — Energy and Carbon Accounting Boundaries}
 \target{backup-accounting}\tagline{Keep energy, carbon, and lifecycle allocation boundaries explicit}
-\begin{columns}[T,onlytextwidth]\begin{column}{.49\textwidth}\begin{block}{Operational energy / carbon}\small GPU board, CPU, host DRAM, SSD, transfers, server baseline, shared batches, and overlapping prefetch / I/O.\\[.12cm]$E_{IT}=\int P_{IT}(t)dt$\\$C_{op}=\sum_t E_{IT,t}\,PUE_t\,CI_t$\end{block}\end{column}\begin{column}{.49\textwidth}\begin{block}{Embodied carbon / safeguards}\small Allocate lifecycle emissions over a declared service boundary.\\Avoid GPU/HBM double count; count shared batch work once; apply PUE once.\\Cache eviction does not undo manufacturing emissions. Lower occupancy need not lower physical idle draw.\\At fixed CI and PUE, energy and operational carbon rank configurations identically.\end{block}\end{column}\end{columns}
-\src{Proposed accounting method informed by GreenCache, Sections 2.3 and 3.2.}\back{main-priorwork}{Prior work}\back{main-energy}{System model}
+\begin{columns}[T,onlytextwidth]\begin{column}{.49\textwidth}\begin{block}{Operational energy / carbon}\small GPU board, CPU, host DRAM, SSD, transfers, server baseline, shared batches, and overlapping prefetch / I/O.\\[.12cm]$E_{IT}=\int P_{IT}(t)dt$\\$C_{op}=\sum_t E_{IT,t}^{\mathrm{kWh}}\,PUE_t\,CI_t$\end{block}\end{column}\begin{column}{.49\textwidth}\begin{block}{Embodied carbon / safeguards}\small Allocate lifecycle emissions over a declared service boundary.\\Avoid GPU/HBM double count; count shared batch work once; apply PUE once.\\Cache eviction does not undo manufacturing emissions. Lower occupancy need not lower physical idle draw.\\At fixed CI and PUE, energy and operational carbon rank configurations identically.\end{block}\end{column}\end{columns}
+\src{Proposed accounting method informed by GreenCache, Sections 2.3 and 3.2.}\back{main-priorwork}{Prior work}\back{main-energy}{Energy modeling}
 \end{frame}
 
 \end{document}

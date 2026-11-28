@@ -44,10 +44,12 @@ def audit_pdf(path, cfg, name):
         if cfg.get("footer_style") == "legacy":
             assert re.search(rf"\b{number}\s*/\s*{expected}\b", flat), (path, number, flat[-100:])
         elif number <= cfg["main_slides"]:
-            assert f"Main {number}/{cfg['main_slides']}" in flat, (path, number, flat[-100:])
+            assert re.search(rf"Main\s+0?{number}\s*/\s*0?{cfg['main_slides']}\b", flat), (path, number, flat[-140:])
         else:
             backup_no = number - cfg["main_slides"]
             assert re.search(rf"\bB{backup_no}\b", flat), (path, number, flat[-100:])
+        if name == "2026-12-02-Paper-Review":
+            assert "Kareto Paper Review" not in flat, (path, number, "old footer label remains")
         for block in page.get_text("dict")["blocks"]:
             for line in block.get("lines", []):
                 for span in line["spans"]:
@@ -66,9 +68,12 @@ def audit_pdf(path, cfg, name):
         assert len(internal_links) >= cfg["backup_slides"], ("expected navigable main/backup links", internal_links)
         for backup_page in range(cfg["main_slides"] + 1, expected + 1):
             assert any(link["from"] == backup_page for link in internal_links), ("backup page lacks a return link", backup_page)
-        for title in cfg["titles"]:
+        if cfg.get("cover_title"):
+            normalized = re.sub(r"\s+", " ", cfg["cover_title"]).strip()
+            assert normalized in pages[0]["flat_text"], ("cover title mismatch", cfg["cover_title"])
+        for slide_number, title in enumerate(cfg["titles"], start=2):
             normalized = re.sub(r"\s+", " ", title).strip()
-            assert normalized in pages[cfg["titles"].index(title)]["flat_text"], ("title mismatch", title)
+            assert normalized in pages[slide_number - 1]["flat_text"], ("title mismatch", slide_number, title)
     return doc, pages, internal_links
 
 
@@ -76,6 +81,8 @@ def render_pages(doc, qa, prefix):
     images = []
     page_dir = qa / "pages"
     page_dir.mkdir(parents=True, exist_ok=True)
+    for stale_page in page_dir.glob(f"{prefix}-*.png"):
+        stale_page.unlink()
     for index, page in enumerate(doc, 1):
         pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
         image = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
@@ -125,7 +132,7 @@ def main():
                 assert includes.issubset(set(figure_paths)), ("undeclared figure dependency", includes - set(figure_paths))
 
             # Preserve an existing Research Discussion PDF as a content/render baseline.
-            output_pdf = OUT / "pdf" / f"{name}.pdf"
+            output_pdf = OUT / "pdf" / cfg.get("pdf_filename", f"{name}.pdf")
             baseline = fitz.open(output_pdf) if not is_review and output_pdf.exists() else None
             local_pdf, local_warnings = compile_twice(ROOT, source, temp / name)
             assert not local_warnings, (name, "local LaTeX warnings", local_warnings)

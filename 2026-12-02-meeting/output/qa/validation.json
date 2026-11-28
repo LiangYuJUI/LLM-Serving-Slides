@@ -1,54 +1,46 @@
 {
   "2026-12-02-Paper-Review": {
-    "main_slides": 19,
+    "main_slides": 16,
     "backup_slides": 17,
-    "pages": 36,
+    "pages": 33,
     "titles": [
-      "Adaptive Multi-Objective Tiered Storage Configuration for KV Cache in LLM Service",
+      "Motivation & Key Observations",
       "Workload-Dependent KV Cache Reuse",
       "Cache Capacity Saturation and Diminishing Returns",
       "Workload Density Changes the Value of SSD Prefetching",
       "Density Changes Reuse, Throughput, and TTFT",
       "Kareto Optimizes Throughput, Latency, and Economic Cost",
       "Kareto Uses an End-to-End Discrete-Event Simulator",
-      "Empirical GPU Profiling Feeds Execution-Time Models",
-      "Adaptive Pareto Search Refines High-Impact Regions",
-      "Group TTL Allocates Disk Retention by Reuse Pattern",
+      "Adaptive Pareto Search for Storage Configuration",
+      "Group-Specific TTL Optimization under a Shared Storage Budget",
       "Evaluation Uses Three Trace Types and Two Cluster Scales",
-      "Simulator Fidelity Is Validated on Three Storage Configurations",
-      "Adaptive Provisioning Improves Distinct Objectives",
-      "Kareto and GreenCache Address Complementary Decisions",
-      "Energy-Aware Multi-Tier Cache Management Is a Gap to Validate",
-      "Energy-Aware Cache Decisions Must Respect Data Availability",
-      "GPU Models Should Separate Prefill and Decode Operations",
-      "System Energy Requires Consistent Component Accounting",
-      "A Validated Energy Model Can Guide SLO-Constrained Optimization"
+      "Simulator Validation and Optimization Results",
+      "Kareto and GreenCache: Complementary Approaches",
+      "Potential Research Directions and Research Gaps",
+      "Phase- and Operation-Aware GPU Energy Modeling",
+      "System-Level Energy and Carbon Modeling"
     ],
-    "pdf_sha256": "cb5c844a72951492bfe191c6fb1b80e8c2d0888510af6cb8f6269b699a94e71c",
-    "zip_sha256": "54a270c24d8edcc72891550be2e8f6199128267a1c0de8dc953d2f4eb1ffeab1",
+    "pdf_sha256": "72a02a09852a3cf5310cde270e172c44cd71321a696c471f380463755e61fc98",
+    "zip_sha256": "bceda4cdbf9fe2a314f4a2f7a01b487998e23482728d8e8def529d481388956a",
     "local_passes": 2,
     "zip_passes": 2,
     "local_zip_text_pixel_match": true,
     "internal_links": [
       {
-        "from": 2,
-        "to": 20
-      },
-      {
         "from": 3,
-        "to": 20
+        "to": 17
       },
       {
         "from": 4,
-        "to": 23
+        "to": 17
       },
       {
         "from": 5,
-        "to": 23
+        "to": 20
       },
       {
-        "from": 5,
-        "to": 24
+        "from": 6,
+        "to": 20
       },
       {
         "from": 6,
@@ -56,171 +48,167 @@
       },
       {
         "from": 7,
-        "to": 26
+        "to": 18
       },
       {
         "from": 8,
-        "to": 26
+        "to": 23
       },
       {
         "from": 9,
+        "to": 22
+      },
+      {
+        "from": 9,
+        "to": 24
+      },
+      {
+        "from": 10,
+        "to": 25
+      },
+      {
+        "from": 10,
         "to": 27
       },
       {
-        "from": 10,
-        "to": 28
-      },
-      {
-        "from": 10,
-        "to": 30
-      },
-      {
         "from": 11,
-        "to": 21
+        "to": 18
       },
       {
         "from": 12,
-        "to": 34
-      },
-      {
-        "from": 13,
         "to": 31
       },
       {
+        "from": 12,
+        "to": 28
+      },
+      {
+        "from": 13,
+        "to": 33
+      },
+      {
         "from": 14,
-        "to": 36
+        "to": 32
+      },
+      {
+        "from": 14,
+        "to": 33
       },
       {
         "from": 15,
-        "to": 35
-      },
-      {
-        "from": 15,
-        "to": 36
+        "to": 33
       },
       {
         "from": 16,
-        "to": 35
+        "to": 33
       },
       {
         "from": 17,
-        "to": 36
-      },
-      {
-        "from": 18,
-        "to": 36
-      },
-      {
-        "from": 19,
-        "to": 36
-      },
-      {
-        "from": 20,
-        "to": 2
-      },
-      {
-        "from": 20,
         "to": 3
       },
       {
-        "from": 21,
-        "to": 5
-      },
-      {
-        "from": 21,
-        "to": 6
-      },
-      {
-        "from": 22,
-        "to": 5
-      },
-      {
-        "from": 22,
-        "to": 6
-      },
-      {
-        "from": 23,
+        "from": 17,
         "to": 4
       },
       {
-        "from": 23,
-        "to": 5
+        "from": 18,
+        "to": 6
       },
       {
-        "from": 24,
-        "to": 5
-      },
-      {
-        "from": 25,
-        "to": 10
-      },
-      {
-        "from": 25,
-        "to": 9
-      },
-      {
-        "from": 26,
+        "from": 18,
         "to": 7
       },
       {
-        "from": 26,
-        "to": 8
+        "from": 19,
+        "to": 6
       },
       {
-        "from": 27,
+        "from": 19,
+        "to": 7
+      },
+      {
+        "from": 20,
+        "to": 5
+      },
+      {
+        "from": 20,
+        "to": 6
+      },
+      {
+        "from": 21,
+        "to": 6
+      },
+      {
+        "from": 22,
+        "to": 10
+      },
+      {
+        "from": 22,
         "to": 9
       },
       {
-        "from": 28,
-        "to": 29
+        "from": 23,
+        "to": 8
       },
       {
-        "from": 28,
-        "to": 30
+        "from": 23,
+        "to": 1
       },
       {
-        "from": 28,
+        "from": 24,
+        "to": 9
+      },
+      {
+        "from": 25,
+        "to": 26
+      },
+      {
+        "from": 25,
+        "to": 27
+      },
+      {
+        "from": 25,
         "to": 10
+      },
+      {
+        "from": 26,
+        "to": 10
+      },
+      {
+        "from": 27,
+        "to": 10
+      },
+      {
+        "from": 28,
+        "to": 12
       },
       {
         "from": 29,
-        "to": 10
+        "to": 12
       },
       {
         "from": 30,
-        "to": 10
+        "to": 12
       },
       {
         "from": 31,
-        "to": 13
+        "to": 12
       },
       {
         "from": 32,
-        "to": 13
+        "to": 14
+      },
+      {
+        "from": 32,
+        "to": 15
       },
       {
         "from": 33,
         "to": 13
       },
       {
-        "from": 34,
-        "to": 12
-      },
-      {
-        "from": 35,
+        "from": 33,
         "to": 16
-      },
-      {
-        "from": 35,
-        "to": 19
-      },
-      {
-        "from": 36,
-        "to": 14
-      },
-      {
-        "from": 36,
-        "to": 18
       }
     ],
     "local_warning_count": 0,
@@ -230,42 +218,39 @@
       255.1179962158203
     ],
     "page_text": [
-      "Adaptive Multi-Objective Tiered Storage Configuration for KV Cache in LLM Service Kareto | arXiv preprint | Workload-Aware KV Cache Storage Provisioning arXiv:2603.08739v1 | 25 February 2026 Xianzhe Zheng et al. | Zhejiang University and Alibaba Group GPU HBM fast access, lim- ited capacity Host DRAM larger capacity, higher access latency SSD / disk cost-effective capacity, lower I/O bandwidth Limited HBM Long contexts and concurrent requests increase KV-cache ca- pacity requirements. Static provi- sioning Predefined capacities can over- provision or under-provision stor- age. Workload di- versity Reuse patterns and request den- sity change the value of each tier. Kareto adapts storage to workload and service objectives. Source: Kareto v1, Abstract and §§1–2, pp. 1–2. Preprint; no venue claim. Kareto Paper Review Main 1/19",
-      "Workload-Dependent KV Cache Reuse Reuse-hit concentration differs sharply across workloads 31.95% of Trace A KV blocks account for 90% of reuse hits. 0.67% of Trace B KV blocks account for 90% of reuse hits. Trace A: interactive chatbot. Trace B: programmatic API, with concentrated shared-prefix reuse. These are reuse-hit concentration values, not overall cache hit rates. The effective KV-cache working set depends on workload-specific reuse patterns. Source: Kareto v1, Section 3.1, Figure 2, p. 3. TTL detail Kareto Paper Review Main 2/19",
-      "Cache Capacity Saturation and Diminishing Returns Capacity adds reuse, but marginal gains fall after the working set is covered Reported example Increasing capacity from 250 GB to 1,000 GB yields about 21% higher reuse ratio. Increasing from 1,000 GB to 2,000 GB yields less than 7% additional improvement. The effective cache size is a workload property. Beyond saturation, storage cost can keep rising while reuse gains taper. Capacity planning must account for diminishing returns, not capacity alone. Source: Kareto v1, Section 3.1.2, Figure 3, p. 4. TTL and lifetime Kareto Paper Review Main 3/19",
-      "Workload Density Changes the Value of SSD Prefetching Kareto uses existing queue time as a prefetch window; it does not add queueing deliberately Compute-abundant / low density time short queueGPU work SSD read may miss queue window; recompute or wait Short queues limit prefetch opportunity; disk reload can be slower than recomputation. Compute-constrained / high density time existing queue GPU work SSD read ready before use Longer existing queues can hide more disk I/O and enable cache reuse. Conceptual illustration based on Kareto, Section 3.3. SSD caching helps when its data becomes ready before dependent GPU computation. Source: Kareto v1, Section 3.3, observations 1–4, pp. 5–6. Figures 5–6 Kareto Paper Review Main 4/19",
-      "Density Changes Reuse, Throughput, and TTFT Figure 5 compares capacity effects in compute-bound and compute-abundant settings Compute-bound / 1 instance More capacity reduces redundant prefill; throughput can rise with reuse. Compute-abundant / 4 instances Throughput approaches request arrivals; capacity chiefly affects latency and reuse. The same capacity increase has different value as workload density changes. Original Figure 5, Kareto v1, Section 3.3, p. 5. Figure 5 detail Figure 6 detail Kareto Paper Review Main 5/19",
-      "Kareto Optimizes Throughput, Latency, and Economic Cost The objectives define a Pareto set, not one universal optimum Problem formulation min x∈X (E[L(x)], −E[T(x)], C(x)) Decision space includes workload, compute, storage medium, and management policy. Evaluated planner sweeps DRAM capacity and TTL while holding the medium fixed to ESSD PL1. Original two-instance comparison: pure DRAM, pure disk, and hybrid with 256 GB DRAM plus varying disk. Hybrid trades cost against latency while maintaining throughput. Different service objectives favor different non-dominated storage configurations. Source: Kareto v1, Section 3.1, Eqs. 1–2 and Figure 8, pp. 3–4, 7. Cost is economic expenditure, not energy. Bandwidth sensitivity Kareto Paper Review Main 6/19",
-      "Kareto Uses an End-to-End Discrete-Event Simulator The authors develop their own trace-driven simulator; it is not LLMServingSim Request traces + system / tier configuration Kareto end-to-end discrete-event simulator Throughput, mean TTFT, reuse, economic cost The simulator captures interactions among inference execution, KV-cache management, and storage tiers. Figure 4 and Section 3.2, p. 4. Figure 4 is displayed with original panels and labels. Architecture detail Kareto Paper Review Main 7/19",
-      "Empirical GPU Profiling Feeds Execution-Time Models Kernel execution time is profiled on target GPUs and interpolated across lengths Attention + FFN kernel profiling Input length + context-size samples Interpolation into event durations Queue, batch, KV tiers + layer-wise prefetch Simulator models Request arrivals / queueing; inference and batching; radix-tree prefix reuse; hierarchical placement, eviction, storage I/O, and prefetch stalls. Outputs Throughput, mean TTFT, cache reuse, and economic cost. Kareto’s GPU profiling models execution time. It does not report the four phase-specific power models proposed later here. The published simulator supports performance exploration; energy fidelity remains a separate research task. Source: Kareto v1, Section 3.2 and Figure 4, p. 4. Profiling-table structure is not fully disclosed. Simulator details Kareto Paper Review Main 8/19",
-      "Adaptive Pareto Search Refines High-Impact Regions Coarse sampling identifies where further simulation is useful DRAM capacity disk TTL refine where performance / cost changes prune flat regions Conceptual illustration based on Kareto, Section 3.3. 1 Start from a coarse DRAM–TTL grid. 2 Expand while marginal gains justify more capacity. 3 Add points in high-variation regions. 4 Pareto-filter evaluated configurations. The reported ablation uses fewer search evaluations than grid search with similar hypervolume. It does not establish a mathematical global optimum. Adaptive exploration spends simulations where configuration changes matter. Source: Kareto v1, Section 4.2, Algorithm 1; Section 5.3.1, Figure 13. Search ablation Kareto Paper Review Main 9/19",
-      "Group TTL Allocates Disk Retention by Reuse Pattern TTL means time-to-live: the duration a KV block remains in the disk tier A few prefix-tree subtrees account for most reuse events. Find frequently reused prefix subtrees Estimate hits Hg(t) and capacity-time Cg(t) Choose per-group ROI Hg(t)/Cg(t) Adjust TTLs under shared storage budget ROI means hits per capacity-time, not profit or energy saved. TTL applies to disk retention. Workload-aware TTL complements capacity exploration. Source: Kareto v1, Sections 4.1–4.3, Figures 9–11, Algorithms 1–2. Reuse groups ROI allocation Kareto Paper Review Main 10/19",
-      "Evaluation Uses Three Trace Types and Two Cluster Scales The paper evaluates a Qwen3-480B / SGLang serving setup with ESSD PL1 Trace Workload A Interactive chatbot; open-source dataset derived B Programmatic API; shared prompts, open-source dataset derived C Synthetic agent workload reflecting in- ternal request characteristics Each trace spans two hours and contains 40k–170k requests. Trace C is synthetic; the traces are not all production traces. System and scenarios Model: Qwen3-480B Serving engine: SGLang Storage: Alibaba Cloud ESSD PL1 1 instance: compute-constrained 4 instances: compute-abundant Baseline: fixed 1,024 GB DRAM Instance counts refer to cloud compute instances, not GPU counts. Exact accelerator / parallelism configuration for the emulated evaluation is not confirmed in the paper. Workload provenance and compute scale shape how the reported outcomes should be read. Source: Kareto v1, Sections 3.3 and 5.1–5.2, pp. 5, 9–10. Storage sensitivity Kareto Paper Review Main 11/19",
-      "Simulator Fidelity Is Validated on Three Storage Configurations Real-system comparisons isolate GPU-only, GPU + host DRAM, and GPU + disk 19.2% maximum mean-TTFT deviation 6.5% maximum throughput deviation 2.0% maximum cache-hit-rate deviation GPU-only means the KV-cache tier is GPU memory; it does not mean CPU/host resources are absent. These are maximum deviations for the tested metrics and configurations, not average errors or validation of power, energy, carbon, or TPOT. Validation supports simulation-driven exploration within the evaluated configurations. Source: Kareto v1, Section 5.4, Figure 17 (HTML calls this Figure 19), pp. 13–14. Validation details Kareto Paper Review Main 12/19",
-      "Adaptive Provisioning Improves Distinct Objectives Compared with fixed 1,024 GB DRAM; maxima come from separate objective-specific choices +9.3% maximum throughput −58.3% maximum mean TTFT −20.2% maximum economic cost Under 1 instance, storage can reduce redundant prefill work; under 4 instances, throughput is arrival-limited and right-sizing mainly reduces cost. Search and group TTL benefits vary by workload and density. These separate maxima are not simultaneous gains from one configuration. Source: Kareto v1, Sections 5.2–5.3, Figure 12, pp. 10–14. Cost means economic expenditure. Ablations Kareto Paper Review Main 13/19",
-      "Kareto and GreenCache Address Complementary Decisions Prior work contributes complementary methods and objectives Kareto | arXiv:2603.08739v1 Multi-tier KV configuration; workload-aware reuse; adaptive capacity and disk group TTL; end-to-end performance simulation. Objectives: throughput, mean TTFT, economic cost. Boundary: no explicit energy or carbon optimization. GreenCache | arXiv:2505.23970v3 Carbon-aware cache sizing and Least Carbon Savings replacement; operational and embodied carbon; TTFT / TPOT constraints. Power inputs: CPU/GPU measured; DRAM/SSD use typical specification values. Boundary: storage energy not activity-measured. The papers address complementary decisions with different objectives. Sources: Kareto v1 Sections 3–5; GreenCache Sections 3, 5–6. Accounting boundaries Kareto Paper Review Main 14/19",
-      "Energy-Aware Multi-Tier Cache Management Is a Gap to Validate Proposed direction: lower energy and carbon while meeting service constraints Research hypotheses Performance-optimal and cost-optimal configurations may differ from energy-optimal configurations. A higher cache hit rate may not always reduce total system energy. Stage 1 objective Minimize system energy subject to TTFT and TPOT SLOs, required goodput, memory capacity, and applicable power budget. Potential gap to validate Jointly model cache retention, tier placement, movement, and recomputation with measured component energy. Then consider operational and embodied carbon under declared workload, SLO, and lifecycle boundaries. Novelty boundary This is a candidate gap, not a claim that no prior work exists. GreenCache already performs carbon-aware sizing and replacement. Test these hypotheses under equal workload and SLO constraints. Proposed research direction informed by Kareto v1 and GreenCache v3. Break-even model Accounting Kareto Paper Review Main 15/19",
-      "Energy-Aware Cache Decisions Must Respect Data Availability Proposed decision path for a request under performance, capacity, and energy constraints Request + prefix lookup Reuse valid HBM KV Restore valid DRAM KV Restore valid SSD KV Recompute missing prefix Estimate latency, energy, and SLO feasibility Select an energy-efficient feasible action Proposed research framework: not an evaluated result. Restore is feasible only when requested KV data exists and is valid in that tier. Recomputation includes Attention and FFN across Transformer layers. The proposed policy considers retention, placement, transfers, and recomputation under SLOs. Proposed research direction; not a Kareto or GreenCache evaluated result. Energy model Kareto Paper Review Main 16/19",
-      "GPU Models Should Separate Prefill and Decode Operations First-stage proposal: fit latency, power, and energy for four operation categories Attention FFN / Expert Prefill Prompt computation, attention operations, KV writes Prefill Matrix work, weight access, expert activation Decode Historical KV reads, context length, attention Decode Weight access, batching efficiency, experts Model outputs: latency (ms), power (W), energy (J). Parameters: GPU, batch, new tokens, prefix/context length, model, precision, traffic, frequency, expert activation. Begin with dense Attention and FFN; model MoE expert operations later. Calibrate against measurements. No Attention/Expert disaggregation is assumed. Phase- and operation-aware model fidelity must be measured, not assumed from detail. Proposed research framework: not an evaluated result. Energy accounting Kareto Paper Review Main 17/19",
-      "System Energy Requires Consistent Component Accounting Count measured system power over time; account for shared work and overlapping activity Proposed accounting boundary GPU board and HBM accesses; CPU; host DRAM idle/read/write; SSD idle/read/write; PCIe and relevant interconnect; server baseline; shared batch work; prefetch and I/O contention. EIT = Z PIT(t) dt Cop = X t EIT,t · PUEt · CIt Ctotal = Cop + Cemb,alloc Avoid accounting errors Do not add HBM energy on top of a GPU-board measurement that already includes it. Do not add isolated per-request estimates to shared batch energy. Account for concurrent work and overlap. Apply PUE once. Treat embodied carbon as lifecycle allocation; eviction does not undo manufacturing emissions. At fixed CI and PUE, energy and operational-carbon rankings match. Occupancy reduction may not reduce physical idle power. Energy and carbon rankings depend on a validated boundary and consistent allocation. Proposed research methodology. GreenCache distinguishes operational and embodied carbon. Full boundaries Kareto Paper Review Main 18/19",
-      "A Validated Energy Model Can Guide SLO-Constrained Optimization Proposed implementation sequence; LLMServingSim 2.0 remains a candidate foundation Audit and reproduce an exist- ing serving-simulator baseline Add Kareto-inspired HBM–DRAM–SSD cache behavior Calibrate GPU, storage, transfer en- ergy + carbon/SLO accounting Evaluate energy- and carbon- aware cache optimization Proposed research framework: not an evaluated result. Next steps 1. Audit simulators and power models. 2. Reproduce a baseline. 3. Profile GPU operations. 4. Calibrate storage / transfer energy. 5. Compare restore and recompute. 6. Test equal workload and SLOs. 7. Design policies after gap validation. Scope: one server; available GPUs; HBM–DRAM–SSD. No HBF. Validated fine-grained energy models can provide a foundation for SLO-constrained KV-cache optimization. Proposed research plan. LLMServingSim power docs do not establish SSD KV migration timing or I/O contention. Energy break-even Kareto Paper Review Main 19/19",
-      "Backup B1 — KV Cache Lifetime and Storage Requirements Oracle TTL illustrates how reuse intervals affect active storage The paper’s oracle policy sets TTL to zero for blocks that will never be accessed again. Cumulative blocks continue to grow while active blocks remain much lower under this retrospective bound. Source: Kareto v1, Section 3.1, Figure 1. Oracle is an analysis reference, not an online-known future. Reuse concentration Capacity saturation Research backup B1",
-      "Backup B2 — DRAM Bandwidth Sensitivity Bandwidth constraints can dominate TTFT in the paper’s simulation table Large TTFT changes occur at low bandwidth; improvements taper at higher rates. Preserve units as reported. The table’s values are simulation outputs, not a universal hardware law. Source: Kareto v1, Section 3.1, Table 1, p. 4. Density results Objectives Research backup B2",
-      "Backup B3 — Disk Bandwidth and Capacity Are Coupled Writes from eviction and reads for reload share constrained I/O resources In this cloud-disk setting, bandwidth scales with provisioned capacity and read/write contention matters. Capacity beyond total KV footprint may still change effective performance. Source: Kareto v1, Section 3.3, Figure 7, p. 6. Density results Trade-offs Research backup B3",
-      "Backup B4 — Workload Density and Storage Capacity Full Figure 5 results for reuse ratio, throughput, and mean TTFT (a) compute-bound / high density; (b) compute-abundant / low density. Capacity can raise throughput when computation limits service; under arrival-limited service, throughput saturates near request arrivals. Source: Kareto v1, Section 3.3, Figure 5, p. 5. Prefetch timeline Tier results Research backup B4",
-      "Backup B5 — Full Tier Reuse Results Four panels: DRAM and disk under Trace A at two instance scales High-density 1-instance workloads have longer prefetch windows. Four-instance workloads are compute-abundant, with shorter queue times. Source: Kareto v1, Section 3.3, Figure 6, p. 6. Main density evidence Research backup B5",
-      "Backup B6 — Planner, Simulator, and Selector Kareto replays recent traces to plan the following service period Planner generates configurations; simulator estimates their outcomes; Pareto selector returns non-dominated choices for the online system. Source: Kareto v1, Section 4.1, Figure 9. Group TTL method Pareto search Research backup B6",
-      "Backup B7 — Kareto Simulator Architecture Figure 4 shows the original components and modeled data flow The paper describes a discrete-event inference engine, empirical attention/FFN execution times, radix-tree shared prefix reuse, and hierarchical layer-wise KV prefetching. Source: Kareto v1, Section 3.2, Figure 4, p. 4. Simulator overview Profiling Research backup B7",
-      "Backup B8 — Adaptive Pareto Search Ablation Fewer simulated points with comparable reported hypervolume Grid search: DRAM 0–4096 GB in 256 GB steps; disk 0–3600 GB in 120 GB steps. Adaptive search starts coarser, then refines. Hypervolume uses the same dominated reference point for the comparison. Source: Kareto v1, Sections 4.2 and 5.3.1, Algorithm 1 and Figure 13. Search method Research backup B8",
-      "Backup B9 — Prefix-Tree Reuse Concentration A few subtrees account for most reuse events Ranking motivates giving frequently reused prefix groups individual retention policies. Source: Kareto v1, Section 4.3, Figure 10. Reuse intervals ROI allocation Group TTL overview Research backup B9",
-      "Backup B10 — Group Reuse-Interval Distributions Top subtrees have distinct reuse intervals across early and late trace windows Group-specific TTLs reflect differences among subtree reuse patterns. Source: Kareto v1, Section 4.3, Figure 11. Group TTL overview Research backup B10",
-      "Backup B11 — ROI-Aware Group TTL Allocation Prefix groups receive different TTLs under a shared storage budget ROIg(t) = Hg(t) Cg(t) , max t X g Hg(tg) s.t. X g Cg(tg) ≤B Hg(t) counts hits for group g under TTL t. Cg(t) measures its capacity-time consumption. First find each group’s ROI-efficient TTL, scale to the shared budget, then refine by constrained optimization. The paper uses SLSQP with multiple starts. ROI is hits per capacity-time, not financial profit or energy saved. Group TTL affects disk retention. Source: Kareto v1, Section 4.3, Algorithm 2. Group TTL overview Research backup B11",
-      "Backup B12 — Group TTL Reuse Ablation Reuse-ratio and end-to-end benefits vary across workloads and scales Group TTL improves reuse most clearly for Trace B/C in reported settings; gains can be marginal for Trace A or 4 instances. Source: Kareto v1, Section 5.3.2, Figure 14. Main findings Research backup B12",
-      "Backup B13 — Group TTL Reuse-Interval Ablation TTL-specific storage retention responds to group reuse intervals Read together with Figure 14’s reuse-ratio comparison and Figure 16’s end-to-end metrics; this panel reports study conditions, not a single universal effect. Source: Kareto v1, Section 5.3.2, Figure 15. Main findings Research backup B13",
-      "Backup B14 — Group TTL Performance and Cost Objective metrics compare group TTL with fixed TTL across traces The paper reports benefits especially for Trace B/C; effects depend on workload, disk budget, DRAM capacity, and instance count. No additional percentages are inferred here. Source: Kareto v1, Section 5.3.2, Figure 16. Figure 18 appears in HTML source for Trace C panels. Main findings Research backup B14",
-      "Backup B15 — Real-System Simulator Validation Real and simulated responses across request rates and storage tiers Tested configurations: GPU-only, GPU + host DRAM, GPU + disk. Maximum deviations: mean TTFT 19.2%, total throughput 6.5%, hit rate 2.0%. These data do not validate energy or carbon estimates. Source: Kareto v1, Section 5.4. Versioned arXiv HTML labels this Figure 19; supplied figure filename is Fig17. Validation summary Research backup B15",
-      "Backup B16 — KV Reuse Energy Break-Even Model Proposed analytical comparison, not a Kareto result Eretain = Eoffload + Eretention(t) + pErestore Ediscard = pErecompute Retain KV offload + stor- age + restore Discard KV future recomputation compare energy Potentially energy-efficient if Eretain < Ediscard. Assumptions: one possible future reuse; p is reuse probability. Shared batch energy, overlapping work, opportunity cost, and physical idle power need additional modeling. Allocated retention cost is not necessarily avoidable idle energy. Proposed analytical model: not an evaluated result. Decision path Research plan Research backup B16",
-      "Backup B17 — Energy and Carbon Accounting Boundaries Keep energy, carbon, and lifecycle allocation boundaries explicit Operational energy / carbon GPU board, CPU, host DRAM, SSD, transfers, server baseline, shared batches, and overlapping prefetch / I/O. EIT = R PIT(t)dt Cop = P t EIT,t PUEt CIt Embodied carbon / safeguards Allocate lifecycle emissions over a declared service boundary. Avoid GPU/HBM double count; count shared batch work once; apply PUE once. Cache eviction does not undo manufacturing emissions. Lower occupancy need not lower physical idle draw. At fixed CI and PUE, energy and operational carbon rank configurations identically. Proposed accounting method informed by GreenCache, Sections 2.3 and 3.2. Prior work System model Research backup B17"
+      "Adaptive Multi-Objective Tiered Storage Configuration for KV Cache in LLM Service Xianzhe Zheng et al. Zhejiang University Alibaba Group arXiv:2603.08739v1 25 February 2026 Research meeting: 2 December 2026 Yu-Jui Liang Advisor: Hsiang-Yun Cheng National Taiwan University / Academia Sinica Source: Kareto v1, Abstract and §§1–2, pp. 1–2. Preprint; no venue claim. Main 01 / 16",
+      "Motivation & Key Observations LLM serving needs both fast access and economical capacity GPU HBM Fast access Limited capacity Host DRAM More capacity Higher latency SSD / disk Economical capacity Lower bandwidth Limited HBM Long contexts and concurrent requests need more KV-cache capacity. Static provisioning Fixed capacities can leave storage over- or under-provisioned. Workload diversity Reuse patterns and request density change the value of each tier. Source: Kareto v1, Abstract and §§1–2, pp. 1–2. Preprint; no venue claim. Main 02 / 16",
+      "Workload-Dependent KV Cache Reuse Share of KV blocks that accounts for 90% of reuse hits 0% 10% 20% 30% 35% Trace A — Interactive Chatbot 31.95% Trace B — Programmatic API 0.67% Green bars show the KV-block share that contributes 90% of reuse hits. Reuse hits are concentrated in a much smaller share of Trace B’s KV blocks. TTL detail Source: Kareto v1, Section 3.1, Figure 2, p. 3. Main 03 / 16",
+      "Cache Capacity Saturation and Diminishing Returns Capacity adds reuse, but marginal gains fall after the working set is covered Capacity and reuse Cache capacity can grow without a proportional increase in reuse ratio. As capacity gets larger, the reuse gains gradually taper. More cache capacity helps, but reuse gains taper as the cache grows. TTL and lifetime Source: Kareto v1, Section 3.1.2, Figure 3, p. 4. Main 04 / 16",
+      "Workload Density Changes the Value of SSD Prefetching Kareto uses existing queue time as a prefetch window; it does not add queueing deliberately Compute-abundant / low density time short queue I/O wait GPU work SSD read Short queues cannot hide disk reads, so the request waits for I/O or recomputes. Compute-constrained / high density time existing queue GPU work SSD read ready before use Longer existing queues can hide more disk I/O and enable cache reuse. SSD caching helps when its data becomes ready before dependent GPU computation. Figures 5–6 Source: Kareto v1, Section 3.3, observations 1–4, pp. 5–6. Main 05 / 16",
+      "Density Changes Reuse, Throughput, and TTFT The same capacity increase affects service metrics differently across workload densities Metric Compute-Constrained (Low Density) Compute-Abundant (High Density) Reuse Ratio Increasing capacity usually raises reuse. Increasing capacity can also raise reuse. Throughput Less recomputation may improve throughput. Workload arrivals limit throughput gains. TTFT Less prefill and queueing can improve TTFT. Capacity mainly improves individual request latency. Workload density changes how capacity gains translate into performance. Figure 5 detail Figure 6 detail Original Figure 5, Kareto v1, Section 3.3, p. 5. Main 06 / 16",
+      "Kareto Optimizes Throughput, Latency, and Economic Cost The objectives define a Pareto set, not one universal optimum Multi-objective formulation minx∈X (E[L(x)], −E[T(x)], C(x)) Objective Optimization Direction Latency Lower is better Throughput Higher is better Economic Cost Lower is better Storage configurations The authors compare pure DRAM, pure disk, and hybrid configurations using 256 GB DRAM with different disk capacities. Hybrid storage can combine DRAM’s faster access with SSD’s lower capacity cost, offering different cost-performance trade-offs. Different service objectives favor different non-dominated storage configurations. Bandwidth sensitivity Source: Kareto v1, Section 3.1, Eqs. 1–2 and Figure 8, pp. 3–4, 7. Cost is economic expenditure, not energy. Main 07 / 16",
+      "Kareto Uses an End-to-End Discrete-Event Simulator The authors develop their own trace-driven simulator; it is not LLMServingSim KV Cache Simulator Tracks prefix-tree reuse and KV placement across DRAM and disk/SSD, including cache hits, insertions, and evictions. Request Metadata Replays timestamps, input length, cache-hit length, and decode length. Scheduler & Queue Models waiting and running requests, scheduling decisions, and batch formation. Performance Modeling Uses offline profiling samples to predict execution latency and cache-transfer time. Architecture detail Figure 4 and Section 3.2, p. 4. Figure 4 is displayed with original panels and labels. Main 08 / 16",
+      "Adaptive Pareto Search for Storage Configuration Simulation-driven configuration planning using historical workload traces Workload Traces Recent requests seed planning and replay. Parameter Planner Proposes DRAM-capacity and disk-TTL configurations. Group TTL Manager Assigns retention TTLs to reused prefix groups. Adaptive Searcher Prunes weak regions and refines valuable candidates. Performance Simulator Evaluates throughput, latency, and economic cost. Pareto Selector Keeps non-dominated configurations. Online Serving System Applies the selected configuration and tracks outcomes. System workflow Search ablation Original Figure 9. Kareto v1, Sections 4.1–4.2; Algorithm 1 and Section 5.3.1, Figure 13. Main 09 / 16",
+      "Group-Specific TTL Optimization under a Shared Storage Budget Different KV cache reuse patterns require different retention policies Workload-Aware Grouping Partition KV blocks into groups based on frequently reused prefix subtrees. Assign different TTLs according to each group’s reuse patterns. Allocate disk retention resources under a shared storage budget. 1. Per-Group TTL Selection ROIg(t) = Hg(t) Cg(t) Choose each group’s ROI-efficient TTL to maximize cache hits per unit of storage capacity-time. 2. Global TTL Optimization max t X g Hg(tg) s.t. X g Cg(tg) ≤B Adjust group TTLs to maximize total cache hits within the shared storage budget. Notation: Hg(t): cache hits; Cg(t): storage capacity-time consumption; B: total storage capacity-time budget. Group-specific TTLs maximize cache reuse under limited disk storage resources. Reuse groups ROI allocation Source: Kareto v1, Sections 4.1–4.3, Figures 9–11, Algorithms 1–2. Main 10 / 16",
+      "Evaluation Uses Three Trace Types and Two Cluster Scales The paper evaluates a Qwen3-480B / SGLang serving setup with ESSD PL1 Trace Workload A Interactive chatbot; derived from an open-source dataset. B Programmatic API with shared prompts; derived from an open-source dataset. C Synthetic agent workload reflecting internal request characteristics. Each two-hour trace contains 40k–170k requests. Trace C is synthetic; not all traces are production. System and scenarios Model: Qwen3-480B Serving engine: SGLang Storage: Alibaba Cloud ESSD PL1 Baseline: fixed 1,024 GB DRAM 1 instance: compute-constrained 4 instances: compute-abundant Instances are cloud compute instances, not GPU counts. The paper does not specify the accelerator model/count or parallelism used in the emulated evaluation. Workload provenance and compute scale shape how the reported outcomes should be read. Storage sensitivity Source: Kareto v1, Sections 3.3 and 5.1–5.2, pp. 5, 9–10. Main 11 / 16",
+      "Simulator Validation and Optimization Results Real-system validation and workload-aware storage optimization Simulator Validation 19.2% Max. mean TTFT deviation 6.5% Max. throughput deviation 2.0% Max. cache hit rate deviation Validated against real systems with GPU-only, GPU + DRAM, and GPU + disk caching. Adaptive Provisioning Results +9.3% Throughput −58.3% Mean TTFT −20.2% Economic cost Maximum improvements over fixed 1,024 GB DRAM, obtained from separate configurations. Simulation-driven configuration planning improves performance and economic cost. Validation details Optimization ablations Kareto v1: §5.4, Figure 17 (HTML calls this Figure 19), pp. 13–14; §§5.2–5.3, Figure 12, pp. 10–14. Cost is economic expenditure. Main 12 / 16",
+      "Kareto and GreenCache: Complementary Approaches Performance-driven and carbon-aware KV cache management Kareto GreenCache Optimization objective Throughput, TTFT, economic cost Operational and embodied carbon under SLOs Memory hierarchy HBM, host DRAM, SSD HBM, host DRAM, SSD Optimization method Adaptive capacity and group-specific TTL Carbon-aware SSD sizing and cache replacement Evaluation method Profiling-based discrete-event simulator LMCache / vLLM prototype with trace replay Power modeling No explicit power or energy model reported Measured CPU/GPU power; specification-based DRAM/SSD power Key Takeaway for Our Research Multi-tier simulation and adaptive configuration search Carbon accounting and carbon-aware optimization Combine simulation-driven cache optimization with fine-grained energy and carbon modeling. Accounting boundaries Sources: Kareto v1, Sections 3–5; GreenCache v3, Sections 3, 5–6. Main 13 / 16",
+      "Potential Research Directions and Research Gaps Research opportunities informed by Kareto and GreenCache Research Direction Potential Gap Research Opportunity Fine-Grained Energy Modeling Limited activity-aware energy modeling in the reviewed work. Model GPU operations, storage I/O, and data transfers. Energy-Aware Cache Configuration Performance- and cost-optimal configurations may not be energy-optimal. Optimize cache capacity and group-specific TTL for energy efficiency. Energy-Aware Cache Placement and Reuse Higher cache hit rates may not always reduce system energy. Explore tier placement and restore vs. recompute decisions. Common Evaluation Criteria System energy · TTFT / TPOT SLOs · Goodput · Resource constraints Possible extension: operational and embodied carbon. Validate research gaps before selecting the final optimization problem. Break-even model Accounting Candidate research directions informed by Kareto v1 and GreenCache v3. Main 14 / 16",
+      "Phase- and Operation-Aware GPU Energy Modeling Modeling approach inspired by Kareto and Carbon–SLO Kareto Operation-Aware Modeling Profile Attention and FFN execution latency separately. Carbon–SLO Phase-Aware Modeling Model prefill and decode power and energy separately. Proposed Fine-Grained GPU Models Attention FFN Prefill Prefill Attention Latency · Power · Energy Prefill FFN Latency · Power · Energy Decode Decode Attention Latency · Power · Energy Decode FFN Latency · Power · Energy GPU Energy & Operational Carbon Estimation Calibrate with hardware measurements and integrate into a serving simulator. Explore finer-grained energy modeling by combining phase and operation characteristics. Energy accounting Inspired by Kareto v1, §§3–5, and Carbon–SLO, arXiv:2610.14571v1. Proposed model, not evaluated. Main 15 / 16",
+      "System-Level Energy and Carbon Modeling Extend GPU energy modeling to computation, storage, and data movement System Energy Components GPU / HBM Computation and memory access Host DRAM Idle, read, and write SSD Idle, read, and write Data Transfer PCIe and interconnect CPU Host processing Server Baseline Other system power Energy and Carbon Accounting Power →Energy EIT = R PIT(t) dt Energy + PUE + Carbon Intensity →Operational Carbon Operational + Allocated Embodied Carbon →Total Carbon Explore activity-aware models across computation, storage I/O, and data transfers; use consistent boundaries to avoid double counting. Fine-grained system energy modeling can support energy- and carbon-aware cache management. Accounting Details Proposed modeling scope informed by GreenCache and Carbon–SLO. Main 16 / 16",
+      "Backup B1 — KV Cache Lifetime and Storage Requirements Oracle TTL illustrates how reuse intervals affect active storage The paper’s oracle policy sets TTL to zero for blocks that will never be accessed again. Cumulative blocks continue to grow while active blocks remain much lower under this retrospective bound. Reuse concentration Capacity saturation Source: Kareto v1, Section 3.1, Figure 1. Oracle is an analysis reference, not an online-known future. B01",
+      "Backup B2 — DRAM Bandwidth Sensitivity Bandwidth constraints can dominate TTFT in the paper’s simulation table Large TTFT changes occur at low bandwidth; improvements taper at higher rates. Preserve units as reported. The table’s values are simulation outputs, not a universal hardware law. Density results Objectives Source: Kareto v1, Section 3.1, Table 1, p. 4. B02",
+      "Backup B3 — Disk Bandwidth and Capacity Are Coupled Writes from eviction and reads for reload share constrained I/O resources In this cloud-disk setting, bandwidth scales with provisioned capacity and read/write contention matters. Capacity beyond total KV footprint may still change effective performance. Density results Trade-offs Source: Kareto v1, Section 3.3, Figure 7, p. 6. B03",
+      "Backup B4 — Workload Density and Storage Capacity Full Figure 5 results for reuse ratio, throughput, and mean TTFT (a) compute-bound / high density; (b) compute-abundant / low density. Capacity can raise throughput when computation limits service; under arrival-limited service, throughput saturates near request arrivals. Prefetch timeline Tier results Source: Kareto v1, Section 3.3, Figure 5, p. 5. B04",
+      "Backup B5 — Full Tier Reuse Results Four panels: DRAM and disk under Trace A at two instance scales High-density 1-instance workloads have longer prefetch windows. Four-instance workloads are compute-abundant, with shorter queue times. Main density evidence Source: Kareto v1, Section 3.3, Figure 6, p. 6. B05",
+      "Backup B6 — Planner, Simulator, and Selector Kareto replays recent traces to plan the following service period Planner generates configurations; simulator estimates their outcomes; Pareto selector returns non-dominated choices for the online system. Group TTL method Pareto search Source: Kareto v1, Section 4.1, Figure 9. B06",
+      "Backup B7 — Kareto Simulator Architecture Figure 4 shows the original components and modeled data flow The paper describes a discrete-event inference engine, empirical attention/FFN execution times, radix-tree shared prefix reuse, and hierarchical layer-wise KV prefetching. Simulator overview Profiling Source: Kareto v1, Section 3.2, Figure 4, p. 4. B07",
+      "Backup B8 — Adaptive Pareto Search Ablation Fewer simulated points with comparable reported hypervolume Grid search: DRAM 0–4096 GB in 256 GB steps; disk 0–3600 GB in 120 GB steps. Adaptive search starts coarser, then refines. Hypervolume uses the same dominated reference point for the comparison. Search method Source: Kareto v1, Sections 4.2 and 5.3.1, Algorithm 1 and Figure 13. B08",
+      "Backup B9 — Prefix-Tree Reuse Concentration A few subtrees account for most reuse events Ranking motivates giving frequently reused prefix groups individual retention policies. Reuse intervals ROI allocation Group TTL overview Source: Kareto v1, Section 4.3, Figure 10. B09",
+      "Backup B10 — Group Reuse-Interval Distributions Top subtrees have distinct reuse intervals across early and late trace windows Group-specific TTLs reflect differences among subtree reuse patterns. Group TTL overview Source: Kareto v1, Section 4.3, Figure 11. B10",
+      "Backup B11 — ROI-Aware Group TTL Allocation Prefix groups receive different TTLs under a shared storage budget ROIg(t) = Hg(t) Cg(t) , max t X g Hg(tg) s.t. X g Cg(tg) ≤B Hg(t) counts hits for group g under TTL t. Cg(t) measures its capacity-time consumption. First find each group’s ROI-efficient TTL, scale to the shared budget, then refine by constrained optimization. The paper uses SLSQP with multiple starts. ROI is hits per capacity-time, not financial profit or energy saved. Group TTL affects disk retention. Group TTL overview Source: Kareto v1, Section 4.3, Algorithm 2. B11",
+      "Backup B12 — Group TTL Reuse Ablation Reuse-ratio and end-to-end benefits vary across workloads and scales Group TTL improves reuse most clearly for Trace B/C in reported settings; gains can be marginal for Trace A or 4 instances. Main findings Source: Kareto v1, Section 5.3.2, Figure 14. B12",
+      "Backup B13 — Group TTL Reuse-Interval Ablation TTL-specific storage retention responds to group reuse intervals Read together with Figure 14’s reuse-ratio comparison and Figure 16’s end-to-end metrics; this panel reports study conditions, not a single universal effect. Main findings Source: Kareto v1, Section 5.3.2, Figure 15. B13",
+      "Backup B14 — Group TTL Performance and Cost Objective metrics compare group TTL with fixed TTL across traces The paper reports benefits especially for Trace B/C; effects depend on workload, disk budget, DRAM capacity, and instance count. No additional percentages are inferred here. Main findings Source: Kareto v1, Section 5.3.2, Figure 16. Figure 18 appears in HTML source for Trace C panels. B14",
+      "Backup B15 — Real-System Simulator Validation Real and simulated responses across request rates and storage tiers Tested configurations: GPU-only, GPU + host DRAM, GPU + disk. Maximum deviations: mean TTFT 19.2%, total throughput 6.5%, hit rate 2.0%. These data do not validate energy or carbon estimates. Validation summary Source: Kareto v1, Section 5.4. Versioned arXiv HTML labels this Figure 19; supplied figure filename is Fig17. B15",
+      "Backup B16 — KV Reuse Energy Break-Even Model Proposed analytical comparison, not a Kareto result Eretain = Eoffload + Eretention(t) + pErestore Ediscard = pErecompute Retain KV offload + stor- age + restore Discard KV future recomputation compare energy Potentially energy-efficient if Eretain < Ediscard. Assumptions: one possible future reuse; p is reuse probability. Shared batch energy, overlapping work, opportunity cost, and physical idle power need additional modeling. Allocated retention cost is not necessarily avoidable idle energy. Research directions GPU energy model Proposed analytical model: not an evaluated result. B16",
+      "Backup B17 — Energy and Carbon Accounting Boundaries Keep energy, carbon, and lifecycle allocation boundaries explicit Operational energy / carbon GPU board, CPU, host DRAM, SSD, transfers, server baseline, shared batches, and overlapping prefetch / I/O. EIT = R PIT(t)dt Cop = P t E kWh IT,t PUEt CIt Embodied carbon / safeguards Allocate lifecycle emissions over a declared service boundary. Avoid GPU/HBM double count; count shared batch work once; apply PUE once. Cache eviction does not undo manufacturing emissions. Lower occupancy need not lower physical idle draw. At fixed CI and PUE, energy and operational carbon rank configurations identically. Prior work Energy modeling Proposed accounting method informed by GreenCache, Sections 2.3 and 3.2. B17"
     ]
   },
   "2026-12-02-Research-Discussion": {
@@ -273,8 +258,8 @@
     "backup_slides": 0,
     "pages": 10,
     "titles": [],
-    "pdf_sha256": "e260c9f512bf7f2f38444d19223bf7441f03e8066c0a3d8656cf9fcdf9e23d84",
-    "zip_sha256": "dc87b7537fc97920f4680c651d6270ecf8a8c410117f2dff1040882cd6b009d0",
+    "pdf_sha256": "f2acea612f012a2d8e126a4b26eecb72bebc50a9f663508f0b5a992b2bfb5419",
+    "zip_sha256": "6d658e2a987346eec0b1fe7c1267f44002f0f4c9957eb4096f71d0d268152738",
     "local_passes": 2,
     "zip_passes": 2,
     "local_zip_text_pixel_match": true,
